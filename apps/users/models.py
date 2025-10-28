@@ -13,6 +13,13 @@ class User(AbstractUser):
         upload_to="users/avatars/", null=True, blank=True
     )
 
+    # User type flags
+    is_partner = models.BooleanField(
+        default=False,
+        verbose_name=_("Is partner"),
+        help_text=_("Designates whether the user is a partner."),
+    )
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -28,3 +35,8 @@ class User(AbstractUser):
     @cached_property
     def is_account(self):
         return hasattr(self, "account")
+
+    class Meta:
+        managed = False
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")

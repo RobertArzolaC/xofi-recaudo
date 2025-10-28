@@ -1,0 +1,239 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.partners:applicant-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Personal Information Card -->
+            <div class="col-xl-6">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Personal Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.external_id.label }}</label>
+                                {{ form.external_id }}
+                                {% if form.external_id.errors %}
+                                    <div class="text-danger fs-7">{{ form.external_id.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.first_name.label }}</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger fs-7">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.paternal_last_name.label }}</label>
+                                {{ form.paternal_last_name }}
+                                {% if form.paternal_last_name.errors %}
+                                    <div class="text-danger fs-7">{{ form.paternal_last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.maternal_last_name.label }}</label>
+                                {{ form.maternal_last_name }}
+                                {% if form.maternal_last_name.errors %}
+                                    <div class="text-danger fs-7">{{ form.maternal_last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.document_type.label }}</label>
+                                {{ form.document_type }}
+                                {% if form.document_type.errors %}
+                                    <div class="text-danger fs-7">{{ form.document_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.document_number.label }}</label>
+                                {{ form.document_number }}
+                                {% if form.document_number.errors %}
+                                    <div class="text-danger fs-7">{{ form.document_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.gender.label }}</label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger fs-7">{{ form.gender.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.birth_date.label }}</label>
+                                {{ form.birth_date }}
+                                {% if form.birth_date.errors %}
+                                    <div class="text-danger fs-7">{{ form.birth_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.status.label }}</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.status.help_text %}
+                                    <div class="text-muted fs-7">{{ form.status.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact & Address Information -->
+            <div class="col-xl-6">
+                <!-- Contact Information Card -->
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Contact Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger fs-7">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger fs-7">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.agency.label }}</label>
+                                {{ form.agency }}
+                                {% if form.agency.errors %}
+                                    <div class="text-danger fs-7">{{ form.agency.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information Card -->
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Address Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.address.label }}</label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger fs-7">{{ form.address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.country.label }}</label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                <div class="fv-plugins-message-container">
+                                    <span class="fv-help-block text-danger">{{ form.country.errors|join:", " }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.region.label }}</label>
+                                {{ form.region }}
+                                {% if form.region.errors %}
+                                <div class="fv-plugins-message-container">
+                                    <span class="fv-help-block text-danger">{{ form.region.errors|join:", " }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.subregion.label }}</label>
+                                {{ form.subregion }}
+                                {% if form.subregion.errors %}
+                                    <div class="text-danger fs-7">{{ form.subregion.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.city.label }}</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger fs-7">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.partners:applicant-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if action == "create" %}
+                    {% trans "Create Applicant" %}
+                {% else %}
+                    {% trans "Update Applicant" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media.js }}
+{% endblock %}

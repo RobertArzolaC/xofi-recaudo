@@ -1,0 +1,177 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Delete Payment" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Delete Payment" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:payment-detail' payment.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0 text-danger">
+                            <i class="ki-duotone ki-warning-2 fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            {% trans "Confirm Deletion" %}
+                        </h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger d-flex align-items-center p-5 mb-8">
+                        <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-danger">{% trans "Warning!" %}</h4>
+                            <span>{% trans "This action cannot be undone. All data related to this payment will be permanently deleted." %}</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-8">
+                        <div class="col-lg-6">
+                            <div class="card bg-light-danger">
+                                <div class="card-body">
+                                    <h5 class="card-title text-danger">{% trans "Payment to Delete" %}</h5>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="symbol symbol-50px me-3">
+                                            <div class="symbol-label fs-3 fw-semibold text-danger">
+                                                <i class="ki-duotone ki-bill fs-2">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                    <span class="path3"></span>
+                                                    <span class="path4"></span>
+                                                    <span class="path5"></span>
+                                                    <span class="path6"></span>
+                                                </i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">{{ payment.payment_number }}</h6>
+                                            <p class="text-muted mb-0">{{ payment.get_concept_display }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Partner" %}</small>
+                                        <div class="fw-bold">{{ payment.partner.full_name }}</div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Amount" %}</small>
+                                        <div class="fw-bold">S/ {{ payment.scheduled_amount|floatformat:2 }}</div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Status" %}</small>
+                                        <div>
+                                            {% if payment.status == 'PENDING' %}
+                                                <span class="badge badge-warning">{{ payment.get_status_display }}</span>
+                                            {% elif payment.status == 'PARTIAL' %}
+                                                <span class="badge badge-info">{{ payment.get_status_display }}</span>
+                                            {% elif payment.status == 'PAID' %}
+                                                <span class="badge badge-success">{{ payment.get_status_display }}</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if payment.due_date %}
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Due Date" %}</small>
+                                        <div class="fw-bold">{{ payment.due_date|date:"d/m/Y" }}</div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card bg-light-warning">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning">{% trans "What will be deleted?" %}</h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Payment record" %}
+                                        </li>
+                                        {% if payment.concept_allocations.exists %}
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Payment allocations" %} ({{ payment.concept_allocations.count }})
+                                        </li>
+                                        {% endif %}
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Payment history" %}
+                                        </li>
+                                    </ul>
+
+                                    {% if payment.concept_allocations.exists %}
+                                    <div class="alert alert-warning mt-4">
+                                        <strong>{% trans "Important:" %}</strong>
+                                        {% trans "This payment has allocations. Deleting it may affect related installments or obligations." %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-end gap-3">
+                            <a href="{% url 'apps.payments:payment-detail' payment.pk %}" class="btn btn-light">
+                                <i class="ki-duotone ki-arrow-left fs-4 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Cancel" %}
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="ki-duotone ki-trash fs-4 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Yes, Delete Payment" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

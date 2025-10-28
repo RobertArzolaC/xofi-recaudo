@@ -1,0 +1,271 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.credits:disbursement_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Basic Information Card -->
+            <div class="col-xl-6">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.credit.label }}</label>
+                                {{ form.credit }}
+                                {% if form.credit.errors %}
+                                    <div class="text-danger fs-7">{{ form.credit.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.credit.help_text %}
+                                    <div class="text-muted fs-7">{{ form.credit.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.disbursement_amount.label }}</label>
+                                {{ form.disbursement_amount }}
+                                {% if form.disbursement_amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.disbursement_amount.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.disbursement_amount.help_text %}
+                                    <div class="text-muted fs-7">{{ form.disbursement_amount.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.scheduled_date.label }}</label>
+                                {{ form.scheduled_date }}
+                                {% if form.scheduled_date.errors %}
+                                    <div class="text-danger fs-7">{{ form.scheduled_date.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.scheduled_date.help_text %}
+                                    <div class="text-muted fs-7">{{ form.scheduled_date.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.disbursement_method.label }}</label>
+                                {{ form.disbursement_method }}
+                                {% if form.disbursement_method.errors %}
+                                    <div class="text-danger fs-7">{{ form.disbursement_method.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.disbursement_method.help_text %}
+                                    <div class="text-muted fs-7">{{ form.disbursement_method.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="col-xl-6">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Payment Details" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Bank Transfer Details -->
+                        <div id="bank-transfer-fields" class="payment-method-fields">
+                            <div class="row mb-6">
+                                <div class="col-lg-12 mb-4">
+                                    <label class="form-label">{{ form.bank_name.label }}</label>
+                                    {{ form.bank_name }}
+                                    {% if form.bank_name.errors %}
+                                        <div class="text-danger fs-7">{{ form.bank_name.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if form.bank_name.help_text %}
+                                        <div class="text-muted fs-7">{{ form.bank_name.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col-lg-6 mb-4">
+                                    <label class="form-label">{{ form.account_number.label }}</label>
+                                    {{ form.account_number }}
+                                    {% if form.account_number.errors %}
+                                        <div class="text-danger fs-7">{{ form.account_number.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if form.account_number.help_text %}
+                                        <div class="text-muted fs-7">{{ form.account_number.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <label class="form-label">{{ form.account_holder_name.label }}</label>
+                                    {{ form.account_holder_name }}
+                                    {% if form.account_holder_name.errors %}
+                                        <div class="text-danger fs-7">{{ form.account_holder_name.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if form.account_holder_name.help_text %}
+                                        <div class="text-muted fs-7">{{ form.account_holder_name.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Check Details -->
+                        <div id="check-fields" class="payment-method-fields" style="display:none;">
+                            <div class="row mb-6">
+                                <div class="col-lg-12 mb-4">
+                                    <label class="form-label">{{ form.check_number.label }}</label>
+                                    {{ form.check_number }}
+                                    {% if form.check_number.errors %}
+                                        <div class="text-danger fs-7">{{ form.check_number.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if form.check_number.help_text %}
+                                        <div class="text-muted fs-7">{{ form.check_number.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.reference_number.label }}</label>
+                                {{ form.reference_number }}
+                                {% if form.reference_number.errors %}
+                                    <div class="text-danger fs-7">{{ form.reference_number.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.reference_number.help_text %}
+                                    <div class="text-muted fs-7">{{ form.reference_number.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.receipt_document.label }}</label>
+                                {{ form.receipt_document }}
+                                {% if form.receipt_document.errors %}
+                                    <div class="text-danger fs-7">{{ form.receipt_document.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.receipt_document.help_text %}
+                                    <div class="text-muted fs-7">{{ form.receipt_document.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.credits:disbursement_list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if view.object %}
+                    {% trans "Update Disbursement" %}
+                {% else %}
+                    {% trans "Create Disbursement" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media.js }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const creditSelect = document.getElementById('id_credit');
+            const amountInput = document.getElementById('id_disbursement_amount');
+            const methodSelect = document.getElementById('id_disbursement_method');
+            const bankFields = document.getElementById('bank-transfer-fields');
+            const checkFields = document.getElementById('check-fields');
+
+            // Function to fetch credit data and update amount
+            function updateCreditAmount() {
+                const creditId = creditSelect.value;
+                console.log("creditId", creditId);
+
+                if (!creditId) {
+                    amountInput.value = '';
+                    return;
+                }
+
+                // Show loading state
+                amountInput.disabled = true;
+
+                // Fetch credit data from API
+                fetch(`/credits/api/credits/${creditId}/summary/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch credit data');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Update amount field with credit amount
+                        amountInput.value = data.amount.value;
+                        amountInput.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching credit data:', error);
+                        amountInput.value = '';
+                        amountInput.disabled = false;
+                        alert('Error loading credit data. Please try again.');
+                    });
+            }
+
+            function toggleFields() {
+                const method = methodSelect.value;
+                console.log("method", method);
+
+                // Hide all method-specific fields
+                bankFields.style.display = 'none';
+                checkFields.style.display = 'none';
+
+                // Show relevant fields based on method
+                if (method === 'BANK_TRANSFER') {
+                    bankFields.style.display = 'block';
+                } else if (method === 'CHECK') {
+                    checkFields.style.display = 'block';
+                }
+            }
+
+            // Initialize on page load
+            toggleFields();
+            if (creditSelect.value) {
+                updateCreditAmount();
+            }
+
+            // Update on change
+            methodSelect.addEventListener('change', toggleFields);
+
+            let creditSelection = $('#id_credit').select2();
+            creditSelection.on('change', updateCreditAmount);
+        });
+    </script>
+{% endblock %}

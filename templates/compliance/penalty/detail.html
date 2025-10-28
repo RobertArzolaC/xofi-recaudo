@@ -1,0 +1,172 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Penalty Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ penalty.partner.full_name }} - {{ penalty.get_penalty_type_display }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.compliance:penalty-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.compliance.change_penalty %}
+    <a href="{% url 'apps.compliance:penalty-edit' penalty.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Penalty Summary Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Penalty Summary" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Penalty Status -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-danger">
+                                {{ penalty.partner.initials }}
+                            </div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ penalty.get_penalty_type_display }}</div>
+                        <div class="mb-9">
+                            {% if penalty.status == "PENDING" %}
+                                <div class="badge badge-lg badge-light-warning d-inline">{{ penalty.get_status_display }}</div>
+                            {% elif penalty.status == "PAID" %}
+                                <div class="badge badge-lg badge-light-success d-inline">{{ penalty.get_status_display }}</div>
+                            {% elif penalty.status == "OVERDUE" %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{{ penalty.get_status_display }}</div>
+                            {% elif penalty.status == "PARTIAL" %}
+                                <div class="badge badge-lg badge-light-info d-inline">{{ penalty.get_status_display }}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-secondary d-inline">{{ penalty.get_status_display }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Payment Summary -->
+                    <div class="d-flex flex-stack fs-4 py-3">
+                        <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_penalty_payment_summary" role="button" aria-expanded="false" aria-controls="kt_penalty_payment_summary">
+                            {% trans "Payment Summary" %}
+                            <span class="ms-2 rotate-180">
+                                <i class="ki-duotone ki-down fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="separator separator-dashed my-3"></div>
+                    <div id="kt_penalty_payment_summary" class="collapse show">
+                        <div class="pb-5 fs-6">
+                            <div class="fw-bold mt-5">{% trans "Total Amount" %}</div>
+                            <div class="text-gray-600">S/ {{ penalty.amount|floatformat:2 }}</div>
+
+                            <div class="fw-bold mt-5">{% trans "Total Paid" %}</div>
+                            <div class="text-gray-600">S/ {{ penalty.total_paid|floatformat:2 }}</div>
+
+                            <div class="fw-bold mt-5">{% trans "Remaining Balance" %}</div>
+                            <div class="text-gray-600">S/ {{ penalty.remaining_balance|floatformat:2 }}</div>
+
+                            {% if penalty.is_overdue %}
+                            <div class="fw-bold mt-5 text-danger">{% trans "Days Overdue" %}</div>
+                            <div class="text-danger">{{ penalty.days_overdue }} {% trans "days" %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Information -->
+        <div class="col-xl-8">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Penalty Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="fw-semibold text-gray-600">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Partner" %}</td>
+                                    <td>{{ penalty.partner.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Document" %}</td>
+                                    <td>{{ penalty.partner.document_type }} - {{ penalty.partner.document_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Penalty Type" %}</td>
+                                    <td>{{ penalty.get_penalty_type_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Amount" %}</td>
+                                    <td>S/ {{ penalty.amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Issue Date" %}</td>
+                                    <td>{{ penalty.issue_date|date:"d/m/Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Due Date" %}</td>
+                                    <td>{{ penalty.due_date|date:"d/m/Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Status" %}</td>
+                                    <td>
+                                        {% if penalty.status == "PENDING" %}
+                                            <span class="badge badge-light-warning">{{ penalty.get_status_display }}</span>
+                                        {% elif penalty.status == "PAID" %}
+                                            <span class="badge badge-light-success">{{ penalty.get_status_display }}</span>
+                                        {% elif penalty.status == "OVERDUE" %}
+                                            <span class="badge badge-light-danger">{{ penalty.get_status_display }}</span>
+                                        {% elif penalty.status == "PARTIAL" %}
+                                            <span class="badge badge-light-info">{{ penalty.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{{ penalty.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ penalty.created|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Modified" %}</td>
+                                    <td>{{ penalty.modified|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="separator separator-dashed my-10"></div>
+                    <div class="mb-0">
+                        <h5 class="mb-4">{% trans "Description" %}</h5>
+                        <div class="text-gray-800 fs-6 fw-normal">
+                            {{ penalty.description|linebreaks }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

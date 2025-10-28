@@ -1,0 +1,553 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ form_title }}{% endblock title_page %}
+{% block toolbar_title %}{{ form_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+.debt-item {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+.debt-item:hover {
+    background-color: #f8f9fa;
+}
+.debt-item.selected {
+    border-color: #009ef7;
+    background-color: #f1faff;
+}
+</style>
+{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:partner-payment-history' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="payment-form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Payment Information Card -->
+            <div class="col-xl-8">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Payment Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info d-flex align-items-center p-5 mb-6">
+                            <i class="ki-duotone ki-shield-tick fs-2hx text-info me-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div class="d-flex flex-column">
+                                <h5 class="mb-1">{% trans "Secure Payment with Culqi" %}</h5>
+                                <span>{% trans "Your payment information is encrypted and secure. We accept credit/debit cards and Yape." %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.concept_type.label }}</label>
+                                {{ form.concept_type|add_class:"form-select" }}
+                                <div class="form-text">{{ form.concept_type.help_text }}</div>
+                                {% if form.concept_type.errors %}
+                                    <div class="text-danger fs-7">{{ form.concept_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">
+                                    {{ form.amount.label }}
+                                    <i class="ki-duotone ki-information-5 fs-6 text-muted ms-1" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="{% trans 'Select debts below to automatically calculate the amount' %}">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </label>
+                                {{ form.amount|add_class:"form-control" }}
+                                <div class="form-text text-muted fs-7" id="amount-helper-text">
+                                    {{ form.amount.help_text }}
+                                </div>
+                                {% if form.amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes|add_class:"form-control" }}
+                                <div class="form-text">{{ form.notes.help_text }}</div>
+                                {% if form.notes.errors %}
+                                    <div class="text-danger fs-7">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Hidden fields -->
+                        {{ form.culqi_token }}
+                        {{ form.allocations_data }}
+                    </div>
+                </div>
+
+                <!-- Pending Debts Selection -->
+                <div class="card card-flush" id="pending-debts-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">
+                                <i class="ki-duotone ki-notepad fs-2 text-primary me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Select Debts to Pay" %}
+                            </h3>
+                        </div>
+                        <div class="card-toolbar">
+                            <button type="button" class="btn btn-sm btn-light me-2" id="clear-allocations-btn">
+                                <i class="ki-duotone ki-trash fs-5">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Clear Selection" %}
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary" id="select-all-btn">
+                                <i class="ki-duotone ki-check-square fs-5">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Select All" %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="pending-debts">
+                        <div class="text-center text-muted py-10">
+                            <i class="ki-duotone ki-information-5 fs-3x">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <p class="mt-3">{% trans "Select a payment concept above to see available debts" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-xl-4">
+                <!-- Payment Summary Card -->
+                <div class="card card-flush mb-6" id="allocation-summary-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Payment Summary" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted">{% trans "Selected Items" %}</span>
+                                    <span class="fw-bold" id="selected-items-count">0</span>
+                                </div>
+                                <div class="separator my-3"></div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted fs-4">{% trans "Total Amount" %}</span>
+                                    <h2 class="mb-0 text-primary" id="total-amount-display">S/ 0.00</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="progress progress-sm bg-light-primary mb-2">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="allocation-progress"></div>
+                            </div>
+                            <div class="text-center">
+                                <small class="text-muted" id="allocation-status">{% trans "No items selected" %}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods Info -->
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Accepted Payment Methods" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ki-duotone ki-credit-cart fs-2x text-primary me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Credit/Debit Cards" %}</div>
+                                <div class="text-muted fs-7">Visa, Mastercard, AMEX</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ki-duotone ki-wallet fs-2x text-success me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Yape" %}</div>
+                                <div class="text-muted fs-7">{% trans "Digital wallet" %}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ki-duotone ki-profile-user fs-2x text-info me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Digital Wallets" %}</div>
+                                <div class="text-muted fs-7">{% trans "Various digital wallet options" %}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ki-duotone ki-bank fs-2x text-warning me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Mobile or Internet Banking" %}</div>
+                                <div class="text-muted fs-7">{% trans "Pay through your bank app" %}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ki-duotone ki-shop fs-2x text-danger me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Agents and Stores" %}</div>
+                                <div class="text-muted fs-7">{% trans "Pay at authorized payment points" %}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="ki-duotone ki-element-11 fs-2x text-secondary me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            <div>
+                                <div class="fw-bold">{% trans "Cuotéalo BCP" %}</div>
+                                <div class="text-muted fs-7">{% trans "BCP installment payment option" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.payments:partner-payment-history' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="button" class="btn btn-primary" id="proceed-to-payment-btn" disabled>
+                <i class="ki-duotone ki-shield-tick fs-4 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {{ submit_text }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    let selectedAllocations = [];
+</script>
+<script src="https://checkout.culqi.com/js/v4"></script>
+<script>
+    Culqi.publicKey = "{{ culqi_public_key }}";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const conceptTypeSelect = document.getElementById('id_concept_type');
+        const amountField = document.getElementById('id_amount');
+        const pendingDebtsContainer = document.getElementById('pending-debts');
+        const proceedBtn = document.getElementById('proceed-to-payment-btn');
+        const clearBtn = document.getElementById('clear-allocations-btn');
+        const selectAllBtn = document.getElementById('select-all-btn');
+
+        // Payment allocation tracking
+        let pendingDebtsData = JSON.parse('{{ pending_debts|escapejs }}');
+
+        // Update payment summary
+        function updatePaymentSummary() {
+            const totalAmount = selectedAllocations.reduce((sum, alloc) => sum + parseFloat(alloc.amount), 0);
+            const selectedCount = selectedAllocations.length;
+
+            // Update displays
+            document.getElementById('selected-items-count').textContent = selectedCount;
+            document.getElementById('total-amount-display').textContent = `S/ ${totalAmount.toFixed(2)}`;
+            document.getElementById('allocation-progress').style.width = selectedCount > 0 ? '100%' : '0%';
+
+            // Update amount field
+            amountField.value = totalAmount > 0 ? totalAmount.toFixed(2) : '';
+
+            // Update status text
+            const statusEl = document.getElementById('allocation-status');
+            if (selectedCount === 0) {
+                statusEl.textContent = '{% trans "No items selected" %}';
+                statusEl.className = 'text-muted';
+            } else {
+                statusEl.textContent = `${selectedCount} {% trans "item(s) selected" %}`;
+                statusEl.className = 'text-primary fw-bold';
+            }
+
+            // Enable/disable proceed button
+            proceedBtn.disabled = totalAmount <= 0;
+        }
+
+        // Load debts based on concept type
+        function loadDebts(conceptType) {
+            switch(conceptType) {
+                case 'INSTALLMENT':
+                    debts = pendingDebtsData.installments || [];
+                    break;
+                case 'CONTRIBUTION':
+                    debts = pendingDebtsData.contributions || [];
+                    break;
+                case 'SOCIAL_SECURITY':
+                    debts = pendingDebtsData.social_security || [];
+                    break;
+                case 'PENALTY':
+                    debts = pendingDebtsData.penalties || [];
+                    break;
+            }
+
+            if (debts.length === 0) {
+                pendingDebtsContainer.innerHTML = `
+                    <div class="text-center text-muted py-10">
+                        <i class="ki-duotone ki-file fs-3x">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <p class="mt-3">{% trans "No pending debts for this concept" %}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            debts.forEach((debt, index) => {
+                const overdueClass = debt.is_overdue ? 'border-danger' : '';
+                html += `
+                    <div class="debt-item mb-3 p-4 border rounded ${overdueClass}" data-debt-id="${debt.id}" data-debt-type="${debt.type}" data-debt-slug="${debt.slug}" data-debt-amount="${debt.amount}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="form-check">
+                                    <input class="form-check-input debt-checkbox" type="checkbox" value="${debt.id}" id="debt-${index}">
+                                    <label class="form-check-label fw-bold" for="debt-${index}">
+                                        ${debt.description}
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                                    ${debt.due_date ? `<span class="badge badge-light-info"><i class="ki-duotone ki-calendar fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>${debt.due_date}</span>` : ''}
+                                    ${debt.is_overdue ? '<span class="badge badge-light-danger"><i class="ki-duotone ki-information fs-7 me-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>{% trans "Overdue" %}</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <p class="mb-0 fw-bold fs-4 ${debt.is_overdue ? 'text-danger' : 'text-dark'}">S/ ${parseFloat(debt.amount).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            pendingDebtsContainer.innerHTML = html;
+            setupDebtCheckboxes();
+        }
+
+        // Setup checkbox event listeners
+        function setupDebtCheckboxes() {
+            const checkboxes = document.querySelectorAll('.debt-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const debtItem = this.closest('.debt-item');
+                    const debtId = parseInt(debtItem.dataset.debtId);
+                    const debtType = debtItem.dataset.debtType;
+                    const debtSlug = debtItem.dataset.debtSlug;
+                    const debtAmount = debtItem.dataset.debtAmount;
+
+                    if (this.checked) {
+                        debtItem.classList.add('selected');
+                        selectedAllocations.push({
+                            type: debtType,
+                            object_id: debtId,
+                            amount: debtAmount,
+                            slug: debtSlug
+                        });
+                    } else {
+                        debtItem.classList.remove('selected');
+                        selectedAllocations = selectedAllocations.filter(
+                            alloc => !(alloc.object_id === debtId && alloc.type === debtType)
+                        );
+                    }
+
+                    updatePaymentSummary();
+                });
+            });
+        }
+
+        // Concept type change handler
+        conceptTypeSelect.addEventListener('change', function() {
+            // Clear previous selections
+            selectedAllocations = [];
+            updatePaymentSummary();
+
+            // Load new debts
+            if (this.value) {
+                loadDebts(this.value);
+            } else {
+                pendingDebtsContainer.innerHTML = `
+                    <div class="text-center text-muted py-10">
+                        <i class="ki-duotone ki-information-5 fs-3x">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <p class="mt-3">{% trans "Select a payment concept above to see available debts" %}</p>
+                    </div>
+                `;
+            }
+        });
+
+        // Clear allocations button
+        clearBtn.addEventListener('click', function() {
+            selectedAllocations = [];
+            document.querySelectorAll('.debt-checkbox:checked').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.debt-item').classList.remove('selected');
+            });
+            updatePaymentSummary();
+        });
+
+        // Select all button
+        selectAllBtn.addEventListener('click', function() {
+            document.querySelectorAll('.debt-checkbox:not(:checked)').forEach(cb => {
+                cb.checked = true;
+                cb.dispatchEvent(new Event('change'));
+            });
+        });
+
+        // Proceed to payment button
+        proceedBtn.addEventListener('click', function() {
+            const amount = parseFloat(amountField.value);
+
+            if (!amount || amount <= 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '{% trans "Invalid Amount" %}',
+                    text: '{% trans "Please select at least one debt to pay" %}',
+                });
+                return;
+            }
+
+            // Configure Culqi Checkout
+            Culqi.settings({
+                title: '{% trans "Payment" %}',
+                currency: 'PEN',
+                amount: Math.round(amount * 100),
+                order: '{{ order_number }}',
+                description: conceptTypeSelect.options[conceptTypeSelect.selectedIndex].text,
+                xculqirsaid: '{{ culqi_rsa_id }}',
+                rsapublickey: '{{ culqi_rsa_public_key }}',
+            });
+
+            Culqi.options({
+                lang: 'es',
+                installments: false,
+                paymentMethods: {
+                    tarjeta: true,
+                    yape: true,
+                    billetera: true,
+                    bancaMovil: true,
+                    agente: true,
+                    cuotealo: true
+                }
+            });
+
+            // Open Culqi Checkout
+            Culqi.open();
+        });
+
+        // Initialize summary
+        updatePaymentSummary();
+        loadDebts(conceptTypeSelect.value);
+
+
+    });
+
+    // Culqi callback when token is generated
+    function culqi() {
+        if (Culqi.token) {
+            const token = Culqi.token.id;
+
+            // Save token in hidden field
+            document.getElementById('culqi_token').value = token;
+
+            // Add allocations to form
+            const form = document.getElementById('payment-form');
+            selectedAllocations.forEach((allocation, index) => {
+                ['type', 'object_id', 'amount', 'slug'].forEach(field => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = `allocations[${index}][${field}]`;
+                    input.value = allocation[field];
+                    form.appendChild(input);
+                });
+            });
+
+            // Submit form
+            form.submit();
+        } else {
+            // Show error
+            console.error('Culqi Error:', Culqi.error);
+            Swal.fire({
+                icon: 'error',
+                title: '{% trans "Payment Error" %}',
+                text: Culqi.error.user_message || '{% trans "An error occurred while processing your payment" %}',
+            });
+        }
+    }
+</script>
+{% endblock extra_js %}

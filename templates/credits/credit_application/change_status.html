@@ -1,0 +1,218 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load common %}
+
+{% block title_page %}{% trans "Change Application Status" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Change Status" %} - {{ application.partner.full_name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:credit_application_detail' application.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row">
+        <!-- Left Column: Current Status Info -->
+        <div class="col-xl-4 mb-10">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Current Status" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Current Status Badge -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        {% if application.status == "DRAFT" %}
+                            <div class="badge badge-lg badge-light-secondary mb-4">{{ application.get_status_display }}</div>
+                        {% elif application.status == "SUBMITTED" %}
+                            <div class="badge badge-lg badge-light-warning mb-4">{{ application.get_status_display }}</div>
+                        {% elif application.status == "UNDER_REVIEW" %}
+                            <div class="badge badge-lg badge-light-info mb-4">{{ application.get_status_display }}</div>
+                        {% elif application.status == "ADDITIONAL_INFO" %}
+                            <div class="badge badge-lg badge-light-warning mb-4">{{ application.get_status_display }}</div>
+                        {% elif application.status == "APPROVED" %}
+                            <div class="badge badge-lg badge-light-success mb-4">{{ application.get_status_display }}</div>
+                        {% elif application.status == "REJECTED" or application.status == "CANCELLED" %}
+                            <div class="badge badge-lg badge-light-danger mb-4">{{ application.get_status_display }}</div>
+                        {% else %}
+                            <div class="badge badge-lg badge-light-secondary mb-4">{{ application.get_status_display }}</div>
+                        {% endif %}
+
+                        <div class="fs-6 text-muted">
+                            {% trans "In this status for" %}:
+                            {% if current_status_duration.days > 0 %}
+                                {{ current_status_duration.days }} {% trans "days" %}
+                            {% else %}
+                                {% if current_status_duration.seconds > 3600 %}
+                                    {{ current_status_duration.seconds }} {% trans "hours" %}
+                                {% else %}
+                                    {% trans "Less than an hour" %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div class="separator"></div>
+                    <div class="py-5 fs-6">
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Partner" %}</div>
+                            <div class="col-7 text-gray-600">{{ application.partner.full_name }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Product" %}</div>
+                            <div class="col-7 text-gray-600">{{ application.product.name }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Amount" %}</div>
+                            <div class="col-7 text-gray-600">S/ {{ application.requested_amount|floatformat:2 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Change Status Form -->
+        <div class="col-xl-8">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Change Status" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if perms.credits.review_creditapplication or perms.credits.approve_creditapplication %}
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Status Selection -->
+                        <div class="mb-7">
+                            <label class="form-label fw-semibold">{{ form.status.label }}</label>
+                            {{ form.status|add_class:"form-select" }}
+                            {% if form.status.help_text %}
+                                <div class="form-text">{{ form.status.help_text }}</div>
+                            {% endif %}
+                            {% if form.status.errors %}
+                                <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Note -->
+                        <div class="mb-7">
+                            <label class="form-label fw-semibold">{{ form.note.label }}</label>
+                            {{ form.note }}
+                            {% if form.note.help_text %}
+                                <div class="form-text">{{ form.note.help_text }}</div>
+                            {% endif %}
+                            {% if form.note.errors %}
+                                <div class="text-danger fs-7">{{ form.note.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'apps.credits:credit_application_detail' application.pk %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="indicator-label">{% trans "Change Status" %}</span>
+                            </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Status History -->
+            {% if status_history %}
+            <div class="card card-flush mt-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Status History" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="timeline">
+                        {% for history in status_history %}
+                        <div class="timeline-item">
+                            <div class="timeline-line w-40px"></div>
+                            <div class="timeline-icon symbol symbol-20px me-4">
+                                <div class="symbol-label bg-light">
+                                    <i class="ki-duotone ki-arrows-loop fs-8 text-gray-600"></i>
+                                </div>
+                            </div>
+                            <div class="timeline-content mb-6 mt-n1">
+                                <div class="pe-3">
+                                    <div class="fs-5 fw-semibold mb-2">
+                                        {% if history.previous_status %}
+                                            {% get_credit_application_status_display history.previous_status as previous_display %}
+                                            {% get_credit_application_status_display history.status as new_display %}
+                                            {{ previous_display }} → {{ new_display }}
+                                        {% else %}
+                                            {% get_credit_application_status_display history.status as status_display %}
+                                            {% trans "Initial status" %}: {{ status_display }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="text-muted me-2 fs-7">{{ history.created|date:"F d, Y H:i" }}</div>
+                                        {% if history.modified_by %}
+                                        <div class="text-muted fs-7">
+                                            {% trans "by" %} {{ history.modified_by.get_full_name|default:history.modified_by.email }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if history.note %}
+                                    <div class="p-3 rounded bg-light-info text-gray-700 fs-7">
+                                        {{ history.note|linebreaks }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.querySelector('select[name="status"]');
+    const noteField = document.querySelector('textarea[name="note"]');
+
+    function toggleNoteRequired() {
+        const selectedStatus = statusSelect.value;
+        const noteLabel = document.querySelector('label[for="id_note"]');
+
+        if (selectedStatus === 'REJECTED') {
+            noteField.required = true;
+            if (noteLabel) {
+                noteLabel.innerHTML = noteLabel.innerHTML.replace(' *', '') + ' *';
+            }
+        } else {
+            noteField.required = false;
+            if (noteLabel) {
+                noteLabel.innerHTML = noteLabel.innerHTML.replace(' *', '');
+            }
+        }
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', toggleNoteRequired);
+        toggleNoteRequired(); // Initial call
+    }
+});
+</script>
+{% endblock content %}

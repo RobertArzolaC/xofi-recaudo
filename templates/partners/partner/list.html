@@ -1,0 +1,204 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Partners" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Partner" %}{% endblock %}
+
+{% block entity_options %}
+{% if config.ENABLE_PARTNER_CREATION and perms.partners.add_partner %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.partners:partner-create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add Partner" %}
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_partner_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_partner_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.status.label }}</label>
+                        {{ filter.form.status }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.gender.label }}</label>
+                        {{ filter.form.gender }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.agency.label }}</label>
+                        {{ filter.form.agency }}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.partners:partner-list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Partners List" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "partners" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if partners %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-150px">{% trans "Name" %}</th>
+                            <th class="min-w-120px">{% trans "Document" %}</th>
+                            <th class="min-w-120px">{% trans "Contact" %}</th>
+                            <th class="min-w-100px">{% trans "Agency" %}</th>
+                            <th class="min-w-100px">{% trans "Status" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partner in partners %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        <div class="symbol-label fs-3 fw-semibold text-success">
+                                            {{ partner.initials }}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ partner.full_name }}</a>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ partner.document_type }}: {{ partner.document_number }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold">{{ partner.document_type }}</span>
+                                    <span class="text-muted fs-7">{{ partner.document_number }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fs-7">{{ partner.phone|default:"-" }}</span>
+                                    <span class="text-muted fs-7">{{ partner.email|default:"-" }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fs-7">{{ partner.agency.name|default:"-" }}</span>
+                                    {% if partner.agency %}
+                                        <span class="text-muted fs-7">{{ partner.agency.code }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if partner.status == 0 %}
+                                    <span class="badge badge-light-warning">{{ partner.get_status_display }}</span>
+                                {% elif partner.status == 1 %}
+                                    <span class="badge badge-light-success">{{ partner.get_status_display }}</span>
+                                {% elif partner.status == 2 %}
+                                    <span class="badge badge-light-secondary">{{ partner.get_status_display }}</span>
+                                {% elif partner.status == 3 %}
+                                    <span class="badge badge-light-danger">{{ partner.get_status_display }}</span>
+                                {% elif partner.status == 4 %}
+                                    <span class="badge badge-light-dark">{{ partner.get_status_display }}</span>
+                                {% elif partner.status == 5 %}
+                                    <span class="badge badge-light-info">{{ partner.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if perms.partners.view_partner %}
+                                <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.partners.change_partner %}
+                                <a href="{% url 'apps.partners:partner-edit' partner.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.partners.delete_partner %}
+                                <a href="{% url 'apps.partners:partner-delete' partner.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <i class="ki-duotone ki-trash fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No partners found" %}</div>
+                <div class="fs-6">{% trans "Start by creating your first partner" %}
+                    {% if config.ENABLE_PARTNER_CREATION and perms.partners.add_partner %}
+                    <a href="{% url 'apps.partners:partner-create' %}" class="fw-bolder">{% trans "Add Partner" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

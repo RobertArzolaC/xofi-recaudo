@@ -1,0 +1,383 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.partners:partner-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back to List" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form" id="partner-form">
+        {% csrf_token %}
+
+        <!-- Tab Navigation -->
+        <div class="card mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">{{ title }}</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'apps.partners:partner-edit' partner.pk %}">
+                            <i class="ki-duotone ki-user fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Basic Information" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active">
+                            <i class="ki-duotone ki-briefcase fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Employment Information" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'apps.partners:partner-documents' partner.pk %}">
+                            <i class="ki-duotone ki-folder fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Documents" %}
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="partner-tabs">
+                    <!-- Employment Information Tab -->
+                    <div class="tab-pane fade show active" id="employment-info" role="tabpanel">
+                        <div class="row g-5 g-xl-8">
+                            <!-- Professional Information -->
+                            <div class="col-xl-6">
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Professional Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if employment_form.non_field_errors %}
+                                            <div class="alert alert-danger">
+                                                {{ employment_form.non_field_errors }}
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.occupation.label }}</label>
+                                                {{ employment_form.occupation }}
+                                                {% if employment_form.occupation.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.occupation.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.profession.label }}</label>
+                                                {{ employment_form.profession }}
+                                                {% if employment_form.profession.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.profession.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.education_level.label }}</label>
+                                                {{ employment_form.education_level }}
+                                                {% if employment_form.education_level.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.education_level.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.employment_type.label }}</label>
+                                                {{ employment_form.employment_type }}
+                                                {% if employment_form.employment_type.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.employment_type.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-12 mb-4">
+                                                <div class="form-check">
+                                                    {{ employment_form.is_currently_employed }}
+                                                    <label class="form-check-label" for="{{ employment_form.is_currently_employed.id_for_label }}">
+                                                        {{ employment_form.is_currently_employed.label }}
+                                                    </label>
+                                                </div>
+                                                {% if employment_form.is_currently_employed.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.is_currently_employed.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contract Information -->
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Contract Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-6">
+                                            <div class="col-lg-12 mb-4">
+                                                <label class="form-label">{{ employment_form.contract_type.label }}</label>
+                                                {{ employment_form.contract_type }}
+                                                {% if employment_form.contract_type.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.contract_type.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.contract_start_date.label }}</label>
+                                                {{ employment_form.contract_start_date }}
+                                                {% if employment_form.contract_start_date.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.contract_start_date.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.contract_end_date.label }}</label>
+                                                {{ employment_form.contract_end_date }}
+                                                {% if employment_form.contract_end_date.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.contract_end_date.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.work_schedule.label }}</label>
+                                                {{ employment_form.work_schedule }}
+                                                {% if employment_form.work_schedule.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.work_schedule.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.weekly_hours.label }}</label>
+                                                {{ employment_form.weekly_hours }}
+                                                {% if employment_form.weekly_hours.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.weekly_hours.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6">
+                                <!-- Workplace Information -->
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Workplace Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.workplace_name.label }}</label>
+                                                {{ employment_form.workplace_name }}
+                                                {% if employment_form.workplace_name.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.workplace_name.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.other_workplace.label }}</label>
+                                                {{ employment_form.other_workplace }}
+                                                {% if employment_form.other_workplace.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.other_workplace.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-12 mb-4">
+                                                <label class="form-label">{{ employment_form.workplace_address.label }}</label>
+                                                {{ employment_form.workplace_address }}
+                                                {% if employment_form.workplace_address.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.workplace_address.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.job_position.label }}</label>
+                                                {{ employment_form.job_position }}
+                                                {% if employment_form.job_position.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.job_position.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.department.label }}</label>
+                                                {{ employment_form.department }}
+                                                {% if employment_form.department.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.department.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Income Information -->
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Income Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.base_salary.label }}</label>
+                                                {{ employment_form.base_salary }}
+                                                {% if employment_form.base_salary.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.base_salary.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.salary_frequency.label }}</label>
+                                                {{ employment_form.salary_frequency }}
+                                                {% if employment_form.salary_frequency.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.salary_frequency.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.additional_income.label }}</label>
+                                                {{ employment_form.additional_income }}
+                                                {% if employment_form.additional_income.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.additional_income.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.total_monthly_income.label }}</label>
+                                                {{ employment_form.total_monthly_income }}
+                                                {% if employment_form.total_monthly_income.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.total_monthly_income.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Contact Information -->
+                            <div class="col-xl-6">
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Work Contact Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-6">
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.work_phone.label }}</label>
+                                                {{ employment_form.work_phone }}
+                                                {% if employment_form.work_phone.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.work_phone.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-lg-6 mb-4">
+                                                <label class="form-label">{{ employment_form.work_email.label }}</label>
+                                                {{ employment_form.work_email }}
+                                                {% if employment_form.work_email.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.work_email.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-6">
+                                            <div class="col-lg-12 mb-4">
+                                                <label class="form-label">{{ employment_form.supervisor_name.label }}</label>
+                                                {{ employment_form.supervisor_name }}
+                                                {% if employment_form.supervisor_name.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.supervisor_name.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="col-xl-6">
+                                <div class="card card-flush mb-6 mb-xl-9">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Additional Information" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-6">
+                                            <div class="col-lg-12 mb-4">
+                                                <label class="form-label">{{ employment_form.notes.label }}</label>
+                                                {{ employment_form.notes }}
+                                                {% if employment_form.notes.errors %}
+                                                    <div class="text-danger fs-7">{{ employment_form.notes.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Help Card -->
+                                <div class="card card-flush">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h2 class="mb-0">{% trans "Help" %}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert alert-info">
+                                            <div class="alert-text">
+                                                <strong>{% trans "Employment Information Guidelines:" %}</strong><br>
+                                                • {% trans "Fill in professional and occupation details" %}<br>
+                                                • {% trans "Specify workplace and contract information" %}<br>
+                                                • {% trans "Include salary and income details according to Peruvian regulations" %}<br>
+                                                • {% trans "Add work contact information for verification purposes" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.partners:partner-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% trans "Save Employment Information" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

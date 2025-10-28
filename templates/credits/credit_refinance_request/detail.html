@@ -1,0 +1,198 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Refinance Request Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Detail Refinance Request" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:credit_refinance_request_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.credits.change_creditrefinancerequest %}
+    <a href="{% url 'apps.credits:credit_refinance_request_edit' credit_refinance_request.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Request Information Card -->
+        <div class="col-xl-6">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Request Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Partner" %}</td>
+                                    <td>
+                                        <a href="{% url 'apps.partners:partner-detail' credit_refinance_request.credit.partner.pk %}" class="text-gray-600 text-hover-primary">
+                                            {{ credit_refinance_request.credit.partner.full_name }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Original Credit" %}</td>
+                                    <td>
+                                        <a href="{% url 'apps.credits:credit_detail' credit_refinance_request.credit.pk %}" class="text-gray-600 text-hover-primary">
+                                            {{ credit_refinance_request.credit.product.name }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Status" %}</td>
+                                    <td>
+                                        {% if credit_refinance_request.status == "PENDING" %}
+                                            <span class="badge badge-light-warning">{{ credit_refinance_request.get_status_display }}</span>
+                                        {% elif credit_refinance_request.status == "APPROVED" %}
+                                            <span class="badge badge-light-success">{{ credit_refinance_request.get_status_display }}</span>
+                                        {% elif credit_refinance_request.status == "REJECTED" %}
+                                            <span class="badge badge-light-danger">{{ credit_refinance_request.get_status_display }}</span>
+                                        {% elif credit_refinance_request.status == "CANCELLED" %}
+                                            <span class="badge badge-light-secondary">{{ credit_refinance_request.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created Date" %}</td>
+                                    <td>{{ credit_refinance_request.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Terms Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Previous Terms" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Outstanding Balance" %}</td>
+                                    <td>S/ {{ credit_refinance_request.previous_outstanding_balance|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Term Remaining" %}</td>
+                                    <td>{{ credit_refinance_request.previous_term_remaining }} {% trans "months" %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Terms Information -->
+        <div class="col-xl-6">
+            <!-- New Terms Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "New Terms" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Payment Frequency" %}</td>
+                                    <td>{{ credit_refinance_request.get_new_payment_frequency_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Term Duration" %}</td>
+                                    <td>{{ credit_refinance_request.new_term_duration }} {% trans "months" %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Interest Rate" %}</td>
+                                    <td>{{ credit_refinance_request.new_interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Delinquency Rate" %}</td>
+                                    <td>{{ credit_refinance_request.new_delinquency_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Additional Amount" %}</td>
+                                    <td>S/ {{ credit_refinance_request.additional_amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Start Date" %}</td>
+                                    <td>{{ credit_refinance_request.start_date|date:"F d, Y" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Additional Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="mb-5">
+                        <div class="fw-bold text-gray-800 mb-2">{% trans "Reason" %}</div>
+                        <div class="text-gray-600">{{ credit_refinance_request.reason|linebreaks }}</div>
+                    </div>
+
+                    {% if credit_refinance_request.resulting_credit %}
+                    <div class="mb-5">
+                        <div class="fw-bold text-gray-800 mb-2">{% trans "Resulting Credit" %}</div>
+                        <div class="text-gray-600">
+                            <a href="{% url 'apps.credits:credit_detail' credit_refinance_request.resulting_credit.pk %}" class="text-primary">
+                                {{ credit_refinance_request.resulting_credit }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="separator my-5"></div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created By" %}</td>
+                                    <td>{{ credit_refinance_request.created_by.get_full_name|default:credit_refinance_request.created_by.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ credit_refinance_request.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,399 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load common %}
+
+{% block title_page %}{% trans "Credit Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ credit.partner.full_name }} - {{ credit.product.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:credit_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if can_change_status %}
+    <a href="{% url 'apps.credits:credit_change_status' credit.pk %}" class="btn btn-sm btn-info">
+        <i class="ki-duotone ki-arrows-circle fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Change Status" %}
+    </a>
+    {% endif %}
+    {% if perms.credits.change_credit %}
+    <a href="{% url 'apps.credits:credit_update' credit.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Credit Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Credit Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Partner Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-primary">{{ credit.partner.first_name|first }}{{ credit.partner.last_name|first }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ credit.partner.full_name }}</div>
+                        <div class="mb-9">
+                            {% if credit.status == "pending" %}
+                                <div class="badge badge-lg badge-light-warning d-inline">{{ credit.get_status_display }}</div>
+                            {% elif credit.status == "approved" %}
+                                <div class="badge badge-lg badge-light-success d-inline">{{ credit.get_status_display }}</div>
+                            {% elif credit.status == "active" %}
+                                <div class="badge badge-lg badge-light-info d-inline">{{ credit.get_status_display }}</div>
+                            {% elif credit.status == "completed" %}
+                                <div class="badge badge-lg badge-light-success d-inline">{{ credit.get_status_display }}</div>
+                            {% elif credit.status == "defaulted" or credit.status == "cancelled" %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{{ credit.get_status_display }}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-secondary d-inline">{{ credit.get_status_display }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Credit Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Product" %}</div>
+                        <div class="text-gray-600">{{ credit.product.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Product Type" %}</div>
+                        <div class="text-gray-600">{{ credit.product.product_type.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Partner Document" %}</div>
+                        <div class="text-gray-600">{{ credit.partner.document_number }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Application Date" %}</div>
+                        <div class="text-gray-600">{{ credit.application_date|date:"F d, Y" }}</div>
+
+                        {% if credit.approval_date %}
+                        <div class="fw-bold mt-5">{% trans "Approval Date" %}</div>
+                        <div class="text-gray-600">{{ credit.approval_date|date:"F d, Y" }}</div>
+                        {% endif %}
+
+                        {% if credit.disbursement_date %}
+                        <div class="fw-bold mt-5">{% trans "Disbursement Date" %}</div>
+                        <div class="text-gray-600">{{ credit.disbursement_date|date:"F d, Y" }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dates Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Dates Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ credit.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ credit.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit Terms & Financial Information -->
+        <div class="col-xl-8">
+            <!-- Terms Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Credit Terms" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Credit Amount" %}</td>
+                                    <td>S/ {{ credit.amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Interest Rate" %}</td>
+                                    <td>{{ credit.interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Term Duration" %}</td>
+                                    <td>{{ credit.term_duration }} {% trans "months" %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Payment Frequency" %}</td>
+                                    <td>{{ credit.get_payment_frequency_display }}</td>
+                                </tr>
+                                {% if credit.payment_amount %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Payment Amount" %}</td>
+                                    <td>S/ {{ credit.payment_amount|floatformat:2 }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Delinquency Rate" %}</td>
+                                    <td>{{ credit.delinquency_rate }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Summary Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Financial Summary" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Original Amount" %}</td>
+                                    <td>S/ {{ credit.amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Outstanding Balance" %}</td>
+                                    <td>S/ {{ credit.outstanding_balance|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Total Interest" %}</td>
+                                    <td>S/ {{ credit.total_interest|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Total Repayment" %}</td>
+                                    <td>S/ {{ credit.total_repayment|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installments Schedule Card -->
+            {% if credit.installments.exists %}
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Installments Schedule" %}</h2>
+                    </div>
+                    <div class="card-toolbar">
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light-info">
+                                {{ installments.count }} {% trans "installments total" %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-row-bordered gy-5 gs-7">
+                            <thead>
+                                <tr class="fw-semibold fs-6 text-gray-800">
+                                    <th class="text-center">#</th>
+                                    <th>{% trans "Due Date" %}</th>
+                                    <th class="text-end">{% trans "Installment Amount" %}</th>
+                                    <th class="text-end">{% trans "Principal" %}</th>
+                                    <th class="text-end">{% trans "Interest Amount" %}</th>
+                                    <th class="text-end">{% trans "Balance After" %}</th>
+                                    <th class="text-center">{% trans "Status" %}</th>
+                                    <th>{% trans "Payment Date" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for installment in installments %}
+                                <tr {% if installment.is_overdue %}class="table-warning"{% endif %}>
+                                    <td class="text-center fw-bold">{{ installment.installment_number }}</td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span>{{ installment.due_date|date:"M d, Y" }}</span>
+                                            {% if installment.is_overdue %}
+                                                <span class="text-danger fs-7 fw-bold">
+                                                    {% blocktrans count days=installment.days_overdue %}
+                                                        {{ days }} day overdue
+                                                    {% plural %}
+                                                        {{ days }} days overdue
+                                                    {% endblocktrans %}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="text-end">S/ {{ installment.installment_amount|floatformat:2 }}</td>
+                                    <td class="text-end">S/ {{ installment.principal_amount|floatformat:2 }}</td>
+                                    <td class="text-end">S/ {{ installment.interest_amount|floatformat:2 }}</td>
+                                    <td class="text-end">S/ {{ installment.balance_after|floatformat:2 }}</td>
+                                    <td class="text-center">
+                                        {% if installment.status == "PENDING" %}
+                                            {% if installment.is_overdue %}
+                                                <span class="badge badge-danger">{% trans "Overdue" %}</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">{{ installment.get_status_display }}</span>
+                                            {% endif %}
+                                        {% elif installment.status == "PAID" %}
+                                            <span class="badge badge-success">{{ installment.get_status_display }}</span>
+                                        {% elif installment.status == "PARTIAL" %}
+                                            <span class="badge badge-info">{{ installment.get_status_display }}</span>
+                                        {% elif installment.status == "OVERDUE" %}
+                                            <span class="badge badge-danger">{{ installment.get_status_display }}</span>
+                                        {% elif installment.status == "CANCELLED" %}
+                                            <span class="badge badge-secondary">{{ installment.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge badge-light">{{ installment.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if installment.payment_date %}
+                                            {{ installment.payment_date|date:"M d, Y" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Status History Card -->
+            {% if status_history and not request.user.is_partner %}
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Status History" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                            <thead>
+                                <tr class="fw-bold text-muted">
+                                    <th>{% trans "Date" %}</th>
+                                    <th>{% trans "From Status" %}</th>
+                                    <th>{% trans "To Status" %}</th>
+                                    <th>{% trans "Changed By" %}</th>
+                                    <th>{% trans "Note" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for history in status_history %}
+                                {% get_credit_application_status_display history.previous_status as previous_display %}
+                                {% get_credit_application_status_display history.status as new_display %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="text-gray-800 fw-bold">{{ history.created|date:"M d, Y" }}</span>
+                                            <span class="text-muted fs-7">{{ history.created|date:"H:i" }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if history.previous_status %}
+                                            <span class="badge badge-light-secondary">
+                                                {% blocktrans %}{{ previous_display }}{% endblocktrans %}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if history.status == "PENDING" %}
+                                            <span class="badge badge-light-warning">{{ new_display }}</span>
+                                        {% elif history.status == "APPROVED" %}
+                                            <span class="badge badge-light-success">{{ new_display }}</span>
+                                        {% elif history.status == "REJECTED" %}
+                                            <span class="badge badge-light-danger">{{ new_display }}</span>
+                                        {% elif history.status == "CANCELLED" %}
+                                            <span class="badge badge-light-secondary">{{ new_display }}</span>
+                                        {% elif history.status == "ACTIVE" %}
+                                            <span class="badge badge-light-info">{{ new_display }}</span>
+                                        {% elif history.status == "COMPLETED" %}
+                                            <span class="badge badge-light-success">{{ new_display }}</span>
+                                        {% elif history.status == "DEFAULTED" %}
+                                            <span class="badge badge-light-danger">{{ new_display }}</span>
+                                        {% elif history.status == "RESCHEDULED" or history.status == "REFINANCED" %}
+                                            <span class="badge badge-light-primary">{{ new_display }}</span>
+                                        {% else %}
+                                            <span class="badge badge-light">{{ new_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-circle symbol-25px me-2">
+                                                <div class="symbol-label fs-8 fw-semibold bg-light-primary text-primary">
+                                                    {{ history.modified_by.first_name|first }}{{ history.modified_by.last_name|first }}
+                                                </div>
+                                            </div>
+                                            <span class="text-gray-800 fw-bold">{{ history.modified_by.get_full_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if history.note %}
+                                            <span class="text-gray-600">{{ history.note|truncatewords:15 }}</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Notes Information Card -->
+            {% if credit.notes and not request.user.is_partner %}
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Additional Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="mb-5">
+                        <div class="fw-bold mb-2">{% trans "Notes" %}</div>
+                        <div class="text-gray-600">{{ credit.notes|linebreaks }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

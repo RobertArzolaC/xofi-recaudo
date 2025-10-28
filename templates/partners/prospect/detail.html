@@ -1,0 +1,153 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{{ prospect.full_name }}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Prospect Details" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.partners.change_prospect %}
+    <a href="{% url 'apps.partners:prospect-edit' prospect.pk %}" class="btn btn-sm btn-primary me-3">
+        <i class="ki-duotone ki-pencil fs-3">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit Prospect" %}
+    </a>
+    {% endif %}
+    <a href="{% url 'apps.partners:prospect-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-left fs-3">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back to List" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row">
+        <!-- Basic Information -->
+        <div class="col-xl-4">
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-body">
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-circle mb-7">
+                            <div class="symbol-label fs-1 bg-light-primary text-primary">
+                                {{ prospect.first_name|first }}{{ prospect.last_name|first }}
+                            </div>
+                        </div>
+                        <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ prospect.full_name }}</a>
+                        <div class="mb-9">
+                            <div class="d-flex align-items-center justify-content-center mb-2">
+                                <span class="badge badge-light-{% if prospect.status == 0 %}primary{% elif prospect.status == 1 %}info{% elif prospect.status == 2 %}warning{% elif prospect.status == 3 %}success{% elif prospect.status == 4 %}success{% else %}danger{% endif %}">
+                                    {{ prospect.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-stack fs-4 py-3">
+                        <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_prospect_details" role="button" aria-expanded="false" aria-controls="kt_prospect_details">
+                            {% trans "Details" %}
+                            <span class="ms-2 rotate-180">
+                                <i class="ki-duotone ki-down fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="separator"></div>
+                    <div id="kt_prospect_details" class="collapse show">
+                        <div class="pb-5 fs-6">
+                            <div class="fw-bold mt-5">{% trans "Email" %}</div>
+                            <div class="text-gray-600">
+                                <a href="mailto:{{ prospect.email }}" class="text-gray-600 text-hover-primary">{{ prospect.email }}</a>
+                            </div>
+                            <div class="fw-bold mt-5">{% trans "Phone" %}</div>
+                            <div class="text-gray-600">{{ prospect.phone }}</div>
+                            <div class="fw-bold mt-5">{% trans "Document" %}</div>
+                            <div class="text-gray-600">{{ prospect.get_document_type_display }}: {{ prospect.document_number }}</div>
+                            <div class="fw-bold mt-5">{% trans "Birth Date" %}</div>
+                            <div class="text-gray-600">{{ prospect.birth_date|date:"F d, Y" }} ({{ prospect.age }} {% trans "years" %})</div>
+                            <div class="fw-bold mt-5">{% trans "Source" %}</div>
+                            <div class="text-gray-600">{{ prospect.source }}</div>
+                            {% if prospect.assigned_to %}
+                            <div class="fw-bold mt-5">{% trans "Assigned To" %}</div>
+                            <div class="text-gray-600">{{ prospect.assigned_to.full_name }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="col-xl-8">
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">{% trans "Prospect Information" %}</span>
+                    </h3>
+                </div>
+                <div class="card-body py-3">
+                    <div class="table-responsive">
+                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Registration Date" %}</td>
+                                    <td class="text-gray-800">{{ prospect.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Last Updated" %}</td>
+                                    <td class="text-gray-800">{{ prospect.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if prospect.contacted_at %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "First Contact" %}</td>
+                                    <td class="text-gray-800">{{ prospect.contacted_at|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if prospect.ip_address %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "IP Address" %}</td>
+                                    <td class="text-gray-600">{{ prospect.ip_address }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if prospect.created_by %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Created By" %}</td>
+                                    <td class="text-gray-800">{{ prospect.created_by.get_full_name|default:prospect.created_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if prospect.modified_by %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Modified By" %}</td>
+                                    <td class="text-gray-800">{{ prospect.modified_by.get_full_name|default:prospect.modified_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            {% if prospect.notes %}
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">{% trans "Notes" %}</span>
+                    </h3>
+                </div>
+                <div class="card-body py-3">
+                    <div class="text-gray-700 fw-semibold fs-6">
+                        {{ prospect.notes|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Employee Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ employee.full_name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.team:employee-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.team.change_employee %}
+    <a href="{% url 'apps.team:employee-update' employee.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+    {% if perms.team.delete_employee %}
+    <a href="{% url 'apps.team:employee-delete' employee.pk %}" class="btn btn-sm btn-danger">
+        <i class="ki-duotone ki-trash fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+            <span class="path4"></span>
+            <span class="path5"></span>
+        </i>
+        {% trans "Delete" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Employee Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Employee Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Employee Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ employee.initials }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ employee.full_name }}</div>
+                        <div class="mb-3">
+                            {% if employee.status == "ACTIVE" %}
+                            <span class="badge badge-light-success">{% trans "Active" %}</span>
+                            {% elif employee.status == "INACTIVE" %}
+                            <span class="badge badge-light-danger">{% trans "Inactive" %}</span>
+                            {% elif employee.status == "ON_LEAVE" %}
+                            <span class="badge badge-light-warning">{% trans "On Leave" %}</span>
+                            {% elif employee.status == "SUSPENDED" %}
+                            <span class="badge badge-light-dark">{% trans "Suspended" %}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Employee Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Position" %}</div>
+                        <div class="text-gray-600">{{ employee.position.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Area" %}</div>
+                        <div class="text-gray-600">{{ employee.position.area.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "User Account" %}</div>
+                        <div class="text-gray-600">{{ employee.user.email|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Document" %}</div>
+                        <div class="text-gray-600">{{ employee.get_document_type_display }}: {{ employee.document_number }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Gender" %}</div>
+                        <div class="text-gray-600">{{ employee.get_gender_display }}</div>
+
+                        {% if employee.birth_date %}
+                        <div class="fw-bold mt-5">{% trans "Birth Date" %}</div>
+                        <div class="text-gray-600">{{ employee.birth_date|date:"F d, Y" }} ({{ employee.age }} {% trans "years" %})</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Address Information -->
+        <div class="col-xl-8">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Contact Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="pb-5 fs-6">
+                                <div class="fw-bold mt-5">{% trans "Email" %}</div>
+                                <div class="text-gray-600">{{ employee.email|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Phone" %}</div>
+                                <div class="text-gray-600">{{ employee.phone|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Agency" %}</div>
+                                <div class="text-gray-600">
+                                    {% if employee.agency %}
+                                        {{ employee.agency.name }} ({{ employee.agency.code }})
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="pb-5 fs-6">
+                                <div class="fw-bold mt-5">{% trans "Address" %}</div>
+                                <div class="text-gray-600">{{ employee.address|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "City" %}</div>
+                                <div class="text-gray-600">{{ employee.city|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Country" %}</div>
+                                <div class="text-gray-600">{{ employee.country|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Zip Code" %}</div>
+                                <div class="text-gray-600">{{ employee.zip_code|default:"-" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Information -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Audit Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="pb-5 fs-6">
+                                <div class="fw-bold mt-5">{% trans "Created By" %}</div>
+                                <div class="text-gray-600">{{ employee.created_by.get_full_name|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Created Date" %}</div>
+                                <div class="text-gray-600">{{ employee.created|date:"F d, Y H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="pb-5 fs-6">
+                                <div class="fw-bold mt-5">{% trans "Last Modified By" %}</div>
+                                <div class="text-gray-600">{{ employee.modified_by.get_full_name|default:"-" }}</div>
+
+                                <div class="fw-bold mt-5">{% trans "Last Modified Date" %}</div>
+                                <div class="text-gray-600">{{ employee.modified|date:"F d, Y H:i"|default:"-" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

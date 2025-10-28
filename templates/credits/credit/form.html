@@ -1,0 +1,191 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.credits:credit_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Basic Information Card -->
+            <div class="col-xl-6">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.partner.label }}</label>
+                                {{ form.partner }}
+                                {% if form.partner.errors %}
+                                    <div class="text-danger fs-7">{{ form.partner.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.partner.help_text %}
+                                    <div class="text-muted fs-7">{{ form.partner.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.product.label }}</label>
+                                {{ form.product }}
+                                {% if form.product.errors %}
+                                    <div class="text-danger fs-7">{{ form.product.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.product.help_text %}
+                                    <div class="text-muted fs-7">{{ form.product.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.amount.label }}</label>
+                                {{ form.amount }}
+                                {% if form.amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.amount.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.amount.help_text %}
+                                    <div class="text-muted fs-7">{{ form.amount.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.interest_rate.label }}</label>
+                                {{ form.interest_rate }}
+                                {% if form.interest_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.interest_rate.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.interest_rate.help_text %}
+                                    <div class="text-muted fs-7">{{ form.interest_rate.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.term_duration.label }}</label>
+                                {{ form.term_duration }}
+                                {% if form.term_duration.errors %}
+                                    <div class="text-danger fs-7">{{ form.term_duration.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.term_duration.help_text %}
+                                    <div class="text-muted fs-7">{{ form.term_duration.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.payment_frequency.label }}</label>
+                                {{ form.payment_frequency }}
+                                {% if form.payment_frequency.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_frequency.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.payment_frequency.help_text %}
+                                    <div class="text-muted fs-7">{{ form.payment_frequency.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.delinquency_rate.label }}</label>
+                                {{ form.delinquency_rate }}
+                                {% if form.delinquency_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.delinquency_rate.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.delinquency_rate.help_text %}
+                                    <div class="text-muted fs-7">{{ form.delinquency_rate.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status & Financial Information -->
+            <div class="col-xl-6">
+                <!-- Financial Information Card -->
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Financial Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.payment_amount.label }}</label>
+                                {{ form.payment_amount }}
+                                {% if form.payment_amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_amount.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.payment_amount.help_text %}
+                                    <div class="text-muted fs-7">{{ form.payment_amount.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.outstanding_balance.label }}</label>
+                                {{ form.outstanding_balance }}
+                                {% if form.outstanding_balance.errors %}
+                                    <div class="text-danger fs-7">{{ form.outstanding_balance.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.outstanding_balance.help_text %}
+                                    <div class="text-muted fs-7">{{ form.outstanding_balance.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                    <div class="text-danger fs-7">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.notes.help_text %}
+                                    <div class="text-muted fs-7">{{ form.notes.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.credits:credit_list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if view.object %}
+                    {% trans "Update Credit" %}
+                {% else %}
+                    {% trans "Create Credit" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media.js }}
+{% endblock %}

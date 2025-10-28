@@ -1,0 +1,205 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Partner Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ partner.full_name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.partners:partner-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.partners.change_partner %}
+    <a href="{% url 'apps.partners:partner-edit' partner.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Personal Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Personal Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Partner Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ partner.initials }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ partner.full_name }}</div>
+                        <div class="mb-9">
+                            {% if partner.status == 0 %}
+                                <div class="badge badge-lg badge-light-warning d-inline">{{ partner.get_status_display }}</div>
+                            {% elif partner.status == 1 %}
+                                <div class="badge badge-lg badge-light-success d-inline">{{ partner.get_status_display }}</div>
+                            {% elif partner.status == 2 %}
+                                <div class="badge badge-lg badge-light-secondary d-inline">{{ partner.get_status_display }}</div>
+                            {% elif partner.status == 3 %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{{ partner.get_status_display }}</div>
+                            {% elif partner.status == 4 %}
+                                <div class="badge badge-lg badge-light-dark d-inline">{{ partner.get_status_display }}</div>
+                            {% elif partner.status == 5 %}
+                                <div class="badge badge-lg badge-light-info d-inline">{{ partner.get_status_display }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Personal Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Document Type" %}</div>
+                        <div class="text-gray-600">{{ partner.get_document_type_display|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Document Number" %}</div>
+                        <div class="text-gray-600">{{ partner.document_number|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Gender" %}</div>
+                        <div class="text-gray-600">{{ partner.get_gender_display|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Birth Date" %}</div>
+                        <div class="text-gray-600">
+                            {% if partner.birth_date %}
+                                {{ partner.birth_date|date:"F d, Y" }}
+                                {% if partner.age %}
+                                    ({{ partner.age }} {% trans "years old" %})
+                                {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Address Information -->
+        <div class="col-xl-8">
+            <!-- Contact Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Contact Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Phone" %}</td>
+                                    <td>{{ partner.phone|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Email" %}</td>
+                                    <td>
+                                        {% if partner.email %}
+                                            <a href="mailto:{{ partner.email }}" class="text-gray-600 text-hover-primary">{{ partner.email }}</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Agency" %}</td>
+                                    <td>
+                                        {% if partner.agency %}
+                                            {{ partner.agency.name }} ({{ partner.agency.code }})
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Address Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Address" %}</td>
+                                    <td>{{ partner.address|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Country" %}</td>
+                                    <td>{{ partner.country.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Department" %}</td>
+                                    <td>{{ partner.region.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Province" %}</td>
+                                    <td>{{ partner.subregion.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "District" %}</td>
+                                    <td>{{ partner.city.name|default:"-" }}</td>
+                                </tr>
+                                {% if partner.zip_code %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Zip Code" %}</td>
+                                    <td>{{ partner.zip_code }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ partner.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ partner.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

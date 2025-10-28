@@ -1,0 +1,178 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Product Type Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ product_type.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:product_type_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.credits.change_producttype %}
+    <a href="{% url 'apps.credits:product_type_update' product_type.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Product Type Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Product Type Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Product Type Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-primary">{{ product_type.name|slice:":2"|upper }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ product_type.name }}</div>
+                        <div class="mb-9">
+                            {% if product_type.is_active %}
+                                <div class="badge badge-lg badge-light-success d-inline">{% trans "Active" %}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{% trans "Inactive" %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Product Type Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "ID" %}</div>
+                        <div class="text-gray-600">{{ product_type.pk }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ product_type.description|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Products Count" %}</div>
+                        <div class="text-gray-600">
+                            <span class="badge badge-light-primary">{{ product_type.products.count }}</span>
+                        </div>
+
+                        <div class="fw-bold mt-5">{% trans "Created" %}</div>
+                        <div class="text-gray-600">{{ product_type.created|date:"F d, Y H:i" }}</div>
+
+                        {% if product_type.created_by %}
+                        <div class="fw-bold mt-5">{% trans "Created by" %}</div>
+                        <div class="text-gray-600">{{ product_type.created_by.get_full_name|default:product_type.created_by.email }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Information -->
+        <div class="col-xl-8">
+            <!-- Products List Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Products" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if product_type.products.exists %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for product in product_type.products.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-45px me-5">
+                                                <div class="symbol-label fs-3 fw-semibold text-success">
+                                                    {{ product.name|slice:":2"|upper }}
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-start flex-column">
+                                                <span class="text-dark fw-bold text-hover-primary fs-6">{{ product.name }}</span>
+                                                <span class="text-muted fw-semibold d-block fs-7">{{ product.description|default:"-" }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="text-gray-800 fw-bold">S/ {{ product.min_amount|floatformat:2 }} - S/ {{ product.max_amount|floatformat:2 }}</span>
+                                            <span class="text-muted fs-7">{{ product.min_interest_rate }}% - {{ product.max_interest_rate }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if product.is_active %}
+                                            <span class="badge badge-light-success">{% trans "Active" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-danger">{% trans "Inactive" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-column flex-center">
+                        <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                        <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No products found" %}</div>
+                        <div class="fs-6">{% trans "This product type doesn't have any products yet." %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ product_type.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ product_type.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if product_type.created_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created by" %}</td>
+                                    <td>{{ product_type.created_by.get_full_name|default:product_type.created_by.email }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if product_type.modified_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Modified by" %}</td>
+                                    <td>{{ product_type.modified_by.get_full_name|default:product_type.modified_by.email }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

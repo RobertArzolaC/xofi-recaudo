@@ -1,0 +1,184 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Agency Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Detail Agency" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.customers:agency-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.customers.change_agency %}
+    <a href="{% url 'apps.customers:agency-edit' agency.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Basic Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Agency Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ agency.name|slice:":2"|upper }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ agency.name }}</div>
+                        <div class="mb-9">
+                            {% if agency.is_active %}
+                                <div class="badge badge-lg badge-light-success d-inline">{% trans "Active" %}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{% trans "Inactive" %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Basic Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Code" %}</div>
+                        <div class="text-gray-600">{{ agency.code|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ agency.description|default:"-" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Address Information -->
+        <div class="col-xl-8">
+            <!-- Contact Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Contact Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Phone" %}</td>
+                                    <td>{{ agency.phone|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Email" %}</td>
+                                    <td>
+                                        {% if agency.email %}
+                                            <a href="mailto:{{ agency.email }}" class="text-gray-600 text-hover-primary">{{ agency.email }}</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Address Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Address" %}</td>
+                                    <td>{{ agency.address|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Country" %}</td>
+                                    <td>{{ agency.country.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Department" %}</td>
+                                    <td>{{ agency.region.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Province" %}</td>
+                                    <td>{{ agency.subregion.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "District" %}</td>
+                                    <td>{{ agency.city.name|default:"-" }}</td>
+                                </tr>
+                                {% if agency.zip_code %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Zip Code" %}</td>
+                                    <td>{{ agency.zip_code }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ agency.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ agency.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if agency.created_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created By" %}</td>
+                                    <td>{{ agency.created_by.get_full_name|default:agency.created_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if agency.modified_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Modified By" %}</td>
+                                    <td>{{ agency.modified_by.get_full_name|default:agency.modified_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

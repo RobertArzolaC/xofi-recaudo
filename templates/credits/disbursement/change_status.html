@@ -1,0 +1,177 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{% trans "Change Disbursement Status" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Change Status" %} - {{ disbursement.credit.partner.full_name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:disbursement_detail' disbursement.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row">
+        <!-- Left Column: Current Status Info -->
+        <div class="col-xl-4 mb-10">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Current Status" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Current Status Badge -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        {% if disbursement.status == "PENDING" %}
+                            <div class="badge badge-lg badge-light-warning mb-4">{{ disbursement.get_status_display }}</div>
+                        {% elif disbursement.status == "APPROVED" %}
+                            <div class="badge badge-lg badge-light-info mb-4">{{ disbursement.get_status_display }}</div>
+                        {% elif disbursement.status == "PROCESSING" %}
+                            <div class="badge badge-lg badge-light-primary mb-4">{{ disbursement.get_status_display }}</div>
+                        {% elif disbursement.status == "COMPLETED" %}
+                            <div class="badge badge-lg badge-light-success mb-4">{{ disbursement.get_status_display }}</div>
+                        {% elif disbursement.status == "FAILED" or disbursement.status == "CANCELLED" %}
+                            <div class="badge badge-lg badge-light-danger mb-4">{{ disbursement.get_status_display }}</div>
+                        {% else %}
+                            <div class="badge badge-lg badge-light-secondary mb-4">{{ disbursement.get_status_display }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Disbursement Details -->
+                    <div class="separator"></div>
+                    <div class="py-5 fs-6">
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Partner" %}</div>
+                            <div class="col-7 text-gray-600">{{ disbursement.credit.partner.full_name }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Product" %}</div>
+                            <div class="col-7 text-gray-600">{{ disbursement.credit.product.name }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Amount" %}</div>
+                            <div class="col-7 text-gray-600">S/ {{ disbursement.disbursement_amount|floatformat:2 }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Method" %}</div>
+                            <div class="col-7 text-gray-600">{{ disbursement.get_disbursement_method_display }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold text-gray-800">{% trans "Scheduled" %}</div>
+                            <div class="col-7 text-gray-600">{{ disbursement.scheduled_date|date:"M d, Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Change Status Form -->
+        <div class="col-xl-8">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Change Status" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if perms.credits.approve_creditdisbursement or perms.credits.process_creditdisbursement %}
+                    <form method="post" class="form">
+                        {% csrf_token %}
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.status.label }}</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                                {% endif %}
+                                <div class="text-muted fs-7">{% trans "Select the new status for this disbursement" %}</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.note.label }}</label>
+                                {{ form.note }}
+                                {% if form.note.errors %}
+                                    <div class="text-danger fs-7">{{ form.note.errors.0 }}</div>
+                                {% endif %}
+                                <div class="text-muted fs-7">{% trans "Add a note to explain the reason for this status change" %}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-6">
+                            <a href="{% url 'apps.credits:disbursement_detail' disbursement.pk %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ki-duotone ki-check fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Change Status" %}
+                            </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Status History -->
+            {% if status_history %}
+            <div class="card card-flush mt-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Status History" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="timeline">
+                        {% for history in status_history %}
+                        <div class="timeline-item">
+                            <div class="timeline-line w-40px"></div>
+                            <div class="timeline-icon symbol symbol-circle symbol-40px">
+                                <div class="symbol-label bg-light">
+                                    <i class="ki-duotone ki-abstract-26 fs-2 text-gray-500">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="timeline-content mb-10 mt-n1">
+                                <div class="pe-3 mb-5">
+                                    <div class="fs-5 fw-semibold mb-2">
+                                        {{ history.get_status_display }}
+                                        {% if history.previous_status %}
+                                            <span class="text-muted fs-7">{% trans "from" %} {{ history.get_previous_status_display }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex align-items-center mt-1 fs-6">
+                                        <div class="text-muted me-2 fs-7">{{ history.created|date:"F d, Y H:i" }}</div>
+                                        {% if history.created_by %}
+                                        <div class="text-muted fs-7">{% trans "by" %} {{ history.created_by.get_full_name }}</div>
+                                        {% endif %}
+                                    </div>
+                                    {% if history.note %}
+                                    <div class="text-gray-600 fw-normal mt-3">{{ history.note }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

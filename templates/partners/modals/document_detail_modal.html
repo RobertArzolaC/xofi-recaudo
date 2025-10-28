@@ -1,0 +1,150 @@
+{% load static %}
+{% load i18n %}
+
+<div class="modal-header">
+    <h2 class="modal-title">{% trans "Document Details" %}</h2>
+    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+        <i class="ki-duotone ki-cross fs-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+    </div>
+</div>
+
+<div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+    <!-- Document Information -->
+    <div class="row mb-8">
+        <div class="col-12">
+            <div class="d-flex align-items-center p-5 bg-light rounded">
+                <div class="symbol symbol-50px me-5">
+                    <div class="symbol-label fs-2 fw-semibold text-primary">
+                        <i class="ki-duotone ki-document fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="fs-5 fw-bold text-dark">{{ document.title }}</div>
+                    <div class="text-muted">
+                        {{ document.get_document_type_display }}
+                        •
+                        <span class="badge {{ document.status_badge_class }}">{{ document.get_status_display }}</span>
+                        •
+                        <span class="badge {{ document.priority_badge_class }}">{{ document.get_priority_display }}</span>
+                    </div>
+                    {% if document.document_number %}
+                    <div class="text-muted fs-7 mt-1">{% trans "Document Number:" %} {{ document.document_number }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Details -->
+    <div class="row mb-8">
+        <div class="col-xl-6">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "Document Information" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Description" %}</td>
+                                    <td>{{ document.description|default:"-"|linebreaks }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Category" %}</td>
+                                    <td>{{ document.get_category_display }}</td>
+                                </tr>
+                                {% if document.file %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "File" %}</td>
+                                    <td>
+                                        {% if perms.documents.view_document %}
+                                        <a href="{% url 'apps.documents:document-download' document.pk %}" class="text-primary" target="_blank">
+                                            <i class="ki-duotone ki-cloud-download fs-6 me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Download File" %}
+                                        </a>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% if document.expiry_date %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Expiry Date" %}</td>
+                                    <td>{{ document.expiry_date|date:"F d, Y" }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "System Information" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>
+                                        {{ document.created|date:"F d, Y H:i" }}
+                                        {% if document.created_by %}
+                                            <br><small class="text-muted">by {{ document.created_by.get_full_name|default:document.created_by.username }}</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>
+                                        {{ document.modified|date:"F d, Y H:i" }}
+                                        {% if document.modified_by %}
+                                            <br><small class="text-muted">by {{ document.modified_by.get_full_name|default:document.modified_by.username }}</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Related To" %}</td>
+                                    <td>{{ document.content_type.model_class.Meta.verbose_name|capfirst }}: {{ document.related_object }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans "Close" %}</button>
+    {% if document.file and perms.documents.view_document %}
+    <a href="{% url 'apps.documents:document-download' document.pk %}" class="btn btn-success" target="_blank">
+        <i class="ki-duotone ki-cloud-download fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Download" %}
+    </a>
+    {% endif %}
+</div>

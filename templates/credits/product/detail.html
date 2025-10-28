@@ -1,0 +1,188 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Product Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ product.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.credits:product_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.credits.change_product %}
+    <a href="{% url 'apps.credits:product_update' product.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Product Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Product Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Product Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ product.name|slice:":2"|upper }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ product.name }}</div>
+                        <div class="mb-9">
+                            {% if product.is_active %}
+                                <div class="badge badge-lg badge-light-success d-inline">{% trans "Active" %}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{% trans "Inactive" %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Product Type" %}</div>
+                        <div class="text-gray-600">{{ product.product_type.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ product.description|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Interest Type" %}</div>
+                        <div class="text-gray-600">{{ product.get_interest_type_display }}</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Configuration -->
+        <div class="col-xl-8">
+            <!-- Amount & Interest Configuration Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Amount & Interest Configuration" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Minimum Amount" %}</td>
+                                    <td>S/ {{ product.min_amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Maximum Amount" %}</td>
+                                    <td>S/ {{ product.max_amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Minimum Interest Rate" %}</td>
+                                    <td>{{ product.min_interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Maximum Interest Rate" %}</td>
+                                    <td>{{ product.max_interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Minimum Delinquency Rate" %}</td>
+                                    <td>{{ product.min_delinquency_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Maximum Delinquency Rate" %}</td>
+                                    <td>{{ product.max_delinquency_rate }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Term Configuration Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Term Configuration" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Minimum Term" %}</td>
+                                    <td>{{ product.min_term_duration }} {% trans "months" %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Maximum Term" %}</td>
+                                    <td>{{ product.max_term_duration }} {% trans "months" %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Payment Frequency" %}</td>
+                                    <td>{{ product.get_payment_frequency_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Interest Type" %}</td>
+                                    <td>{{ product.get_interest_type_display }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ product.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ product.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if product.created_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created by" %}</td>
+                                    <td>{{ product.created_by.get_full_name|default:product.created_by.email }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.modified_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Modified by" %}</td>
+                                    <td>{{ product.modified_by.get_full_name|default:product.modified_by.email }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

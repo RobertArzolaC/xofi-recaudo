@@ -1,4 +1,5 @@
 import django_filters
+from django import forms
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
@@ -29,3 +30,38 @@ class AccountFilter(django_filters.FilterSet):
             | Q(user__last_name__icontains=value)  # noqa
             | Q(user__email__icontains=value)  # noqa
         )
+
+
+class AgencyFilter(django_filters.FilterSet):
+    """
+    FilterSet for Agency model with name and active status filters.
+    """
+
+    search = django_filters.CharFilter(
+        field_name="name",
+        lookup_expr="icontains",
+        label=_("Search"),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-sm",
+                "placeholder": _("Search by name..."),
+            }
+        ),
+    )
+
+    is_active = django_filters.BooleanFilter(
+        field_name="is_active",
+        label=_("Status"),
+        widget=forms.Select(
+            choices=[
+                ("", _("All")),
+                (True, _("Active")),
+                (False, _("Inactive")),
+            ],
+            attrs={"class": "form-select form-select-sm"},
+        ),
+    )
+
+    class Meta:
+        model = models.Agency
+        fields = ["search", "is_active"]

@@ -53,6 +53,11 @@ LOCAL_APPS = [
     "apps.authentication.apps.AuthenticationConfig",
     "apps.customers.apps.CustomersConfig",
     "apps.users.apps.UsersConfig",
+    "apps.compliance.apps.ComplianceConfig",
+    "apps.partners.apps.PartnersConfig",
+    "apps.payments.apps.PaymentsConfig",
+    "apps.team.apps.TeamConfig",
+    "apps.credits.apps.CreditsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -99,8 +104,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": config(
         "DATABASE_URL", default="sqlite:///db.sqlite3", cast=db_url
-    )  # noqa
+    ),  # noqa
+    "xofi-erp": config(
+        "XOFI_ERP_DATABASE_URL",
+        default="sqlite:///../xofi-erp/db.sqlite3",
+        cast=db_url,
+    ),  # noqa
 }
+
+DATABASE_ROUTERS = ["config.routers.XofiErpRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -182,7 +194,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

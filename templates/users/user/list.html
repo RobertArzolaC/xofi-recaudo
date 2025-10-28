@@ -1,0 +1,212 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{% trans "Users" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Users" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.auth.add_user %}
+    <a href="{% url 'apps.users:user-create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add User" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+        </div>
+        <div class="collapse show" id="filterCollapse">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">{{ filter.form.search.label }}</label>
+                        {% render_field filter.form.search class="form-control form-control-solid" placeholder=filter.form.search.help_text %}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">{{ filter.form.is_active.label }}</label>
+                        {% render_field filter.form.is_active class="form-select form-select-solid" %}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">{{ filter.form.groups.label }}</label>
+                        {% render_field filter.form.groups class="form-select form-select-solid" %}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Apply Filters" %}
+                            </button>
+                            <a href="{% url 'apps.users:user-list' %}" class="btn btn-light-secondary">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear Filters" %}
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Users List" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "users" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if users %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-250px">{% trans "User" %}</th>
+                            <th class="min-w-150px">{% trans "Email" %}</th>
+                            <th class="min-w-150px">{% trans "Roles" %}</th>
+                            <th class="min-w-100px">{% trans "Status" %}</th>
+                            <th class="min-w-100px">{% trans "Joined" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        {% if user.avatar %}
+                                            <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" />
+                                        {% else %}
+                                            <div class="symbol-label fs-3 fw-semibold bg-light-info text-info">
+                                                {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <a href="{% url 'apps.users:user-detail' user.pk %}" class="text-dark fw-bold text-hover-primary fs-6">
+                                            {{ user.get_full_name|default:user.email }}
+                                        </a>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">
+                                            {% if user.is_superuser %}
+                                                <i class="ki-duotone ki-shield-tick fs-6 text-danger">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                    <span class="path3"></span>
+                                                </i>
+                                                {% trans "Superuser" %}
+                                            {% elif user.is_staff %}
+                                                <i class="ki-duotone ki-verify fs-6 text-warning">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                                {% trans "Staff" %}
+                                            {% else %}
+                                                <i class="ki-duotone ki-user fs-6 text-primary">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                                {% trans "User" %}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-gray-800 fw-semibold d-block fs-7">{{ user.email }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for group in user.groups.all %}
+                                        <span class="badge badge-light-primary">{{ group.name }}</span>
+                                    {% empty %}
+                                        <span class="text-muted fs-7">{% trans "No roles assigned" %}</span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge badge-light-success">{% trans "Active" %}</span>
+                                {% else %}
+                                    <span class="badge badge-light-danger">{% trans "Inactive" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="text-gray-800 fw-semibold d-block fs-7">{{ user.date_joined|date:"M d, Y" }}</span>
+                            </td>
+                            <td class="text-end">
+                                {% if perms.auth.view_user %}
+                                <a href="{% url 'apps.users:user-detail' user.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.auth.change_user %}
+                                <a href="{% url 'apps.users:user-roles' user.pk %}" class="btn btn-icon btn-bg-light btn-active-color-info btn-sm me-1">
+                                    <i class="ki-duotone ki-security-user fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                <a href="{% url 'apps.users:user-permissions' user.pk %}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1">
+                                    <i class="ki-duotone ki-lock fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                <a href="{% url 'apps.users:user-edit' user.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No users found" %}</div>
+                <div class="fs-6">{% trans "Start by creating your first user" %}
+                    {% if perms.auth.add_user %}
+                    <a href="{% url 'apps.users:user-create' %}" class="fw-bolder">{% trans "Add User" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

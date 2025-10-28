@@ -1,0 +1,208 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Disbursements" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Disbursements" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.credits.add_creditdisbursement %}
+    <a href="{% url 'apps.credits:disbursement_create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add Disbursement" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_disbursement_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_disbursement_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-4 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.status.label }}</label>
+                        {{ filter.form.status }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.disbursement_method.label }}</label>
+                        {{ filter.form.disbursement_method }}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.credits:disbursement_list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Disbursements List" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "disbursements" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if disbursements %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-150px">{% trans "Partner" %}</th>
+                            <th class="min-w-120px">{% trans "Credit" %}</th>
+                            <th class="min-w-100px">{% trans "Amount" %}</th>
+                            <th class="min-w-100px">{% trans "Method" %}</th>
+                            <th class="min-w-100px">{% trans "Status" %}</th>
+                            <th class="min-w-120px">{% trans "Scheduled Date" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disbursement in disbursements %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        <div class="symbol-label fs-3 fw-semibold text-primary">
+                                            {{ disbursement.credit.partner.first_name|first }}{{ disbursement.credit.partner.last_name|first }}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <a href="{% url 'apps.credits:disbursement_detail' disbursement.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ disbursement.credit.partner.full_name }}</a>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ disbursement.credit.partner.document_number }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold">{{ disbursement.credit.product.name }}</span>
+                                    <span class="text-muted fs-7">S/ {{ disbursement.credit.amount|floatformat:2 }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold">S/ {{ disbursement.disbursement_amount|floatformat:2 }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-gray-800">{{ disbursement.get_disbursement_method_display }}</span>
+                            </td>
+                            <td>
+                                {% if disbursement.status == "PENDING" %}
+                                    <span class="badge badge-light-warning">{{ disbursement.get_status_display }}</span>
+                                {% elif disbursement.status == "APPROVED" %}
+                                    <span class="badge badge-light-info">{{ disbursement.get_status_display }}</span>
+                                {% elif disbursement.status == "PROCESSING" %}
+                                    <span class="badge badge-light-primary">{{ disbursement.get_status_display }}</span>
+                                {% elif disbursement.status == "COMPLETED" %}
+                                    <span class="badge badge-light-success">{{ disbursement.get_status_display }}</span>
+                                {% elif disbursement.status == "FAILED" or disbursement.status == "CANCELLED" %}
+                                    <span class="badge badge-light-danger">{{ disbursement.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge badge-light-secondary">{{ disbursement.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fs-7">{{ disbursement.scheduled_date|date:"M d, Y" }}</span>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                {% if perms.credits.view_creditdisbursement %}
+                                <a href="{% url 'apps.credits:disbursement_detail' disbursement.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.credits.change_creditdisbursement %}
+                                <a href="{% url 'apps.credits:disbursement_update' disbursement.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.credits.approve_creditdisbursement or perms.credits.process_creditdisbursement %}
+                                <a href="{% url 'apps.credits:disbursement_change_status' disbursement.pk %}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1" title="{% trans 'Change Status' %}">
+                                    <i class="ki-duotone ki-arrows-loop fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.credits.delete_creditdisbursement %}
+                                <a href="{% url 'apps.credits:disbursement_delete' disbursement.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <i class="ki-duotone ki-trash fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No disbursements found" %}</div>
+                <div class="fs-6">{% trans "Start by creating your first disbursement" %}
+                    {% if perms.credits.add_creditdisbursement %}
+                    <a href="{% url 'apps.credits:disbursement_create' %}" class="fw-bolder">{% trans "Add Disbursement" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

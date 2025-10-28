@@ -1,0 +1,181 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.users:user-detail' object.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="user-roles-form">
+        {% csrf_token %}
+
+        <div class="card card-flush">
+            <div class="card-header">
+                <div class="card-title">
+                    <h2 class="mb-0">
+                        <i class="ki-duotone ki-security-user fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Manage Roles for" %}: {{ object.get_full_name|default:object.email }}
+                    </h2>
+                </div>
+                <div class="card-toolbar">
+                    <button type="button" class="btn btn-sm btn-light" id="select-all-roles">
+                        <i class="ki-duotone ki-check-square fs-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Select All" %}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light ms-2" id="deselect-all-roles">
+                        <i class="ki-duotone ki-cross-square fs-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Deselect All" %}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info d-flex align-items-center p-5 mb-7">
+                    <i class="ki-duotone ki-information-3 fs-2hx text-info me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-dark">{% trans "About Roles and Permissions" %}</h4>
+                        <span>
+                            {% trans "Roles are groups of permissions that can be assigned to users. When you assign a role to a user, they inherit all the permissions from that role. Users can have multiple roles, and their effective permissions will be the combination of all permissions from their assigned roles." %}
+                        </span>
+                    </div>
+                </div>
+
+                {% if all_roles %}
+                <div class="row">
+                    {% for role in all_roles %}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
+                        <div class="card border {% if role.id in current_roles %}border-primary{% else %}border-gray-300{% endif %} h-100">
+                            <div class="card-body">
+                                <div class="form-check form-check-custom form-check-solid mb-3">
+                                    <input class="form-check-input role-checkbox" type="checkbox"
+                                           name="groups" value="{{ role.id }}"
+                                           id="role_{{ role.id }}"
+                                           {% if role.id in current_roles %}checked{% endif %}>
+                                    <label class="form-check-label fw-bold fs-5" for="role_{{ role.id }}">
+                                        {{ role.name }}
+                                    </label>
+                                </div>
+
+                                <div class="separator separator-dashed my-3"></div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="ki-duotone ki-lock fs-3 me-2 text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <span class="fw-semibold text-gray-600">
+                                        {{ role.permissions.count }} {% trans "permissions" %}
+                                    </span>
+                                </div>
+
+                                <div class="mt-3">
+                                    {% if perms.auth.view_group %}
+                                    <a href="{% url 'apps.users:role-detail' role.pk %}" class="btn btn-sm btn-light-primary" target="_blank">
+                                        <i class="ki-duotone ki-eye fs-5">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                        </i>
+                                        {% trans "View Details" %}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="d-flex flex-column flex-center py-10">
+                    <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                    <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No roles available" %}</div>
+                    <div class="fs-6">{% trans "Please create roles first before assigning them to users" %}
+                        {% if perms.auth.add_group %}
+                        <a href="{% url 'apps.users:role-create' %}" class="fw-bolder">{% trans "Create Role" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.users:user-detail' object.pk %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="ki-duotone ki-check fs-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {% trans "Save Roles" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all roles
+    document.getElementById('select-all-roles').addEventListener('click', function() {
+        document.querySelectorAll('.role-checkbox').forEach(function(checkbox) {
+            checkbox.checked = true;
+            // Update card border
+            checkbox.closest('.card').classList.remove('border-gray-300');
+            checkbox.closest('.card').classList.add('border-primary');
+        });
+    });
+
+    // Deselect all roles
+    document.getElementById('deselect-all-roles').addEventListener('click', function() {
+        document.querySelectorAll('.role-checkbox').forEach(function(checkbox) {
+            checkbox.checked = false;
+            // Update card border
+            checkbox.closest('.card').classList.remove('border-primary');
+            checkbox.closest('.card').classList.add('border-gray-300');
+        });
+    });
+
+    // Update card border on checkbox change
+    document.querySelectorAll('.role-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.closest('.card').classList.remove('border-gray-300');
+                this.closest('.card').classList.add('border-primary');
+            } else {
+                this.closest('.card').classList.remove('border-primary');
+                this.closest('.card').classList.add('border-gray-300');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

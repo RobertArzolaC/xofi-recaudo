@@ -1,0 +1,207 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% if action == 'create' %}{% url 'apps.partners:prospect-list' %}{% else %}{% url 'apps.partners:prospect-detail' object.pk %}{% endif %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-left fs-3">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Cancel" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form d-flex flex-column flex-lg-row">
+        {% csrf_token %}
+
+        <!-- Main Form -->
+        <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+            <div class="card card-flush py-4">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{{ title }}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.first_name.id_for_label }}" class="required form-label">{{ form.first_name.label }}</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.last_name.id_for_label }}" class="required form-label">{{ form.last_name.label }}</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Document Information -->
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.document_type.id_for_label }}" class="required form-label">{{ form.document_type.label }}</label>
+                                {{ form.document_type }}
+                                {% if form.document_type.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.document_type.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.document_number.id_for_label }}" class="required form-label">{{ form.document_number.label }}</label>
+                                {{ form.document_number }}
+                                {% if form.document_number.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.document_number.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Contact Information -->
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.email.id_for_label }}" class="required form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.phone.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Birth Date -->
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.birth_date.id_for_label }}" class="form-label">{{ form.birth_date.label }}</label>
+                                {{ form.birth_date }}
+                                {% if form.birth_date.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.birth_date.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-10">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.status.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Assignment -->
+                        <div class="col-md-12">
+                            <div class="mb-10">
+                                <label for="{{ form.assigned_to.id_for_label }}" class="form-label">{{ form.assigned_to.label }}</label>
+                                {{ form.assigned_to }}
+                                {% if form.assigned_to.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.assigned_to.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Notes -->
+                        <div class="col-md-12">
+                            <div class="mb-10">
+                                <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                <div class="fv-plugins-message-container invalid-feedback">
+                                    {{ form.notes.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 ms-lg-10">
+            <div class="card card-flush py-4">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{% trans "Actions" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="d-flex justify-content-end">
+                        <a href="{% if action == 'create' %}{% url 'apps.partners:prospect-list' %}{% else %}{% url 'apps.partners:prospect-detail' object.pk %}{% endif %}" class="btn btn-light me-5">
+                            {% trans "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if action == 'create' %}
+                                <span class="indicator-label">{% trans "Create" %}</span>
+                            {% else %}
+                                <span class="indicator-label">{% trans "Save Changes" %}</span>
+                            {% endif %}
+                            <span class="indicator-progress">{% trans "Please wait..." %}
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

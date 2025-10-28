@@ -1,0 +1,177 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Prospects" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Prospect" %}{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_prospect_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_prospect_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-4 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.status.label }}</label>
+                        {{ filter.form.status }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.source.label }}</label>
+                        {{ filter.form.source }}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.partners:prospect-list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Prospects" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "prospects" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if prospects %}
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-150px">{% trans "Name" %}</th>
+                            <th class="min-w-120px">{% trans "Document" %}</th>
+                            <th class="min-w-150px">{% trans "Contact" %}</th>
+                            <th class="min-w-100px">{% trans "Status" %}</th>
+                            <th class="min-w-100px">{% trans "Age" %}</th>
+                            <th class="min-w-120px">{% trans "Assigned To" %}</th>
+                            <th class="min-w-100px">{% trans "Created" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prospect in prospects %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        <div class="symbol-label fs-3 bg-light-primary text-primary">
+                                            {{ prospect.first_name|first }}{{ prospect.last_name|first }}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <a href="{% url 'apps.partners:prospect-detail' prospect.pk %}" class="text-dark fw-bold text-hover-primary fs-6">
+                                            {{ prospect.full_name }}
+                                        </a>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">
+                                            {% trans "From" %}: {{ prospect.source }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold fs-6">{{ prospect.get_document_type_display }}</span>
+                                    <span class="text-muted fw-semibold fs-7">{{ prospect.document_number }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <a href="mailto:{{ prospect.email }}" class="text-gray-800 fw-bold text-hover-primary fs-6">{{ prospect.email }}</a>
+                                    <span class="text-muted fw-semibold fs-7">{{ prospect.phone }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-{% if prospect.status == 0 %}primary{% elif prospect.status == 1 %}info{% elif prospect.status == 2 %}warning{% elif prospect.status == 3 %}success{% elif prospect.status == 4 %}success{% else %}danger{% endif %}">
+                                    {{ prospect.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-gray-800 fw-bold fs-6">{{ prospect.age }} {% trans "years" %}</span>
+                            </td>
+                            <td>
+                                {% if prospect.assigned_to %}
+                                    <span class="text-gray-800 fw-bold fs-6">{{ prospect.assigned_to.full_name }}</span>
+                                {% else %}
+                                    <span class="text-muted fs-7">{% trans "Not assigned" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="text-gray-800 fw-bold fs-6">{{ prospect.created|date:"M d, Y" }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-end flex-shrink-0">
+                                    {% if perms.partners.view_prospect %}
+                                    <a href="{% url 'apps.partners:prospect-detail' prospect.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        <i class="ki-duotone ki-eye fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                        </i>
+                                    </a>
+                                    {% endif %}
+                                    {% if perms.partners.change_prospect %}
+                                    <a href="{% url 'apps.partners:prospect-edit' prospect.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                        <i class="ki-duotone ki-pencil fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Table -->
+
+            {% if is_paginated %}
+                {% include 'includes/pagination.html' %}
+            {% endif %}
+            {% else %}
+                <div class="card-px text-center py-20">
+                    <h2 class="fs-2x fw-bold mb-10">{% trans "No prospects found" %}</h2>
+                    <p class="text-gray-400 fs-4 fw-semibold mb-10">
+                        {% trans "There are no prospects registered yet." %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

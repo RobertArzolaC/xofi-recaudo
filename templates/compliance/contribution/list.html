@@ -1,0 +1,212 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Contributions" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Contribution" %}{% endblock %}
+
+{% block entity_options %}
+{% if constance.ENABLE_CONTRIBUTION_CREATION %}
+{% if perms.compliance.add_contribution %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.compliance:contribution-create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add Contribution" %}
+    </a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_contribution_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_contribution_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.status.label }}</label>
+                        {{ filter.form.status }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.period_year.label }}</label>
+                        {{ filter.form.period_year }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.period_month.label }}</label>
+                        {{ filter.form.period_month }}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.compliance:contribution-list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "List Contribution" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "contributions" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if contributions %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-150px">{% trans "Partner" %}</th>
+                            <th class="min-w-120px">{% trans "Period" %}</th>
+                            <th class="min-w-100px">{% trans "Amount" %}</th>
+                            <th class="min-w-100px">{% trans "Due Date" %}</th>
+                            <th class="min-w-100px">{% trans "Status" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contribution in contributions %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        <div class="symbol-label fs-3 fw-semibold text-primary">
+                                            {{ contribution.partner.initials }}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        {% if perms.compliance.view_contribution %}
+                                        <a href="{% url 'apps.compliance:contribution-detail' contribution.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ contribution.partner.full_name }}</a>
+                                        {% else %}
+                                        <span class="text-dark fw-bold fs-6">{{ contribution.partner.full_name }}</span>
+                                        {% endif %}
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{{ contribution.partner.document_number }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold">{{ contribution.period_year }}/{{ contribution.period_month|stringformat:"02d" }}</span>
+                                    <span class="text-muted fs-7">{{ contribution.get_period_month_display }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold">S/ {{ contribution.amount|floatformat:2 }}</span>
+                                    {% if contribution.remaining_balance > 0 %}
+                                        <span class="text-danger fs-7">{% trans "Pending" %}: S/ {{ contribution.remaining_balance|floatformat:2 }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fs-7">{{ contribution.due_date|date:"d/m/Y" }}</span>
+                                    {% if contribution.is_overdue %}
+                                        <span class="text-danger fs-7">{{ contribution.days_overdue }} {% trans "days overdue" %}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if contribution.status == "PENDING" %}
+                                    <span class="badge badge-light-warning">{{ contribution.get_status_display }}</span>
+                                {% elif contribution.status == "PAID" %}
+                                    <span class="badge badge-light-success">{{ contribution.get_status_display }}</span>
+                                {% elif contribution.status == "OVERDUE" %}
+                                    <span class="badge badge-light-danger">{{ contribution.get_status_display }}</span>
+                                {% elif contribution.status == "PARTIAL" %}
+                                    <span class="badge badge-light-info">{{ contribution.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge badge-light-secondary">{{ contribution.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if perms.compliance.view_contribution %}
+                                <a href="{% url 'apps.compliance:contribution-detail' contribution.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.compliance.change_contribution %}
+                                <a href="{% url 'apps.compliance:contribution-edit' contribution.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.compliance.delete_contribution %}
+                                <a href="{% url 'apps.compliance:contribution-delete' contribution.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <i class="ki-duotone ki-trash fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No contributions found" %}</div>
+                {% if constance.ENABLE_CONTRIBUTION_CREATION %}
+                {% if perms.compliance.add_contribution %}
+                <div class="fs-6">{% trans "Start by creating your first contribution" %}
+                    <a href="{% url 'apps.compliance:contribution-create' %}" class="fw-bolder">{% trans "Add Contribution" %}</a>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

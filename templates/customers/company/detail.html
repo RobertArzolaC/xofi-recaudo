@@ -1,0 +1,218 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Company Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Detail Company" %} - {{ company.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.customers.change_company %}
+    <a href="{% url 'apps.customers:company-edit' company.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Company Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Company Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Company Logo -->
+                    {% if company.logo %}
+                    <div class="d-flex flex-center flex-column py-8 ">
+                        <img src="{{ company.logo.url }}" alt="{{ company.name }}" width="180" height="80" />
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ company.name }}</div>
+                        <div class="mb-9">
+                            <div class="badge badge-lg badge-light-primary d-inline">{% trans "Active" %}</div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ company.name|first }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ company.name }}</div>
+                        <div class="mb-9">
+                            <div class="badge badge-lg badge-light-primary d-inline">{% trans "Active" %}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Company Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Tax ID" %}</div>
+                        <div class="text-gray-600">{{ company.tax_id|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Contact Email" %}</div>
+                        <div class="text-gray-600">
+                            {% if company.email %}
+                                <a href="mailto:{{ company.email }}" class="text-gray-600 text-hover-primary">{{ company.email }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+
+                        <div class="fw-bold mt-5">{% trans "Contact Phone" %}</div>
+                        <div class="text-gray-600">{{ company.phone|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Website" %}</div>
+                        <div class="text-gray-600">
+                            {% if company.domain %}
+                                <a href="http://{{ company.domain }}" target="_blank" class="text-gray-600 text-hover-primary">{{ company.domain }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Information Card -->
+        <div class="col-xl-8">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Address Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_customers_payment">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Address" %}</td>
+                                    <td>{{ company.address|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Country" %}</td>
+                                    <td>{{ company.country.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Department" %}</td>
+                                    <td>{{ company.region.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Province" %}</td>
+                                    <td>{{ company.subregion.name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "District" %}</td>
+                                    <td>{{ company.city.name|default:"-" }}</td>
+                                </tr>
+                                {% if company.zip_code %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Zip Code" %}</td>
+                                    <td>{{ company.zip_code }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Settings Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Compliance Settings" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Contribution Amount" %}</td>
+                                    <td>
+                                        <span class="badge badge-light-success">
+                                            S/ {{ compliance_settings.contribution_amount|floatformat:2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Social Security Amount" %}</td>
+                                    <td>
+                                        <span class="badge badge-light-info">
+                                            S/ {{ compliance_settings.social_security_amount|floatformat:2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Contribution Due Day" %}</td>
+                                    <td>
+                                        <span class="badge badge-light-primary">
+                                            {% trans "Day" %} {{ compliance_settings.contribution_due_day }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Social Security Due Day" %}</td>
+                                    <td>
+                                        <span class="badge badge-light-warning">
+                                            {% trans "Day" %} {{ compliance_settings.social_security_due_day }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ company.created|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if company.created_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created By" %}</td>
+                                    <td>{{ company.created_by.get_full_name|default:company.created_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ company.modified|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if company.modified_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified By" %}</td>
+                                    <td>{{ company.modified_by.get_full_name|default:company.modified_by.username }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

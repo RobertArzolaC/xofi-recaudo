@@ -1,0 +1,246 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}
+    {% if object %}
+        {% trans "Edit Product" %}
+    {% else %}
+        {% trans "New Product" %}
+    {% endif %}
+{% endblock title_page %}
+
+{% block toolbar_title %}
+    {% if object %}
+        {% trans "Edit Product" %}
+    {% else %}
+        {% trans "New Product" %}
+    {% endif %}
+{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.credits:product_list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- General Information Card -->
+            <div class="col-xl-6">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "General Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.product_type.label }}</label>
+                                {{ form.product_type|add_class:"form-select" }}
+                                {% if form.product_type.errors %}
+                                    <div class="text-danger fs-7">{{ form.product_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.name.label }}</label>
+                                {{ form.name|add_class:"form-control" }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger fs-7">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.description.label }}</label>
+                                {{ form.description|add_class:"form-control" }}
+                                {% if form.description.errors %}
+                                    <div class="text-danger fs-7">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.interest_type.label }}</label>
+                                {{ form.interest_type|add_class:"form-select" }}
+                                {% if form.interest_type.errors %}
+                                    <div class="text-danger fs-7">{{ form.interest_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.payment_frequency.label }}</label>
+                                {{ form.payment_frequency|add_class:"form-select" }}
+                                {% if form.payment_frequency.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_frequency.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amount & Interest Configuration -->
+            <div class="col-xl-6">
+                <!-- Amount Configuration Card -->
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Amount Configuration" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.min_amount.label }}</label>
+                                {{ form.min_amount|add_class:"form-control" }}
+                                {% if form.min_amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.min_amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.max_amount.label }}</label>
+                                {{ form.max_amount|add_class:"form-control" }}
+                                {% if form.max_amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.max_amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interest Configuration Card -->
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Interest Configuration" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.min_interest_rate.label }}</label>
+                                {{ form.min_interest_rate|add_class:"form-control" }}
+                                {% if form.min_interest_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.min_interest_rate.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.max_interest_rate.label }}</label>
+                                {{ form.max_interest_rate|add_class:"form-control" }}
+                                {% if form.max_interest_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.max_interest_rate.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.min_delinquency_rate.label }}</label>
+                                {{ form.min_delinquency_rate|add_class:"form-control" }}
+                                {% if form.min_delinquency_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.min_delinquency_rate.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.max_delinquency_rate.label }}</label>
+                                {{ form.max_delinquency_rate|add_class:"form-control" }}
+                                {% if form.max_delinquency_rate.errors %}
+                                    <div class="text-danger fs-7">{{ form.max_delinquency_rate.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Term Configuration Card -->
+        <div class="row g-5 g-xl-8 mt-3">
+            <div class="col-xl-8">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Term Configuration" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.min_term_duration.label }}</label>
+                                {{ form.min_term_duration|add_class:"form-control" }}
+                                {% if form.min_term_duration.errors %}
+                                    <div class="text-danger fs-7">{{ form.min_term_duration.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.max_term_duration.label }}</label>
+                                {{ form.max_term_duration|add_class:"form-control" }}
+                                {% if form.max_term_duration.errors %}
+                                    <div class="text-danger fs-7">{{ form.max_term_duration.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status & Settings -->
+            <div class="col-xl-4">
+                <!-- Status Card -->
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Status & Settings" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    {{ form.is_active|add_class:"form-check-input" }}
+                                    <label class="form-check-label fw-semibold text-gray-400 ms-3" for="{{ form.is_active.id_for_label }}">
+                                        {% trans "Active" %}
+                                    </label>
+                                </div>
+                                <div class="text-muted fs-7">{% trans "Set the product status." %}</div>
+                                {% if form.is_active.errors %}
+                                    <div class="text-danger fs-7">{{ form.is_active.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.credits:product_list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if object %}
+                    {% trans "Update Product" %}
+                {% else %}
+                    {% trans "Create Product" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

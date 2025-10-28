@@ -1,0 +1,135 @@
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+<div class="modal-header">
+    <h2 class="modal-title">{% trans "Edit Document" %}</h2>
+    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+        <i class="ki-duotone ki-cross fs-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+    </div>
+</div>
+
+<div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+    <form id="document-edit-form" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- Basic Information -->
+        <div class="row mb-8">
+            <div class="col-12">
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Document Information" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.title.label }}</label>
+                                {{ form.title|add_class:"form-control" }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger fs-7">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.description.label }}</label>
+                                {{ form.description|add_class:"form-control" }}
+                                {% if form.description.errors %}
+                                    <div class="text-danger fs-7">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.priority.label }}</label>
+                                {{ form.priority|add_class:"form-control" }}
+                                {% if form.priority.errors %}
+                                    <div class="text-danger fs-7">{{ form.priority.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if form.expiry_date %}
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.expiry_date.label }}</label>
+                                {{ form.expiry_date|add_class:"form-control" }}
+                                {% if form.expiry_date.errors %}
+                                    <div class="text-danger fs-7">{{ form.expiry_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Information -->
+        <div class="row mb-8">
+            <div class="col-12">
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "File Information" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if document.file %}
+                        <div class="alert alert-info mb-6">
+                            <div class="alert-text">
+                                <i class="ki-duotone ki-information fs-2 text-info me-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <strong>{% trans "Current file:" %}</strong> {{ document.file.name|default:"Document file" }}<br>
+                                <small>{% trans "Upload a new file to replace the current one, or leave empty to keep the existing file." %}</small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if form.file %}
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.file.label }}</label>
+                                {{ form.file|add_class:"form-control" }}
+                                {% if form.file.errors %}
+                                    <div class="text-danger fs-7">{{ form.file.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">{% trans "Accepted formats: PDF, DOC, DOCX, JPG, PNG, GIF" %}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+    {% if perms.documents.change_document %}
+    <button type="button" id="save-document-btn" class="btn btn-primary">
+        <span class="indicator-label">{% trans "Save Changes" %}</span>
+        <span class="indicator-progress">{% trans "Please wait..." %}
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+    </button>
+    {% endif %}
+</div>

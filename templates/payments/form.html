@@ -1,0 +1,629 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ form_title }}{% endblock title_page %}
+{% block toolbar_title %}{{ form_title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:payment-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="payment-form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Payment Information Card -->
+            <div class="col-xl-8">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Payment Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.partner.label }}</label>
+                                {{ form.partner|add_class:"form-select" }}
+                                {% if form.partner.errors %}
+                                    <div class="text-danger fs-7">{{ form.partner.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.payment_number.label }}</label>
+                                {{ form.payment_number|add_class:"form-control" }}
+                                {% if form.payment_number.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">{{ form.reference_number.label }}</label>
+                                {{ form.reference_number|add_class:"form-control" }}
+                                {% if form.reference_number.errors %}
+                                    <div class="text-danger fs-7">{{ form.reference_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.payment_date.label }}</label>
+                                {{ form.payment_date|add_class:"form-control" }}
+                                {% if form.payment_date.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">
+                                    {{ form.amount.label }}
+                                    <i class="ki-duotone ki-information-5 fs-6 text-muted ms-1" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="{% trans 'This amount will be automatically updated when you select debt allocations' %}">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </label>
+                                {{ form.amount|add_class:"form-control" }}
+                                <div class="form-text text-muted fs-7">
+                                    <span id="amount-helper-text">{% trans "Enter amount manually or select debts to auto-calculate" %}</span>
+                                </div>
+                                {% if form.amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.payment_method.label }}</label>
+                                {{ form.payment_method|add_class:"form-select" }}
+                                {% if form.payment_method.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_method.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.status.label }}</label>
+                                {{ form.status|add_class:"form-select" }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes|add_class:"form-control" }}
+                                {% if form.notes.errors %}
+                                    <div class="text-danger fs-7">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partner Information Sidebar -->
+            <div class="col-xl-4">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Partner Information" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body" id="partner-info">
+                        <div class="text-center text-muted">
+                            <i class="ki-duotone ki-user fs-2x">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <p class="mt-3">{% trans "Select a partner to view information" %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Debts Card -->
+                <div class="card card-flush" id="pending-debts-card" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Pending Debts" %}</h3>
+                        </div>
+                        <div class="card-toolbar">
+                            <button type="button" class="btn btn-sm btn-light me-2" id="clear-allocations-btn" style="display: none;">
+                                <i class="ki-duotone ki-trash fs-5">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary" id="auto-allocate-btn" style="display: none;">
+                                <i class="ki-duotone ki-setting-3 fs-5">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Auto Allocate" %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="pending-debts">
+                        <!-- Pending debts will be loaded via AJAX -->
+                    </div>
+                </div>
+
+                <!-- Payment Allocation Summary Card -->
+                <div class="card card-flush mt-6" id="allocation-summary-card" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Allocation Summary" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <small class="text-muted">{% trans "Payment Amount" %}</small>
+                                    <h4 class="mb-0 text-primary" id="payment-amount-display">$0.00</h4>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <small class="text-muted">{% trans "Allocated" %}</small>
+                                    <h4 class="mb-0 text-success" id="allocated-amount-display">$0.00</h4>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="separator my-3"></div>
+                                <div class="text-center">
+                                    <small class="text-muted">{% trans "Remaining" %}</small>
+                                    <h3 class="mb-0" id="remaining-amount-display">$0.00</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="progress progress-sm bg-light-primary">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 0%" id="allocation-progress"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <small class="text-muted" id="allocation-percentage">0% allocated</small>
+                                <small class="text-muted" id="allocation-status">{% trans "No allocations" %}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{% url 'apps.payments:payment-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                <span class="indicator-label">{{ submit_text }}</span>
+                <span class="indicator-progress">
+                    {% trans "Please wait..." %}
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const partnerSelect = document.getElementById('id_partner');
+    const partnerInfo = document.getElementById('partner-info');
+    const pendingDebtsCard = document.getElementById('pending-debts-card');
+    const pendingDebts = document.getElementById('pending-debts');
+    const allocationSummaryCard = document.getElementById('allocation-summary-card');
+    const autoAllocateBtn = document.getElementById('auto-allocate-btn');
+    const clearAllocationsBtn = document.getElementById('clear-allocations-btn');
+
+    // Payment allocation tracking
+    let selectedAllocations = [];
+    let paymentAmount = 0;
+
+    // Update allocation summary and amount field
+    function updateAllocationSummary() {
+        const totalAllocated = selectedAllocations.reduce((sum, allocation) => sum + allocation.amount, 0);
+
+        // Update amount field automatically when allocations are selected
+        isUpdatingFromAllocations = true;
+        if (selectedAllocations.length > 0) {
+            amountField.value = totalAllocated.toFixed(2);
+            paymentAmount = totalAllocated;
+        } else {
+            // Clear amount field when no allocations are selected
+            if (amountField.value && parseFloat(amountField.value) > 0) {
+                amountField.value = '';
+                paymentAmount = 0;
+            }
+        }
+        isUpdatingFromAllocations = false;
+
+        const remaining = Math.max(0, paymentAmount - totalAllocated);
+        const percentage = paymentAmount > 0 ? (totalAllocated / paymentAmount * 100) : 0;
+
+        document.getElementById('payment-amount-display').textContent = `$${paymentAmount.toFixed(2)}`;
+        document.getElementById('allocated-amount-display').textContent = `$${totalAllocated.toFixed(2)}`;
+        document.getElementById('remaining-amount-display').textContent = `$${remaining.toFixed(2)}`;
+        document.getElementById('allocation-progress').style.width = `${Math.min(100, percentage)}%`;
+        document.getElementById('allocation-percentage').textContent = `${percentage.toFixed(1)}% allocated`;
+
+        // Update allocation status and helper text
+        const allocationStatus = document.getElementById('allocation-status');
+        const progressBar = document.getElementById('allocation-progress');
+        const remainingDisplay = document.getElementById('remaining-amount-display');
+        const amountHelperText = document.getElementById('amount-helper-text');
+
+        if (selectedAllocations.length === 0) {
+            allocationStatus.textContent = '{% trans "No allocations" %}';
+            progressBar.className = 'progress-bar';
+            remainingDisplay.className = 'mb-0 text-muted';
+            amountHelperText.textContent = '{% trans "Enter amount manually or select debts to auto-calculate" %}';
+            amountHelperText.className = 'text-muted';
+        } else if (remaining === 0) {
+            allocationStatus.textContent = '{% trans "Fully allocated" %}';
+            progressBar.className = 'progress-bar bg-success';
+            remainingDisplay.className = 'mb-0 text-success';
+            amountHelperText.textContent = '{% trans "Amount automatically calculated from selected allocations" %}';
+            amountHelperText.className = 'text-success';
+        } else if (totalAllocated > paymentAmount) {
+            allocationStatus.textContent = '{% trans "Over-allocated" %}';
+            progressBar.className = 'progress-bar bg-danger';
+            remainingDisplay.className = 'mb-0 text-danger';
+            amountHelperText.textContent = '{% trans "Amount automatically calculated from selected allocations" %}';
+            amountHelperText.className = 'text-warning';
+        } else {
+            allocationStatus.textContent = `${selectedAllocations.length} {% trans "allocation(s)" %}`;
+            progressBar.className = 'progress-bar bg-warning';
+            remainingDisplay.className = 'mb-0 text-warning';
+            amountHelperText.textContent = '{% trans "Amount automatically calculated from selected allocations" %}';
+            amountHelperText.className = 'text-warning';
+        }
+    }
+
+    // Track payment amount changes
+    const amountField = document.getElementById('id_amount');
+
+    let isUpdatingFromAllocations = false;
+
+    function handleAmountChange() {
+        // Skip if this change is coming from allocation updates
+        if (isUpdatingFromAllocations) {
+            return;
+        }
+
+        // Use amount as the main payment amount
+        paymentAmount = parseFloat(amountField?.value) || 0;
+
+        // Clear allocations when user manually changes amount
+        if (selectedAllocations.length > 0) {
+            selectedAllocations = [];
+            document.querySelectorAll('.debt-checkbox:checked').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.allocation-controls').forEach(ctrl => ctrl.style.display = 'none');
+        }
+
+        updateAllocationSummary();
+        if (paymentAmount > 0) {
+            allocationSummaryCard.style.display = 'block';
+        } else {
+            allocationSummaryCard.style.display = 'none';
+        }
+    }
+
+    if (amountField) {
+        amountField.addEventListener('input', handleAmountChange);
+    }
+
+    $('#id_partner').on('select2:select', function (e) {
+        const partnerId = this.value;
+        console.log("partnerId", partnerId);
+
+        if (partnerId) {
+            // Show loading state
+            partnerInfo.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">{% trans "Loading..." %}</span>
+                    </div>
+                    <p class="mt-3 text-muted">{% trans "Loading partner information..." %}</p>
+                </div>
+            `;
+
+            // Fetch partner information via AJAX
+            fetch(`/payments/api/partner-summary/${partnerId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("data", data);
+                    // Update partner info
+                    partnerInfo.innerHTML = `
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="symbol symbol-50px me-3">
+                                <div class="symbol-label fs-3 fw-semibold text-primary">
+                                    ${data.partner_info.full_name.substring(0, 2).toUpperCase()}
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">${data.partner_info.full_name}</h5>
+                                <p class="text-muted mb-0">${data.partner_info.document_type}: ${data.partner_info.document_number}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">{% trans "Email" %}</small>
+                            <p class="mb-0">${data.partner_info.email || '-'}</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">{% trans "Phone" %}</small>
+                            <p class="mb-0">${data.partner_info.phone || '-'}</p>
+                        </div>
+                        <div class="separator my-4"></div>
+                        <div class="mb-3">
+                            <small class="text-muted">{% trans "Overdue Payments" %}</small>
+                            <p class="mb-0 text-danger fw-bold">${data.payment_summary.overdue_count}</p>
+                        </div>
+                    `;
+
+                    // Update pending debts
+                    if (data.pending_debts && data.pending_debts.length > 0) {
+                        let debtsHtml = '';
+                        data.pending_debts.forEach((debt, index) => {
+                            const overdueClass = debt.is_overdue ? 'text-danger' : '';
+                            const debtId = `debt-${debt.type}-${debt.id}`;
+                            debtsHtml += `
+                                <div class="debt-item mb-3 p-3 border rounded position-relative" data-debt-id="${debtId}" data-debt-type="${debt.type}" data-debt-slug="${debt.slug}" data-debt-object-id="${debt.id}" data-debt-amount="${debt.amount}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input debt-checkbox" type="checkbox" value="${debtId}" id="debt-${index}">
+                                                <label class="form-check-label fw-bold ${overdueClass}" for="debt-${index}">
+                                                    ${debt.description}
+                                                </label>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                <span class="badge badge-light-primary">${debt.type}</span>
+                                                ${debt.due_date ? `<span class="badge badge-light-info">{% trans "Due" %}: ${debt.due_date}</span>` : ''}
+                                                ${debt.is_overdue ? '<span class="badge badge-light-danger">{% trans "Overdue" %}</span>' : ''}
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <p class="mb-1 fw-bold ${overdueClass} fs-5">$${parseFloat(debt.amount).toFixed(2)}</p>
+                                            <div class="allocation-controls" style="display: none;">
+                                                <div class="input-group input-group-sm mt-2" style="width: 120px;">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control allocation-amount"
+                                                        placeholder="Amount"
+                                                        min="0.01"
+                                                        max="${debt.amount}"
+                                                        step="0.01"
+                                                        value="${debt.amount}"
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    ${debt.is_overdue ? '<div class="position-absolute top-0 start-0 w-100 h-100 border border-danger rounded opacity-25 pointer-events-none"></div>' : ''}
+                                </div>
+                            `;
+                        });
+                        pendingDebts.innerHTML = debtsHtml;
+                        pendingDebtsCard.style.display = 'block';
+                        autoAllocateBtn.style.display = 'inline-block';
+                        clearAllocationsBtn.style.display = 'inline-block';
+
+                        // Add event listeners for debt selection
+                        setupDebtCheckboxes();
+                    } else {
+                        pendingDebts.innerHTML = '<p class="text-muted text-center">{% trans "No pending debts" %}</p>';
+                        pendingDebtsCard.style.display = 'block';
+                        autoAllocateBtn.style.display = 'none';
+                        clearAllocationsBtn.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    partnerInfo.innerHTML = `
+                        <div class="text-center text-danger">
+                            <i class="ki-duotone ki-cross-circle fs-2x">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <p class="mt-3">{% trans "Error loading partner information" %}</p>
+                        </div>
+                    `;
+                });
+        } else {
+            // Reset to default state
+            partnerInfo.innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="ki-duotone ki-user fs-2x">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <p class="mt-3">{% trans "Select a partner to view information" %}</p>
+                </div>
+            `;
+            pendingDebtsCard.style.display = 'none';
+            allocationSummaryCard.style.display = 'none';
+        }
+    });
+
+    // Setup debt checkboxes event listeners
+    function setupDebtCheckboxes() {
+        const checkboxes = document.querySelectorAll('.debt-checkbox');
+        const allocationInputs = document.querySelectorAll('.allocation-amount');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const debtItem = this.closest('.debt-item');
+                const allocationControls = debtItem.querySelector('.allocation-controls');
+                const debtAmount = parseFloat(debtItem.dataset.debtAmount);
+                const debtType = debtItem.dataset.debtType;
+                const debtObjectId = debtItem.dataset.debtObjectId;
+                const debtSlug = debtItem.dataset.debtSlug;
+
+                if (this.checked) {
+                    allocationControls.style.display = 'block';
+
+                    // Add to selected allocations
+                    const allocation = {
+                        type: debtType,
+                        object_id: debtObjectId,
+                        amount: debtAmount,
+                        debt_item: debtItem,
+                        slug: debtSlug
+                    };
+                    selectedAllocations.push(allocation);
+                } else {
+                    allocationControls.style.display = 'none';
+
+                    // Remove from selected allocations
+                    selectedAllocations = selectedAllocations.filter(
+                        allocation => !(allocation.type === debtType && allocation.object_id === debtObjectId)
+                    );
+                }
+
+                updateAllocationSummary();
+            });
+        });
+
+        // Handle allocation amount changes
+        allocationInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const debtItem = this.closest('.debt-item');
+                const debtType = debtItem.dataset.debtType;
+                const debtObjectId = debtItem.dataset.debtObjectId;
+                const newAmount = parseFloat(this.value) || 0;
+
+                // Update the allocation in selectedAllocations
+                const allocation = selectedAllocations.find(
+                    a => a.type === debtType && a.object_id === debtObjectId
+                );
+                if (allocation) {
+                    allocation.amount = newAmount;
+                    updateAllocationSummary();
+                }
+            });
+        });
+    }
+
+    // Auto-allocate functionality
+    autoAllocateBtn.addEventListener('click', function() {
+        // Clear current selections first
+        selectedAllocations = [];
+        document.querySelectorAll('.debt-checkbox:checked').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.allocation-controls').forEach(ctrl => ctrl.style.display = 'none');
+
+        // Auto-select debts starting with overdue ones
+        const debtItems = Array.from(document.querySelectorAll('.debt-item'));
+
+        if (debtItems.length === 0) {
+            alert('{% trans "No pending debts available for allocation" %}');
+            return;
+        }
+
+        // Sort: overdue first, then by amount (smallest first for better coverage)
+        debtItems.sort((a, b) => {
+            const aOverdue = a.querySelector('.text-danger') !== null;
+            const bOverdue = b.querySelector('.text-danger') !== null;
+
+            if (aOverdue && !bOverdue) return -1;
+            if (!aOverdue && bOverdue) return 1;
+
+            // If both same priority, sort by amount (ascending)
+            return parseFloat(a.dataset.debtAmount) - parseFloat(b.dataset.debtAmount);
+        });
+
+        // Auto-select debts and let the amount field be updated automatically
+        debtItems.forEach(debtItem => {
+            const checkbox = debtItem.querySelector('.debt-checkbox');
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+
+    // Clear allocations functionality
+    clearAllocationsBtn.addEventListener('click', function() {
+        // Clear current selections
+        selectedAllocations = [];
+        document.querySelectorAll('.debt-checkbox:checked').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.allocation-controls').forEach(ctrl => ctrl.style.display = 'none');
+        updateAllocationSummary();
+    });
+
+    // Form submission handling
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+        // Validate payment amount
+        if (paymentAmount <= 0) {
+            e.preventDefault();
+            alert('{% trans "Please enter a valid payment amount" %}');
+            amountField.focus();
+            return;
+        }
+
+        // Show loading state on submit button
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const submitLabel = submitBtn.querySelector('.indicator-label');
+        const submitProgress = submitBtn.querySelector('.indicator-progress');
+
+        submitBtn.disabled = true;
+        submitLabel.style.display = 'none';
+        submitProgress.style.display = 'inline-block';
+
+        // Add allocation data to form submission
+        if (selectedAllocations.length > 0) {
+            // Create hidden inputs for allocations
+            selectedAllocations.forEach((allocation, index) => {
+                console.log("allocation", allocation);
+                const typeInput = document.createElement('input');
+                typeInput.type = 'hidden';
+                typeInput.name = `allocations[${index}][type]`;
+                typeInput.value = allocation.type;
+                this.appendChild(typeInput);
+
+                const objectIdInput = document.createElement('input');
+                objectIdInput.type = 'hidden';
+                objectIdInput.name = `allocations[${index}][object_id]`;
+                objectIdInput.value = allocation.object_id;
+                this.appendChild(objectIdInput);
+
+                const amountInput = document.createElement('input');
+                amountInput.type = 'hidden';
+                amountInput.name = `allocations[${index}][amount]`;
+                amountInput.value = allocation.amount;
+                this.appendChild(amountInput);
+
+                const slugInput = document.createElement('input');
+                slugInput.type = 'hidden';
+                slugInput.name = `allocations[${index}][slug]`;
+                slugInput.value = allocation.slug;
+                this.appendChild(slugInput);
+            });
+        }
+    });
+
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+});
+</script>
+{% endblock content %}

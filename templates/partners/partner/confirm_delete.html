@@ -1,0 +1,85 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h2 class="mb-0">{% trans "Confirm Deletion" %}</h2>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-center flex-column py-10">
+                <i class="ki-duotone ki-warning fs-5x text-warning mb-5">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+
+                <h1 class="fw-bolder fs-2x text-gray-900 mb-4">{% trans "Are you sure?" %}</h1>
+
+                <div class="fw-semibold fs-6 text-gray-600 mb-7 text-center">
+                    {% blocktrans with name=partner.full_name %}
+                        You are about to delete the partner <strong>{{ name }}</strong>.
+                        <br>This action cannot be undone.
+                    {% endblocktrans %}
+                </div>
+
+                <!-- Partner Information -->
+                <div class="bg-light-warning p-5 rounded mb-7 w-100 mw-500px">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="symbol symbol-50px me-4">
+                            <div class="symbol-label fs-2 fw-semibold text-warning">
+                                {{ partner.initials }}
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-gray-800 fs-5">{{ partner.full_name }}</span>
+                            <span class="text-muted fs-7">{{ partner.document_type }}: {{ partner.document_number }}</span>
+                        </div>
+                    </div>
+                    <div class="fs-7 text-gray-700">
+                        <div class="mb-1"><strong>{% trans "Email" %}:</strong> {{ partner.email|default:"-" }}</div>
+                        <div class="mb-1"><strong>{% trans "Phone" %}:</strong> {{ partner.phone|default:"-" }}</div>
+                        <div><strong>{% trans "Status" %}:</strong> {{ partner.get_status_display }}</div>
+                    </div>
+                </div>
+
+                <form method="post" class="text-center">
+                    {% csrf_token %}
+                    <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="btn btn-light me-3">
+                        {% trans "Cancel" %}
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="ki-duotone ki-trash fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                            <span class="path5"></span>
+                        </i>
+                        {% trans "Delete Partner" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -32,7 +32,10 @@ def breadcrumb(context):
                     or "update" in url_name
                     or "create" in url_name
                 ):
-                    action = url_name.split("_")[1]
+                    if "-" in url_name:
+                        action = url_name.split("-")[1]
+                    else:
+                        action = url_name.split("_")[1]
                     title = action.title()
                 else:
                     title = url_name.title()
