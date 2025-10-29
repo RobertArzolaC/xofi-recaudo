@@ -27,6 +27,7 @@ class ProductType(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Product Type")
         verbose_name_plural = _("Product Types")
         ordering = ["name"]
@@ -115,7 +116,9 @@ class Product(
             MaxValueValidator(Decimal("100")),
         ],
         default=Decimal("0.00"),
-        help_text=_("Minimum delinquency rate percentage for overdue payments."),
+        help_text=_(
+            "Minimum delinquency rate percentage for overdue payments."
+        ),
     )
     max_delinquency_rate = models.DecimalField(
         _("Maximum Delinquency Rate"),
@@ -126,7 +129,9 @@ class Product(
             MaxValueValidator(Decimal("100")),
         ],
         default=Decimal("0.00"),
-        help_text=_("Maximum delinquency rate percentage for overdue payments."),
+        help_text=_(
+            "Maximum delinquency rate percentage for overdue payments."
+        ),
     )
     is_active = models.BooleanField(
         _("Is Active"),
@@ -135,6 +140,7 @@ class Product(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
         ordering = ["product_type", "name"]
@@ -268,6 +274,7 @@ class Credit(
     objects = managers.CreditManager()
 
     class Meta:
+        managed = False
         verbose_name = _("Credit")
         verbose_name_plural = _("Credits")
         ordering = ["-created"]
@@ -278,9 +285,7 @@ class Credit(
         ]
 
     def __str__(self) -> str:
-        return (
-            f"{self.partner.full_name} - {self.product.name} - {self.amount:,.2f} PEN"
-        )
+        return f"{self.partner.full_name} - {self.product.name} - {self.amount:,.2f} PEN"
 
     def change_status(self, new_status: str, user, note: str = ""):
         """Change the status and create a history entry."""
@@ -295,7 +300,10 @@ class Credit(
         self.modified_by = user
 
         # Set approval_date when status changes to APPROVED
-        if new_status == choices.CreditStatus.APPROVED and not self.approval_date:
+        if (
+            new_status == choices.CreditStatus.APPROVED
+            and not self.approval_date
+        ):
             self.approval_date = timezone.now().date()
 
         self.save()
@@ -331,7 +339,9 @@ class Credit(
             choices.CreditStatus.DEFAULTED,
             choices.CreditStatus.REFINANCED,
         ]:
-            return self.change_status(choices.CreditStatus.CANCELLED, user, note)
+            return self.change_status(
+                choices.CreditStatus.CANCELLED, user, note
+            )
         return False
 
     def get_current_status_duration(self):
@@ -383,7 +393,11 @@ class Credit(
     @property
     def total_interest(self) -> Decimal:
         """Calculate total interest for the credit."""
-        if self.payment_amount and self.term_duration and self.payment_frequency:
+        if (
+            self.payment_amount
+            and self.term_duration
+            and self.payment_frequency
+        ):
             # Calculate total number of payments based on frequency
             payment_periods = {
                 choices.PaymentFrequency.WEEKLY: 52,
@@ -410,9 +424,9 @@ class Credit(
         Returns:
             QuerySet: Installments for the current schedule version ordered by due_date.
         """
-        return self.installments.filter(schedule_version=self.current_version).order_by(
-            "due_date"
-        )
+        return self.installments.filter(
+            schedule_version=self.current_version
+        ).order_by("due_date")
 
     def get_unpaid_installments(self):
         """
@@ -494,7 +508,9 @@ class CreditApplication(
         decimal_places=2,
         null=True,
         blank=True,
-        help_text=_("Estimated payment amount based on requested terms and frequency."),
+        help_text=_(
+            "Estimated payment amount based on requested terms and frequency."
+        ),
     )
     payment_schedule = models.JSONField(
         _("Payment Schedule"),
@@ -526,7 +542,9 @@ class CreditApplication(
         ],
         null=True,
         blank=True,
-        help_text=_("Proposed delinquency rate percentage for overdue payments."),
+        help_text=_(
+            "Proposed delinquency rate percentage for overdue payments."
+        ),
     )
 
     # Generic relation to status history
@@ -536,6 +554,7 @@ class CreditApplication(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Credit Application")
         verbose_name_plural = _("Credit Applications")
         ordering = ["-created"]
@@ -664,13 +683,19 @@ class CreditApplication(
     @property
     def review_date(self):
         """Get review date from status history."""
-        return self.get_status_date(choices.CreditApplicationStatus.UNDER_REVIEW)
+        return self.get_status_date(
+            choices.CreditApplicationStatus.UNDER_REVIEW
+        )
 
     @property
     def decision_date(self):
         """Get decision date from status history."""
-        approved_date = self.get_status_date(choices.CreditApplicationStatus.APPROVED)
-        rejected_date = self.get_status_date(choices.CreditApplicationStatus.REJECTED)
+        approved_date = self.get_status_date(
+            choices.CreditApplicationStatus.APPROVED
+        )
+        rejected_date = self.get_status_date(
+            choices.CreditApplicationStatus.REJECTED
+        )
         # Return the earliest decision date
         if approved_date and rejected_date:
             return min(approved_date, rejected_date)
@@ -778,8 +803,12 @@ class CreditApplication(
         if period_rate == 0:
             payment_amount = amount / total_periods
         else:
-            payment_amount = amount * period_rate * (1 + period_rate) ** total_periods
-            payment_amount = payment_amount / ((1 + period_rate) ** total_periods - 1)
+            payment_amount = (
+                amount * period_rate * (1 + period_rate) ** total_periods
+            )
+            payment_amount = payment_amount / (
+                (1 + period_rate) ** total_periods - 1
+            )
             payment_amount = payment_amount.quantize(
                 Decimal("0.01"), rounding="ROUND_HALF_UP"
             )
@@ -857,7 +886,9 @@ class CreditApplication(
         }
 
         # Save the updated application object
-        self.save(update_fields=["payment_schedule", "estimated_payment_amount"])
+        self.save(
+            update_fields=["payment_schedule", "estimated_payment_amount"]
+        )
 
         return True
 
@@ -915,7 +946,9 @@ class Installment(
     )
     installment_number = models.PositiveIntegerField(
         _("Installment Number"),
-        help_text=_("Sequential installment number in the amortization schedule."),
+        help_text=_(
+            "Sequential installment number in the amortization schedule."
+        ),
     )
     due_date = models.DateField(
         _("Due Date"),
@@ -970,10 +1003,13 @@ class Installment(
     schedule_version = models.PositiveIntegerField(
         _("Schedule Version"),
         default=1,
-        help_text=_("Version of the payment schedule this installment belongs to."),
+        help_text=_(
+            "Version of the payment schedule this installment belongs to."
+        ),
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Installment")
         verbose_name_plural = _("Installments")
         ordering = ["credit", "installment_number"]
@@ -1083,7 +1119,9 @@ class CreditRescheduleRequest(
         _("Requested Start Date"),
         null=True,
         blank=True,
-        help_text=_("Requested start date for the rescheduled credit installments."),
+        help_text=_(
+            "Requested start date for the rescheduled credit installments."
+        ),
     )
     notes = models.TextField(
         _("Notes"),
@@ -1092,6 +1130,7 @@ class CreditRescheduleRequest(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Credit Reschedule Request")
         verbose_name_plural = _("Credit Reschedule Requests")
         ordering = ["-created"]
@@ -1213,6 +1252,7 @@ class CreditRefinanceRequest(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Credit Refinance Request")
         verbose_name_plural = _("Credit Refinance Requests")
         ordering = ["-created"]
@@ -1309,6 +1349,7 @@ class CreditDisbursement(
     )
 
     class Meta:
+        managed = False
         verbose_name = _("Credit Disbursement")
         verbose_name_plural = _("Credit Disbursements")
         ordering = ["-scheduled_date", "-created"]

@@ -23,6 +23,7 @@ class CampaignForm(forms.ModelForm):
             "notify_on_due_date",
             "notify_3_days_after",
             "notify_7_days_after",
+            "use_payment_link",
         ]
         widgets = {
             "name": forms.TextInput(
@@ -82,6 +83,9 @@ class CampaignForm(forms.ModelForm):
             "notify_7_days_after": forms.CheckboxInput(
                 attrs={"class": "form-check-input"}
             ),
+            "use_payment_link": forms.CheckboxInput(
+                attrs={"class": "form-check-input"}
+            ),
         }
         labels = {
             "name": _("Name"),
@@ -96,6 +100,7 @@ class CampaignForm(forms.ModelForm):
             "notify_on_due_date": _("Notify on Due Date"),
             "notify_3_days_after": _("Notify 3 Days After"),
             "notify_7_days_after": _("Notify 7 Days After"),
+            "use_payment_link": _("Use Payment Link"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -189,7 +194,9 @@ class BulkAddPartnersForm(forms.Form):
 
     file = forms.FileField(
         label=_("Document File"),
-        help_text=_("Upload a text file with document numbers (one per line) or CSV file"),
+        help_text=_(
+            "Upload a text file with document numbers (one per line) or CSV file"
+        ),
         widget=forms.FileInput(
             attrs={
                 "class": "form-control",
@@ -239,7 +246,9 @@ class BulkAddPartnersForm(forms.Form):
                 content = file.read().decode("latin-1")
             except Exception:
                 raise forms.ValidationError(
-                    _("Unable to read file. Please ensure it's a valid text file.")
+                    _(
+                        "Unable to read file. Please ensure it's a valid text file."
+                    )
                 )
 
         # Extract document numbers from file
@@ -247,6 +256,7 @@ class BulkAddPartnersForm(forms.Form):
         if file_extension == "csv":
             import csv
             import io
+
             reader = csv.reader(io.StringIO(content))
             for row in reader:
                 if row and row[0].strip():
@@ -284,19 +294,23 @@ class BulkAddPartnersForm(forms.Form):
         for document in unique_documents:
             try:
                 partner = Partner.objects.get(document_number=document)
-                results["found"].append({
-                    "document": document,
-                    "partner": partner,
-                })
+                results["found"].append(
+                    {
+                        "document": document,
+                        "partner": partner,
+                    }
+                )
 
                 if document in existing_partner_ids:
                     results["already_in_group"].append(document)
                 else:
                     self.group.partners.add(partner)
-                    results["added"].append({
-                        "document": document,
-                        "partner": partner,
-                    })
+                    results["added"].append(
+                        {
+                            "document": document,
+                            "partner": partner,
+                        }
+                    )
             except Partner.DoesNotExist:
                 results["not_found"].append(document)
             except Partner.MultipleObjectsReturned:

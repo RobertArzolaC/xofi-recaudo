@@ -17,6 +17,7 @@ class CampaignAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "status",
+        "use_payment_link",
         "notify_on_due_date",
         "notify_3_days_before",
         "notify_3_days_after",
@@ -29,7 +30,13 @@ class CampaignAdmin(admin.ModelAdmin):
         (
             "Basic Information",
             {
-                "fields": ("name", "description", "group", "status", "target_amount"),
+                "fields": (
+                    "name",
+                    "description",
+                    "group",
+                    "status",
+                    "target_amount",
+                ),
             },
         ),
         (
@@ -46,6 +53,7 @@ class CampaignAdmin(admin.ModelAdmin):
                     "notify_on_due_date",
                     "notify_3_days_after",
                     "notify_7_days_after",
+                    "use_payment_link",
                 ),
             },
         ),

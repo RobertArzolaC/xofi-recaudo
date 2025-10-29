@@ -140,6 +140,16 @@
                                         {% endif %}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Use Payment Link" %}</td>
+                                    <td>
+                                        {% if campaign.use_payment_link %}
+                                            <span class="badge badge-light-primary">{% trans "Yes" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

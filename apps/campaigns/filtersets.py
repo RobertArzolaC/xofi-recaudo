@@ -24,7 +24,9 @@ class CampaignFilterSet(django_filters.FilterSet):
     # Status filter
     status = django_filters.ChoiceFilter(
         choices=choices.CampaignStatus.choices,
-        widget=forms.Select(attrs={"class": "form-select", "data-control": "select2"}),
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
         empty_label=_("All statuses"),
         label=_("Status"),
     )
@@ -56,9 +58,22 @@ class CampaignFilterSet(django_filters.FilterSet):
         label=_("Active Status"),
     )
 
+    # Payment link filter
+    use_payment_link = django_filters.BooleanFilter(
+        widget=forms.Select(
+            attrs={"class": "form-select"},
+            choices=[
+                ("", _("All")),
+                ("true", _("Yes")),
+                ("false", _("No")),
+            ],
+        ),
+        label=_("Use Payment Link"),
+    )
+
     class Meta:
         model = models.Campaign
-        fields = ["search", "status", "notify_on_due_date", "is_active"]
+        fields = ["search", "status", "notify_on_due_date", "use_payment_link"]
 
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""
@@ -96,7 +111,9 @@ class GroupFilterSet(django_filters.FilterSet):
     # Priority filter
     priority = django_filters.ChoiceFilter(
         choices=choices.GroupPriority.choices,
-        widget=forms.Select(attrs={"class": "form-select", "data-control": "select2"}),
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
         empty_label=_("All priorities"),
         label=_("Priority"),
     )

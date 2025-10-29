@@ -497,6 +497,11 @@ class Campaign(
         default=False,
         help_text=_("Send notification 7 days after due date."),
     )
+    use_payment_link = models.BooleanField(
+        _("Use Payment Link"),
+        default=False,
+        help_text=_("Include payment link in campaign notifications."),
+    )
 
     class Meta:
         verbose_name = _("Campaign")
