@@ -77,6 +77,17 @@
                     <div class="card-title">
                         <h2 class="mb-0">{% trans "Partners" %}</h2>
                     </div>
+                    {% if perms.campaigns.change_group %}
+                    <div class="card-toolbar">
+                        <a href="{% url 'apps.campaigns:group-bulk-add-partners' group.pk %}" class="btn btn-sm btn-light-primary">
+                            <i class="ki-duotone ki-file-up fs-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Bulk Add Partners" %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-body pt-0">
                     {% if group.partners.all %}

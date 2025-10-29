@@ -49,6 +49,11 @@ urlpatterns = [
         views.GroupDeleteView.as_view(),
         name="group-delete",
     ),
+    path(
+        "group/<int:pk>/bulk-add-partners/",
+        views.GroupBulkAddPartnersView.as_view(),
+        name="group-bulk-add-partners",
+    ),
     # AJAX URLs
     path(
         "ajax/group-debt/<int:group_id>/",

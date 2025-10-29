@@ -1,0 +1,250 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.campaigns:group-detail' group.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <div class="col-xl-6">
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">{% trans "Upload Document File" %}</span>
+                        <span class="text-muted mt-1 fw-semibold fs-7">{% trans "Upload a file with document numbers to add partners in bulk" %}</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="form">
+                        {% csrf_token %}
+
+                        <div class="mb-10">
+                            <label class="form-label required">{{ form.file.label }}</label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger fs-7 mt-2">{{ form.file.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.file.help_text }}</div>
+                        </div>
+
+                        <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                            <i class="ki-duotone ki-information fs-2hx text-info me-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <div class="d-flex flex-column">
+                                <h5 class="mb-1">{% trans "File Format" %}</h5>
+                                <span>{% trans "Upload a .txt or .csv file with one document number per line. The system will search for partners with matching document numbers and add them to this group." %}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'apps.campaigns:group-detail' group.pk %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ki-duotone ki-upload fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Process File" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Example File Format -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{% trans "Example File Format" %}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>{% trans "Text file (.txt):" %}</strong>
+                    </div>
+                    <pre class="bg-light p-4 rounded">12345678
+87654321
+11223344
+55667788</pre>
+
+                    <div class="separator my-5"></div>
+
+                    <div class="mb-3">
+                        <strong>{% trans "CSV file (.csv):" %}</strong>
+                    </div>
+                    <pre class="bg-light p-4 rounded">12345678
+87654321
+11223344
+55667788</pre>
+                </div>
+            </div>
+        </div>
+
+        {% if results %}
+        <div class="col-xl-6">
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">{% trans "Processing Results" %}</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Summary -->
+                    <div class="d-flex flex-column mb-8">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-primary">
+                                    <i class="ki-duotone ki-document fs-2x text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="#" class="text-gray-800 text-hover-primary fs-5 fw-bold">{% trans "Total documents in file" %}</a>
+                                <span class="text-muted fw-semibold d-block fs-6">{{ results.total_documents }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-success">
+                                    <i class="ki-duotone ki-check fs-2x text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="#" class="text-gray-800 text-hover-primary fs-5 fw-bold">{% trans "Successfully added" %}</a>
+                                <span class="text-muted fw-semibold d-block fs-6">{{ results.added|length }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-info">
+                                    <i class="ki-duotone ki-information fs-2x text-info">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="#" class="text-gray-800 text-hover-primary fs-5 fw-bold">{% trans "Already in group" %}</a>
+                                <span class="text-muted fw-semibold d-block fs-6">{{ results.already_in_group|length }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-warning">
+                                    <i class="ki-duotone ki-cross-circle fs-2x text-warning">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="#" class="text-gray-800 text-hover-primary fs-5 fw-bold">{% trans "Not found" %}</a>
+                                <span class="text-muted fw-semibold d-block fs-6">{{ results.not_found|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator my-5"></div>
+
+                    <!-- Added Partners -->
+                    {% if results.added %}
+                    <div class="mb-8">
+                        <h5 class="mb-4 text-success">
+                            <i class="ki-duotone ki-check-circle fs-2 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Added Partners" %} ({{ results.added|length }})
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+                                <thead>
+                                    <tr class="fw-bold text-muted">
+                                        <th>{% trans "Document" %}</th>
+                                        <th>{% trans "Name" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in results.added %}
+                                    <tr>
+                                        <td>{{ item.document }}</td>
+                                        <td>{{ item.partner.full_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Already in Group -->
+                    {% if results.already_in_group %}
+                    <div class="mb-8">
+                        <h5 class="mb-4 text-info">
+                            <i class="ki-duotone ki-information-2 fs-2 text-info me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            {% trans "Already in Group" %} ({{ results.already_in_group|length }})
+                        </h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for document in results.already_in_group %}
+                            <span class="badge badge-light-info">{{ document }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Not Found -->
+                    {% if results.not_found %}
+                    <div class="mb-8">
+                        <h5 class="mb-4 text-warning">
+                            <i class="ki-duotone ki-cross-circle fs-2 text-warning me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Documents Not Found" %} ({{ results.not_found|length }})
+                        </h5>
+                        <div class="alert alert-warning">
+                            <div class="alert-text">
+                                {% trans "The following document numbers were not found in the system. Please verify the document numbers or ensure the partners are registered." %}
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for document in results.not_found %}
+                            <span class="badge badge-light-warning">{{ document }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

@@ -225,6 +225,96 @@ class GroupDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return context
 
 
+class GroupBulkAddPartnersView(
+    LoginRequiredMixin, PermissionRequiredMixin, View
+):
+    """View for bulk adding partners to a group via file upload."""
+
+    permission_required = "campaigns.change_group"
+    template_name = "campaigns/group/bulk_add_partners.html"
+
+    def get(self, request, pk):
+        """Display the bulk add partners form."""
+        from django.shortcuts import get_object_or_404, render
+
+        group = get_object_or_404(models.Group, pk=pk)
+        form = forms.BulkAddPartnersForm(group=group)
+
+        context = {
+            "group": group,
+            "form": form,
+            "title": f"{_('Bulk Add Partners')}: {group.name}",
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        """Process the uploaded file and add partners to the group."""
+        from django.contrib import messages
+        from django.shortcuts import get_object_or_404, render
+
+        group = get_object_or_404(models.Group, pk=pk)
+        form = forms.BulkAddPartnersForm(
+            request.POST, request.FILES, group=group
+        )
+
+        if form.is_valid():
+            try:
+                results = form.process_file()
+
+                # Add success message with results
+                added_count = len(results["added"])
+                not_found_count = len(results["not_found"])
+                already_in_group_count = len(results["already_in_group"])
+
+                if added_count > 0:
+                    messages.success(
+                        request,
+                        _(
+                            f"Successfully added {added_count} partner(s) to the group."
+                        ),
+                    )
+
+                if already_in_group_count > 0:
+                    messages.info(
+                        request,
+                        _(
+                            f"{already_in_group_count} partner(s) were already in the group."
+                        ),
+                    )
+
+                if not_found_count > 0:
+                    messages.warning(
+                        request,
+                        _(
+                            f"{not_found_count} document(s) were not found in the system."
+                        ),
+                    )
+
+                context = {
+                    "group": group,
+                    "form": form,
+                    "results": results,
+                    "title": f"{_('Bulk Add Partners')}: {group.name}",
+                }
+                return render(request, self.template_name, context)
+
+            except Exception as e:
+                logger.error(
+                    f"Error processing bulk add partners for group {pk}: {e}"
+                )
+                messages.error(
+                    request,
+                    _("An error occurred while processing the file."),
+                )
+
+        context = {
+            "group": group,
+            "form": form,
+            "title": f"{_('Bulk Add Partners')}: {group.name}",
+        }
+        return render(request, self.template_name, context)
+
+
 # AJAX Views
 class GroupDebtAjaxView(LoginRequiredMixin, PermissionRequiredMixin, View):
     """AJAX view to get group debt information."""
