@@ -111,3 +111,124 @@ class GroupAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.modified_by = request.user
         super().save_model(request, obj, form, change)
+
+
+@admin.register(models.CampaignNotification)
+class CampaignNotificationAdmin(admin.ModelAdmin):
+    """Admin configuration for CampaignNotification model."""
+
+    list_display = [
+        "campaign",
+        "partner",
+        "notification_type",
+        "channel",
+        "status",
+        "scheduled_at",
+        "sent_at",
+        "attempt_count",
+    ]
+    list_filter = [
+        "status",
+        "notification_type",
+        "channel",
+        "included_payment_link",
+        "campaign__status",
+        "created",
+        "scheduled_at",
+        "sent_at",
+    ]
+    search_fields = [
+        "campaign__name",
+        "partner__name",
+        "partner__email",
+        "recipient_email",
+        "recipient_phone",
+    ]
+    readonly_fields = [
+        "created",
+        "modified",
+        "created_by",
+        "modified_by",
+        "sent_at",
+        "last_attempt_at",
+    ]
+    raw_id_fields = ["campaign", "partner"]
+    date_hierarchy = "scheduled_at"
+
+    fieldsets = (
+        (
+            "Basic Information",
+            {
+                "fields": (
+                    "campaign",
+                    "partner",
+                    "notification_type",
+                    "channel",
+                    "status",
+                ),
+            },
+        ),
+        (
+            "Scheduling & Delivery",
+            {
+                "fields": (
+                    "scheduled_at",
+                    "sent_at",
+                    "attempt_count",
+                    "last_attempt_at",
+                ),
+            },
+        ),
+        (
+            "Contact Information",
+            {
+                "fields": (
+                    "recipient_email",
+                    "recipient_phone",
+                ),
+            },
+        ),
+        (
+            "Message Content",
+            {
+                "fields": (
+                    "message_content",
+                    "error_message",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Payment Information",
+            {
+                "fields": (
+                    "total_debt_amount",
+                    "included_payment_link",
+                    "payment_link_url",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Audit Information",
+            {
+                "fields": ("created", "modified", "created_by", "modified_by"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
+
+    def save_model(self, request, obj, form, change):
+        """Save model with user tracking."""
+        if not change:
+            obj.created_by = request.user
+        obj.modified_by = request.user
+        super().save_model(request, obj, form, change)
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related."""
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("campaign", "partner", "created_by", "modified_by")
+        )
