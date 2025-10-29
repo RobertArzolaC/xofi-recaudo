@@ -1,5 +1,6 @@
 import logging
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from apps.credits import choices, models
 logger = logging.getLogger(__name__)
 
 
+@extend_schema(exclude=True)
 class CreditSummaryAPIView(APIView):
     """
     API view to get credit summary for AJAX requests.
@@ -107,6 +109,7 @@ class CreditSummaryAPIView(APIView):
             )
 
 
+@extend_schema(exclude=True)
 class ProductSummaryAPIView(APIView):
     """
     API view to get product summary for AJAX requests.

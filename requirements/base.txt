@@ -16,6 +16,7 @@ django-sesame==3.2.2
 django-formtools==2.5.1
 django-cities-light==3.10.2
 django-autocomplete-light==3.12.1
+drf-spectacular==0.28.0
 
 # Environment settings
 python-dotenv==1.1.0

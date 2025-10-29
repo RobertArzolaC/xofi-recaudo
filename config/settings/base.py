@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     "dal",
     "dal_select2",
     "cities_light",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -215,6 +216,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # Celery settings
@@ -227,3 +229,22 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERY_BROKER_URL = config("REDIS_URL", default="redis://127.0.0.1:6379/")
 CELERY_RESULT_BACKEND = config("REDIS_URL", default="redis://127.0.0.1:6379/")
+
+# DRF Spectacular settings
+# https://drf-spectacular.readthedocs.io/
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": _("Xofi Collections API"),
+    "DESCRIPTION": _("API documentation for Xofi Collections"),
+    "VERSION": "1.0.0",
+    "SCHEMA_PATH_PREFIX": "/api/v1",
+    "COMPONENT_SPLIT_REQUEST": True,
+    "USE_SESSION_AUTH": False,
+    "DEFAULT_GENERATOR_CLASS": "drf_spectacular.generators.SchemaGenerator",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+}

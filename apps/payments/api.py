@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
@@ -7,6 +8,7 @@ from apps.partners.models import Partner
 from apps.payments import models, serializers, utils
 
 
+@extend_schema(exclude=True)
 class PartnerPaymentSummaryAPIView(generics.RetrieveAPIView):
     """API view to get partner payment summary and pending debts."""
 
@@ -70,6 +72,7 @@ class PartnerPaymentSummaryAPIView(generics.RetrieveAPIView):
         return Response(data)
 
 
+@extend_schema(exclude=True)
 class PaymentConceptAllocationCreateAPIView(generics.CreateAPIView):
     """API view to allocate payment to concepts."""
 
@@ -145,6 +148,7 @@ class PaymentConceptAllocationCreateAPIView(generics.CreateAPIView):
             )
 
 
+@extend_schema(exclude=True)
 class ProcessPaymentAPIView(generics.CreateAPIView):
     """API view to process a payment with automatic allocation."""
 
@@ -213,6 +217,7 @@ class ProcessPaymentAPIView(generics.CreateAPIView):
             )
 
 
+@extend_schema(exclude=True)
 class PaymentStatisticsAPIView(generics.GenericAPIView):
     """API view to get payment statistics."""
 
@@ -256,6 +261,7 @@ class PaymentStatisticsAPIView(generics.GenericAPIView):
             )
 
 
+@extend_schema(exclude=True)
 class PaymentSearchAPIView(generics.ListAPIView):
     """API view to search payments with filtering."""
 
@@ -299,6 +305,7 @@ class PaymentSearchAPIView(generics.ListAPIView):
         return queryset.order_by("-created")
 
 
+@extend_schema(exclude=True)
 class AutoAllocatePaymentAPIView(generics.UpdateAPIView):
     """API view to automatically allocate a payment to best matching concepts."""
 
@@ -354,6 +361,7 @@ class AutoAllocatePaymentAPIView(generics.UpdateAPIView):
             )
 
 
+@extend_schema(exclude=True)
 class PaymentConceptAllocationListAPIView(generics.ListAPIView):
     """API view to list payment concept allocations."""
 
