@@ -12,6 +12,7 @@ class XofiErpRouter:
         "payments",
         "team",
         "credits",
+        "campaigns",
     }
 
     def db_for_read(self, model, **hints):

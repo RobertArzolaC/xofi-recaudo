@@ -66,10 +66,64 @@ def format_number(value):
     # Convertir a string y eliminar ceros innecesarios
     str_value = str(value)
     if "." in str_value:
-        str_value = str_value.rstrip("0").rstrip(".") if "." in str_value else str_value
+        str_value = (
+            str_value.rstrip("0").rstrip(".") if "." in str_value else str_value
+        )
 
     # Si quedó vacío (caso de 0.000), devolver "0"
     if str_value == "":
         return "0"
 
     return str_value
+
+
+@register.filter
+def get_status_display_from_value(status_value, choices_class):
+    """
+    Get display value for a status from its value and choices class.
+
+    Usage in template: {{ status_value|get_status_display_from_value:"apps.credits.choices.CreditApplicationStatus" }}
+
+    Args:
+        status_value: The status value (e.g., "DRAFT", "SUBMITTED")
+        choices_class: String path to the choices class
+
+    Returns:
+        str: The translated display value
+    """
+    if not status_value:
+        return ""
+
+    try:
+        # Import the choices class dynamically
+        module_path, class_name = choices_class.rsplit(".", 1)
+        module = __import__(module_path, fromlist=[class_name])
+        choices_cls = getattr(module, class_name)
+
+        # Get the choices dict and return the display value
+        choices_dict = dict(choices_cls.choices)
+        return choices_dict.get(status_value, status_value)
+    except (ImportError, AttributeError, ValueError):
+        return status_value
+
+
+@register.simple_tag
+def get_credit_application_status_display(status_value):
+    """
+    Simple tag to get display value for credit application status.
+
+    Usage in template: {% get_credit_application_status_display status_value %}
+
+    Args:
+        status_value: The status value (e.g., "DRAFT", "SUBMITTED")
+
+    Returns:
+        str: The translated display value
+    """
+    try:
+        from apps.credits.choices import CreditApplicationStatus
+
+        choices_dict = dict(CreditApplicationStatus.choices)
+        return choices_dict.get(status_value, status_value)
+    except ImportError:
+        return status_value

@@ -1,0 +1,314 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.campaigns:campaign-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="campaign-form">
+        {% csrf_token %}
+
+        <div class="card mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">{{ title }}</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-5 g-xl-8">
+                    <!-- Basic Information -->
+                    <div class="col-xl-6">
+                        <div class="card card-flush mb-6 mb-xl-9">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label required">{{ form.name.label }}</label>
+                                        {{ form.name }}
+                                        {% if form.name.errors %}
+                                            <div class="text-danger fs-7">{{ form.name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label">{{ form.description.label }}</label>
+                                        {{ form.description }}
+                                        {% if form.description.errors %}
+                                            <div class="text-danger fs-7">{{ form.description.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label">{{ form.group.label }}</label>
+                                        {{ form.group }}
+                                        {% if form.group.errors %}
+                                            <div class="text-danger fs-7">{{ form.group.errors.0 }}</div>
+                                        {% endif %}
+                                        <div class="form-text">{% trans "Select the group of partners for this campaign" %}</div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.start_date.label }}</label>
+                                        {{ form.start_date }}
+                                        {% if form.start_date.errors %}
+                                            <div class="text-danger fs-7">{{ form.start_date.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.end_date.label }}</label>
+                                        {{ form.end_date }}
+                                        {% if form.end_date.errors %}
+                                            <div class="text-danger fs-7">{{ form.end_date.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.status.label }}</label>
+                                        {{ form.status }}
+                                        {% if form.status.errors %}
+                                            <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.target_amount.label }}</label>
+                                        {{ form.target_amount }}
+                                        {% if form.target_amount.errors %}
+                                            <div class="text-danger fs-7">{{ form.target_amount.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label">{{ form.execution_time.label }}</label>
+                                        {{ form.execution_time }}
+                                        {% if form.execution_time.errors %}
+                                            <div class="text-danger fs-7">{{ form.execution_time.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Configuration -->
+                    <div class="col-xl-6">
+                        <div class="card card-flush">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <h2 class="mb-0">{% trans "Notification Configuration" %}</h2>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            {{ form.notify_3_days_before }}
+                                            <label class="form-check-label" for="{{ form.notify_3_days_before.id_for_label }}">
+                                                {{ form.notify_3_days_before.label }}
+                                            </label>
+                                        </div>
+                                        {% if form.notify_3_days_before.errors %}
+                                            <div class="text-danger fs-7">{{ form.notify_3_days_before.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            {{ form.notify_on_due_date }}
+                                            <label class="form-check-label" for="{{ form.notify_on_due_date.id_for_label }}">
+                                                {{ form.notify_on_due_date.label }}
+                                            </label>
+                                        </div>
+                                        {% if form.notify_on_due_date.errors %}
+                                            <div class="text-danger fs-7">{{ form.notify_on_due_date.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            {{ form.notify_3_days_after }}
+                                            <label class="form-check-label" for="{{ form.notify_3_days_after.id_for_label }}">
+                                                {{ form.notify_3_days_after.label }}
+                                            </label>
+                                        </div>
+                                        {% if form.notify_3_days_after.errors %}
+                                            <div class="text-danger fs-7">{{ form.notify_3_days_after.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            {{ form.notify_7_days_after }}
+                                            <label class="form-check-label" for="{{ form.notify_7_days_after.id_for_label }}">
+                                                {{ form.notify_7_days_after.label }}
+                                            </label>
+                                        </div>
+                                        {% if form.notify_7_days_after.errors %}
+                                            <div class="text-danger fs-7">{{ form.notify_7_days_after.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="separator my-6"></div>
+
+                                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                                    <i class="ki-duotone ki-information fs-2tx text-primary me-4">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <div class="d-flex flex-stack flex-grow-1">
+                                        <div class="fw-semibold">
+                                            <div class="fs-6 text-gray-700">
+                                                {% trans "Notifications will be sent based on credit installment due dates. Select when you want partners to receive collection reminders." %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.campaigns:campaign-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if action == "create" %}
+                    {% trans "Create Campaign" %}
+                {% else %}
+                    {% trans "Update Campaign" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media.js }}
+
+    <script>
+    function updateTargetAmount(groupId) {
+        if (!groupId) {
+            // Clear target amount if no group selected
+            document.getElementById('id_target_amount').value = '';
+            return;
+        }
+
+        // Show loading indicator
+        const targetAmountField = document.getElementById('id_target_amount');
+        const originalValue = targetAmountField.value;
+        targetAmountField.value = '{% trans "Loading..." %}';
+        targetAmountField.disabled = true;
+
+        // Make AJAX request to get group debt
+        fetch(`/campaigns/ajax/group-debt/${groupId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update target amount with group's total debt
+                    targetAmountField.value = data.total_debt.toFixed(2);
+
+                    // Show a tooltip or notification with debt breakdown
+                    showDebtSummary(data);
+                } else {
+                    console.error('Error fetching group debt:', data.error);
+                    // Restore original value on error
+                    targetAmountField.value = originalValue;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Restore original value on error
+                targetAmountField.value = originalValue;
+            })
+            .finally(() => {
+                targetAmountField.disabled = false;
+            });
+    }
+
+    function showDebtSummary(data) {
+        // Create a temporary tooltip or modal with debt breakdown
+        const summaryHtml = `
+            <div class="alert alert-info alert-dismissible fade show" role="alert" id="debt-summary-alert">
+                <h6><strong>${data.group_name}</strong> - {% trans "Debt Summary" %}</h6>
+                <ul class="mb-0">
+                    <li>{% trans "Credit Debt" %}: $${data.debt_summary.credit_debt.toFixed(2)} (${data.debt_summary.overdue_installments} {% trans "installments" %})</li>
+                    <li>{% trans "Contributions" %}: $${data.debt_summary.contribution_debt.toFixed(2)} (${data.debt_summary.overdue_contributions} {% trans "records" %})</li>
+                    <li>{% trans "Social Security" %}: $${data.debt_summary.social_security_debt.toFixed(2)} (${data.debt_summary.overdue_social_security} {% trans "records" %})</li>
+                    <li>{% trans "Penalties" %}: $${data.debt_summary.penalty_debt.toFixed(2)} (${data.debt_summary.overdue_penalties} {% trans "records" %})</li>
+                </ul>
+                <p class="mt-2 mb-0"><strong>{% trans "Total Partners with Debt" %}: ${data.debt_summary.partners_with_debt} / ${data.partner_count}</strong></p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+
+        // Remove existing alert if any
+        const existingAlert = document.getElementById('debt-summary-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        // Add the summary before the form
+        const form = document.getElementById('campaign-form');
+        form.insertAdjacentHTML('beforebegin', summaryHtml);
+
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            const alert = document.getElementById('debt-summary-alert');
+            if (alert) {
+                alert.remove();
+            }
+        }, 10000);
+    }
+
+    // Initialize on page load if group is already selected
+    document.addEventListener('DOMContentLoaded', function() {
+        const groupSelect = document.getElementById('id_group');
+        if (groupSelect && groupSelect.value) {
+            // Don't auto-update if target_amount already has a value
+            const targetAmountField = document.getElementById('id_target_amount');
+            if (!targetAmountField.value) {
+                updateTargetAmount(groupSelect.value);
+            }
+        }
+    });
+    </script>
+{% endblock %}

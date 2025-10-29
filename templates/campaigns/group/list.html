@@ -1,0 +1,176 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Groups" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Groups" %}{% endblock %}
+
+{% block entity_options %}
+{% if perms.campaigns.add_group %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.campaigns:group-create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add Group" %}
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_group_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_group_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.priority.label }}</label>
+                        {{ filter.form.priority }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.has_partners.label }}</label>
+                        {{ filter.form.has_partners }}
+                    </div>
+                    <div class="col-lg-2 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.campaigns:group-list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Groups List" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "groups" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if groups %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-250px">{% trans "Name" %}</th>
+                            <th class="min-w-100px">{% trans "Priority" %}</th>
+                            <th class="min-w-100px">{% trans "Partners" %}</th>
+                            <th class="min-w-150px">{% trans "Used in Campaigns" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in groups %}
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-start flex-column">
+                                    <a href="{% url 'apps.campaigns:group-detail' group.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ group.name }}</a>
+                                    {% if group.description %}
+                                        <span class="text-muted fw-semibold d-block fs-7">{{ group.description|truncatewords:10 }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if group.priority == 4 %}
+                                    <span class="badge badge-light-danger">{{ group.get_priority_display }}</span>
+                                {% elif group.priority == 3 %}
+                                    <span class="badge badge-light-warning">{{ group.get_priority_display }}</span>
+                                {% elif group.priority == 2 %}
+                                    <span class="badge badge-light-primary">{{ group.get_priority_display }}</span>
+                                {% else %}
+                                    <span class="badge badge-light-secondary">{{ group.get_priority_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-light-info">{{ group.partner_count }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-primary">{{ group.campaigns.count }} {% trans "campaigns" %}</span>
+                            </td>
+                            <td class="text-end">
+                                {% if perms.campaigns.view_group %}
+                                <a href="{% url 'apps.campaigns:group-detail' group.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.campaigns.change_group %}
+                                <a href="{% url 'apps.campaigns:group-edit' group.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.campaigns.delete_group %}
+                                <a href="{% url 'apps.campaigns:group-delete' group.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <i class="ki-duotone ki-trash fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No groups found" %}</div>
+                <div class="fs-6">{% trans "Start by creating your first group" %}
+                    {% if perms.campaigns.add_group %}
+                    <a href="{% url 'apps.campaigns:group-create' %}" class="fw-bolder">{% trans "Add Group" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -27,6 +27,7 @@ urlpatterns += [
     path("credits/", include("apps.credits.urls")),
     path("payments/", include("apps.payments.urls")),
     path("compliance/", include("apps.compliance.urls")),
+    path("campaigns/", include("apps.campaigns.urls")),
 ]
 
 if settings.DEBUG:

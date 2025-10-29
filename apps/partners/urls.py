@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.partners import views
+from apps.partners import autocompletes, views
 
 app_name = "apps.partners"
 
@@ -67,5 +67,11 @@ urlpatterns = [
         "prospect/<int:pk>/edit/",
         views.ProspectUpdateView.as_view(),
         name="prospect-edit",
+    ),
+    # Autocomplete URLs
+    path(
+        "autocomplete/partner/",
+        autocompletes.PartnerAutocomplete.as_view(),
+        name="partner-autocomplete",
     ),
 ]

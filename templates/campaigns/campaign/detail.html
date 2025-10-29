@@ -1,0 +1,200 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Campaign Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ campaign.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.campaigns:campaign-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.campaigns.change_campaign %}
+    <a href="{% url 'apps.campaigns:campaign-edit' campaign.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Campaign Information Card -->
+        <div class="col-xl-6">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Campaign Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ campaign.name }}</div>
+                        <div class="mb-9">
+                            {% if campaign.status == "DRAFT" %}
+                                <div class="badge badge-lg badge-light-secondary d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "ACTIVE" %}
+                                <div class="badge badge-lg badge-light-success d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "PAUSED" %}
+                                <div class="badge badge-lg badge-light-warning d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "COMPLETED" %}
+                                <div class="badge badge-lg badge-light-info d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "CANCELLED" %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{{ campaign.get_status_display }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        {% if campaign.description %}
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ campaign.description }}</div>
+                        {% endif %}
+
+                        <div class="fw-bold mt-5">{% trans "Group" %}</div>
+                        <div class="text-gray-600">
+                            {% if campaign.group %}
+                                <a href="{% url 'apps.campaigns:group-detail' campaign.group.pk %}">{{ campaign.group.name }}</a>
+                                <span class="text-muted">({{ campaign.group.partner_count }} {% trans "partners" %})</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+
+                        <div class="fw-bold mt-5">{% trans "Start Date" %}</div>
+                        <div class="text-gray-600">{{ campaign.start_date|date:"F d, Y"|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "End Date" %}</div>
+                        <div class="text-gray-600">{{ campaign.end_date|date:"F d, Y"|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Target Amount" %}</div>
+                        <div class="text-gray-600">{{ campaign.target_amount|floatformat:2|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Execution Time" %}</div>
+                        <div class="text-gray-600">{{ campaign.execution_time|time:"H:i"|default:"-" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Configuration -->
+        <div class="col-xl-6">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Notification Configuration" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Notify 3 Days Before" %}</td>
+                                    <td>
+                                        {% if campaign.notify_3_days_before %}
+                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Notify on Due Date" %}</td>
+                                    <td>
+                                        {% if campaign.notify_on_due_date %}
+                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Notify 3 Days After" %}</td>
+                                    <td>
+                                        {% if campaign.notify_3_days_after %}
+                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Notify 7 Days After" %}</td>
+                                    <td>
+                                        {% if campaign.notify_7_days_after %}
+                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Partners Card -->
+            {% if campaign.group %}
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Group Partners" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if campaign.group.partners.all %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                    <th>{% trans "Name" %}</th>
+                                    <th>{% trans "Document" %}</th>
+                                    <th class="text-end">{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for partner in campaign.group.partners.all %}
+                                <tr>
+                                    <td>{{ partner.full_name }}</td>
+                                    <td>{{ partner.document_number }}</td>
+                                    <td class="text-end">
+                                        {% if perms.partners.view_partner %}
+                                        <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="btn btn-icon btn-sm btn-light-primary">
+                                            <i class="ki-duotone ki-eye fs-3">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="text-gray-600">{% trans "No partners in this group" %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

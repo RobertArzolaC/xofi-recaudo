@@ -58,6 +58,7 @@ LOCAL_APPS = [
     "apps.payments.apps.PaymentsConfig",
     "apps.team.apps.TeamConfig",
     "apps.credits.apps.CreditsConfig",
+    "apps.campaigns.apps.CampaignsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

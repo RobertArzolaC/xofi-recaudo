@@ -1,0 +1,123 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Group Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ group.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.campaigns:group-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.campaigns.change_group %}
+    <a href="{% url 'apps.campaigns:group-edit' group.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Group Information -->
+        <div class="col-xl-6">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Group Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="fs-3 text-gray-800 fw-bold mb-3">{{ group.name }}</div>
+                        <div class="mb-9">
+                            {% if group.priority == 4 %}
+                                <div class="badge badge-lg badge-light-danger d-inline">{{ group.get_priority_display }}</div>
+                            {% elif group.priority == 3 %}
+                                <div class="badge badge-lg badge-light-warning d-inline">{{ group.get_priority_display }}</div>
+                            {% elif group.priority == 2 %}
+                                <div class="badge badge-lg badge-light-primary d-inline">{{ group.get_priority_display }}</div>
+                            {% else %}
+                                <div class="badge badge-lg badge-light-secondary d-inline">{{ group.get_priority_display }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        {% if group.description %}
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ group.description }}</div>
+                        {% endif %}
+
+                        <div class="fw-bold mt-5">{% trans "Total Partners" %}</div>
+                        <div class="text-gray-600">{{ group.partner_count }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Used in Campaigns" %}</div>
+                        <div class="text-gray-600">{{ group.campaigns.count }} {% trans "campaign(s)" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partners List -->
+        <div class="col-xl-6">
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Partners" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if group.partners.all %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                    <th>{% trans "Name" %}</th>
+                                    <th>{% trans "Document" %}</th>
+                                    <th class="text-end">{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for partner in group.partners.all %}
+                                <tr>
+                                    <td>{{ partner.full_name }}</td>
+                                    <td>{{ partner.document_number }}</td>
+                                    <td class="text-end">
+                                        {% if perms.partners.view_partner %}
+                                        <a href="{% url 'apps.partners:partner-detail' partner.pk %}" class="btn btn-icon btn-sm btn-light-primary">
+                                            <i class="ki-duotone ki-eye fs-3">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="text-gray-600">{% trans "No partners in this group" %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
