@@ -248,3 +248,16 @@ SPECTACULAR_SETTINGS = {
         "displayOperationId": True,
     },
 }
+
+# WhatsApp Business API Settings
+# https://developers.facebook.com/docs/whatsapp/cloud-api
+
+WHATSAPP_API_TOKEN = config("WHATSAPP_API_TOKEN", default="")
+WHATSAPP_PHONE_NUMBER_ID = config("WHATSAPP_PHONE_NUMBER_ID", default="")
+WHATSAPP_BUSINESS_ACCOUNT_ID = config("WHATSAPP_BUSINESS_ACCOUNT_ID", default="")
+WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
+
+# Payment Link Settings
+PAYMENT_LINK_BASE_URL = config(
+    "PAYMENT_LINK_BASE_URL", default="https://pay.example.com"
+)

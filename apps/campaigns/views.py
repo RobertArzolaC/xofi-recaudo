@@ -315,6 +315,82 @@ class GroupBulkAddPartnersView(
         return render(request, self.template_name, context)
 
 
+# Campaign Execution View
+class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    """View to execute a campaign."""
+
+    permission_required = "campaigns.change_campaign"
+
+    def post(self, request, pk):
+        """Execute campaign and return result as JSON."""
+        from django.http import JsonResponse
+        from django.shortcuts import get_object_or_404
+
+        from apps.campaigns import tasks
+
+        try:
+            campaign = get_object_or_404(models.Campaign, pk=pk)
+
+            # Check if campaign can be executed
+            if not campaign.can_be_executed:
+                reasons = []
+                from apps.campaigns import choices
+
+                valid_statuses = [
+                    choices.CampaignStatus.ACTIVE,
+                    choices.CampaignStatus.SCHEDULED,
+                ]
+                if campaign.status not in valid_statuses:
+                    reasons.append(
+                        f"Campaign status is {campaign.get_status_display()}, "
+                        f"must be ACTIVE or SCHEDULED"
+                    )
+                if campaign.is_processing:
+                    reasons.append(_("Campaign is already being processed"))
+                if not campaign.execution_date:
+                    reasons.append(
+                        _("Campaign has no execution date configured")
+                    )
+                if not campaign.group:
+                    reasons.append(_("Campaign has no group assigned"))
+
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "; ".join(reasons),
+                    },
+                    status=400,
+                )
+
+            # Queue the campaign execution task
+            task = tasks.process_campaign_notifications.delay(campaign.id)
+
+            logger.info(
+                f"Campaign {campaign.id} '{campaign.name}' queued for execution by user {request.user.username}. "
+                f"Current status: {campaign.get_status_display()}"
+            )
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": f"Campaign '{campaign.name}' has been queued for execution. Status will change to 'Processing' shortly.",
+                    "task_id": task.id,
+                    "campaign_id": campaign.id,
+                    "current_status": campaign.get_status_display(),
+                }
+            )
+
+        except Exception as e:
+            logger.exception(f"Error executing campaign {pk}: {e}")
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"An error occurred while executing the campaign: {str(e)}",
+                },
+                status=500,
+            )
+
+
 # AJAX Views
 class GroupDebtAjaxView(LoginRequiredMixin, PermissionRequiredMixin, View):
     """AJAX view to get group debt information."""

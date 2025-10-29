@@ -11,21 +11,29 @@ class CampaignAdmin(admin.ModelAdmin):
         "name",
         "status",
         "target_amount",
-        "execution_time",
+        "execution_date",
+        "is_processing",
+        "execution_count",
         "is_active",
         "created",
     ]
     list_filter = [
         "status",
+        "is_processing",
         "use_payment_link",
-        "notify_on_due_date",
-        "notify_3_days_before",
-        "notify_3_days_after",
-        "notify_7_days_after",
         "created",
     ]
     search_fields = ["name", "description"]
-    readonly_fields = ["created", "modified", "created_by", "modified_by"]
+    readonly_fields = [
+        "created",
+        "modified",
+        "created_by",
+        "modified_by",
+        "is_processing",
+        "last_execution_at",
+        "execution_count",
+        "last_execution_result",
+    ]
     fieldsets = (
         (
             "Basic Information",
@@ -36,24 +44,32 @@ class CampaignAdmin(admin.ModelAdmin):
                     "group",
                     "status",
                     "target_amount",
+                    "average_cost",
                 ),
             },
         ),
         (
             "Schedule",
             {
-                "fields": ("start_date", "end_date", "execution_time"),
+                "fields": ("execution_date",),
             },
         ),
         (
             "Notification Configuration",
             {
                 "fields": (
-                    "notify_3_days_before",
-                    "notify_on_due_date",
-                    "notify_3_days_after",
-                    "notify_7_days_after",
                     "use_payment_link",
+                ),
+            },
+        ),
+        (
+            "Execution Tracking",
+            {
+                "fields": (
+                    "is_processing",
+                    "last_execution_at",
+                    "execution_count",
+                    "last_execution_result",
                 ),
             },
         ),
@@ -232,3 +248,89 @@ class CampaignNotificationAdmin(admin.ModelAdmin):
             .get_queryset(request)
             .select_related("campaign", "partner", "created_by", "modified_by")
         )
+
+
+@admin.register(models.MessageTemplate)
+class MessageTemplateAdmin(admin.ModelAdmin):
+    """Admin configuration for MessageTemplate model."""
+
+    list_display = [
+        "name",
+        "template_type",
+        "channel",
+        "is_active",
+        "include_payment_button",
+        "created",
+    ]
+    list_filter = [
+        "template_type",
+        "channel",
+        "is_active",
+        "include_payment_button",
+        "created",
+    ]
+    search_fields = ["name", "description", "message_body"]
+    readonly_fields = ["created", "modified", "created_by", "modified_by"]
+
+    fieldsets = (
+        (
+            "Basic Information",
+            {
+                "fields": (
+                    "name",
+                    "description",
+                    "template_type",
+                    "channel",
+                    "is_active",
+                ),
+            },
+        ),
+        (
+            "Message Content",
+            {
+                "fields": (
+                    "subject",
+                    "message_body",
+                ),
+                "description": (
+                    "Available placeholders: {partner_name}, {debt_amount}, "
+                    "{credit_debt}, {credit_debt_count}, {contribution_debt}, "
+                    "{contribution_debt_count}, {social_security_debt}, "
+                    "{social_security_debt_count}, {penalty_debt}, {penalty_debt_count}, "
+                    "{payment_link}, {campaign_name}, {company_name}, {contact_phone}"
+                ),
+            },
+        ),
+        (
+            "WhatsApp Configuration",
+            {
+                "fields": (
+                    "whatsapp_template_name",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Payment Button Configuration",
+            {
+                "fields": (
+                    "include_payment_button",
+                    "payment_button_text",
+                ),
+            },
+        ),
+        (
+            "Audit Information",
+            {
+                "fields": ("created", "modified", "created_by", "modified_by"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
+
+    def save_model(self, request, obj, form, change):
+        """Save model with user tracking."""
+        if not change:
+            obj.created_by = request.user
+        obj.modified_by = request.user
+        super().save_model(request, obj, form, change)

@@ -31,19 +31,6 @@ class CampaignFilterSet(django_filters.FilterSet):
         label=_("Status"),
     )
 
-    # Notification filter - campaigns that notify on due date
-    notify_on_due_date = django_filters.BooleanFilter(
-        widget=forms.Select(
-            attrs={"class": "form-select"},
-            choices=[
-                ("", _("All")),
-                ("true", _("Yes")),
-                ("false", _("No")),
-            ],
-        ),
-        label=_("Notify on Due Date"),
-    )
-
     # Active campaigns filter
     is_active = django_filters.BooleanFilter(
         method="filter_is_active",
@@ -73,7 +60,7 @@ class CampaignFilterSet(django_filters.FilterSet):
 
     class Meta:
         model = models.Campaign
-        fields = ["search", "status", "notify_on_due_date", "use_payment_link"]
+        fields = ["search", "status", "use_payment_link"]
 
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""

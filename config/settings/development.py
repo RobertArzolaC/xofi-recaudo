@@ -1,3 +1,5 @@
+from celery.schedules import crontab
+
 from config.settings.base import *  # noqa
 from config.settings.tools.django_constance import *  # noqa
 from config.settings.tools.django_easy_audit import *  # noqa
@@ -30,3 +32,24 @@ DEBUG_TOOLBAR_CONFIG["IS_RUNNING_TESTS"] = False
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 TAILWIND_DEV_MODE = True
+
+# Celery tasks configuration
+
+CELERY_BEAT_SCHEDULE = {
+    "execute_test_task": {
+        "task": "apps.core.tasks.test_task",
+        "schedule": crontab(hour=22, minute=0),
+        "kwargs": {},
+    },
+    "send-scheduled-notifications": {
+        "task": "campaigns.send_scheduled_notifications",
+        "schedule": crontab(minute="*/10"),  # Cada 10 minutos
+    },
+    "update-campaign-status": {
+        "task": "campaigns.update_campaign_status",
+        "schedule": crontab(minute="*/5"),  # Cada 5 minutos
+        "options": {
+            "expires": 240,  # Expira después de 4 minutos
+        },
+    },
+}

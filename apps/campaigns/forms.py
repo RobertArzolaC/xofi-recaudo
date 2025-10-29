@@ -14,15 +14,10 @@ class CampaignForm(forms.ModelForm):
             "name",
             "description",
             "group",
-            "start_date",
-            "end_date",
+            "execution_date",
             "status",
             "target_amount",
-            "execution_time",
-            "notify_3_days_before",
-            "notify_on_due_date",
-            "notify_3_days_after",
-            "notify_7_days_after",
+            "average_cost",
             "use_payment_link",
         ]
         widgets = {
@@ -42,19 +37,12 @@ class CampaignForm(forms.ModelForm):
             "group": forms.Select(
                 attrs={"class": "form-select", "data-control": "select2"}
             ),
-            "start_date": forms.DateInput(
+            "execution_date": forms.DateTimeInput(
                 attrs={
                     "class": "form-control",
-                    "type": "date",
+                    "type": "datetime-local",
                 },
-                format="%Y-%m-%d",
-            ),
-            "end_date": forms.DateInput(
-                attrs={
-                    "class": "form-control",
-                    "type": "date",
-                },
-                format="%Y-%m-%d",
+                format="%Y-%m-%dT%H:%M",
             ),
             "status": forms.Select(attrs={"class": "form-select"}),
             "target_amount": forms.NumberInput(
@@ -65,23 +53,13 @@ class CampaignForm(forms.ModelForm):
                     "min": "0",
                 }
             ),
-            "execution_time": forms.TimeInput(
+            "average_cost": forms.NumberInput(
                 attrs={
                     "class": "form-control",
-                    "type": "time",
+                    "placeholder": _("Average cost"),
+                    "step": "0.01",
+                    "min": "0",
                 }
-            ),
-            "notify_3_days_before": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-            "notify_on_due_date": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-            "notify_3_days_after": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-            "notify_7_days_after": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
             ),
             "use_payment_link": forms.CheckboxInput(
                 attrs={"class": "form-check-input"}
@@ -91,15 +69,10 @@ class CampaignForm(forms.ModelForm):
             "name": _("Name"),
             "description": _("Description"),
             "group": _("Group"),
-            "start_date": _("Start Date"),
-            "end_date": _("End Date"),
+            "execution_date": _("Execution Date"),
             "status": _("Status"),
             "target_amount": _("Target Amount"),
-            "execution_time": _("Execution Time"),
-            "notify_3_days_before": _("Notify 3 Days Before"),
-            "notify_on_due_date": _("Notify on Due Date"),
-            "notify_3_days_after": _("Notify 3 Days After"),
-            "notify_7_days_after": _("Notify 7 Days After"),
+            "average_cost": _("Average Cost"),
             "use_payment_link": _("Use Payment Link"),
         }
 

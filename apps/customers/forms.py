@@ -285,6 +285,9 @@ class CompanyForm(forms.ModelForm):
         if self.cleaned_data["domain"]:
             config.COMPANY_DOMAIN = self.cleaned_data["domain"]
 
+        if self.cleaned_data["phone"]:
+            config.COMPANY_PHONE = self.cleaned_data["phone"]
+
         # Update Constance compliance fields
         if self.cleaned_data["contribution_amount"] is not None:
             config.CONTRIBUTION_AMOUNT = self.cleaned_data[

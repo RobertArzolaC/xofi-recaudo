@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
-from apps.campaigns import choices
+from apps.campaigns import choices, services
 from apps.core import models as core_models
 from apps.partners import services as partner_services
 
@@ -88,17 +88,11 @@ class Campaign(
         blank=True,
         help_text=_("Group associated with this campaign."),
     )
-    start_date = models.DateField(
-        _("Start Date"),
+    execution_date = models.DateTimeField(
+        _("Execution Date"),
         null=True,
         blank=True,
-        help_text=_("Date when the campaign starts."),
-    )
-    end_date = models.DateField(
-        _("End Date"),
-        null=True,
-        blank=True,
-        help_text=_("Date when the campaign ends."),
+        help_text=_("Date and time when the campaign will be executed."),
     )
     status = models.CharField(
         _("Status"),
@@ -115,42 +109,42 @@ class Campaign(
         blank=True,
         help_text=_("Target collection amount for the campaign."),
     )
-
-    # Execution schedule
-    execution_time = models.TimeField(
-        _("Execution Time"),
+    average_cost = models.DecimalField(
+        _("Average Cost"),
+        max_digits=12,
+        decimal_places=2,
         null=True,
         blank=True,
-        help_text=_(
-            "Time of day when the campaign notifications will be sent."
-        ),
-    )
-
-    # Notification configuration
-    notify_3_days_before = models.BooleanField(
-        _("Notify 3 Days Before"),
-        default=False,
-        help_text=_("Send notification 3 days before due date."),
-    )
-    notify_on_due_date = models.BooleanField(
-        _("Notify on Due Date"),
-        default=True,
-        help_text=_("Send notification on the due date."),
-    )
-    notify_3_days_after = models.BooleanField(
-        _("Notify 3 Days After"),
-        default=False,
-        help_text=_("Send notification 3 days after due date."),
-    )
-    notify_7_days_after = models.BooleanField(
-        _("Notify 7 Days After"),
-        default=False,
-        help_text=_("Send notification 7 days after due date."),
+        help_text=_("Average cost per notification for this campaign."),
     )
     use_payment_link = models.BooleanField(
         _("Use Payment Link"),
         default=False,
         help_text=_("Include payment link in campaign notifications."),
+    )
+
+    # Execution tracking fields
+    is_processing = models.BooleanField(
+        _("Is Processing"),
+        default=False,
+        help_text=_("Indicates if the campaign is currently being processed."),
+    )
+    last_execution_at = models.DateTimeField(
+        _("Last Execution At"),
+        null=True,
+        blank=True,
+        help_text=_("Date and time of the last execution attempt."),
+    )
+    execution_count = models.PositiveIntegerField(
+        _("Execution Count"),
+        default=0,
+        help_text=_("Number of times this campaign has been executed."),
+    )
+    last_execution_result = models.TextField(
+        _("Last Execution Result"),
+        null=True,
+        blank=True,
+        help_text=_("Result message from the last execution attempt."),
     )
 
     class Meta:
@@ -166,67 +160,84 @@ class Campaign(
         """Check if campaign is currently active."""
         return self.status == choices.CampaignStatus.ACTIVE
 
+    @property
+    def can_be_executed(self):
+        """Check if campaign can be executed now."""
+
+        return services.CampaignExecutionService.can_execute_campaign(self)
+
+    def start_execution(self):
+        """
+        Mark campaign as being processed. Returns True if lock acquired, False otherwise.
+
+        Transitions campaign status to PROCESSING state and sets execution tracking fields.
+        This method ensures atomic execution through database-level locking.
+        """
+
+        return services.CampaignExecutionService.start_campaign_execution(self)
+
+    def finish_execution(self, success=True, result_message=None):
+        """
+        Mark campaign execution as finished and transition to appropriate status.
+
+        Flow after processing:
+        - Success + notifications created → SENDING (ready to send notifications)
+        - Success + no notifications → Return to original status
+        - Success + all sent → COMPLETED
+        - Failure → FAILED
+        """
+
+        services.CampaignExecutionService.finish_campaign_execution(
+            self, success, result_message
+        )
+
     def create_notifications_for_partners(
         self, notification_type, partners=None
     ):
         """Create notifications for specified partners or all partners in the group."""
-        from apps.partners.services import PartnerDebtService
 
-        if not self.group:
-            return []
-
-        if partners is None:
-            partners = self.group.partners.all()
-
-        notifications = []
-        for partner in partners:
-            partner_debt = PartnerDebtService.get_single_partner_debt_detail(
-                partner
-            )
-
-            notification = CampaignNotification(
-                campaign=self,
-                partner=partner,
-                notification_type=notification_type,
-                channel=choices.NotificationChannel.WHATSAPP,  # Default channel
-                recipient_email=partner.email,
-                recipient_phone=partner.phone,
-                total_debt_amount=partner_debt["total_debt"],
-                included_payment_link=self.use_payment_link,
-                created_by=self.created_by,
-                modified_by=self.modified_by,
-            )
-            notifications.append(notification)
-
-        # Bulk create notifications
-        if notifications:
-            CampaignNotification.objects.bulk_create(notifications)
-
-        return notifications
+        return services.CampaignNotificationService.create_notifications_for_partners(
+            self, notification_type, partners
+        )
 
     def get_notification_summary(self):
         """Get summary of notifications for this campaign."""
-        from django.db.models import Count
 
-        summary = self.notifications.aggregate(
-            total=Count("id"),
-            pending=Count(
-                "id", filter=models.Q(status=choices.NotificationStatus.PENDING)
-            ),
-            sent=Count(
-                "id", filter=models.Q(status=choices.NotificationStatus.SENT)
-            ),
-            failed=Count(
-                "id", filter=models.Q(status=choices.NotificationStatus.FAILED)
-            ),
+        return services.CampaignNotificationService.get_notification_summary(
+            self
         )
 
-        return {
-            "total_notifications": summary["total"] or 0,
-            "pending_notifications": summary["pending"] or 0,
-            "sent_notifications": summary["sent"] or 0,
-            "failed_notifications": summary["failed"] or 0,
-        }
+    @property
+    def notification_progress_percentage(self):
+        """Get the percentage of notifications that have been processed."""
+
+        return services.CampaignNotificationService.calculate_notification_progress_percentage(
+            self
+        )
+
+    def should_be_completed(self):
+        """Check if campaign should be marked as completed based on notification status."""
+
+        summary = self.get_notification_summary()
+        return services.CampaignExecutionService._should_be_completed(
+            self, summary
+        )
+
+    @classmethod
+    def get_status_flow_info(cls):
+        """
+        Get information about the campaign status flow and transitions.
+
+        Returns:
+            dict: Information about status flow, valid transitions, and descriptions
+        """
+
+        return services.CampaignStatusService.get_status_flow_info()
+
+    def get_current_status_info(self):
+        """Get information about the current status and possible next states."""
+
+        return services.CampaignStatusService.get_current_status_info(self)
 
 
 class CampaignNotification(
@@ -362,7 +373,7 @@ class CampaignNotification(
 
     def __str__(self):
         return (
-            f"{self.campaign.name} - {self.partner.name} - "
+            f"{self.campaign.name} - {self.partner.full_name} - "
             f"{self.get_notification_type_display()} ({self.get_status_display()})"
         )
 
@@ -401,3 +412,87 @@ class CampaignNotification(
         self.attempt_count += 1
         self.last_attempt_at = timezone.now()
         self.save(update_fields=["attempt_count", "last_attempt_at"])
+
+
+class MessageTemplate(
+    core_models.NameDescription,
+    core_models.BaseUserTracked,
+    TimeStampedModel,
+):
+    """Model to store WhatsApp message templates for campaigns."""
+
+    template_type = models.CharField(
+        _("Template Type"),
+        max_length=20,
+        choices=choices.NotificationType.choices,
+        help_text=_("Type of notification this template is for."),
+    )
+    channel = models.CharField(
+        _("Channel"),
+        max_length=20,
+        choices=choices.NotificationChannel.choices,
+        default=choices.NotificationChannel.WHATSAPP,
+        help_text=_("Communication channel for this template."),
+    )
+    subject = models.CharField(
+        _("Subject"),
+        max_length=200,
+        null=True,
+        blank=True,
+        help_text=_("Subject line for email notifications (optional)."),
+    )
+    message_body = models.TextField(
+        _("Message Body"),
+        help_text=_(
+            "Template body with placeholders: {partner_name}, {debt_amount}, "
+            "{payment_link}, {due_date}, {company_name}, {contact_phone}"
+        ),
+    )
+    is_active = models.BooleanField(
+        _("Is Active"),
+        default=True,
+        help_text=_("Whether this template is currently active."),
+    )
+    whatsapp_template_name = models.CharField(
+        _("WhatsApp Template Name"),
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text=_(
+            "Name of the approved WhatsApp Business template (if using templates)."
+        ),
+    )
+    include_payment_button = models.BooleanField(
+        _("Include Payment Button"),
+        default=False,
+        help_text=_("Whether to include a payment button/link in the message."),
+    )
+    payment_button_text = models.CharField(
+        _("Payment Button Text"),
+        max_length=50,
+        default="Pagar ahora",
+        help_text=_("Text to display on the payment button/link."),
+    )
+
+    class Meta:
+        verbose_name = _("Message Template")
+        verbose_name_plural = _("Message Templates")
+        ordering = ["-created"]
+        unique_together = [("template_type", "channel", "is_active")]
+
+    def __str__(self):
+        return f"{self.name} ({self.get_template_type_display()} - {self.get_channel_display()})"
+
+    def render_message(self, context: dict) -> str:
+        """
+        Render the message template with provided context.
+
+        Args:
+            context: Dictionary with values for template placeholders
+
+        Returns:
+            str: Rendered message with placeholders replaced
+        """
+        from apps.campaigns.services import MessageTemplateService
+
+        return MessageTemplateService.render_template_message(self, context)

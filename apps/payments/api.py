@@ -5,7 +5,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from apps.partners.models import Partner
-from apps.payments import models, serializers, utils
+from apps.payments import models, serializers, services
 
 
 @extend_schema(exclude=True)
@@ -26,7 +26,7 @@ class PartnerPaymentSummaryAPIView(generics.RetrieveAPIView):
         )
 
         # Get pending debts using utils
-        pending_debts = utils.get_partner_pending_debts(partner)
+        pending_debts = services.get_partner_pending_debts(partner)
 
         # Calculate totals from pending debts
         overdue_count = (
@@ -95,7 +95,7 @@ class PaymentConceptAllocationCreateAPIView(generics.CreateAPIView):
         payment = get_object_or_404(models.Payment, id=payment_id)
 
         # Get the concept object based on type
-        concept_object = utils.get_concept_object_by_type_and_id(
+        concept_object = services.get_concept_object_by_type_and_id(
             concept_type, concept_id
         )
         if not concept_object:
@@ -179,7 +179,7 @@ class ProcessPaymentAPIView(generics.CreateAPIView):
             partner = get_object_or_404(Partner, id=partner_id)
 
             # Process the payment using utils
-            payment, allocations = utils.process_payment_with_allocations(
+            payment, allocations = services.process_payment_with_allocations(
                 partner=partner,
                 amount=amount,
                 payment_method=payment_method,
@@ -319,7 +319,7 @@ class AutoAllocatePaymentAPIView(generics.UpdateAPIView):
 
         try:
             # Get available concepts for allocation
-            available_concepts = utils.get_available_concepts_for_payment(
+            available_concepts = services.get_available_concepts_for_payment(
                 payment
             )
 
@@ -330,7 +330,7 @@ class AutoAllocatePaymentAPIView(generics.UpdateAPIView):
                 )
 
             # Auto allocate payment
-            allocations = utils.auto_allocate_payment_to_best_match(
+            allocations = services.auto_allocate_payment_to_best_match(
                 payment=payment, available_concepts=available_concepts
             )
 

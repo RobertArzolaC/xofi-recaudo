@@ -22,6 +22,15 @@
         </i>
         {% trans "Edit" %}
     </a>
+    {% if campaign.status == "ACTIVE" or campaign.status == "SCHEDULED" %}
+    <button type="button" id="executeCampaignBtn" class="btn btn-sm btn-success" data-campaign-id="{{ campaign.pk }}">
+        <i class="ki-duotone ki-rocket fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Execute Campaign" %}
+    </button>
+    {% endif %}
     {% endif %}
 </div>
 {% endblock %}
@@ -43,14 +52,26 @@
                         <div class="mb-9">
                             {% if campaign.status == "DRAFT" %}
                                 <div class="badge badge-lg badge-light-secondary d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "SCHEDULED" %}
+                                <div class="badge badge-lg badge-light-primary d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "PROCESSING" %}
+                                <div class="badge badge-lg badge-light-info d-inline">
+                                    <i class="fas fa-spinner fa-spin"></i> {{ campaign.get_status_display }}
+                                </div>
+                            {% elif campaign.status == "SENDING" %}
+                                <div class="badge badge-lg badge-info d-inline">
+                                    <i class="fas fa-paper-plane"></i> {{ campaign.get_status_display }}
+                                </div>
                             {% elif campaign.status == "ACTIVE" %}
                                 <div class="badge badge-lg badge-light-success d-inline">{{ campaign.get_status_display }}</div>
                             {% elif campaign.status == "PAUSED" %}
                                 <div class="badge badge-lg badge-light-warning d-inline">{{ campaign.get_status_display }}</div>
                             {% elif campaign.status == "COMPLETED" %}
-                                <div class="badge badge-lg badge-light-info d-inline">{{ campaign.get_status_display }}</div>
-                            {% elif campaign.status == "CANCELLED" %}
+                                <div class="badge badge-lg badge-success d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "FAILED" %}
                                 <div class="badge badge-lg badge-light-danger d-inline">{{ campaign.get_status_display }}</div>
+                            {% elif campaign.status == "CANCELLED" %}
+                                <div class="badge badge-lg badge-danger d-inline">{{ campaign.get_status_display }}</div>
                             {% endif %}
                         </div>
                     </div>
@@ -72,86 +93,81 @@
                             {% endif %}
                         </div>
 
-                        <div class="fw-bold mt-5">{% trans "Start Date" %}</div>
-                        <div class="text-gray-600">{{ campaign.start_date|date:"F d, Y"|default:"-" }}</div>
-
-                        <div class="fw-bold mt-5">{% trans "End Date" %}</div>
-                        <div class="text-gray-600">{{ campaign.end_date|date:"F d, Y"|default:"-" }}</div>
+                        <div class="fw-bold mt-5">{% trans "Execution Date" %}</div>
+                        <div class="text-gray-600">
+                            {% if campaign.execution_date %}
+                                {{ campaign.execution_date|date:"F d, Y" }} - {{ campaign.execution_date|time:"H:i" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
 
                         <div class="fw-bold mt-5">{% trans "Target Amount" %}</div>
-                        <div class="text-gray-600">{{ campaign.target_amount|floatformat:2|default:"-" }}</div>
-
-                        <div class="fw-bold mt-5">{% trans "Execution Time" %}</div>
-                        <div class="text-gray-600">{{ campaign.execution_time|time:"H:i"|default:"-" }}</div>
+                        <div class="text-gray-600">
+                            {% if campaign.target_amount %}
+                                S/ {{ campaign.target_amount|floatformat:2 }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Notification Configuration -->
+        <!-- Campaign Statistics -->
         <div class="col-xl-6">
             <div class="card card-flush mb-6 mb-xl-9">
                 <div class="card-header">
                     <div class="card-title">
-                        <h2 class="mb-0">{% trans "Notification Configuration" %}</h2>
+                        <h2 class="mb-0">{% trans "Campaign Statistics" %}</h2>
                     </div>
                 </div>
                 <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <table class="table align-middle table-row-dashed fs-6 gy-5">
-                            <tbody class="text-gray-600 fw-semibold">
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Notify 3 Days Before" %}</td>
-                                    <td>
-                                        {% if campaign.notify_3_days_before %}
-                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
-                                        {% else %}
-                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Notify on Due Date" %}</td>
-                                    <td>
-                                        {% if campaign.notify_on_due_date %}
-                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
-                                        {% else %}
-                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Notify 3 Days After" %}</td>
-                                    <td>
-                                        {% if campaign.notify_3_days_after %}
-                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
-                                        {% else %}
-                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Notify 7 Days After" %}</td>
-                                    <td>
-                                        {% if campaign.notify_7_days_after %}
-                                            <span class="badge badge-light-success">{% trans "Yes" %}</span>
-                                        {% else %}
-                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Use Payment Link" %}</td>
-                                    <td>
-                                        {% if campaign.use_payment_link %}
-                                            <span class="badge badge-light-primary">{% trans "Yes" %}</span>
-                                        {% else %}
-                                            <span class="badge badge-light-secondary">{% trans "No" %}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="d-flex flex-column">
+                        <div class="d-flex align-items-center mb-7">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-success">
+                                    <i class="ki-duotone ki-calendar fs-2x text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="text-gray-800 fs-6 fw-bold d-block">{% trans "Scheduled Execution" %}</span>
+                                <span class="text-gray-400 fw-semibold d-block">
+                                    {% if campaign.execution_date %}
+                                        {{ campaign.execution_date|date:"F d, Y - H:i" }}
+                                    {% else %}
+                                        {% trans "Not scheduled" %}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-7">
+                            <div class="symbol symbol-50px me-5">
+                                <span class="symbol-label bg-light-primary">
+                                    <i class="ki-duotone ki-wallet fs-2x text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="text-gray-800 fs-6 fw-bold d-block">{% trans "Payment Link" %}</span>
+                                <span class="text-gray-400 fw-semibold d-block">
+                                    {% if campaign.use_payment_link %}
+                                        <span class="badge badge-light-success">{% trans "Enabled" %}</span>
+                                    {% else %}
+                                        <span class="badge badge-light-secondary">{% trans "Disabled" %}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -208,3 +224,94 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const executeBtn = document.getElementById('executeCampaignBtn');
+
+    if (executeBtn) {
+        executeBtn.addEventListener('click', function() {
+            const campaignId = this.getAttribute('data-campaign-id');
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+
+            // Disable button and show loading state
+            executeBtn.disabled = true;
+            const originalHTML = executeBtn.innerHTML;
+            executeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{% trans "Executing..." %}';
+
+            // Send AJAX request
+            fetch(`/campaigns/campaign/${campaignId}/execute/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: '{% trans "Campaign Queued" %}',
+                        html: `
+                            <p>${data.message}</p>
+                            <div class="alert alert-info mt-3">
+                                <strong>{% trans "Task ID" %}:</strong> ${data.task_id}<br>
+                                <strong>{% trans "Campaign ID" %}:</strong> ${data.campaign_id}
+                            </div>
+                            <p class="text-muted mt-2">{% trans "The campaign will be processed in the background. You can monitor its progress by refreshing this page." %}</p>
+                        `,
+                        confirmButtonText: '{% trans "Reload Page" %}',
+                        showCancelButton: true,
+                        cancelButtonText: '{% trans "Close" %}'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        } else {
+                            // Re-enable button
+                            executeBtn.disabled = false;
+                            executeBtn.innerHTML = originalHTML;
+                        }
+                    });
+                } else {
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: '{% trans "Execution Failed" %}',
+                        html: `
+                            <p>{% trans "The campaign could not be executed:" %}</p>
+                            <div class="alert alert-danger mt-3">
+                                ${data.error}
+                            </div>
+                        `,
+                        confirmButtonText: '{% trans "Close" %}'
+                    });
+
+                    // Re-enable button
+                    executeBtn.disabled = false;
+                    executeBtn.innerHTML = originalHTML;
+                }
+            })
+            .catch(error => {
+                console.error('Error executing campaign:', error);
+
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: '{% trans "Error" %}',
+                    text: '{% trans "An unexpected error occurred while executing the campaign." %}',
+                    confirmButtonText: '{% trans "Close" %}'
+                });
+
+                // Re-enable button
+                executeBtn.disabled = false;
+                executeBtn.innerHTML = originalHTML;
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

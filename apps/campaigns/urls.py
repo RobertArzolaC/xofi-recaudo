@@ -27,6 +27,11 @@ urlpatterns = [
         views.CampaignDeleteView.as_view(),
         name="campaign-delete",
     ),
+    path(
+        "campaign/<int:pk>/execute/",
+        views.CampaignExecuteView.as_view(),
+        name="campaign-execute",
+    ),
     # Group URLs
     path("groups/", views.GroupListView.as_view(), name="group-list"),
     path(

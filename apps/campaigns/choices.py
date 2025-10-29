@@ -6,9 +6,13 @@ class CampaignStatus(models.TextChoices):
     """Status choices for campaigns."""
 
     DRAFT = "DRAFT", _("Draft")
+    SCHEDULED = "SCHEDULED", _("Scheduled")
+    PROCESSING = "PROCESSING", _("Processing")
+    SENDING = "SENDING", _("Sending")
     ACTIVE = "ACTIVE", _("Active")
     PAUSED = "PAUSED", _("Paused")
     COMPLETED = "COMPLETED", _("Completed")
+    FAILED = "FAILED", _("Failed")
     CANCELLED = "CANCELLED", _("Cancelled")
 
 
@@ -24,10 +28,7 @@ class GroupPriority(models.IntegerChoices):
 class NotificationType(models.TextChoices):
     """Types of campaign notifications."""
 
-    BEFORE_3_DAYS = "BEFORE_3_DAYS", _("3 Days Before Due Date")
-    ON_DUE_DATE = "ON_DUE_DATE", _("On Due Date")
-    AFTER_3_DAYS = "AFTER_3_DAYS", _("3 Days After Due Date")
-    AFTER_7_DAYS = "AFTER_7_DAYS", _("7 Days After Due Date")
+    SCHEDULED = "SCHEDULED", _("Scheduled Notification")
 
 
 class NotificationStatus(models.TextChoices):

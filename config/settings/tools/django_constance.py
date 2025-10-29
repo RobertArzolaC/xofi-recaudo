@@ -16,6 +16,7 @@ CONSTANCE_CONFIG = {
     "PROJECT_NAME": ("Project Name", _("Project name.")),
     "COMPANY_LOGO": ("default.png", _("Company logo"), "image_field"),
     "COMPANY_DOMAIN": ("https://company.com/", _("Website domain.")),
+    "COMPANY_PHONE": ("+51 999 999 999", _("Company contact phone.")),
     "JSON_FIELD_EXAMPLE": (
         {"name": "test"},
         _("Test json field"),
@@ -52,8 +53,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "fields": (
             "PROJECT_NAME",
             "COMPANY_LOGO",
-            "JSON_FIELD_EXAMPLE",
             "COMPANY_DOMAIN",
+            "COMPANY_PHONE",
             "ENABLE_SEND_EMAIL",
             "ENABLE_VERIFICATION_EMAIL",
             "ITEMS_PER_PAGE",
