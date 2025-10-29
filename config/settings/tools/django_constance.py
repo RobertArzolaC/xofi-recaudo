@@ -66,8 +66,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "SOCIAL_SECURITY_AMOUNT",
             "CONTRIBUTION_DUE_DAY",
             "SOCIAL_SECURITY_DUE_DAY",
-            "ENABLE_CONTRIBUTION_CREATION",
-            "ENABLE_SOCIAL_SECURITY_CREATION",
         ),
         "collapse": False,
     },

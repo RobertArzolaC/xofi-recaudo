@@ -1,10 +1,18 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from apps.partners import autocompletes, views
+from apps.partners import autocompletes, views, viewsets
 
 app_name = "apps.partners"
 
+# API Router
+router = DefaultRouter()
+router.register(r"partners", viewsets.PartnerViewSet, basename="partner")
+
 urlpatterns = [
+    # API URLs
+    path("api/", include(router.urls)),
+    # Web URLs
     # Applicant URLs
     path(
         "applicants/", views.ApplicantListView.as_view(), name="applicant-list"

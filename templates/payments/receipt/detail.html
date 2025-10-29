@@ -1,0 +1,214 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title_page %}{% trans "Payment Receipt Detail" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Payment Receipt Detail" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:payment-receipt-list' %}" class="btn btn-sm btn-light me-2">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back to List" %}
+    </a>
+    {% if perms.payments.change_paymentreceipt and receipt.status == "PENDING" %}
+    <a href="{% url 'apps.payments:payment-receipt-edit' receipt.pk %}" class="btn btn-sm btn-primary me-2">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+    {% if perms.payments.delete_paymentreceipt %}
+    <a href="{% url 'apps.payments:payment-receipt-delete' receipt.pk %}" class="btn btn-sm btn-danger">
+        <i class="ki-duotone ki-trash fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+            <span class="path4"></span>
+            <span class="path5"></span>
+        </i>
+        {% trans "Delete" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Receipt Information -->
+        <div class="col-xl-6">
+            <div class="card card-flush h-100">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{% trans "Receipt Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-4">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Partner" %}</td>
+                                    <td class="text-gray-900">
+                                        <a href="{% url 'apps.partners:partner-detail' receipt.partner.pk %}" class="text-gray-900 text-hover-primary">
+                                            {{ receipt.partner.full_name }}
+                                        </a>
+                                        <br>
+                                        <span class="text-muted fs-7">{{ receipt.partner.document_number }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Amount" %}</td>
+                                    <td class="text-gray-900 fw-bold fs-4">
+                                        S/ {{ receipt.amount|floatformat:2|intcomma }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Payment Date" %}</td>
+                                    <td class="text-gray-900">
+                                        {{ receipt.payment_date|date:"d/m/Y" }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Status" %}</td>
+                                    <td>
+                                        {% if receipt.status == "PENDING" %}
+                                            <span class="badge badge-warning">{{ receipt.get_status_display }}</span>
+                                        {% elif receipt.status == "APPROVED" %}
+                                            <span class="badge badge-success">{{ receipt.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">{{ receipt.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if receipt.payment %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Linked Payment" %}</td>
+                                    <td>
+                                        <a href="{% url 'apps.payments:payment-detail' receipt.payment.pk %}" class="text-primary">
+                                            {{ receipt.payment.payment_number }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Receipt File" %}</td>
+                                    <td>
+                                        <a href="{{ receipt.receipt_file.url }}" target="_blank" class="btn btn-sm btn-light-primary">
+                                            <i class="ki-duotone ki-file fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Download File" %}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% if receipt.notes %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Notes" %}</td>
+                                    <td class="text-gray-900">{{ receipt.notes }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation Information -->
+        <div class="col-xl-6">
+            <div class="card card-flush h-100">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{% trans "Validation Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-4">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Validated By" %}</td>
+                                    <td class="text-gray-900">
+                                        {% if receipt.validated_by %}
+                                            {{ receipt.validated_by.full_name }}
+                                        {% else %}
+                                            <span class="text-muted">{% trans "Not validated yet" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Validated At" %}</td>
+                                    <td class="text-gray-900">
+                                        {% if receipt.validated_at %}
+                                            {{ receipt.validated_at|date:"d/m/Y H:i" }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if receipt.validation_notes %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Validation Notes" %}</td>
+                                    <td class="text-gray-900">
+                                        {{ receipt.validation_notes }}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Created" %}</td>
+                                    <td class="text-gray-900">
+                                        {{ receipt.created|date:"d/m/Y H:i" }}
+                                        {% if receipt.created_by %}
+                                            <br><span class="text-muted fs-7">{% trans "by" %} {{ receipt.created_by.get_full_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">{% trans "Last Modified" %}</td>
+                                    <td class="text-gray-900">
+                                        {{ receipt.modified|date:"d/m/Y H:i" }}
+                                        {% if receipt.modified_by %}
+                                            <br><span class="text-muted fs-7">{% trans "by" %} {{ receipt.modified_by.get_full_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Preview -->
+    {% if receipt.receipt_file %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{% trans "Receipt Preview" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if receipt.receipt_file.name|slice:"-4:" == ".pdf" or receipt.receipt_file.name|slice:"-4:" == ".PDF" %}
+                        <iframe src="{{ receipt.receipt_file.url }}" style="width: 100%; height: 600px;" frameborder="0"></iframe>
+                    {% else %}
+                        <img src="{{ receipt.receipt_file.url }}" alt="{% trans 'Receipt' %}" class="img-fluid">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

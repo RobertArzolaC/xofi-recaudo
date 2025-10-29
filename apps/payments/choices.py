@@ -38,3 +38,11 @@ class PaymentConcept(models.TextChoices):
     CONTRIBUTION = "CONTRIBUTION", _("Contribution")
     SOCIAL_SECURITY = "SOCIAL_SECURITY", _("Social Security")
     PENALTY = "PENALTY", _("Penalty")
+
+
+class ReceiptStatus(models.TextChoices):
+    """Choices for payment receipt validation status."""
+
+    PENDING = "PENDING", _("Pending")
+    APPROVED = "APPROVED", _("Approved")
+    REJECTED = "REJECTED", _("Rejected")

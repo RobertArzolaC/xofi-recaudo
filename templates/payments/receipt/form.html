@@ -1,0 +1,166 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ form_title }}{% endblock title_page %}
+{% block toolbar_title %}{{ form_title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:payment-receipt-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form" id="receipt-form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Receipt Information Card -->
+            <div class="col-xl-8">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Receipt Information" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.partner.label }}</label>
+                                {{ form.partner|add_class:"form-select" }}
+                                {% if form.partner.errors %}
+                                    <div class="text-danger fs-7">{{ form.partner.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">{% trans "Select the partner who made the payment" %}</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.payment.label }}</label>
+                                {{ form.payment|add_class:"form-select" }}
+                                {% if form.payment.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">{% trans "Optionally link this receipt to an existing payment" %}</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.receipt_file.label }}</label>
+                                {{ form.receipt_file|add_class:"form-control" }}
+                                {% if form.receipt_file.errors %}
+                                    <div class="text-danger fs-7">{{ form.receipt_file.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">{% trans "Accepted formats: PDF, JPG, PNG (Max size: 5MB)" %}</div>
+                                {% if form.instance.receipt_file %}
+                                <div class="mt-2">
+                                    <a href="{{ form.instance.receipt_file.url }}" target="_blank" class="btn btn-sm btn-light-primary">
+                                        <i class="ki-duotone ki-file fs-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "View Current File" %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.amount.label }}</label>
+                                {{ form.amount|add_class:"form-control" }}
+                                {% if form.amount.errors %}
+                                    <div class="text-danger fs-7">{{ form.amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.payment_date.label }}</label>
+                                {{ form.payment_date|add_class:"form-control" }}
+                                {% if form.payment_date.errors %}
+                                    <div class="text-danger fs-7">{{ form.payment_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12">
+                                <label class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes|add_class:"form-control" }}
+                                {% if form.notes.errors %}
+                                    <div class="text-danger fs-7">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="col-xl-4">
+                <div class="card card-flush">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Actions" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column gap-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ki-duotone ki-check fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {{ submit_text }}
+                            </button>
+                            <a href="{% url 'apps.payments:payment-receipt-list' %}" class="btn btn-light w-100">
+                                <i class="ki-duotone ki-cross fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Cancel" %}
+                            </a>
+                        </div>
+
+                        {% if form.instance.pk %}
+                        <div class="separator separator-dashed my-6"></div>
+                        <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                            <i class="ki-duotone ki-information-5 fs-2tx text-primary me-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <div class="d-flex flex-stack flex-grow-1">
+                                <div class="fw-semibold">
+                                    <h4 class="text-gray-900 fw-bold">{% trans "Receipt Status" %}</h4>
+                                    <div class="fs-6 text-gray-700">
+                                        {% if form.instance.status == "PENDING" %}
+                                            <span class="badge badge-warning">{{ form.instance.get_status_display }}</span>
+                                        {% elif form.instance.status == "APPROVED" %}
+                                            <span class="badge badge-success">{{ form.instance.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">{{ form.instance.get_status_display }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

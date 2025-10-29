@@ -316,3 +316,104 @@ class PartnerPaymentForm(forms.Form):
             raise ValidationError(_("Please enter a valid payment amount."))
 
         return cleaned_data
+
+
+class PaymentReceiptForm(forms.ModelForm):
+    """Form for creating and editing payment receipts."""
+
+    class Meta:
+        model = models.PaymentReceipt
+        fields = [
+            "partner",
+            "payment",
+            "receipt_file",
+            "amount",
+            "payment_date",
+            "notes",
+        ]
+        widgets = {
+            "partner": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
+            ),
+            "payment": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
+            ),
+            "receipt_file": forms.FileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": ".pdf,.jpg,.jpeg,.png",
+                }
+            ),
+            "amount": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "step": "0.01",
+                    "min": "0.01",
+                }
+            ),
+            "payment_date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                },
+                format="%Y-%m-%d",
+            ),
+            "notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with dynamic queryset filtering."""
+        super().__init__(*args, **kwargs)
+
+        # Optimize partner queryset
+        self.fields["partner"].queryset = Partner.objects.select_related().order_by(
+            "first_name"
+        )
+
+        # Make payment field optional
+        self.fields["payment"].required = False
+
+        # Filter payments if editing
+        if self.instance.pk and self.instance.partner:
+            self.fields["payment"].queryset = models.Payment.objects.filter(
+                partner=self.instance.partner
+            ).order_by("-created")
+        else:
+            self.fields["payment"].queryset = models.Payment.objects.none()
+
+    def clean_receipt_file(self):
+        """Validate receipt file format and size."""
+        receipt_file = self.cleaned_data.get("receipt_file")
+
+        if receipt_file:
+            # Validate file extension
+            allowed_extensions = ["pdf", "jpg", "jpeg", "png"]
+            file_extension = receipt_file.name.split(".")[-1].lower()
+
+            if file_extension not in allowed_extensions:
+                raise ValidationError(
+                    _(
+                        "Invalid file format. Allowed formats: PDF, JPG, JPEG, PNG"
+                    )
+                )
+
+            # Validate file size (max 5MB)
+            max_size = 5 * 1024 * 1024  # 5MB in bytes
+            if receipt_file.size > max_size:
+                raise ValidationError(_("File size must not exceed 5MB."))
+
+        return receipt_file
+
+    def clean_amount(self):
+        """Validate amount is positive."""
+        amount = self.cleaned_data.get("amount")
+
+        if amount and amount <= 0:
+            raise ValidationError(_("Amount must be greater than zero."))
+
+        return amount

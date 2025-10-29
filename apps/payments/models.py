@@ -257,3 +257,137 @@ class PaymentConceptAllocation(
 
     # Custom manager
     objects = managers.PaymentConceptAllocationManager()
+
+
+class PaymentReceipt(
+    core_models.BaseUserTracked,
+    TimeStampedModel,
+):
+    """Model to represent payment receipts/vouchers uploaded by partners."""
+
+    partner = models.ForeignKey(
+        "partners.Partner",
+        on_delete=models.PROTECT,
+        related_name="payment_receipts",
+        help_text=_("Partner who uploaded the receipt."),
+    )
+    payment = models.ForeignKey(
+        Payment,
+        on_delete=models.SET_NULL,
+        related_name="receipts",
+        null=True,
+        blank=True,
+        help_text=_("Associated payment if linked."),
+    )
+    receipt_file = models.FileField(
+        _("Receipt File"),
+        upload_to="payment_receipts/%Y/%m/%d/",
+        help_text=_("Uploaded receipt file (PDF, JPG, PNG)."),
+    )
+    amount = models.DecimalField(
+        _("Amount"),
+        max_digits=12,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+        help_text=_("Amount shown on the receipt."),
+    )
+    payment_date = models.DateField(
+        _("Payment Date"),
+        help_text=_("Date when the payment was made according to the receipt."),
+    )
+    status = models.CharField(
+        _("Validation Status"),
+        max_length=20,
+        choices=choices.ReceiptStatus.choices,
+        default=choices.ReceiptStatus.PENDING,
+        help_text=_("Validation status of the receipt."),
+    )
+    validation_notes = models.TextField(
+        _("Validation Notes"),
+        blank=True,
+        help_text=_("Notes from the employee who validated the receipt."),
+    )
+    validated_by = models.ForeignKey(
+        "team.Employee",
+        on_delete=models.SET_NULL,
+        related_name="validated_receipts",
+        null=True,
+        blank=True,
+        help_text=_("Employee who validated this receipt."),
+    )
+    validated_at = models.DateTimeField(
+        _("Validated At"),
+        null=True,
+        blank=True,
+        help_text=_("Date and time when the receipt was validated."),
+    )
+    notes = models.TextField(
+        _("Notes"),
+        blank=True,
+        help_text=_("Additional notes about the receipt."),
+    )
+
+    class Meta:
+        verbose_name = _("Payment Receipt")
+        verbose_name_plural = _("Payment Receipts")
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["partner"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["payment_date"]),
+            models.Index(fields=["-created"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Receipt for {self.partner.full_name} - ${self.amount:,.2f} - {self.get_status_display()}"
+
+    def approve(self, employee, notes=""):
+        """Approve the receipt."""
+        if self.status == choices.ReceiptStatus.PENDING:
+            self.status = choices.ReceiptStatus.APPROVED
+            self.validated_by = employee
+            self.validated_at = timezone.now()
+            self.validation_notes = notes
+            self.save(
+                update_fields=[
+                    "status",
+                    "validated_by",
+                    "validated_at",
+                    "validation_notes",
+                ]
+            )
+            return True
+        return False
+
+    def reject(self, employee, notes=""):
+        """Reject the receipt."""
+        if self.status == choices.ReceiptStatus.PENDING:
+            self.status = choices.ReceiptStatus.REJECTED
+            self.validated_by = employee
+            self.validated_at = timezone.now()
+            self.validation_notes = notes
+            self.save(
+                update_fields=[
+                    "status",
+                    "validated_by",
+                    "validated_at",
+                    "validation_notes",
+                ]
+            )
+            return True
+        return False
+
+    @property
+    def is_pending(self) -> bool:
+        """Check if receipt is pending validation."""
+        return self.status == choices.ReceiptStatus.PENDING
+
+    @property
+    def is_approved(self) -> bool:
+        """Check if receipt is approved."""
+        return self.status == choices.ReceiptStatus.APPROVED
+
+    @property
+    def is_rejected(self) -> bool:
+        """Check if receipt is rejected."""
+        return self.status == choices.ReceiptStatus.REJECTED

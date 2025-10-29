@@ -1,11 +1,18 @@
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from apps.payments import api, views
+from apps.payments import api, views, viewsets
 
 app_name = "apps.payments"
 
+# API Router
+router = DefaultRouter()
+router.register(r"receipts", viewsets.PaymentReceiptViewSet, basename="receipt")
+
 # Main URLs for payments module
 urlpatterns = [
+    # API URLs - Router
+    path("api/", include(router.urls)),
     # Payment CRUD views
     path("payments/", views.PaymentListView.as_view(), name="payment-list"),
     path(
@@ -27,6 +34,32 @@ urlpatterns = [
         "payment/<int:pk>/delete/",
         views.PaymentDeleteView.as_view(),
         name="payment-delete",
+    ),
+    # Payment Receipt CRUD views
+    path(
+        "receipts/",
+        views.PaymentReceiptListView.as_view(),
+        name="payment-receipt-list",
+    ),
+    path(
+        "receipt/create/",
+        views.PaymentReceiptCreateView.as_view(),
+        name="payment-receipt-create",
+    ),
+    path(
+        "receipt/<int:pk>/",
+        views.PaymentReceiptDetailView.as_view(),
+        name="payment-receipt-detail",
+    ),
+    path(
+        "receipt/<int:pk>/edit/",
+        views.PaymentReceiptUpdateView.as_view(),
+        name="payment-receipt-edit",
+    ),
+    path(
+        "receipt/<int:pk>/delete/",
+        views.PaymentReceiptDeleteView.as_view(),
+        name="payment-receipt-delete",
     ),
     # API URLs
     path(

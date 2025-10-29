@@ -236,3 +236,142 @@ class PaymentDeleteView(
             ),
         )
         return response
+
+
+# Payment Receipt Views
+
+
+class PaymentReceiptListView(
+    LoginRequiredMixin, PermissionRequiredMixin, FilterView
+):
+    """View to list payment receipts with filtering capabilities."""
+
+    model = models.PaymentReceipt
+    template_name = "payments/receipt/list.html"
+    context_object_name = "receipts"
+    permission_required = "payments.view_paymentreceipt"
+    paginate_by = config.ITEMS_PER_PAGE
+    filterset_fields = ["status", "partner"]
+
+    def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
+        """Get optimized queryset for receipt list."""
+        return models.PaymentReceipt.objects.select_related(
+            "partner", "payment", "validated_by"
+        ).order_by("-created")
+
+
+class PaymentReceiptDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
+    """View to display payment receipt details."""
+
+    model = models.PaymentReceipt
+    template_name = "payments/receipt/detail.html"
+    context_object_name = "receipt"
+    permission_required = "payments.view_paymentreceipt"
+
+    def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
+        """Get optimized queryset for receipt detail."""
+        return models.PaymentReceipt.objects.select_related(
+            "partner", "payment", "validated_by"
+        )
+
+
+class PaymentReceiptCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
+    """View to create a new payment receipt."""
+
+    model = models.PaymentReceipt
+    form_class = forms.PaymentReceiptForm
+    template_name = "payments/receipt/form.html"
+    permission_required = "payments.add_paymentreceipt"
+
+    def get_success_url(self) -> str:
+        """Return success URL after receipt creation."""
+        return reverse(
+            "apps.payments:payment-receipt-detail", kwargs={"pk": self.object.pk}
+        )
+
+    def form_valid(self, form):
+        """Handle valid form submission."""
+        # Set user tracking fields
+        form.instance.created_by = self.request.user
+        form.instance.modified_by = self.request.user
+
+        response = super().form_valid(form)
+
+        messages.success(
+            self.request,
+            _("Payment receipt has been created successfully."),
+        )
+
+        return response
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add additional context to the template."""
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = _("New Payment Receipt")
+        context["submit_text"] = _("Save Receipt")
+        return context
+
+
+class PaymentReceiptUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
+    """View to update a payment receipt."""
+
+    model = models.PaymentReceipt
+    form_class = forms.PaymentReceiptForm
+    template_name = "payments/receipt/form.html"
+    permission_required = "payments.change_paymentreceipt"
+
+    def get_success_url(self) -> str:
+        """Return success URL after receipt update."""
+        return reverse(
+            "apps.payments:payment-receipt-detail", kwargs={"pk": self.object.pk}
+        )
+
+    def form_valid(self, form):
+        """Handle valid form submission."""
+        # Set modified_by
+        form.instance.modified_by = self.request.user
+
+        response = super().form_valid(form)
+
+        messages.success(
+            self.request,
+            _("Payment receipt has been updated successfully."),
+        )
+
+        return response
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add additional context to the template."""
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = _("Edit Payment Receipt")
+        context["submit_text"] = _("Update Receipt")
+        return context
+
+
+class PaymentReceiptDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
+    """View to delete a payment receipt."""
+
+    model = models.PaymentReceipt
+    template_name = "payments/receipt/confirm_delete.html"
+    permission_required = "payments.delete_paymentreceipt"
+    success_url = reverse_lazy("apps.payments:payment-receipt-list")
+
+    def delete(self, request, *args, **kwargs):
+        """Handle receipt deletion."""
+        receipt = self.get_object()
+
+        response = super().delete(request, *args, **kwargs)
+
+        messages.success(
+            request,
+            _("Payment receipt has been deleted successfully."),
+        )
+        return response
