@@ -422,3 +422,149 @@ class PartnerDebtService:
                 "social_security_debt": Decimal("0.00"),
                 "penalty_debt": Decimal("0.00"),
             }
+
+    @staticmethod
+    def get_partner_overdue_debts(partner, include_upcoming=False, days_ahead=30):
+        """
+        Get all individual overdue debts for a partner.
+
+        Args:
+            partner: Partner instance
+            include_upcoming: Whether to include upcoming debts (default False)
+            days_ahead: Number of days to look ahead for upcoming debts (default 30)
+
+        Returns:
+            Dict: Dictionary with lists of debt objects by type
+        """
+        today = timezone.now().date()
+        future_date = today + timezone.timedelta(days=days_ahead) if include_upcoming else today
+
+        overdue_status = [
+            ComplianceStatus.PENDING,
+            ComplianceStatus.OVERDUE,
+            ComplianceStatus.PARTIAL,
+        ]
+
+        # Get overdue installments
+        overdue_installments = Installment.objects.filter(
+            credit__partner=partner,
+            due_date__lt=today,
+            status__in=[
+                InstallmentStatus.PENDING,
+                InstallmentStatus.PARTIAL,
+                InstallmentStatus.OVERDUE,
+            ],
+        ).order_by("due_date")
+
+        # Get upcoming installments if requested
+        upcoming_installments = []
+        if include_upcoming:
+            upcoming_installments = Installment.objects.filter(
+                credit__partner=partner,
+                due_date__gte=today,
+                due_date__lte=future_date,
+                status=InstallmentStatus.PENDING,
+            ).order_by("due_date")
+
+        # Get overdue contributions
+        overdue_contributions = Contribution.objects.filter(
+            partner=partner,
+            due_date__lt=today,
+            status__in=overdue_status,
+        ).order_by("due_date")
+
+        # Get upcoming contributions if requested
+        upcoming_contributions = []
+        if include_upcoming:
+            upcoming_contributions = Contribution.objects.filter(
+                partner=partner,
+                due_date__gte=today,
+                due_date__lte=future_date,
+                status=ComplianceStatus.PENDING,
+            ).order_by("due_date")
+
+        # Get overdue social security
+        overdue_social_security = SocialSecurity.objects.filter(
+            partner=partner,
+            due_date__lt=today,
+            status__in=overdue_status,
+        ).order_by("due_date")
+
+        # Get upcoming social security if requested
+        upcoming_social_security = []
+        if include_upcoming:
+            upcoming_social_security = SocialSecurity.objects.filter(
+                partner=partner,
+                due_date__gte=today,
+                due_date__lte=future_date,
+                status=ComplianceStatus.PENDING,
+            ).order_by("due_date")
+
+        # Get overdue penalties
+        overdue_penalties = Penalty.objects.filter(
+            partner=partner,
+            due_date__lt=today,
+            status__in=overdue_status,
+        ).order_by("due_date")
+
+        # Get upcoming penalties if requested
+        upcoming_penalties = []
+        if include_upcoming:
+            upcoming_penalties = Penalty.objects.filter(
+                partner=partner,
+                due_date__gte=today,
+                due_date__lte=future_date,
+                status=ComplianceStatus.PENDING,
+            ).order_by("due_date")
+
+        # Combine all debts
+        all_debts = (
+            list(overdue_installments)
+            + list(upcoming_installments)
+            + list(overdue_contributions)
+            + list(upcoming_contributions)
+            + list(overdue_social_security)
+            + list(upcoming_social_security)
+            + list(overdue_penalties)
+            + list(upcoming_penalties)
+        )
+
+        # Sort all debts by due date
+        all_debts.sort(key=lambda x: x.due_date)
+
+        return {
+            "installments": {
+                "overdue": list(overdue_installments),
+                "upcoming": list(upcoming_installments),
+            },
+            "contributions": {
+                "overdue": list(overdue_contributions),
+                "upcoming": list(upcoming_contributions),
+            },
+            "social_security": {
+                "overdue": list(overdue_social_security),
+                "upcoming": list(upcoming_social_security),
+            },
+            "penalties": {
+                "overdue": list(overdue_penalties),
+                "upcoming": list(upcoming_penalties),
+            },
+            "all_debts": all_debts,
+        }
+
+    @staticmethod
+    def get_partner_debt_objects_for_payment(partner, include_upcoming=False):
+        """
+        Get all debt objects for a partner ready to be included in a payment link.
+
+        Args:
+            partner: Partner instance
+            include_upcoming: Whether to include upcoming debts (default False)
+
+        Returns:
+            List: List of all debt objects (Installment, Contribution, SocialSecurity, Penalty)
+        """
+        debts = PartnerDebtService.get_partner_overdue_debts(
+            partner, include_upcoming=include_upcoming
+        )
+        return debts["all_debts"]

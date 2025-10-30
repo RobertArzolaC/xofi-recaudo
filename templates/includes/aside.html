@@ -116,7 +116,7 @@
 
         <div class="menu-item">
           {% if perms.payments.view_payment %}
-            <a class="menu-link {% if "payments" in request.path and "receipt" not in request.path %}active{% endif %}" href="{% url 'apps.payments:payment-list' %}">
+            <a class="menu-link {% if "payments" in request.path and "receipt" not in request.path and "magic-link" not in request.path %}active{% endif %}" href="{% url 'apps.payments:payment-list' %}">
               <span class="menu-icon">
                 <i class="ki-duotone ki-bill fs-2 me-2">
                   <span class="path1"></span>
@@ -129,6 +129,22 @@
               </span>
               <span class="menu-title">
                 {% trans 'Payments' %}
+              </span>
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="menu-item">
+          {% if perms.payments.view_magicpaymentlink %}
+            <a class="menu-link {% if "magic-link" in request.path %}active{% endif %}" href="{% url 'apps.payments:magic-link-list' %}">
+              <span class="menu-icon">
+                <i class="ki-duotone ki-document fs-2 me-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </span>
+              <span class="menu-title">
+                {% trans 'Payment Link' %}
               </span>
             </a>
           {% endif %}

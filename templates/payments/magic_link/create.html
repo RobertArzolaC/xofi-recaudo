@@ -1,0 +1,167 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{% trans "Create Magic Payment Link" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Create Magic Payment Link" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.payments:magic-link-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="magic-link-form">
+        {% csrf_token %}
+
+        <!-- Main Information Card -->
+        <div class="card mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">{% trans "Magic Payment Link Information" %}</span>
+                    <span class="text-muted mt-1 fw-semibold fs-7">{% trans "Create a personalized payment link for a partner" %}</span>
+                </h3>
+            </div>
+
+            <div class="card-body py-3">
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-5">
+                    <i class="ki-duotone ki-information-5 fs-2 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <div class="row g-5 g-xl-8">
+                    <!-- Partner Information -->
+                    <div class="col-xl-6">
+                        <div class="fv-row mb-7">
+                            <label class="form-label required">{{ form.document_number.label }}</label>
+                            {{ form.document_number|add_class:"form-control form-control-solid" }}
+                            {% if form.document_number.help_text %}
+                            <div class="form-text">{{ form.document_number.help_text }}</div>
+                            {% endif %}
+                            {% if form.document_number.errors %}
+                            <div class="fv-plugins-message-container">
+                                <span class="fv-help-block">{{ form.document_number.errors.0 }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Link Configuration -->
+                    <div class="col-xl-6">
+                        <div class="fv-row mb-7">
+                            <label class="form-label">{{ form.name.label }}</label>
+                            {{ form.name|add_class:"form-control form-control-solid" }}
+                            {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                            {% endif %}
+                            {% if form.name.errors %}
+                            <div class="fv-plugins-message-container">
+                                <span class="fv-help-block">{{ form.name.errors.0 }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Expiration Hours -->
+                    <div class="col-xl-6">
+                        <div class="fv-row mb-7">
+                            <label class="form-label required">{{ form.hours_to_expire.label }}</label>
+                            {{ form.hours_to_expire|add_class:"form-control form-control-solid" }}
+                            {% if form.hours_to_expire.help_text %}
+                            <div class="form-text">{{ form.hours_to_expire.help_text }}</div>
+                            {% endif %}
+                            {% if form.hours_to_expire.errors %}
+                            <div class="fv-plugins-message-container">
+                                <span class="fv-help-block">{{ form.hours_to_expire.errors.0 }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Include Upcoming Debts -->
+                    <div class="col-xl-6">
+                        <div class="fv-row mb-7">
+                            <div class="form-check form-check-custom form-check-solid">
+                                {{ form.include_upcoming|add_class:"form-check-input" }}
+                                <label class="form-check-label" for="{{ form.include_upcoming.id_for_label }}">
+                                    {{ form.include_upcoming.label }}
+                                </label>
+                            </div>
+                            {% if form.include_upcoming.help_text %}
+                            <div class="form-text mt-2">{{ form.include_upcoming.help_text }}</div>
+                            {% endif %}
+                            {% if form.include_upcoming.errors %}
+                            <div class="fv-plugins-message-container">
+                                <span class="fv-help-block">{{ form.include_upcoming.errors.0 }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Info Card -->
+        <div class="card mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">{% trans "Automatic Configuration" %}</span>
+                    <span class="text-muted mt-1 fw-semibold fs-7">{% trans "Payment link settings" %}</span>
+                </h3>
+            </div>
+            <div class="card-body py-3">
+                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                    <i class="ki-duotone ki-information-5 fs-2tx text-primary me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">{% trans "Configuration Details" %}</h4>
+                            <div class="fs-6 text-gray-700">
+                                <strong>{% trans "Currency:" %}</strong> PEN (Soles)<br>
+                                <strong>{% trans "Selection:" %}</strong> {% trans "Automatic debt selection" %}<br>
+                                <strong>{% trans "Partial Payments:" %}</strong> {% trans "Allowed" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'apps.payments:magic-link-list' %}" class="btn btn-light me-3">
+                        {% trans "Cancel" %}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ki-duotone ki-rocket fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Create Magic Link" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

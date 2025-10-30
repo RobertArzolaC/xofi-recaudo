@@ -11,6 +11,7 @@
 		<link rel="shortcut icon" href="{% static 'assets/images/logos/logo-minimize.webp' %}" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 		{% include 'includes/scripts_css.html' %}
+		{% block extra_css %}{% endblock extra_css %}
 	</head>
 
 	<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled aside-fixed aside-default-enabled">
@@ -22,5 +23,6 @@
 
         {% include 'includes/scripts_js.html' %}
 		{% include 'includes/alerts.html' %}
+		{% block extra_js %}{% endblock extra_js %}
 	</body>
 </html>

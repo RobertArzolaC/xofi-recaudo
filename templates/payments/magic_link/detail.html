@@ -1,0 +1,311 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Magic Payment Link Details" %}{% endblock title_page %}
+{% block toolbar_title %}{{ magic_link.name }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.payments:magic-link-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if magic_link.status == "ACTIVE" %}
+        <span class="badge badge-light-success">{% trans "Active" %}</span>
+    {% elif magic_link.status == "USED" %}
+        <span class="badge badge-light-primary">{% trans "Used" %}</span>
+    {% elif magic_link.status == "EXPIRED" %}
+        <span class="badge badge-light-danger">{% trans "Expired" %}</span>
+    {% elif magic_link.status == "CANCELLED" %}
+        <span class="badge badge-light-warning">{% trans "Cancelled" %}</span>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+
+    <!-- Summary Cards -->
+    <div class="row g-6 g-xl-9 mb-6">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                    <div class="symbol symbol-65px symbol-circle mb-5">
+                        <span class="symbol-label fs-2x fw-semibold text-primary bg-light-primary">
+                            <i class="ki-duotone ki-wallet fs-2x text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
+                        PEN {{ magic_link.amount|floatformat:2 }}<br>
+                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Total Amount" %}</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                    <div class="symbol symbol-65px symbol-circle mb-5">
+                        <span class="symbol-label fs-2x fw-semibold text-success bg-light-success">
+                            <i class="ki-duotone ki-element-11 fs-2x text-success">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
+                        {{ debts_count }}<br>
+                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Debts" %}</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                    <div class="symbol symbol-65px symbol-circle mb-5">
+                        <span class="symbol-label fs-2x fw-semibold text-info bg-light-info">
+                            <i class="ki-duotone ki-calendar fs-2x text-info">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
+                        {{ magic_link.created|date:"M d, Y" }}<br>
+                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Created" %}</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                    <div class="symbol symbol-65px symbol-circle mb-5">
+                        <span class="symbol-label fs-2x fw-semibold {% if magic_link.is_expired %}text-danger bg-light-danger{% else %}text-success bg-light-success{% endif %}">
+                            <i class="ki-duotone ki-timer fs-2x {% if magic_link.is_expired %}text-danger{% else %}text-success{% endif %}">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
+                        {{ magic_link.expires_at|date:"M d, Y" }}<br>
+                        <span class="fw-semibold text-gray-400 fs-6">
+                            {% if magic_link.is_expired %}
+                                {% trans "Expired" %}
+                            {% else %}
+                                {% trans "Expires" %}
+                            {% endif %}
+                        </span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5 g-xl-8">
+        <!-- Partner Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Partner Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Partner Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold text-success">{{ magic_link.partner.initials }}</div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ magic_link.partner.full_name }}</div>
+                        <div class="mb-9">
+                            <div class="badge badge-lg badge-light-primary d-inline">{{ magic_link.partner.document_number }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Link Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Link Title" %}</div>
+                        <div class="text-gray-600">{{ magic_link.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Description" %}</div>
+                        <div class="text-gray-600">{{ magic_link.description|default:"-" }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Partial Payments" %}</div>
+                        <div class="text-gray-600">
+                            <span class="badge badge-light-success">{% trans "Allowed" %}</span>
+                        </div>
+
+                        <div class="fw-bold mt-5">{% trans "Created By" %}</div>
+                        <div class="text-gray-600">{{ magic_link.created_by.get_full_name|default:magic_link.created_by.username }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debts and Actions -->
+        <div class="col-xl-8">
+            <!-- Magic Link Actions Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Payment Link" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="notice d-flex bg-light-{% if magic_link.is_active %}success{% else %}secondary{% endif %} rounded border-{% if magic_link.is_active %}success{% else %}secondary{% endif %} border border-dashed p-6 mb-5">
+                        <i class="ki-duotone ki-rocket fs-2tx text-{% if magic_link.is_active %}success{% else %}secondary{% endif %} me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="d-flex flex-stack flex-grow-1">
+                            <div class="fw-semibold">
+                                <h4 class="text-gray-900 fw-bold">{% trans "Payment Link URL" %}</h4>
+                                <div class="fs-6 text-gray-700 mb-3">
+                                    {% trans "Share this link with the partner to view and pay their debts" %}
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="magic-link-url" class="form-control" value="{{ full_url }}" readonly>
+                                    <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                        <i class="ki-duotone ki-copy fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "Copy" %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Link Metadata -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="fw-bold">{% trans "Token" %}</div>
+                            <div class="text-gray-600"><code class="fs-6">{{ magic_link.token }}</code></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fw-bold">{% trans "Created" %}</div>
+                            <div class="text-gray-600">{{ magic_link.created|date:"d/m/Y H:i" }}</div>
+                        </div>
+                        {% if magic_link.used_at %}
+                        <div class="col-md-6 mt-3">
+                            <div class="fw-bold">{% trans "Used At" %}</div>
+                            <div class="text-gray-600">{{ magic_link.used_at|date:"d/m/Y H:i" }}</div>
+                        </div>
+                        {% endif %}
+                        {% if magic_link.payment %}
+                        <div class="col-md-6 mt-3">
+                            <div class="fw-bold">{% trans "Associated Payment" %}</div>
+                            <a href="{% url 'apps.payments:payment-detail' magic_link.payment.pk %}" class="btn btn-sm btn-light-primary">
+                                {% trans "View Payment" %} #{{ magic_link.payment.payment_number }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Included Debts Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Included Debts" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if debts %}
+                    <div class="table-responsive">
+                        <table class="table align-middle gs-0 gy-4">
+                            <thead>
+                                <tr class="fw-bold text-muted">
+                                    <th class="min-w-100px">{% trans "Type" %}</th>
+                                    <th class="min-w-150px">{% trans "Description" %}</th>
+                                    <th class="min-w-120px">{% trans "Due Date" %}</th>
+                                    <th class="min-w-100px text-end">{% trans "Amount" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for debt in debts %}
+                                <tr>
+                                    <td>
+                                        {% if debt.type == "installment" %}
+                                            <span class="badge badge-light-primary">{% trans "Installment" %}</span>
+                                        {% elif debt.type == "contribution" %}
+                                            <span class="badge badge-light-success">{% trans "Contribution" %}</span>
+                                        {% elif debt.type == "socialsecurity" %}
+                                            <span class="badge badge-light-info">{% trans "Social Security" %}</span>
+                                        {% elif debt.type == "penalty" %}
+                                            <span class="badge badge-light-danger">{% trans "Penalty" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            {% if debt.type == "installment" %}
+                                                <span class="text-dark fw-bold text-hover-primary fs-6">{% trans "Installment" %} #{{ debt.number }}</span>
+                                            {% else %}
+                                                <span class="text-dark fw-bold text-hover-primary fs-6">{{ debt.name }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-gray-900 fw-bold d-block fs-6">
+                                            {{ debt.due_date|date:"d/m/Y" }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="text-gray-900 fw-bold d-block fs-6">
+                                            PEN {{ debt.amount|floatformat:2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-column flex-center">
+                        <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                        <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No debts included" %}</div>
+                        <div class="fs-6">{% trans "This magic link has no associated debts" %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const copyText = document.getElementById('magic-link-url');
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(copyText.value);
+
+    // Show toast notification
+    if (typeof toastr !== 'undefined') {
+        toastr.success('{% trans "Link copied to clipboard!" %}');
+    } else {
+        alert('{% trans "Link copied to clipboard!" %}');
+    }
+}
+</script>
+{% endblock %}

@@ -417,3 +417,72 @@ class PaymentReceiptForm(forms.ModelForm):
             raise ValidationError(_("Amount must be greater than zero."))
 
         return amount
+
+
+class MagicPaymentLinkForm(forms.Form):
+    """Form for creating Magic Payment Links by partner document number."""
+
+    document_number = forms.CharField(
+        max_length=20,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Ingrese el DNI del cliente..."),
+                "autofocus": True,
+            }
+        ),
+        label=_("DNI del Cliente"),
+        help_text=_("Documento de identidad del socio"),
+    )
+
+    name = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Ej: Pago de deudas pendientes - Enero 2025"),
+            }
+        ),
+        label=_("Título del Magic Link"),
+        help_text=_("Se generará automáticamente si se deja vacío"),
+    )
+
+    hours_to_expire = forms.IntegerField(
+        initial=48,
+        min_value=1,
+        max_value=168,  # 7 días máximo
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "min": "1",
+                "max": "168",
+            }
+        ),
+        label=_("Horas de Expiración"),
+        help_text=_("El link expirará en estas horas (máximo 7 días)"),
+    )
+
+    include_upcoming = forms.BooleanField(
+        required=False,
+        initial=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        label=_("Incluir deudas por vencer"),
+        help_text=_("Además de las vencidas, incluir deudas próximas a vencer"),
+    )
+
+    def clean_document_number(self):
+        """Validate that partner exists."""
+        document_number = self.cleaned_data.get("document_number")
+
+        if document_number:
+            try:
+                Partner.objects.get(document_number=document_number)
+            except Partner.DoesNotExist:
+                raise ValidationError(
+                    _("No se encontró un socio con el DNI %(document)s"),
+                    params={"document": document_number},
+                )
+
+        return document_number

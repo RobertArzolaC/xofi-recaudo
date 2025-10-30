@@ -46,3 +46,12 @@ class ReceiptStatus(models.TextChoices):
     PENDING = "PENDING", _("Pending")
     APPROVED = "APPROVED", _("Approved")
     REJECTED = "REJECTED", _("Rejected")
+
+
+class MagicLinkStatus(models.TextChoices):
+    """Choices for magic payment link status."""
+
+    ACTIVE = "ACTIVE", _("Active")
+    USED = "USED", _("Used")
+    EXPIRED = "EXPIRED", _("Expired")
+    CANCELLED = "CANCELLED", _("Cancelled")

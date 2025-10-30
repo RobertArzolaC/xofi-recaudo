@@ -157,3 +157,51 @@ class PaymentConceptAllocationAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+@admin.register(models.MagicPaymentLink)
+class MagicPaymentLinkAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "partner",
+        "amount",
+        "status",
+        "expires_at",
+        "created",
+    ]
+    list_filter = ["status", "created", "expires_at"]
+    search_fields = [
+        "name",
+        "partner__document_number",
+        "partner__first_name",
+        "token",
+    ]
+    readonly_fields = [
+        "token",
+        "created",
+        "modified",
+        "created_by",
+        "modified_by",
+    ]
+    date_hierarchy = "created"
+
+    fieldsets = (
+        ("Información Básica", {"fields": ("partner", "name", "description")}),
+        ("Configuración", {"fields": ("amount", "expires_at", "status")}),
+        ("Link", {"fields": ("token",)}),
+        ("Metadata", {"fields": ("metadata",), "classes": ("collapse",)}),
+        (
+            "Auditoría",
+            {
+                "fields": (
+                    "created",
+                    "modified",
+                    "created_by",
+                    "modified_by",
+                    "used_at",
+                    "payment",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+    )

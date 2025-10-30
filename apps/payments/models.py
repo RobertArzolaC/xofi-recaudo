@@ -1,3 +1,4 @@
+import secrets
 from decimal import Decimal
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -391,3 +392,161 @@ class PaymentReceipt(
     def is_rejected(self) -> bool:
         """Check if receipt is rejected."""
         return self.status == choices.ReceiptStatus.REJECTED
+
+
+class MagicPaymentLink(
+    core_models.NameDescription,
+    core_models.BaseUserTracked,
+    TimeStampedModel,
+):
+    """Model to represent Magic Payment Links for partners.
+
+    A magic link can include multiple debt concepts (installments, contributions, etc.)
+    that will be paid together in a single payment session.
+    """
+
+    partner = models.ForeignKey(
+        "partners.Partner",
+        on_delete=models.PROTECT,
+        related_name="magic_payment_links",
+        help_text=_("Partner for whom this link was created."),
+    )
+    token = models.CharField(
+        _("Token"),
+        max_length=12,
+        unique=True,
+        help_text=_("Unique short token for the payment link URL."),
+    )
+    amount = models.DecimalField(
+        _("Total Amount"),
+        max_digits=12,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+        help_text=_("Total amount to be paid (sum of all included debts)."),
+    )
+    expires_at = models.DateTimeField(
+        _("Expires At"),
+        help_text=_("Date and time when this link expires."),
+    )
+    status = models.CharField(
+        _("Status"),
+        max_length=20,
+        choices=choices.MagicLinkStatus.choices,
+        default=choices.MagicLinkStatus.ACTIVE,
+        help_text=_("Status of the payment link."),
+    )
+    used_at = models.DateTimeField(
+        _("Used At"),
+        null=True,
+        blank=True,
+        help_text=_("Date and time when this link was used for payment."),
+    )
+    payment = models.ForeignKey(
+        Payment,
+        on_delete=models.SET_NULL,
+        related_name="magic_links",
+        null=True,
+        blank=True,
+        help_text=_("Payment associated with this link if used."),
+    )
+    metadata = models.JSONField(
+        _("Metadata"),
+        default=dict,
+        blank=True,
+        help_text=_(
+            "Additional metadata including debt concepts: "
+            "{'debts': [{'type': 'installment', 'id': 123, 'amount': 387.00}, ...]}"
+        ),
+    )
+
+    class Meta:
+        verbose_name = _("Magic Payment Link")
+        verbose_name_plural = _("Magic Payment Links")
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["partner"]),
+            models.Index(fields=["token"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["expires_at"]),
+            models.Index(fields=["-created"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.partner.full_name}"
+
+    def save(self, *args, **kwargs):
+        """Generate unique token if not set."""
+        if not self.token:
+            self.token = self.generate_unique_token()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_unique_token(length=8):
+        """Generate a unique short token for the payment link."""
+        while True:
+            # Generate random token using URL-safe characters
+            token = secrets.token_urlsafe(length)[:length]
+            # Check if token already exists
+            if not MagicPaymentLink.objects.filter(token=token).exists():
+                return token
+
+    @property
+    def is_active(self) -> bool:
+        """Check if link is active and not expired."""
+        return (
+            self.status == choices.MagicLinkStatus.ACTIVE
+            and self.expires_at > timezone.now()
+        )
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if link has expired."""
+        return timezone.now() > self.expires_at
+
+    @property
+    def is_used(self) -> bool:
+        """Check if link has been used."""
+        return self.status == choices.MagicLinkStatus.USED
+
+    @property
+    def debt_count(self) -> int:
+        """Get the number of debts included in this link."""
+        return len(self.metadata.get("debts", []))
+
+    def get_public_url(self) -> str:
+        """Get the public URL for this payment link."""
+        from django.urls import reverse
+        return reverse("apps.payments:magic-link-public", kwargs={"token": self.token})
+
+    def get_full_url(self, request=None) -> str:
+        """Get the full absolute URL including domain."""
+        from django.urls import reverse
+        url = reverse("apps.payments:magic-link-public", kwargs={"token": self.token})
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    def mark_as_used(self, payment=None):
+        """Mark the link as used."""
+        self.status = choices.MagicLinkStatus.USED
+        self.used_at = timezone.now()
+        if payment:
+            self.payment = payment
+        self.save(update_fields=["status", "used_at", "payment"])
+
+    def mark_as_expired(self):
+        """Mark the link as expired."""
+        if self.status == choices.MagicLinkStatus.ACTIVE:
+            self.status = choices.MagicLinkStatus.EXPIRED
+            self.save(update_fields=["status"])
+
+    def mark_as_cancelled(self):
+        """Mark the link as cancelled."""
+        if self.status == choices.MagicLinkStatus.ACTIVE:
+            self.status = choices.MagicLinkStatus.CANCELLED
+            self.save(update_fields=["status"])
+
+    def check_and_update_expiration(self):
+        """Check if link is expired and update status accordingly."""
+        if self.is_expired and self.status == choices.MagicLinkStatus.ACTIVE:
+            self.mark_as_expired()

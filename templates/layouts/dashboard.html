@@ -15,6 +15,7 @@
 
 		{% include 'includes/scripts_css.html' %}
 		<script src="{% static 'assets/js/theme.bundle.js' %}"></script>
+		{% block extra_css %}{% endblock extra_css %}
 	</head>
 
 	<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled aside-fixed aside-default-enabled">

@@ -1,0 +1,256 @@
+{% extends "layouts/home.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .main-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .expired-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .header-section {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        padding: 3rem 2rem;
+        color: white;
+    }
+
+    .icon-expired {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+
+    .content-section {
+        padding: 3rem 2rem;
+    }
+
+    .expired-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 1rem;
+    }
+
+    .expired-message {
+        font-size: 1.125rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .info-box {
+        background: #fef2f2;
+        border: 2px solid #fecaca;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .info-box-title {
+        font-weight: 700;
+        color: #991b1b;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-box-content {
+        color: #7f1d1d;
+        font-size: 0.875rem;
+    }
+
+    .details-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .details-row:last-child {
+        border-bottom: none;
+    }
+
+    .details-label {
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .details-value {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .btn-contact {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        border-radius: 12px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-contact:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        color: white;
+    }
+
+    .contact-info {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: #6b7280;
+    }
+
+    .contact-item i {
+        margin-right: 0.5rem;
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="expired-card">
+        <!--begin::Header-->
+        <div class="header-section">
+            <div class="icon-expired">⏰</div>
+            <h2 class="text-white mb-0">{% trans "Link Expirado" %}</h2>
+        </div>
+        <!--end::Header-->
+
+        <!--begin::Content-->
+        <div class="content-section">
+            <h3 class="expired-title">{% trans "Este enlace de pago ha expirado" %}</h3>
+            <p class="expired-message">
+                {% trans "Lo sentimos, pero este enlace de pago mágico ya no está disponible. Los enlaces de pago tienen una validez limitada por seguridad." %}
+            </p>
+
+            <!--begin::Info Box-->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <i class="ki-duotone ki-information-5 fs-2 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    {% trans "¿Por qué expiró este enlace?" %}
+                </div>
+                <div class="info-box-content">
+                    {% trans "Los enlaces de pago expiran automáticamente después de un período determinado para garantizar la seguridad de tus transacciones y mantener la información actualizada." %}
+                </div>
+            </div>
+            <!--end::Info Box-->
+
+            <!--begin::Details-->
+            <div class="mb-4">
+                <div class="details-row">
+                    <span class="details-label">{% trans "Cliente:" %}</span>
+                    <span class="details-value">{{ magic_link.partner.full_name }}</span>
+                </div>
+                <div class="details-row">
+                    <span class="details-label">{% trans "DNI:" %}</span>
+                    <span class="details-value">{{ magic_link.partner.document_number }}</span>
+                </div>
+                <div class="details-row">
+                    <span class="details-label">{% trans "Creado:" %}</span>
+                    <span class="details-value">{{ magic_link.created|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="details-row">
+                    <span class="details-label">{% trans "Expiró:" %}</span>
+                    <span class="details-value text-danger">{{ magic_link.expires_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                {% if magic_link.status == "USED" %}
+                <div class="details-row">
+                    <span class="details-label">{% trans "Estado:" %}</span>
+                    <span class="badge badge-success">{% trans "Ya fue utilizado" %}</span>
+                </div>
+                {% endif %}
+            </div>
+            <!--end::Details-->
+
+            <!--begin::Action-->
+            <a href="#" class="btn-contact" onclick="contactSupport(); return false;">
+                <i class="ki-duotone ki-message-text-2 fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                {% trans "Solicitar Nuevo Enlace" %}
+            </a>
+            <!--end::Action-->
+
+            <!--begin::Contact Info-->
+            <div class="contact-info">
+                <h5 class="mb-3">{% trans "¿Necesitas ayuda?" %}</h5>
+                <div class="contact-item">
+                    <i class="ki-duotone ki-phone fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span>{% trans "Contacta a nuestro soporte" %}</span>
+                </div>
+                <div class="contact-item">
+                    <i class="ki-duotone ki-sms fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span>{% trans "Solicita un nuevo enlace de pago" %}</span>
+                </div>
+            </div>
+            <!--end::Contact Info-->
+        </div>
+        <!--end::Content-->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function contactSupport() {
+        toastr.info('{% trans "Por favor contacta con el administrador para solicitar un nuevo enlace de pago" %}');
+
+        // TODO: Implement contact form or redirect to support
+        // Example: window.location.href = '/contacto';
+    }
+</script>
+{% endblock %}

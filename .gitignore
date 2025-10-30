@@ -450,3 +450,6 @@ $RECYCLE.BIN/
 
 # Prompts
 prompts/
+
+# Images Reference
+imagen_ref*.png

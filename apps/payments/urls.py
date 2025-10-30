@@ -61,6 +61,28 @@ urlpatterns = [
         views.PaymentReceiptDeleteView.as_view(),
         name="payment-receipt-delete",
     ),
+    # Magic Payment Link views
+    path(
+        "magic-links/",
+        views.MagicPaymentLinkListView.as_view(),
+        name="magic-link-list",
+    ),
+    path(
+        "magic-link/create/",
+        views.MagicPaymentLinkCreateView.as_view(),
+        name="magic-link-create",
+    ),
+    path(
+        "magic-link/<int:pk>/",
+        views.MagicPaymentLinkDetailView.as_view(),
+        name="magic-link-detail",
+    ),
+    # Public Magic Payment Link view (short URL)
+    path(
+        "s/<str:token>/",
+        views.MagicPaymentLinkPublicView.as_view(),
+        name="magic-link-public",
+    ),
     # API URLs
     path(
         "api/",
