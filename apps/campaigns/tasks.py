@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from apps.campaigns import choices, models
 from apps.campaigns.utils import messages as message_utils
-from apps.core.utils.whatsapp import whatsapp_service
+from apps.core.services.chats.whatsapp import whatsapp_service
 from apps.partners import services as partner_services
 from apps.payments.utils import generate_payment_link_for_debt
 
@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
     max_retries=3,
     default_retry_delay=60,
 )
-def send_whatsapp_notification(self, notification_id: int) -> dict:
+def send_notification(self, notification_id: int) -> dict:
     """
-    Send a WhatsApp notification for a campaign.
+    Send a notification for a campaign.
 
     Args:
         notification_id: ID of the CampaignNotification to send
@@ -39,9 +39,9 @@ def send_whatsapp_notification(self, notification_id: int) -> dict:
     # Increment attempt counter
     notification.increment_attempt()
 
-    # Check if WhatsApp service is configured
+    # Check if service is configured
     if not whatsapp_service.is_configured():
-        error_msg = "WhatsApp service is not configured"
+        error_msg = "Service is not configured"
         logger.error(error_msg)
         notification.mark_as_failed(error_msg)
         return {"success": False, "error": error_msg}
@@ -55,7 +55,7 @@ def send_whatsapp_notification(self, notification_id: int) -> dict:
         )
     except models.MessageTemplate.DoesNotExist:
         error_msg = (
-            f"No active WhatsApp template found for "
+            f"No active template found for "
             f"{notification.get_notification_type_display()}"
         )
         logger.warning(error_msg)
@@ -108,7 +108,7 @@ def send_whatsapp_notification(self, notification_id: int) -> dict:
         if result.get("success"):
             notification.mark_as_sent()
             logger.info(
-                f"WhatsApp notification {notification_id} sent successfully "
+                f"Notification {notification_id} sent successfully "
                 f"to {notification.partner.full_name} ({notification.recipient_phone})"
             )
             return {
@@ -120,7 +120,7 @@ def send_whatsapp_notification(self, notification_id: int) -> dict:
             error_msg = result.get("error", "Unknown error")
             notification.mark_as_failed(error_msg)
             logger.error(
-                f"Failed to send WhatsApp notification {notification_id}: {error_msg}"
+                f"Failed to send notification {notification_id}: {error_msg}"
             )
 
             # Retry on failure
@@ -129,9 +129,7 @@ def send_whatsapp_notification(self, notification_id: int) -> dict:
     except Exception as exc:
         error_msg = str(exc)
         notification.mark_as_failed(error_msg)
-        logger.exception(
-            f"Exception sending WhatsApp notification {notification_id}"
-        )
+        logger.exception(f"Exception sending notification {notification_id}")
 
         # Retry
         raise self.retry(exc=exc)
@@ -472,7 +470,7 @@ def send_scheduled_notifications() -> dict:
 
         # Send notification asynchronously
         try:
-            send_whatsapp_notification.delay(notification.id)
+            send_notification.delay(notification.id)
             sent_count += 1
             logger.info(
                 f"Successfully queued notification {notification.id} for sending"
