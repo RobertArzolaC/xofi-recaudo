@@ -453,3 +453,6 @@ prompts/
 
 # Images Reference
 imagen_ref*.png
+
+# Mcp files
+.playwright-mcp/

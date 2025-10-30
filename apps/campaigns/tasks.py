@@ -1,6 +1,7 @@
 import logging
 
 from celery import shared_task
+from constance import config
 from django.utils import timezone
 
 from apps.campaigns import choices, models
@@ -8,7 +9,7 @@ from apps.campaigns.utils import messages as message_utils
 from apps.core.services.chats.telegram import telegram_service
 from apps.core.services.chats.whatsapp import whatsapp_service
 from apps.partners import services as partner_services
-from apps.payments.utils import generate_payment_link_for_debt
+from apps.payments import utils as payment_utils
 
 logger = logging.getLogger(__name__)
 
@@ -294,11 +295,19 @@ def process_campaign_notifications(campaign_id: int) -> dict:
                 logger.info(
                     f"Generating payment link for partner '{partner.full_name}'"
                 )
-                payment_link_url = generate_payment_link_for_debt(
-                    partner_id=partner.id,
-                    debt_amount=partner_debt["total_debt"],
-                    campaign_id=campaign.id,
+                magic_link = payment_utils.create_magic_link_for_partner(
+                    partner=partner,
+                    hours_to_expire=24,
+                    include_upcoming=True,
                 )
+                if magic_link:
+                    payment_link_path = magic_link.get_public_url()
+                    payment_link_url = (
+                        f"{config.COMPANY_DOMAIN}{payment_link_path}"
+                    )
+                    logger.info(
+                        f"Payment link generated for partner '{partner.full_name}': {payment_link_url}"
+                    )
 
             # Create or update notification
             notification, created = (

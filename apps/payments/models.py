@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Sum
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -484,9 +485,7 @@ class MagicPaymentLink(
     def generate_unique_token(length=8):
         """Generate a unique short token for the payment link."""
         while True:
-            # Generate random token using URL-safe characters
             token = secrets.token_urlsafe(length)[:length]
-            # Check if token already exists
             if not MagicPaymentLink.objects.filter(token=token).exists():
                 return token
 
@@ -515,13 +514,15 @@ class MagicPaymentLink(
 
     def get_public_url(self) -> str:
         """Get the public URL for this payment link."""
-        from django.urls import reverse
-        return reverse("apps.payments:magic-link-public", kwargs={"token": self.token})
+        return reverse(
+            "apps.payments:magic-link-public", kwargs={"token": self.token}
+        )
 
     def get_full_url(self, request=None) -> str:
         """Get the full absolute URL including domain."""
-        from django.urls import reverse
-        url = reverse("apps.payments:magic-link-public", kwargs={"token": self.token})
+        url = reverse(
+            "apps.payments:magic-link-public", kwargs={"token": self.token}
+        )
         if request:
             return request.build_absolute_uri(url)
         return url

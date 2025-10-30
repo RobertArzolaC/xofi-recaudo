@@ -7,7 +7,8 @@
 {% block extra_css %}
 <style>
     body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #f8fafc;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .main-container {
@@ -20,65 +21,86 @@
 
     .payment-card {
         background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
         max-width: 900px;
         width: 100%;
         overflow: hidden;
     }
 
     .header-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
+        background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+        padding: 2.5rem 2rem;
         text-align: center;
         color: white;
+        position: relative;
+    }
+
+    .header-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="20" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="60" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        opacity: 0.3;
     }
 
     .logo {
-        font-size: 2.5rem;
-        font-weight: bold;
+        font-size: 2rem;
+        font-weight: 700;
         margin-bottom: 0.5rem;
         color: white;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.5px;
     }
 
     .client-info {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
         padding: 1.5rem;
-        margin-top: 1rem;
-        backdrop-filter: blur(10px);
+        margin-top: 1.5rem;
+        backdrop-filter: blur(20px);
+        position: relative;
+        z-index: 1;
     }
 
     .client-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: white;
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.95);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        font-weight: bold;
-        color: #667eea;
+        font-weight: 700;
+        color: #1e40af;
         margin: 0 auto 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .badge-debts {
-        background: #10b981;
+        background: #059669;
         color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
         font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .debt-item {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -86,13 +108,15 @@
     }
 
     .debt-item:hover {
-        border-color: #667eea;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        border-color: #1e40af;
+        box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+        transform: translateY(-1px);
     }
 
     .debt-item.selected {
-        border-color: #667eea;
-        background: #f0f4ff;
+        border-color: #1e40af;
+        background: #f8fb ff;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
     }
 
     .debt-icon {
@@ -108,23 +132,27 @@
     }
 
     .debt-icon.aporte {
-        background: #dbeafe;
-        color: #3b82f6;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #dbeafe;
     }
 
     .debt-icon.contribution {
-        background: #dcfce7;
-        color: #10b981;
+        background: #f0fdf4;
+        color: #059669;
+        border: 1px solid #dcfce7;
     }
 
     .debt-icon.social {
-        background: #e0e7ff;
-        color: #6366f1;
+        background: #faf5ff;
+        color: #7c3aed;
+        border: 1px solid #e9d5ff;
     }
 
     .debt-icon.penalty {
-        background: #fee2e2;
-        color: #ef4444;
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
     }
 
     .debt-details {
@@ -134,45 +162,50 @@
     .debt-type {
         font-size: 0.75rem;
         text-transform: uppercase;
-        font-weight: 700;
+        font-weight: 600;
         letter-spacing: 0.5px;
-        color: #6b7280;
+        color: #64748b;
         margin-bottom: 0.25rem;
     }
 
     .debt-description {
         font-weight: 600;
-        color: #1f2937;
+        color: #0f172a;
         margin-bottom: 0.25rem;
+        font-size: 1rem;
     }
 
     .debt-due-date {
         font-size: 0.875rem;
-        color: #6b7280;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
     .debt-amount {
-        font-size: 1.25rem;
+        font-size: 1.375rem;
         font-weight: 700;
-        color: #1f2937;
+        color: #0f172a;
         text-align: right;
         flex-shrink: 0;
         margin-left: 1rem;
     }
 
     .debt-checkbox {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         margin-right: 1rem;
         cursor: pointer;
         flex-shrink: 0;
-        accent-color: #667eea;
+        accent-color: #1e40af;
+        border-radius: 4px;
     }
 
     .summary-section {
-        background: #f8f9fa;
+        background: #f8fafc;
         padding: 2rem;
-        border-top: 3px solid #e5e7eb;
+        border-top: 1px solid #e2e8f0;
     }
 
     .summary-row {
@@ -180,68 +213,105 @@
         justify-content: space-between;
         margin-bottom: 1rem;
         font-size: 1rem;
+        color: #475569;
     }
 
     .summary-row.total {
         font-size: 1.5rem;
         font-weight: 700;
         padding-top: 1rem;
-        border-top: 2px solid #d1d5db;
+        border-top: 1px solid #cbd5e1;
         margin-top: 1rem;
+        color: #0f172a;
     }
 
     .btn-pay {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
         color: white;
         border: none;
         padding: 1rem 2rem;
         font-size: 1.125rem;
         font-weight: 600;
-        border-radius: 12px;
+        border-radius: 8px;
         width: 100%;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+        cursor: pointer;
     }
 
-    .btn-pay:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    .btn-pay:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+        box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        transform: translateY(-1px);
         color: white;
     }
 
+    .btn-pay:disabled {
+        background: #e2e8f0;
+        color: #94a3b8;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
     .info-note {
-        background: #eff6ff;
-        border-left: 4px solid #3b82f6;
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-left: 4px solid #0284c7;
         padding: 1rem;
-        border-radius: 8px;
+        border-radius: 6px;
         margin-top: 1rem;
         font-size: 0.875rem;
-        color: #1e40af;
+        color: #0369a1;
     }
 
     .secure-badge {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #10b981;
+        color: #059669;
         font-size: 0.875rem;
         margin-top: 1rem;
+        font-weight: 500;
     }
 
     .select-all-btn {
-        background: #667eea;
+        background: #1e40af;
         color: white;
-        border: none;
+        border: 1px solid #1e40af;
         padding: 0.5rem 1rem;
-        border-radius: 8px;
+        border-radius: 6px;
         font-size: 0.875rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .select-all-btn:hover {
-        background: #5568d3;
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+
+    .payment-methods {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .payment-method-item {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        color: #475569;
+        font-size: 0.875rem;
+    }
+
+    .payment-method-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 0.75rem;
+        color: #1e40af;
     }
 </style>
 {% endblock %}
@@ -251,23 +321,23 @@
     <div class="payment-card">
         <!--begin::Header-->
         <div class="header-section">
-            <div class="logo">🟢 XOFI</div>
+            <div class="logo">XOFI COBRANZAS</div>
 
             <div class="client-info">
                 <div class="client-avatar">{{ partner.initials }}</div>
-                <h4 class="mb-1">{{ partner.full_name }}</h4>
-                <p class="mb-2 opacity-75">{{ partner.document_number }}</p>
-                <span class="badge-debts">{{ debts|length }} {% trans "deudas" %}</span>
+                <h4 class="mb-1 fw-bold">{{ partner.full_name }}</h4>
+                <p class="mb-2 opacity-90">DNI: {{ partner.document_number }}</p>
+                <span class="badge-debts">{{ debts|length }} {% trans "deudas pendientes" %}</span>
             </div>
 
-            <h5 class="mt-3 mb-0">{{ magic_link.name }}</h5>
+            <h5 class="mt-3 mb-0 opacity-90">{{ magic_link.name }}</h5>
         </div>
         <!--end::Header-->
 
         <!--begin::Debts List-->
         <div class="p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">{% trans "Deudas Disponibles" %}</h5>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0 fw-bold text-dark">{% trans "Deudas Disponibles" %}</h5>
                 <button class="select-all-btn" onclick="selectAll()">
                     <span id="select-all-text">✓ {% trans "Seleccionar todas" %}</span>
                 </button>
@@ -277,9 +347,9 @@
                 {% csrf_token %}
 
                 {% for debt in debts %}
-                <div class="debt-item" data-amount="{{ debt.amount }}" onclick="toggleDebt(this)">
-                    <input type="checkbox" class="debt-checkbox" name="debt_{{ forloop.counter }}"
-                           value="{{ debt.object.id }}" data-type="{{ debt.type }}" checked>
+                <div class="debt-item" data-amount="{{ debt.amount }}" data-debt-id="{{ debt.object.id }}" data-debt-type="{{ debt.type }}" onclick="toggleDebt(this)">
+                    <input type="checkbox" class="debt-checkbox" name="selected_debts"
+                           value="{{ debt.object.id }}" data-type="{{ debt.type }}" data-amount="{{ debt.amount }}" checked>
 
                     <div class="debt-icon {% if debt.type == 'Aporte' %}aporte{% elif debt.type == 'Aportación' %}contribution{% elif debt.type == 'Seguridad Social' %}social{% elif debt.type == 'Penalidad' %}penalty{% endif %}">
                         {% if debt.type == "Aporte" %}
@@ -312,6 +382,10 @@
                         <div class="debt-type">{{ debt.type }}</div>
                         <div class="debt-description">{{ debt.description }}</div>
                         <div class="debt-due-date">
+                            <i class="ki-duotone ki-calendar fs-7 me-1">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
                             {% trans "Vence:" %} {{ debt.due_date|date:"d/m/Y" }}
                         </div>
                     </div>
@@ -322,27 +396,30 @@
                 </div>
                 {% endfor %}
 
-                {% if debts|length > 2 %}
-                <div class="info-note">
-                    <i class="ki-duotone ki-information-5 fs-2 me-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                    <strong>{% trans "Nota importante:" %}</strong>
-                    {% trans "Las deudas vencidas se pagan primero" %}
-                </div>
-                {% endif %}
+                <!-- Hidden fields for Culqi -->
+                <input type="hidden" id="culqi_token" name="culqi_token">
             </form>
+
+            {% if debts|length > 2 %}
+            <div class="info-note">
+                <i class="ki-duotone ki-information-5 fs-6 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                <strong>{% trans "Nota importante:" %}</strong>
+                {% trans "Las deudas vencidas se pagan primero. Puede seleccionar las deudas que desea pagar." %}
+            </div>
+            {% endif %}
         </div>
         <!--end::Debts List-->
 
         <!--begin::Summary-->
         <div class="summary-section">
-            <h5 class="mb-4">{% trans "Resumen de Pago" %}</h5>
+            <h5 class="mb-4 fw-bold text-dark">{% trans "Resumen de Pago" %}</h5>
 
             <div class="summary-row">
-                <span>{% trans "Deuda" %}</span>
+                <span>{% trans "Subtotal" %}</span>
                 <span id="subtotal">PEN {{ magic_link.amount|floatformat:2 }}</span>
             </div>
 
@@ -351,29 +428,67 @@
                 <span id="total">PEN {{ magic_link.amount|floatformat:2 }}</span>
             </div>
 
-            <button type="button" class="btn-pay mt-4" onclick="processPayment()">
-                <i class="ki-duotone ki-credit-cart fs-2 me-2">
+            <button type="button" class="btn-pay mt-4" id="pay-button" onclick="processPayment()">
+                <i class="ki-duotone ki-credit-cart fs-4 me-2">
                     <span class="path1"></span>
                     <span class="path2"></span>
                 </i>
-                {% trans "Pagar" %} <span id="pay-amount">PEN {{ magic_link.amount|floatformat:2 }}</span>
+                {% trans "Proceder al Pago" %} - <span id="pay-amount">PEN {{ magic_link.amount|floatformat:2 }}</span>
             </button>
 
+            <!-- Payment Methods Info -->
+            <div class="payment-methods">
+                <h6 class="fw-bold text-dark mb-3">{% trans "Métodos de Pago Aceptados" %}</h6>
+                <div class="payment-method-item">
+                    <i class="ki-duotone ki-credit-cart payment-method-icon">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span>{% trans "Tarjetas de Crédito y Débito" %}</span>
+                </div>
+                <div class="payment-method-item">
+                    <i class="ki-duotone ki-wallet payment-method-icon">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                    </i>
+                    <span>{% trans "Yape - Billeteras Digitales" %}</span>
+                </div>
+                <div class="payment-method-item">
+                    <i class="ki-duotone ki-bank payment-method-icon">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span>{% trans "Banca Móvil e Internet" %}</span>
+                </div>
+                <div class="payment-method-item">
+                    <i class="ki-duotone ki-shop payment-method-icon">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                        <span class="path5"></span>
+                    </i>
+                    <span>{% trans "Agentes y Tiendas Autorizadas" %}</span>
+                </div>
+            </div>
+
             <div class="info-note">
-                <i class="ki-duotone ki-information-5 fs-2 me-2">
+                <i class="ki-duotone ki-information-5 fs-6 me-2">
                     <span class="path1"></span>
                     <span class="path2"></span>
                     <span class="path3"></span>
                 </i>
-                {% trans "El proceso de pago puede demorar hasta 48 horas o 2 días hábiles en completarse" %}
+                {% trans "El proceso de pago puede tomar hasta 48 horas o 2 días hábiles en completarse. Recibirá una confirmación por correo electrónico una vez procesado el pago." %}
             </div>
 
             <div class="secure-badge">
-                <i class="ki-duotone ki-lock fs-2 me-2">
+                <i class="ki-duotone ki-shield-tick fs-6 me-2">
                     <span class="path1"></span>
                     <span class="path2"></span>
                 </i>
-                {% trans "Transacción segura y protegida" %}
+                {% trans "Transacción 100% segura y encriptada" %}
             </div>
         </div>
         <!--end::Summary-->
@@ -382,8 +497,15 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- SweetAlert2 for better alerts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Culqi Checkout -->
+<script src="https://checkout.culqi.com/js/v4"></script>
 <script>
-    let allDebts = {{ magic_link.amount|floatformat:2 }};
+    // Configure Culqi
+    const CULQI_PUBLIC_KEY = "{{ culqi_public_key|default:'pk_test_e8bdb4895b0548b4' }}";
+    Culqi.publicKey = CULQI_PUBLIC_KEY;
+
     let selectedDebts = [];
     let allSelected = true;
 
@@ -394,7 +516,11 @@
             if (checkbox.checked) {
                 const debtItem = checkbox.closest('.debt-item');
                 debtItem.classList.add('selected');
-                selectedDebts.push(parseFloat(debtItem.dataset.amount));
+                selectedDebts.push({
+                    id: checkbox.value,
+                    type: checkbox.dataset.type,
+                    amount: parseFloat(checkbox.dataset.amount)
+                });
             }
         });
         updateTotal();
@@ -404,13 +530,20 @@
         const checkbox = element.querySelector('.debt-checkbox');
         checkbox.checked = !checkbox.checked;
 
+        const debtId = checkbox.value;
+        const debtType = checkbox.dataset.type;
+        const debtAmount = parseFloat(checkbox.dataset.amount);
+
         if (checkbox.checked) {
             element.classList.add('selected');
-            selectedDebts.push(parseFloat(element.dataset.amount));
+            selectedDebts.push({
+                id: debtId,
+                type: debtType,
+                amount: debtAmount
+            });
         } else {
             element.classList.remove('selected');
-            const amount = parseFloat(element.dataset.amount);
-            selectedDebts = selectedDebts.filter(d => d !== amount);
+            selectedDebts = selectedDebts.filter(d => d.id !== debtId);
         }
 
         updateTotal();
@@ -428,7 +561,11 @@
             checkbox.checked = allSelected;
             if (allSelected) {
                 debtItems[index].classList.add('selected');
-                selectedDebts.push(parseFloat(debtItems[index].dataset.amount));
+                selectedDebts.push({
+                    id: checkbox.value,
+                    type: checkbox.dataset.type,
+                    amount: parseFloat(checkbox.dataset.amount)
+                });
             } else {
                 debtItems[index].classList.remove('selected');
             }
@@ -442,40 +579,172 @@
         const checkboxes = document.querySelectorAll('.debt-checkbox');
         const checkedCount = document.querySelectorAll('.debt-checkbox:checked').length;
         const selectAllText = document.getElementById('select-all-text');
+        const payButton = document.getElementById('pay-button');
 
-        if (checkedCount === checkboxes.length) {
+        if (checkedCount === checkboxes.length && checkedCount > 0) {
             allSelected = true;
             selectAllText.textContent = '✗ {% trans "Deseleccionar todas" %}';
         } else {
             allSelected = false;
             selectAllText.textContent = '✓ {% trans "Seleccionar todas" %}';
         }
+
+        // Enable/disable pay button
+        payButton.disabled = checkedCount === 0;
     }
 
     function updateTotal() {
-        const total = selectedDebts.reduce((sum, amount) => sum + amount, 0);
+        const total = selectedDebts.reduce((sum, debt) => sum + debt.amount, 0);
         document.getElementById('subtotal').textContent = 'PEN ' + total.toFixed(2);
         document.getElementById('total').textContent = 'PEN ' + total.toFixed(2);
         document.getElementById('pay-amount').textContent = 'PEN ' + total.toFixed(2);
+
+        updateSelectAllButton();
     }
 
     function processPayment() {
-        const checkedDebts = document.querySelectorAll('.debt-checkbox:checked');
+        const checkedDebts = selectedDebts;
 
         if (checkedDebts.length === 0) {
-            toastr.warning('{% trans "Por favor selecciona al menos una deuda para pagar" %}');
+            Swal.fire({
+                icon: 'warning',
+                title: '{% trans "Selección requerida" %}',
+                text: '{% trans "Por favor selecciona al menos una deuda para pagar" %}',
+                confirmButtonColor: '#1e40af'
+            });
             return;
         }
 
-        const total = selectedDebts.reduce((sum, amount) => sum + amount, 0);
+        const total = checkedDebts.reduce((sum, debt) => sum + debt.amount, 0);
 
-        // TODO: Integrate with payment gateway (Culqi, etc.)
-        toastr.info('{% trans "Redirigiendo a la pasarela de pago..." %}');
+        // Configure Culqi Checkout
+        Culqi.settings({
+            title: '{% trans "Pago de Deudas" %} - {{ partner.full_name }}',
+            currency: 'PEN',
+            amount: Math.round(total * 100), // Convert to cents
+            order: 'ord_live_{{ magic_link.token }}',
+            description: `{% trans "Pago de" %} ${checkedDebts.length} {% trans "deuda(s) pendiente(s)" %}`,
+            xculqirsaid: '{{ culqi_rsa_id|default:"" }}',
+            rsapublickey: '{{ culqi_rsa_public_key|default:"" }}'
+        });
 
-        // Simulate payment processing
-        setTimeout(function() {
-            toastr.warning('{% trans "Funcionalidad de pago próximamente" %}');
-        }, 1000);
+        Culqi.options({
+            lang: 'es',
+            installments: false,
+            paymentMethods: {
+                tarjeta: true,
+                yape: true,
+                billetera: true,
+                bancaMovil: true,
+                agente: true,
+                cuotealo: true
+            },
+            style: {
+                logo: '',
+                maincolor: '#1e40af',
+                buttontext: '#ffffff',
+                maintext: '#0f172a',
+                desctext: '#64748b'
+            }
+        });
+
+        // Show loading state
+        const payButton = document.getElementById('pay-button');
+        const originalText = payButton.innerHTML;
+        payButton.innerHTML = '<i class="ki-duotone ki-loading fs-4 me-2 rotate-animation"><span class="path1"></span><span class="path2"></span></i>{% trans "Procesando..." %}';
+        payButton.disabled = true;
+
+        try {
+            // Open Culqi Checkout
+            Culqi.open();
+        } catch (error) {
+            console.error('Error opening Culqi:', error);
+            Swal.fire({
+                icon: 'error',
+                title: '{% trans "Error de Pago" %}',
+                text: '{% trans "No se pudo inicializar el sistema de pagos. Por favor, intente nuevamente." %}',
+                confirmButtonColor: '#1e40af'
+            });
+
+            // Restore button
+            payButton.innerHTML = originalText;
+            payButton.disabled = false;
+        }
     }
+
+    // Culqi callback when token is generated
+    function culqi() {
+        const payButton = document.getElementById('pay-button');
+
+        if (Culqi.token) {
+            const token = Culqi.token.id;
+
+            // Set token in hidden field
+            document.getElementById('culqi_token').value = token;
+
+            // Add selected debts to form
+            const form = document.getElementById('payment-form');
+
+            // Remove existing hidden debt inputs
+            const existingInputs = form.querySelectorAll('input[name^="selected_debt_"]');
+            existingInputs.forEach(input => input.remove());
+
+            // Add current selected debts
+            selectedDebts.forEach((debt, index) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = `selected_debt_${index}`;
+                input.value = JSON.stringify(debt);
+                form.appendChild(input);
+            });
+
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: '{% trans "¡Pago Procesado!" %}',
+                text: '{% trans "Su pago ha sido procesado exitosamente. Recibirá una confirmación por correo electrónico." %}',
+                confirmButtonColor: '#1e40af',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(() => {
+                // Submit form
+                form.submit();
+            });
+
+        } else if (Culqi.error) {
+            // Handle error
+            console.error('Culqi Error:', Culqi.error);
+
+            let errorMessage = '{% trans "Ocurrió un error durante el procesamiento del pago" %}';
+            if (Culqi.error.user_message) {
+                errorMessage = Culqi.error.user_message;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: '{% trans "Error de Pago" %}',
+                text: errorMessage,
+                confirmButtonColor: '#1e40af'
+            });
+
+            // Restore button
+            const originalText = '<i class="ki-duotone ki-credit-cart fs-4 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Proceder al Pago" %} - <span id="pay-amount">PEN ' + selectedDebts.reduce((sum, debt) => sum + debt.amount, 0).toFixed(2) + '</span>';
+            payButton.innerHTML = originalText;
+            payButton.disabled = selectedDebts.length === 0;
+        }
+    }
+
+    // Add CSS for loading animation
+    const style = document.createElement('style');
+    style.textContent = `
+        .rotate-animation {
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 {% endblock %}

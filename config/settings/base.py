@@ -266,3 +266,11 @@ PAYMENT_LINK_BASE_URL = config(
 
 # Telegram Bot Settings
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
+
+# Culqi Payment Gateway Settings
+# https://docs.culqi.com/
+
+CULQI_RSA_ID = config("CULQI_RSA_ID", default="")
+CULQI_PUBLIC_KEY = config("CULQI_PUBLIC_KEY", default="")
+CULQI_PRIVATE_KEY = config("CULQI_PRIVATE_KEY", default="")
+CULQI_RSA_PUBLIC_KEY = config("CULQI_RSA_PUBLIC_KEY", default="")

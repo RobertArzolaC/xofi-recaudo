@@ -14,110 +14,11 @@
         </i>
         {% trans "Back" %}
     </a>
-    {% if magic_link.status == "ACTIVE" %}
-        <span class="badge badge-light-success">{% trans "Active" %}</span>
-    {% elif magic_link.status == "USED" %}
-        <span class="badge badge-light-primary">{% trans "Used" %}</span>
-    {% elif magic_link.status == "EXPIRED" %}
-        <span class="badge badge-light-danger">{% trans "Expired" %}</span>
-    {% elif magic_link.status == "CANCELLED" %}
-        <span class="badge badge-light-warning">{% trans "Cancelled" %}</span>
-    {% endif %}
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="container-xxl">
-
-    <!-- Summary Cards -->
-    <div class="row g-6 g-xl-9 mb-6">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
-                    <div class="symbol symbol-65px symbol-circle mb-5">
-                        <span class="symbol-label fs-2x fw-semibold text-primary bg-light-primary">
-                            <i class="ki-duotone ki-wallet fs-2x text-primary">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                            </i>
-                        </span>
-                    </div>
-                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
-                        PEN {{ magic_link.amount|floatformat:2 }}<br>
-                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Total Amount" %}</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
-                    <div class="symbol symbol-65px symbol-circle mb-5">
-                        <span class="symbol-label fs-2x fw-semibold text-success bg-light-success">
-                            <i class="ki-duotone ki-element-11 fs-2x text-success">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                                <span class="path4"></span>
-                            </i>
-                        </span>
-                    </div>
-                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
-                        {{ debts_count }}<br>
-                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Debts" %}</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
-                    <div class="symbol symbol-65px symbol-circle mb-5">
-                        <span class="symbol-label fs-2x fw-semibold text-info bg-light-info">
-                            <i class="ki-duotone ki-calendar fs-2x text-info">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                        </span>
-                    </div>
-                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
-                        {{ magic_link.created|date:"M d, Y" }}<br>
-                        <span class="fw-semibold text-gray-400 fs-6">{% trans "Created" %}</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
-                    <div class="symbol symbol-65px symbol-circle mb-5">
-                        <span class="symbol-label fs-2x fw-semibold {% if magic_link.is_expired %}text-danger bg-light-danger{% else %}text-success bg-light-success{% endif %}">
-                            <i class="ki-duotone ki-timer fs-2x {% if magic_link.is_expired %}text-danger{% else %}text-success{% endif %}">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                            </i>
-                        </span>
-                    </div>
-                    <h4 class="fw-semibold text-gray-800 text-center lh-lg">
-                        {{ magic_link.expires_at|date:"M d, Y" }}<br>
-                        <span class="fw-semibold text-gray-400 fs-6">
-                            {% if magic_link.is_expired %}
-                                {% trans "Expired" %}
-                            {% else %}
-                                {% trans "Expires" %}
-                            {% endif %}
-                        </span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row g-5 g-xl-8">
         <!-- Partner Information Card -->
         <div class="col-xl-4">
@@ -139,9 +40,78 @@
                         </div>
                     </div>
 
-                    <!-- Link Details -->
+                    <!-- Link Summary -->
                     <div class="separator"></div>
                     <div class="pb-5 fs-6">
+                        <!-- Financial Summary -->
+                        <div class="row mb-5">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="ki-duotone ki-wallet fs-2x text-primary me-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <div>
+                                        <div class="fw-bold text-gray-900 fs-4">PEN {{ magic_link.amount|floatformat:2 }}</div>
+                                        <div class="text-gray-600 fs-7">{% trans "Total Amount" %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="ki-duotone ki-element-11 fs-2x text-success me-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                    <div>
+                                        <div class="fw-bold text-gray-900 fs-4">{{ debts_count }}</div>
+                                        <div class="text-gray-600 fs-7">{% trans "Debts" %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Information -->
+                        <div class="row mb-5">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="ki-duotone ki-calendar fs-2x text-info me-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <div>
+                                        <div class="fw-bold text-gray-900 fs-6">{{ magic_link.created|date:"M d, Y" }}</div>
+                                        <div class="text-gray-600 fs-7">{% trans "Created" %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="ki-duotone ki-timer fs-2x {% if magic_link.is_expired %}text-danger{% else %}text-success{% endif %} me-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <div>
+                                        <div class="fw-bold text-gray-900 fs-6">{{ magic_link.expires_at|date:"M d, Y" }}</div>
+                                        <div class="text-gray-600 fs-7">
+                                            {% if magic_link.is_expired %}
+                                                <span class="badge badge-light-danger">{% trans "Expired" %}</span>
+                                            {% else %}
+                                                <span class="badge badge-light-success">{% trans "Active" %}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="separator separator-dashed mb-5"></div>
+
+                        <!-- Link Details -->
                         <div class="fw-bold mt-5">{% trans "Link Title" %}</div>
                         <div class="text-gray-600">{{ magic_link.name }}</div>
 
@@ -201,18 +171,12 @@
                             <div class="fw-bold">{% trans "Token" %}</div>
                             <div class="text-gray-600"><code class="fs-6">{{ magic_link.token }}</code></div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="fw-bold">{% trans "Created" %}</div>
-                            <div class="text-gray-600">{{ magic_link.created|date:"d/m/Y H:i" }}</div>
-                        </div>
-                        {% if magic_link.used_at %}
                         <div class="col-md-6 mt-3">
                             <div class="fw-bold">{% trans "Used At" %}</div>
-                            <div class="text-gray-600">{{ magic_link.used_at|date:"d/m/Y H:i" }}</div>
+                            <div class="text-gray-600">{{ magic_link.used_at|date:"d/m/Y H:i"|default:"-" }}</div>
                         </div>
-                        {% endif %}
                         {% if magic_link.payment %}
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-12 mt-3">
                             <div class="fw-bold">{% trans "Associated Payment" %}</div>
                             <a href="{% url 'apps.payments:payment-detail' magic_link.payment.pk %}" class="btn btn-sm btn-light-primary">
                                 {% trans "View Payment" %} #{{ magic_link.payment.payment_number }}
@@ -267,7 +231,7 @@
                                     </td>
                                     <td>
                                         <span class="text-gray-900 fw-bold d-block fs-6">
-                                            {{ debt.due_date|date:"d/m/Y" }}
+                                            {{ debt.due_date }}
                                         </span>
                                     </td>
                                     <td class="text-end">

@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict
 
 from constance import config
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -400,6 +401,13 @@ class MagicPaymentLinkCreateView(
     permission_required = "payments.add_magicpaymentlink"
     success_url = reverse_lazy("apps.payments:magic-link-list")
 
+    def get_form_kwargs(self):
+        """Get form kwargs, removing 'instance' for non-ModelForm."""
+        kwargs = super().get_form_kwargs()
+        # Remove 'instance' key since MagicPaymentLinkForm is a Form, not ModelForm
+        kwargs.pop("instance", None)
+        return kwargs
+
     def form_valid(self, form):
         """Process form and create magic link."""
         from apps.partners.services import PartnerDebtService
@@ -566,6 +574,9 @@ class MagicPaymentLinkPublicView(TemplateView):
             "partner": magic_link.partner,
             "debts": debts_data,
             "title": magic_link.name,
+            "culqi_public_key": settings.CULQI_PUBLIC_KEY,
+            "culqi_rsa_id": settings.CULQI_RSA_ID,
+            "culqi_rsa_public_key": settings.CULQI_RSA_PUBLIC_KEY,
         }
 
         return render(request, self.template_name, context)
