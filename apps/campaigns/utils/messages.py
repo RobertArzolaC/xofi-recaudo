@@ -34,7 +34,7 @@ def prepare_message_context(
     # Add detailed debt information
     if debt_detail["credit_debt"] > 0:
         context["credit_debt"] = f"S/ {debt_detail['credit_debt']:,.2f}"
-        context["credit_debt_count"] = debt_detail["credit_debt_count"]
+        context["credit_debt_count"] = debt_detail["overdue_installments"]
     else:
         context["credit_debt"] = ""
         context["credit_debt_count"] = 0
@@ -44,7 +44,7 @@ def prepare_message_context(
             f"S/ {debt_detail['contribution_debt']:,.2f}"
         )
         context["contribution_debt_count"] = debt_detail[
-            "contribution_debt_count"
+            "overdue_contributions"
         ]
     else:
         context["contribution_debt"] = ""
@@ -55,7 +55,7 @@ def prepare_message_context(
             f"S/ {debt_detail['social_security_debt']:,.2f}"
         )
         context["social_security_debt_count"] = debt_detail[
-            "social_security_debt_count"
+            "overdue_social_security"
         ]
     else:
         context["social_security_debt"] = ""
@@ -63,7 +63,7 @@ def prepare_message_context(
 
     if debt_detail["penalty_debt"] > 0:
         context["penalty_debt"] = f"S/ {debt_detail['penalty_debt']:,.2f}"
-        context["penalty_debt_count"] = debt_detail["penalty_debt_count"]
+        context["penalty_debt_count"] = debt_detail["overdue_penalties"]
     else:
         context["penalty_debt"] = ""
         context["penalty_debt_count"] = 0
@@ -110,7 +110,7 @@ def generate_default_message(
     # Add social security debt details if exists
     if debt_detail["social_security_debt"] > 0:
         message_parts.append(
-            f"🏥 Seguridad Social: {context['social_security_debt']} ({context['social_security_debt_count']} obligación(es))"
+            f"🏥 Previsión Social: {context['social_security_debt']} ({context['social_security_debt_count']} obligación(es))"
         )
 
     # Add penalty debt details if exists

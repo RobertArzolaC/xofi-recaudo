@@ -316,6 +316,9 @@ class PartnerDebtService:
                 credit_debt = overdue_installments.aggregate(
                     total=Sum("installment_amount")
                 )["total"] or Decimal("0.00")
+                partner_debt["overdue_installments"] = (
+                    overdue_installments.count()
+                )
                 partner_debt["credit_debt"] = credit_debt
                 partner_debt["total_debt"] += credit_debt
 
@@ -326,29 +329,45 @@ class PartnerDebtService:
                 ]
 
                 # Contributions
-                contribution_debt = Contribution.objects.filter(
+                overdue_contributions = Contribution.objects.filter(
                     partner=partner,
                     due_date__lt=today,
                     status__in=overdue_status,
-                ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
+                )
+                contribution_debt = overdue_contributions.aggregate(
+                    total=Sum("amount")
+                )["total"] or Decimal("0.00")
+                partner_debt["overdue_contributions"] = (
+                    overdue_contributions.count()
+                )
                 partner_debt["contribution_debt"] = contribution_debt
                 partner_debt["total_debt"] += contribution_debt
 
                 # Social Security
-                social_security_debt = SocialSecurity.objects.filter(
+                overdue_social_security = SocialSecurity.objects.filter(
                     partner=partner,
                     due_date__lt=today,
                     status__in=overdue_status,
-                ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
+                )
+                social_security_debt = overdue_social_security.aggregate(
+                    total=Sum("amount")
+                )["total"] or Decimal("0.00")
+                partner_debt["overdue_social_security"] = (
+                    overdue_social_security.count()
+                )
                 partner_debt["social_security_debt"] = social_security_debt
                 partner_debt["total_debt"] += social_security_debt
 
                 # Penalties
-                penalty_debt = Penalty.objects.filter(
+                overdue_penalties = Penalty.objects.filter(
                     partner=partner,
                     due_date__lt=today,
                     status__in=overdue_status,
-                ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
+                )
+                penalty_debt = overdue_penalties.aggregate(total=Sum("amount"))[
+                    "total"
+                ] or Decimal("0.00")
+                partner_debt["overdue_penalties"] = overdue_penalties.count()
                 partner_debt["penalty_debt"] = penalty_debt
                 partner_debt["total_debt"] += penalty_debt
 

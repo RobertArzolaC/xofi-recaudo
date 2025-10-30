@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.campaigns import choices, models
 from apps.campaigns.utils import messages as message_utils
+from apps.core.services.chats.telegram import telegram_service
 from apps.core.services.chats.whatsapp import whatsapp_service
 from apps.partners import services as partner_services
 from apps.payments.utils import generate_payment_link_for_debt
@@ -39,9 +40,22 @@ def send_notification(self, notification_id: int) -> dict:
     # Increment attempt counter
     notification.increment_attempt()
 
+    # Determine which service to use based on notification channel
+    if notification.channel == choices.NotificationChannel.TELEGRAM:
+        messaging_service = telegram_service
+        channel_name = "Telegram"
+    elif notification.channel == choices.NotificationChannel.WHATSAPP:
+        messaging_service = whatsapp_service
+        channel_name = "WhatsApp"
+    else:
+        error_msg = f"Unsupported notification channel: {notification.channel}"
+        logger.error(error_msg)
+        notification.mark_as_failed(error_msg)
+        return {"success": False, "error": error_msg}
+
     # Check if service is configured
-    if not whatsapp_service.is_configured():
-        error_msg = "Service is not configured"
+    if not messaging_service.is_configured():
+        error_msg = f"{channel_name} service is not configured"
         logger.error(error_msg)
         notification.mark_as_failed(error_msg)
         return {"success": False, "error": error_msg}
@@ -50,13 +64,13 @@ def send_notification(self, notification_id: int) -> dict:
     try:
         template = models.MessageTemplate.objects.get(
             template_type=notification.notification_type,
-            channel=choices.NotificationChannel.WHATSAPP,
+            channel=notification.channel,
             is_active=True,
         )
     except models.MessageTemplate.DoesNotExist:
         error_msg = (
             f"No active template found for "
-            f"{notification.get_notification_type_display()}"
+            f"{notification.get_notification_type_display()} on {channel_name}"
         )
         logger.warning(error_msg)
         # Use default message if no template exists
@@ -88,22 +102,45 @@ def send_notification(self, notification_id: int) -> dict:
     notification.message_content = message
     notification.save(update_fields=["message_content"])
 
-    # Send message via WhatsApp
+    # Send message via the appropriate service
     try:
+        # Prepare recipient identifier based on channel
+        if notification.channel == choices.NotificationChannel.WHATSAPP:
+            recipient_identifier = notification.recipient_phone
+        elif notification.channel == choices.NotificationChannel.TELEGRAM:
+            recipient_identifier = notification.recipient_phone
+        else:
+            recipient_identifier = notification.recipient_phone
+
         if include_payment_button and notification.payment_link_url:
             # Send message with payment link button
-            result = whatsapp_service.send_message_with_button(
-                recipient_phone=notification.recipient_phone,
-                message=message,
-                button_text=payment_button_text,
-                button_url=notification.payment_link_url,
-            )
+            # Both services use the same method signature
+            if notification.channel == choices.NotificationChannel.WHATSAPP:
+                result = messaging_service.send_message_with_button(
+                    recipient_phone=recipient_identifier,
+                    message=message,
+                    button_text=payment_button_text,
+                    button_url=notification.payment_link_url,
+                )
+            elif notification.channel == choices.NotificationChannel.TELEGRAM:
+                result = messaging_service.send_message_with_button(
+                    recipient_id=recipient_identifier,
+                    message=message,
+                    button_text=payment_button_text,
+                    button_url=notification.payment_link_url,
+                )
         else:
             # Send plain text message
-            result = whatsapp_service.send_text_message(
-                recipient_phone=notification.recipient_phone,
-                message=message,
-            )
+            if notification.channel == choices.NotificationChannel.WHATSAPP:
+                result = messaging_service.send_text_message(
+                    recipient_phone=recipient_identifier,
+                    message=message,
+                )
+            elif notification.channel == choices.NotificationChannel.TELEGRAM:
+                result = messaging_service.send_text_message(
+                    recipient_id=recipient_identifier,
+                    message=message,
+                )
 
         if result.get("success"):
             notification.mark_as_sent()
@@ -269,7 +306,7 @@ def process_campaign_notifications(campaign_id: int) -> dict:
                     campaign=campaign,
                     partner=partner,
                     notification_type=choices.NotificationType.SCHEDULED,
-                    channel=choices.NotificationChannel.WHATSAPP,
+                    channel=choices.NotificationChannel.TELEGRAM,
                     defaults={
                         "recipient_email": partner.email,
                         "recipient_phone": partner.phone,
@@ -416,7 +453,6 @@ def send_scheduled_notifications() -> dict:
     pending_notifications = models.CampaignNotification.objects.filter(
         status=choices.NotificationStatus.PENDING,
         scheduled_at__lte=now,
-        channel=choices.NotificationChannel.WHATSAPP,
     ).select_related("campaign", "partner")
 
     total_pending = pending_notifications.count()

@@ -33,3 +33,6 @@ setuptools==70.0.0
 
 # WhatsApp Business API
 heyoo==0.1.2
+
+# Telegram Bot API
+python-telegram-bot==21.7

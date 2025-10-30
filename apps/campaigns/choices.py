@@ -46,4 +46,5 @@ class NotificationChannel(models.TextChoices):
     EMAIL = "EMAIL", _("Email")
     SMS = "SMS", _("SMS")
     WHATSAPP = "WHATSAPP", _("WhatsApp")
+    TELEGRAM = "TELEGRAM", _("Telegram")
     PHONE_CALL = "PHONE_CALL", _("Phone Call")
