@@ -187,7 +187,10 @@ class MagicPaymentLinkAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Información Básica", {"fields": ("partner", "name", "description")}),
-        ("Configuración", {"fields": ("amount", "expires_at", "status")}),
+        (
+            "Configuración",
+            {"fields": ("amount", "expires_at", "status", "source")},
+        ),
         ("Link", {"fields": ("token",)}),
         ("Metadata", {"fields": ("metadata",), "classes": ("collapse",)}),
         (

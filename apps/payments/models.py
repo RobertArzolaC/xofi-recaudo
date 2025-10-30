@@ -459,6 +459,13 @@ class MagicPaymentLink(
             "{'debts': [{'type': 'installment', 'id': 123, 'amount': 387.00}, ...]}"
         ),
     )
+    source = models.CharField(
+        _("Source"),
+        max_length=20,
+        choices=choices.MagicLinkSource.choices,
+        default=choices.MagicLinkSource.MANUAL,
+        help_text=_("Source or campaign that generated this link."),
+    )
 
     class Meta:
         verbose_name = _("Magic Payment Link")

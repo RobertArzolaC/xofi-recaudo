@@ -25,7 +25,7 @@ from django_filters.views import FilterView
 
 from apps.partners import mixins as partner_mixins
 from apps.partners import models as partner_models
-from apps.payments import filtersets, forms, mixins, models
+from apps.payments import choices, filtersets, forms, mixins, models
 
 logger = logging.getLogger(__name__)
 
@@ -494,9 +494,13 @@ class MagicPaymentLinkListView(
 
     def get_queryset(self):
         """Get optimized queryset."""
-        return models.MagicPaymentLink.objects.select_related(
-            "partner", "payment", "created_by"
-        ).order_by("-created")
+        return (
+            models.MagicPaymentLink.objects.filter(
+                source=choices.MagicLinkSource.MANUAL
+            )
+            .select_related("partner", "payment", "created_by")
+            .order_by("-created")
+        )
 
 
 class MagicPaymentLinkDetailView(

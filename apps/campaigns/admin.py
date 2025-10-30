@@ -57,9 +57,7 @@ class CampaignAdmin(admin.ModelAdmin):
         (
             "Notification Configuration",
             {
-                "fields": (
-                    "use_payment_link",
-                ),
+                "fields": ("use_payment_link",),
             },
         ),
         (
@@ -304,9 +302,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
         (
             "WhatsApp Configuration",
             {
-                "fields": (
-                    "whatsapp_template_name",
-                ),
+                "fields": ("whatsapp_template_name",),
                 "classes": ("collapse",),
             },
         ),

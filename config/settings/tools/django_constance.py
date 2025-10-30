@@ -10,6 +10,14 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 CONSTANCE_ADDITIONAL_FIELDS = {
     "image_field": ["django.forms.ImageField", {}],
     "json_field": ["django.forms.JSONField", {}],
+    "decimal_field": [
+        "django.forms.DecimalField",
+        {
+            "max_digits": 10,
+            "decimal_places": 2,
+            "min_value": 0.00,
+        },
+    ],
 }
 
 CONSTANCE_CONFIG = {
@@ -58,6 +66,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "ENABLE_SEND_EMAIL",
             "ENABLE_VERIFICATION_EMAIL",
             "ITEMS_PER_PAGE",
+            "JSON_FIELD_EXAMPLE",
         ),
         "collapse": False,
     },

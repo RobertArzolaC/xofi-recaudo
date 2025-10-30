@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from apps.partners import models as partner_models
 from apps.partners import services as partner_services
+from apps.payments import choices, models
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ def create_magic_payment_link(
     title: str = None,
     description: str = "",
     hours_to_expire: int = 24,
+    source: str = choices.MagicLinkSource.MANUAL,
     user=None,
 ):
     """
@@ -32,7 +34,6 @@ def create_magic_payment_link(
     Returns:
         MagicPaymentLink instance
     """
-    from apps.payments.models import MagicPaymentLink
 
     if not debts:
         raise ValueError("Cannot create magic link without debts")
@@ -89,7 +90,7 @@ def create_magic_payment_link(
         metadata["debts"].append(debt_info)
 
     # Create the Magic Payment Link
-    magic_link = MagicPaymentLink.objects.create(
+    magic_link = models.MagicPaymentLink.objects.create(
         partner=partner,
         name=title,
         description=description,
@@ -98,6 +99,7 @@ def create_magic_payment_link(
         metadata=metadata,
         created_by=user,
         modified_by=user,
+        source=source,
     )
 
     logger.info(
@@ -129,18 +131,18 @@ def create_magic_link_for_partner_by_document(
     Raises:
         ValueError: If partner not found
     """
-    from apps.partners.models import Partner
-    from apps.partners.services import PartnerDebtService
 
     try:
-        partner = Partner.objects.get(document_number=document_number)
-    except Partner.DoesNotExist:
+        partner = partner_models.Partner.objects.get(
+            document_number=document_number
+        )
+    except partner_models.Partner.DoesNotExist:
         raise ValueError(
             f"Partner with document number {document_number} not found"
         )
 
     # Get all debts for the partner
-    debts = PartnerDebtService.get_partner_debt_objects_for_payment(
+    debts = partner_services.PartnerDebtService.get_partner_debt_objects_for_payment(
         partner, include_upcoming=include_upcoming
     )
 
@@ -161,6 +163,7 @@ def create_magic_link_for_partner(
     hours_to_expire: int = 24,
     include_upcoming: bool = False,
     user=None,
+    source: str = choices.MagicLinkSource.MANUAL,
 ):
     """
     Create a Magic Payment Link for a partner by ID.
@@ -170,6 +173,7 @@ def create_magic_link_for_partner(
         hours_to_expire: Hours until the link expires (default 24)
         include_upcoming: Whether to include upcoming debts (default False)
         user: User creating the link (for tracking)
+        source: Source of the magic link (default MANUAL)
     Returns:
         MagicPaymentLink instance or None if no debts
 
@@ -191,4 +195,5 @@ def create_magic_link_for_partner(
         debts=debts,
         hours_to_expire=hours_to_expire,
         user=user,
+        source=source,
     )

@@ -55,3 +55,10 @@ class MagicLinkStatus(models.TextChoices):
     USED = "USED", _("Used")
     EXPIRED = "EXPIRED", _("Expired")
     CANCELLED = "CANCELLED", _("Cancelled")
+
+
+class MagicLinkSource(models.TextChoices):
+    """Choices for magic payment link source."""
+
+    MANUAL = "MANUAL", _("Manual")
+    AUTOMATED = "AUTOMATED", _("Automated")

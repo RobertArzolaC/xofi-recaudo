@@ -9,6 +9,7 @@ from apps.campaigns.utils import messages as message_utils
 from apps.core.services.chats.telegram import telegram_service
 from apps.core.services.chats.whatsapp import whatsapp_service
 from apps.partners import services as partner_services
+from apps.payments import choices as payment_choices
 from apps.payments import utils as payment_utils
 
 logger = logging.getLogger(__name__)
@@ -299,11 +300,12 @@ def process_campaign_notifications(campaign_id: int) -> dict:
                     partner=partner,
                     hours_to_expire=24,
                     include_upcoming=True,
+                    source=payment_choices.MagicLinkSource.AUTOMATED,
                 )
                 if magic_link:
                     payment_link_path = magic_link.get_public_url()
                     payment_link_url = (
-                        f"{config.COMPANY_DOMAIN}{payment_link_path}"
+                        f"https://{config.COMPANY_DOMAIN}{payment_link_path}"
                     )
                     logger.info(
                         f"Payment link generated for partner '{partner.full_name}': {payment_link_url}"
