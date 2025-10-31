@@ -12,7 +12,7 @@ from telegram.ext import (
 )
 
 from apps.ai_agent import constants
-from apps.ai_agent.services.conversation_service import ConversationService
+from apps.ai_agent.services.conversation import ConversationService
 from apps.core.services.chats.telegram import TelegramService
 
 logger = logging.getLogger(__name__)

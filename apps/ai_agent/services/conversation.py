@@ -1,5 +1,3 @@
-"""Service to manage conversations with partners."""
-
 import logging
 from typing import Dict, Optional
 
@@ -7,10 +5,10 @@ from asgiref.sync import sync_to_async
 from django.db import transaction
 
 from apps.ai_agent import choices, constants, models
-from apps.ai_agent.services.authentication_service import (
+from apps.ai_agent.services.authentication import (
     PartnerAuthenticationService,
 )
-from apps.ai_agent.services.partner_api_service import PartnerAPIService
+from apps.ai_agent.services.partner_api import PartnerAPIService
 from apps.ai_agent.utils import IntentDetector, MessageFormatter
 
 logger = logging.getLogger(__name__)

@@ -1,5 +1,3 @@
-"""Message formatting utilities for Telegram responses."""
-
 from typing import Dict, List
 
 from apps.ai_agent import constants
