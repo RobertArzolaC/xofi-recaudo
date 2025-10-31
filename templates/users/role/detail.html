@@ -1,0 +1,143 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load permission_tags %}
+
+{% block title_page %}{% trans "Role Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Detail Role" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.users:role-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.auth.change_group %}
+    <a href="{% url 'apps.users:role-permissions' role.pk %}" class="btn btn-sm btn-info">
+        <i class="ki-duotone ki-lock fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Manage Permissions" %}
+    </a>
+    <a href="{% url 'apps.users:role-edit' role.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Basic Information Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <!-- Role Avatar -->
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold bg-light-primary text-primary">
+                                <i class="ki-duotone ki-security-user fs-2x">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </div>
+                        </div>
+                        <div class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">{{ role.name }}</div>
+                        <div class="mb-9">
+                            <div class="badge badge-lg badge-light-info d-inline">
+                                {{ role.permissions.count }} {% trans "permissions" %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Details -->
+                    <div class="separator"></div>
+                    <div class="pb-5 fs-6">
+                        <div class="fw-bold mt-5">{% trans "Role Name" %}</div>
+                        <div class="text-gray-600">{{ role.name }}</div>
+
+                        <div class="fw-bold mt-5">{% trans "Total Permissions" %}</div>
+                        <div class="text-gray-600">{{ role.permissions.count }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permissions Information -->
+        <div class="col-xl-8">
+            <!-- Permissions Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Assigned Permissions" %}</h2>
+                    </div>
+                    <div class="card-toolbar">
+                        {% if perms.auth.change_group %}
+                        <a href="{% url 'apps.users:role-permissions' role.pk %}" class="btn btn-sm btn-light-primary">
+                            <i class="ki-duotone ki-pencil fs-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Edit Permissions" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if permissions_by_app %}
+                        {% for app_label, models in permissions_by_app.items %}
+                        <div class="mb-7">
+                            <h3 class="text-gray-800 fw-bold mb-3">
+                                <i class="ki-duotone ki-category fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                                {{ app_label|translate_app_name }}
+                            </h3>
+                            {% for model_name, permissions in models.items %}
+                            <div class="mb-5 ms-5">
+                                <h4 class="text-gray-700 fw-semibold mb-2">{{ model_name|translate_model_name }}</h4>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for permission in permissions %}
+                                    <span class="badge badge-light-primary">{{ permission|translate_permission }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="separator separator-dashed my-5"></div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="d-flex flex-column flex-center py-10">
+                        <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-250px">
+                        <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No permissions assigned" %}</div>
+                        <div class="fs-6">{% trans "This role has no permissions assigned yet" %}
+                            {% if perms.auth.change_group %}
+                            <a href="{% url 'apps.users:role-permissions' role.pk %}" class="fw-bolder">{% trans "Assign Permissions" %}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

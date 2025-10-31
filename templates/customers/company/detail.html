@@ -127,55 +127,6 @@
                 </div>
             </div>
 
-            <!-- Compliance Settings Card -->
-            <div class="card card-flush mb-6 mb-xl-9">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h2 class="mb-0">{% trans "Compliance Settings" %}</h2>
-                    </div>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <table class="table align-middle table-row-dashed fs-6 gy-5">
-                            <tbody class="text-gray-600 fw-semibold">
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Contribution Amount" %}</td>
-                                    <td>
-                                        <span class="badge badge-light-success">
-                                            S/ {{ compliance_settings.contribution_amount|floatformat:2 }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Social Security Amount" %}</td>
-                                    <td>
-                                        <span class="badge badge-light-info">
-                                            S/ {{ compliance_settings.social_security_amount|floatformat:2 }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Contribution Due Day" %}</td>
-                                    <td>
-                                        <span class="badge badge-light-primary">
-                                            {% trans "Day" %} {{ compliance_settings.contribution_due_day }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-gray-800">{% trans "Social Security Due Day" %}</td>
-                                    <td>
-                                        <span class="badge badge-light-warning">
-                                            {% trans "Day" %} {{ compliance_settings.social_security_due_day }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!-- System Information Card -->
             <div class="card card-flush">
                 <div class="card-header">

@@ -1,0 +1,180 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load permission_tags %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.users:role-detail' object.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="role-permissions-form">
+        {% csrf_token %}
+
+        <div class="card card-flush">
+            <div class="card-header">
+                <div class="card-title">
+                    <h2 class="mb-0">
+                        <i class="ki-duotone ki-lock fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        {% trans "Manage Permissions for" %}: {{ object.name }}
+                    </h2>
+                </div>
+                <div class="card-toolbar">
+                    <button type="button" class="btn btn-sm btn-light" id="select-all-permissions">
+                        <i class="ki-duotone ki-check-square fs-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Select All" %}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light ms-2" id="deselect-all-permissions">
+                        <i class="ki-duotone ki-cross-square fs-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {% trans "Deselect All" %}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Accordion for Permissions -->
+                <div class="accordion" id="permissionsAccordion">
+                    {% for app_label, models in permissions_structure.items %}
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="heading-{{ app_label }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fs-4 fw-bold" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ app_label }}"
+                                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    aria-controls="collapse-{{ app_label }}">
+                                <i class="ki-duotone ki-category fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                                {{ app_label|translate_app_name }}
+                            </button>
+                        </h2>
+                        <div id="collapse-{{ app_label }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                             aria-labelledby="heading-{{ app_label }}" data-bs-parent="#permissionsAccordion">
+                            <div class="accordion-body">
+                                <!-- Section Controls -->
+                                <div class="d-flex justify-content-end mb-4">
+                                    <button type="button" class="btn btn-sm btn-light-success me-2 select-section" data-section="{{ app_label }}">
+                                        <i class="ki-duotone ki-check-square fs-5">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "Select All in Section" %}
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-light-danger deselect-section" data-section="{{ app_label }}">
+                                        <i class="ki-duotone ki-cross-square fs-5">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "Deselect All in Section" %}
+                                    </button>
+                                </div>
+
+                                {% for model_name, permissions in models.items %}
+                                <div class="mb-5">
+                                    <h4 class="text-gray-700 fw-semibold mb-3">{{ model_name|translate_model_name }}</h4>
+                                    <div class="row">
+                                        {% for permission in permissions %}
+                                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                            <div class="form-check form-check-custom form-check-solid">
+                                                <input class="form-check-input permission-checkbox section-{{ app_label }}" type="checkbox"
+                                                       name="permissions" value="{{ permission.id }}"
+                                                       id="permission_{{ permission.id }}"
+                                                       {% if permission.id in current_permissions %}checked{% endif %}>
+                                                <label class="form-check-label" for="permission_{{ permission.id }}">
+                                                    {{ permission|translate_permission }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% if not forloop.last %}
+                                <div class="separator separator-dashed my-4"></div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.users:role-detail' object.pk %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="ki-duotone ki-check fs-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {% trans "Save Permissions" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all permissions (global)
+    document.getElementById('select-all-permissions').addEventListener('click', function() {
+        document.querySelectorAll('.permission-checkbox').forEach(function(checkbox) {
+            checkbox.checked = true;
+        });
+    });
+
+    // Deselect all permissions (global)
+    document.getElementById('deselect-all-permissions').addEventListener('click', function() {
+        document.querySelectorAll('.permission-checkbox').forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+    });
+
+    // Select all permissions in a specific section
+    document.querySelectorAll('.select-section').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            document.querySelectorAll('.section-' + section).forEach(function(checkbox) {
+                checkbox.checked = true;
+            });
+        });
+    });
+
+    // Deselect all permissions in a specific section
+    document.querySelectorAll('.deselect-section').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            document.querySelectorAll('.section-' + section).forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

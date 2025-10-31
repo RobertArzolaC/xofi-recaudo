@@ -14,6 +14,33 @@ urlpatterns = [
     path(
         "users/<int:pk>/edit/", views.UserUpdateView.as_view(), name="user-edit"
     ),
+    path(
+        "users/<int:pk>/roles/",
+        views.UserRolesView.as_view(),
+        name="user-roles",
+    ),
+    path(
+        "users/<int:pk>/permissions/",
+        views.UserPermissionsView.as_view(),
+        name="user-permissions",
+    ),
+    # Role URLs
+    path("roles/", views.RoleListView.as_view(), name="role-list"),
+    path("roles/create/", views.RoleCreateView.as_view(), name="role-create"),
+    path("roles/<int:pk>/", views.RoleDetailView.as_view(), name="role-detail"),
+    path(
+        "roles/<int:pk>/edit/", views.RoleUpdateView.as_view(), name="role-edit"
+    ),
+    path(
+        "roles/<int:pk>/delete/",
+        views.RoleDeleteView.as_view(),
+        name="role-delete",
+    ),
+    path(
+        "roles/<int:pk>/permissions/",
+        views.RolePermissionsView.as_view(),
+        name="role-permissions",
+    ),
     # API URLs
     path(
         "api/toggle-user-status/",

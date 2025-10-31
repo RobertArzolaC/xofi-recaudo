@@ -5,23 +5,6 @@
 {% block title_page %}{% trans "Credits" %}{% endblock title_page %}
 {% block toolbar_title %}{% trans "Credits" %}{% endblock %}
 
-{% block entity_options %}
-{% if constance.ENABLE_CREDIT_CREATION %}
-<div class="d-flex align-items-center py-1">
-    {% if perms.credits.add_credit %}
-    <a href="{% url 'apps.credits:credit_create' %}" class="btn btn-sm btn-primary">
-        <i class="ki-duotone ki-plus fs-2">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-        </i>
-        {% trans "Add Credit" %}
-    </a>
-    {% endif %}
-</div>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="container-xxl">
     <!-- Filter Card -->
@@ -156,33 +139,6 @@
                                         <span class="path1"></span>
                                         <span class="path2"></span>
                                         <span class="path3"></span>
-                                    </i>
-                                </a>
-                                {% endif %}
-                                {% if perms.credits.change_credit %}
-                                <a href="{% url 'apps.credits:credit_update' credit.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-pencil fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </a>
-                                {% endif %}
-                                {% if perms.credits.change_credit_status or perms.credits.approve_credit or perms.credits.reject_credit %}
-                                <a href="{% url 'apps.credits:credit_change_status' credit.pk %}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1" title="{% trans 'Change Status' %}">
-                                    <i class="ki-duotone ki-arrows-loop fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </a>
-                                {% endif %}
-                                {% if perms.credits.delete_credit %}
-                                <a href="{% url 'apps.credits:credit_delete' credit.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
-                                    <i class="ki-duotone ki-trash fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                        <span class="path5"></span>
                                     </i>
                                 </a>
                                 {% endif %}

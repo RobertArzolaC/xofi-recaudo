@@ -427,6 +427,22 @@
             </a>
           {% endif %}
         </div>
+
+        <div class="menu-item">
+          {% if perms.auth.view_group %}
+            <a class="menu-link {% if "role" in request.path %}active{% endif %}" href="{% url 'apps.users:role-list' %}">
+              <span class="menu-icon">
+                <i class="ki-duotone ki-security-user fs-2 me-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </span>
+              <span class="menu-title">
+                {% trans 'Roles' %}
+              </span>
+            </a>
+          {% endif %}
+        </div>
         {% endif %}
 
         <div class="menu-item">

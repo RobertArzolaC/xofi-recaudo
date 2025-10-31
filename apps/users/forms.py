@@ -214,3 +214,49 @@ class UserPermissionsForm(forms.ModelForm):
             self.fields[
                 "user_permissions"
             ].initial = self.instance.user_permissions.all()
+
+
+class RoleForm(forms.ModelForm):
+    """Form for creating and editing Role (Group) instances."""
+
+    class Meta:
+        model = Group
+        fields = ["name"]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Role name"),
+                }
+            ),
+        }
+        labels = {
+            "name": _("Name"),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name"].required = True
+
+
+class RolePermissionsForm(forms.ModelForm):
+    """Form for managing permissions assigned to a role."""
+
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.select_related("content_type").order_by(
+            "content_type__app_label", "content_type__model", "codename"
+        ),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Permissions"),
+    )
+
+    class Meta:
+        model = Group
+        fields = ["permissions"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Pre-select current permissions if editing
+        if self.instance and self.instance.pk:
+            self.fields["permissions"].initial = self.instance.permissions.all()

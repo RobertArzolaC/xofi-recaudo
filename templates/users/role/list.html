@@ -1,0 +1,127 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Roles" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "List Roles" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.auth.add_group %}
+    <a href="{% url 'apps.users:role-create' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-plus fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        {% trans "Add Role" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <!-- Results Card -->
+    <div class="card">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Roles List" %}</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">{{ page_obj.paginator.count }} {% trans "roles" %}</span>
+            </h3>
+        </div>
+        <div class="card-body py-3">
+            {% if roles %}
+            <div class="table-responsive">
+                <table class="table align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th class="min-w-200px">{% trans "Name" %}</th>
+                            <th class="min-w-150px">{% trans "Permissions Count" %}</th>
+                            <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role in roles %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-45px me-5">
+                                        <div class="symbol-label fs-3 fw-semibold bg-light-primary text-primary">
+                                            <i class="ki-duotone ki-security-user fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start flex-column">
+                                        <a href="{% url 'apps.users:role-detail' role.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ role.name }}</a>
+                                        <span class="text-muted fw-semibold text-muted d-block fs-7">{% trans "Role" %}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="badge badge-light-info">{{ role.permissions.count }} {% trans "permissions" %}</span>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                {% if perms.auth.view_group %}
+                                <a href="{% url 'apps.users:role-detail' role.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-eye fs-3">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.auth.change_group %}
+                                <a href="{% url 'apps.users:role-permissions' role.pk %}" class="btn btn-icon btn-bg-light btn-active-color-info btn-sm me-1">
+                                    <i class="ki-duotone ki-lock fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                </a>
+                                <a href="{% url 'apps.users:role-edit' role.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="ki-duotone ki-pencil fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                                {% if perms.auth.delete_group %}
+                                <a href="{% url 'apps.users:role-delete' role.pk %}" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm">
+                                    <i class="ki-duotone ki-trash fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+            {% else %}
+            <div class="d-flex flex-column flex-center">
+                <img src="{% static 'assets/media/illustrations/sketchy-1/5.png' %}" alt="" class="mw-300px">
+                <div class="fs-3 fw-bolder text-dark mb-4">{% trans "No roles found" %}</div>
+                <div class="fs-6">{% trans "Start by creating your first role" %}
+                    {% if perms.auth.add_group %}
+                    <a href="{% url 'apps.users:role-create' %}" class="fw-bolder">{% trans "Add Role" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

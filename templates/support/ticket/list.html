@@ -5,21 +5,6 @@
 {% block title_page %}{% trans "Support Tickets" %}{% endblock title_page %}
 {% block toolbar_title %}{% trans "Ticket Management" %}{% endblock %}
 
-{% block entity_options %}
-{% if perms.support.add_ticket %}
-<div class="d-flex align-items-center py-1">
-    <a href="{% url 'apps.support:ticket-create' %}" class="btn btn-sm btn-primary">
-        <i class="ki-duotone ki-plus fs-2">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-        </i>
-        {% trans "Create Ticket" %}
-    </a>
-</div>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="container-xxl">
     <!-- Filter Card -->
@@ -90,9 +75,8 @@
                 <table class="table align-middle gs-0 gy-4">
                     <thead>
                         <tr class="fw-bold text-muted">
-                            <th class="min-w-50px">#</th>
-                            <th class="min-w-200px">{% trans "Subject" %}</th>
                             <th class="min-w-150px">{% trans "Partner" %}</th>
+                            <th class="min-w-200px">{% trans "Subject" %}</th>
                             <th class="min-w-100px">{% trans "Priority" %}</th>
                             <th class="min-w-100px">{% trans "Status" %}</th>
                             <th class="min-w-150px">{% trans "Assigned To" %}</th>
@@ -104,18 +88,17 @@
                         {% for ticket in tickets %}
                         <tr>
                             <td>
-                                <span class="text-gray-800 fw-bold">#{{ ticket.id }}</span>
+                                <div class="d-flex flex-column">
+                                    <a href="{% url 'apps.support:ticket-detail' ticket.pk %}" class="text-dark fw-bold text-hover-primary fs-6">
+                                        {{ ticket.partner.full_name }}
+                                    </a>
+                                    <span class="text-muted fs-7">{{ ticket.partner.document_number }}</span>
+                                </div>
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
                                     <a href="{% url 'apps.support:ticket-detail' ticket.pk %}" class="text-dark fw-bold text-hover-primary fs-6">{{ ticket.subject }}</a>
                                     <span class="text-muted fw-semibold fs-7">{{ ticket.description|truncatewords:10 }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column">
-                                    <span class="text-gray-800 fw-bold">{{ ticket.partner.full_name }}</span>
-                                    <span class="text-muted fs-7">{{ ticket.partner.document_number }}</span>
                                 </div>
                             </td>
                             <td>
@@ -162,25 +145,6 @@
                                         <span class="path1"></span>
                                         <span class="path2"></span>
                                         <span class="path3"></span>
-                                    </i>
-                                </a>
-                                {% endif %}
-                                {% if perms.support.change_ticket %}
-                                <a href="{% url 'apps.support:ticket-edit' ticket.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <i class="ki-duotone ki-pencil fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </a>
-                                {% endif %}
-                                {% if perms.support.delete_ticket %}
-                                <a href="{% url 'apps.support:ticket-delete' ticket.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
-                                    <i class="ki-duotone ki-trash fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                        <span class="path5"></span>
                                     </i>
                                 </a>
                                 {% endif %}
