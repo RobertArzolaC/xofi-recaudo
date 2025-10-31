@@ -358,7 +358,6 @@ class ConversationService:
         # Check if we have pending ticket data in context
         context = conversation.context_data
         if context.get("pending_action") != "create_ticket":
-            # Start ticket creation flow
             conversation.context_data = {
                 "pending_action": "create_ticket",
                 "step": "subject",
@@ -413,7 +412,7 @@ class ConversationService:
         self, conversation: models.AgentConversation, message: str
     ) -> str:
         """Handle unknown intents - use LLM for complex queries."""
-        # TODO: Implement CrewAI agent for complex queries
+        # TODO: Implement AI agent for complex queries
         return constants.UNKNOWN_INTENT_RESPONSE.format(
             menu=self.formatter.format_help_message()
         )

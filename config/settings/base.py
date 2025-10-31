@@ -267,7 +267,6 @@ TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
 # AI Agent Settings
 GOOGLE_GEMINI_API_KEY = config("GOOGLE_GEMINI_API_KEY", default="")
 GEMINI_MODEL_NAME = config("GEMINI_MODEL_NAME", default="gemini-pro")
-USE_CREW_AI = config("USE_CREW_AI", default=False, cast=bool)
 AI_AGENT_API_TOKEN = config("AI_AGENT_API_TOKEN", default="")
 AI_AGENT_API_BASE_URL = config(
     "AI_AGENT_API_BASE_URL", default="http://localhost:8000"

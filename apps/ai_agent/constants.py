@@ -105,9 +105,7 @@ PHOTO_RECEIVED_MESSAGE = """
 Nuestro equipo verificará el comprobante y actualizará tu cuenta.
 """
 
-ERROR_PROCESSING_MESSAGE = (
-    "❌ Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo."
-)
+ERROR_PROCESSING_MESSAGE = "❌ Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo."
 
 UNEXPECTED_ERROR_MESSAGE = (
     "❌ Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde."
@@ -133,10 +131,13 @@ TICKET_START_MESSAGE = (
     "Por favor, describe brevemente el asunto:"
 )
 
-TICKET_DESCRIPTION_PROMPT = "Ahora, describe con más detalle tu problema o consulta:"
+TICKET_DESCRIPTION_PROMPT = (
+    "Ahora, describe con más detalle tu problema o consulta:"
+)
 
 TICKET_SUCCESS_TEMPLATE = (
-    "Ticket #{ticket_id} creado exitosamente.\n" "Nuestro equipo lo atenderá pronto."
+    "Ticket #{ticket_id} creado exitosamente.\n"
+    "Nuestro equipo lo atenderá pronto."
 )
 
 TICKET_ERROR = "No se pudo crear el ticket."
@@ -207,29 +208,6 @@ Responde en formato JSON con:
     "entities": {{}}
 }}
 """
-
-# ==========================================
-# CREWAI AGENT DEFINITIONS
-# ==========================================
-
-PARTNER_SUPPORT_AGENT_CONFIG = {
-    "role": "Partner Support Specialist",
-    "goal": "Assist partners with their queries about loans, payments, and account information",
-    "backstory": (
-        "You are a helpful financial assistant specialized in microfinance. "
-        "You help partners understand their loans, payment schedules, and account status. "
-        "You always provide clear, accurate information in Spanish."
-    ),
-}
-
-DATA_ANALYST_AGENT_CONFIG = {
-    "role": "Financial Data Analyst",
-    "goal": "Analyze partner financial data and provide insights",
-    "backstory": (
-        "You are a financial data analyst who helps partners understand "
-        "their financial situation, payment history, and loan details."
-    ),
-}
 
 # ==========================================
 # MESSAGE FORMATTING TEMPLATES

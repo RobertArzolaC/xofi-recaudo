@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class AIAgentService:
     """
-    AI Agent service using CrewAI and Google Gemini.
+    AI Agent service using Google Gemini.
     Handles complex queries that cannot be resolved with rule-based matching.
     """
 
@@ -19,14 +19,9 @@ class AIAgentService:
         """Initialize AI agent with Gemini configuration."""
         self.gemini_api_key = getattr(settings, "GOOGLE_GEMINI_API_KEY", "")
         self.model_name = getattr(settings, "GEMINI_MODEL_NAME", "gemini-pro")
-        self.use_crew_ai = getattr(settings, "USE_CREW_AI", False)
 
         # Initialize Gemini client
         self._init_gemini_client()
-
-        # Initialize CrewAI if enabled
-        if self.use_crew_ai:
-            self._init_crew_ai()
 
     def _init_gemini_client(self):
         """Initialize Google Gemini client."""
@@ -46,41 +41,6 @@ class AIAgentService:
         except Exception as e:
             logger.error(f"Error initializing Gemini client: {e}")
             self.gemini_model = None
-
-    def _init_crew_ai(self):
-        """Initialize CrewAI agents and crew."""
-        try:
-            from crewai import Agent
-
-            # Define partner support agent
-            config = constants.PARTNER_SUPPORT_AGENT_CONFIG
-            self.partner_support_agent = Agent(
-                role=config["role"],
-                goal=config["goal"],
-                backstory=config["backstory"],
-                verbose=True,
-                allow_delegation=False,
-            )
-
-            # Define data analyst agent
-            config = constants.DATA_ANALYST_AGENT_CONFIG
-            self.data_analyst_agent = Agent(
-                role=config["role"],
-                goal=config["goal"],
-                backstory=config["backstory"],
-                verbose=True,
-                allow_delegation=False,
-            )
-
-            logger.info("CrewAI agents initialized successfully")
-        except ImportError:
-            logger.warning("crewai not installed. CrewAI features disabled.")
-            self.partner_support_agent = None
-            self.data_analyst_agent = None
-        except Exception as e:
-            logger.error(f"Error initializing CrewAI: {e}")
-            self.partner_support_agent = None
-            self.data_analyst_agent = None
 
     def process_complex_query(
         self, query: str, context: Optional[Dict[str, Any]] = None
