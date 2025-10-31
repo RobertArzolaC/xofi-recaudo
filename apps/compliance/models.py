@@ -10,6 +10,7 @@ from model_utils.models import TimeStampedModel
 from apps.compliance import choices
 from apps.core import choices as core_choices
 from apps.core import models as core_models
+from apps.payments import choices as payment_choices
 
 
 class BaseCompliancePayment(
@@ -71,7 +72,6 @@ class BaseCompliancePayment(
     @property
     def total_paid(self) -> Decimal:
         """Calculate total amount paid."""
-        from apps.payments import choices as payment_choices
 
         return sum(
             allocation.amount_applied
