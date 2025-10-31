@@ -19,7 +19,7 @@ django-autocomplete-light==3.12.1
 drf-spectacular==0.28.0
 
 # Environment settings
-python-dotenv==1.1.0
+python-dotenv==1.1.1
 python-decouple==3.8
 dj-database-url==3.0.0
 
@@ -36,3 +36,8 @@ heyoo==0.1.2
 
 # Telegram Bot API
 python-telegram-bot==21.7
+
+# AI and NLP
+google-generativeai==0.8.3
+crewai==1.2.1
+spacy==3.8.7

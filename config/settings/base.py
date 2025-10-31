@@ -61,6 +61,7 @@ LOCAL_APPS = [
     "apps.credits.apps.CreditsConfig",
     "apps.campaigns.apps.CampaignsConfig",
     "apps.support.apps.SupportConfig",
+    "apps.ai_agent.apps.AiAgentConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -260,13 +261,17 @@ WHATSAPP_BUSINESS_ACCOUNT_ID = config(
 )
 WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
 
-# Payment Link Settings
-PAYMENT_LINK_BASE_URL = config(
-    "PAYMENT_LINK_BASE_URL", default="https://pay.example.com"
-)
-
 # Telegram Bot Settings
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
+
+# AI Agent Settings
+GOOGLE_GEMINI_API_KEY = config("GOOGLE_GEMINI_API_KEY", default="")
+GEMINI_MODEL_NAME = config("GEMINI_MODEL_NAME", default="gemini-pro")
+USE_CREW_AI = config("USE_CREW_AI", default=False, cast=bool)
+AI_AGENT_API_TOKEN = config("AI_AGENT_API_TOKEN", default="")
+AI_AGENT_API_BASE_URL = config(
+    "AI_AGENT_API_BASE_URL", default="http://localhost:8000"
+)
 
 # Culqi Payment Gateway Settings
 # https://docs.culqi.com/
