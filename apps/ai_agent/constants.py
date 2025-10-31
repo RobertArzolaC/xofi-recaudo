@@ -201,12 +201,7 @@ Intenciones posibles:
 
 Mensaje: "{message}"
 
-Responde en formato JSON con:
-{{
-    "intent": "INTENT_TYPE",
-    "confidence": 0.0-1.0,
-    "entities": {{}}
-}}
+Clasifica la intención y proporciona un nivel de confianza entre 0.0 y 1.0.
 """
 
 # ==========================================

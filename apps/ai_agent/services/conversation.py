@@ -223,6 +223,7 @@ class ConversationService:
     ) -> str:
         """Route message to appropriate handler based on intent."""
         handlers = {
+            choices.IntentType.AUTHENTICATION: self._handle_greeting,
             choices.IntentType.GREETING: self._handle_greeting,
             choices.IntentType.HELP: self._handle_help,
             choices.IntentType.PARTNER_DETAIL: self._handle_partner_detail,
@@ -411,8 +412,12 @@ class ConversationService:
     def _handle_unknown(
         self, conversation: models.AgentConversation, message: str
     ) -> str:
-        """Handle unknown intents - use LLM for complex queries."""
-        # TODO: Implement AI agent for complex queries
-        return constants.UNKNOWN_INTENT_RESPONSE.format(
-            menu=self.formatter.format_help_message()
-        )
+        """Handle unknown intents."""
+        try:
+            logger.info(f"Wrong intent detected, for message: {message}")
+            return self.formatter.format_help_message()
+        except Exception as e:
+            logger.error(f"Error handling unknown intent: {e}")
+            return constants.UNKNOWN_INTENT_RESPONSE.format(
+                menu=self.formatter.format_help_message()
+            )

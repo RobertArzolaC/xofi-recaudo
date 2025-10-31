@@ -112,11 +112,51 @@ Resumen de cuenta:
         prompt = constants.GEMINI_INTENT_ANALYSIS_PROMPT.format(message=message)
 
         try:
-            response = self.gemini_model.generate_content(prompt)
+            # Configure generation to return JSON
+            generation_config = {
+                "response_mime_type": "application/json",
+                "response_schema": {
+                    "type": "object",
+                    "properties": {
+                        "intent": {
+                            "type": "string",
+                            "enum": [
+                                "GREETING",
+                                "AUTHENTICATION",
+                                "PARTNER_DETAIL",
+                                "ACCOUNT_STATEMENT",
+                                "LIST_CREDITS",
+                                "CREDIT_DETAIL",
+                                "CREATE_TICKET",
+                                "UPLOAD_RECEIPT",
+                                "HELP",
+                                "GOODBYE",
+                                "UNKNOWN",
+                            ],
+                        },
+                        "confidence": {"type": "number"},
+                        "entities": {
+                            "type": "object",
+                            "properties": {
+                                "loan_id": {"type": "string"},
+                                "amount": {"type": "string"},
+                                "date": {"type": "string"},
+                                "ticket_subject": {"type": "string"},
+                            },
+                        },
+                    },
+                    "required": ["intent", "confidence", "entities"],
+                },
+            }
+
+            response = self.gemini_model.generate_content(
+                prompt, generation_config=generation_config
+            )
+
             result = json.loads(response.text)
             return result
         except Exception as e:
-            logger.error(f"Error analyzing intent with AI: {e}")
+            logger.exception(f"Error analyzing intent with AI: {e}")
             return {"intent": "UNKNOWN", "confidence": 0, "entities": {}}
 
 

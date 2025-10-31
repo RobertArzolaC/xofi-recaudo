@@ -1,8 +1,12 @@
+import logging
 import re
 from typing import Dict, Optional
 
 from apps.ai_agent.choices import IntentType
 from apps.ai_agent.constants import INTENT_KEYWORDS
+from apps.ai_agent.services.ai_agent import get_ai_agent_service
+
+logger = logging.getLogger(__name__)
 
 
 class IntentDetector:
@@ -38,6 +42,7 @@ class IntentDetector:
     def detect_intent(self, message: str) -> IntentType:
         """
         Detect the intent of a message using NLP and keyword matching.
+        If no intent is detected, fallback to AI-based intent analysis.
 
         Args:
             message: User message text
@@ -57,12 +62,61 @@ class IntentDetector:
         else:
             text_to_match = message_lower
 
+        # First, try rule-based detection
         for intent, keywords in self.INTENT_KEYWORDS.items():
             for keyword in keywords:
                 if keyword in text_to_match or keyword in message_lower:
+                    logger.info(
+                        f"Intent detected by rules: {intent} for message: {message}"
+                    )
                     return intent
 
-        return IntentType.UNKNOWN
+        # If no intent detected by rules, use AI fallback
+        logger.info(
+            f"No intent detected by rules, trying AI analysis for message: {message}"
+        )
+        return self._detect_intent_with_ai(message)
+
+    def _detect_intent_with_ai(self, message: str) -> IntentType:
+        """
+        Use AI to detect intent when rule-based detection fails.
+
+        Args:
+            message: User message text
+
+        Returns:
+            Detected IntentType
+        """
+        try:
+            # Import here to avoid circular imports
+
+            ai_service = get_ai_agent_service()
+            ai_result = ai_service.analyze_intent_with_ai(message)
+
+            intent_str = ai_result.get("intent", "UNKNOWN")
+            confidence = ai_result.get("confidence", 0)
+
+            # Map AI result to IntentType
+            try:
+                intent = IntentType(intent_str)
+                if confidence >= 0.6:
+                    logger.info(
+                        f"AI detected intent: {intent} with confidence: {confidence}"
+                    )
+                    return intent
+                else:
+                    logger.info(
+                        f"AI confidence too low ({confidence}), returning UNKNOWN"
+                    )
+                    return IntentType.UNKNOWN
+
+            except ValueError:
+                logger.warning(f"AI returned invalid intent: {intent_str}")
+                return IntentType.UNKNOWN
+
+        except Exception as e:
+            logger.error(f"Error using AI for intent detection: {e}")
+            return IntentType.UNKNOWN
 
     @staticmethod
     def _is_authentication_message(message: str) -> bool:
