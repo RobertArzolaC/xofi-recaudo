@@ -14,6 +14,9 @@ class XofiErpRouter:
         "credits",
         "campaigns",
         "support",
+        "authtoken",  # Agregado para tokens de Django REST Framework
+        "admin",  # Agregado para logging de Django admin
+        "contenttypes",  # Agregado para ContentType models
     }
 
     def db_for_read(self, model, **hints):
