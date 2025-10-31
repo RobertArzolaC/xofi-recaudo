@@ -33,6 +33,7 @@ urlpatterns += [
     path("payments/", include("apps.payments.urls")),
     path("compliance/", include("apps.compliance.urls")),
     path("campaigns/", include("apps.campaigns.urls")),
+    path("support/", include("apps.support.urls")),
 ]
 
 # API Documentation URLs
@@ -48,6 +49,12 @@ urlpatterns += [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+]
+
+# API URLs v1
+urlpatterns += [
+    path("api/v1/support/", include("apps.support.routers")),
+    path("api/v1/partners/", include("apps.partners.routers")),
 ]
 
 if settings.DEBUG:

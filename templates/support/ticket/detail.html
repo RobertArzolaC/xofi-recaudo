@@ -1,0 +1,285 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Ticket Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Ticket" %} #{{ ticket.id }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1 gap-2">
+    <a href="{% url 'apps.support:ticket-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if perms.support.change_ticket %}
+    <a href="{% url 'apps.support:ticket-edit' ticket.pk %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Main Content -->
+        <div class="col-xl-8">
+            <!-- Ticket Details Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{{ ticket.subject }}</h2>
+                    </div>
+                    <div class="card-toolbar">
+                        {% if ticket.priority == 1 %}
+                            <span class="badge badge-lg badge-light-info">{{ ticket.get_priority_display }}</span>
+                        {% elif ticket.priority == 2 %}
+                            <span class="badge badge-lg badge-light-primary">{{ ticket.get_priority_display }}</span>
+                        {% elif ticket.priority == 3 %}
+                            <span class="badge badge-lg badge-light-warning">{{ ticket.get_priority_display }}</span>
+                        {% elif ticket.priority == 4 %}
+                            <span class="badge badge-lg badge-light-danger">{{ ticket.get_priority_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="mb-5">
+                        <div class="text-gray-600 fw-semibold fs-6 mb-5">{{ ticket.description }}</div>
+                    </div>
+
+                    <div class="separator my-5"></div>
+
+                    <!-- Comments Section -->
+                    <div class="mb-0">
+                        <h3 class="fw-bold mb-5">{% trans "Comments" %} ({{ ticket.comments.count }})</h3>
+
+                        {% for comment in ticket.comments.all %}
+                        <div class="mb-5">
+                            <div class="d-flex align-items-start">
+                                <div class="symbol symbol-35px symbol-circle me-3">
+                                    <div class="symbol-label fs-6 fw-semibold text-primary">
+                                        {{ comment.created_by.email|slice:":1"|upper }}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                                        <span class="text-gray-800 fw-bold">
+                                            {% if comment.created_by.get_full_name %}
+                                                {{ comment.created_by.get_full_name }}
+                                            {% else %}
+                                                {{ comment.created_by.email }}
+                                            {% endif %}
+                                        </span>
+                                        <span class="text-muted fs-7">{{ comment.created|date:"d/m/Y H:i" }}</span>
+                                        {% if comment.is_internal %}
+                                            <span class="badge badge-light-warning badge-sm">{% trans "Internal" %}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-gray-700 fs-6">{{ comment.comment }}</div>
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                            <div class="separator my-4"></div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="text-muted fs-6">{% trans "No comments yet" %}</div>
+                        {% endfor %}
+                    </div>
+
+                    {% if perms.support.add_ticketcomment %}
+                    <div class="separator my-7"></div>
+
+                    <!-- Add Comment Form -->
+                    <div>
+                        <h4 class="fw-bold mb-4">{% trans "Add Comment" %}</h4>
+                        <form method="post" action="{% url 'apps.support:ticket-comment-create' ticket.pk %}">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                {{ comment_form.comment }}
+                            </div>
+                            <div class="form-check mb-4">
+                                {{ comment_form.is_internal }}
+                                <label class="form-check-label" for="{{ comment_form.is_internal.id_for_label }}">
+                                    {{ comment_form.is_internal.label }}
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ki-duotone ki-message-add fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                {% trans "Add Comment" %}
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-xl-4">
+            <!-- Status Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Status" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="mb-5">
+                        {% if ticket.status == 1 %}
+                            <span class="badge badge-lg badge-light-warning">{{ ticket.get_status_display }}</span>
+                        {% elif ticket.status == 2 %}
+                            <span class="badge badge-lg badge-light-primary">{{ ticket.get_status_display }}</span>
+                        {% elif ticket.status == 3 %}
+                            <span class="badge badge-lg badge-light-info">{{ ticket.get_status_display }}</span>
+                        {% elif ticket.status == 4 %}
+                            <span class="badge badge-lg badge-light-success">{{ ticket.get_status_display }}</span>
+                        {% elif ticket.status == 5 %}
+                            <span class="badge badge-lg badge-light-secondary">{{ ticket.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if perms.support.change_ticket %}
+                    <div class="separator my-5"></div>
+                    <h4 class="fw-bold mb-4">{% trans "Update Status" %}</h4>
+                    <form method="post" action="{% url 'apps.support:ticket-status-update' ticket.pk %}">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label">{{ status_form.status.label }}</label>
+                            {{ status_form.status }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">{{ status_form.assigned_to.label }}</label>
+                            {{ status_form.assigned_to }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            {% trans "Update" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Partner Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Partner" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-4">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Name" %}</td>
+                                    <td>{{ ticket.partner.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Document" %}</td>
+                                    <td>{{ ticket.partner.document_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Phone" %}</td>
+                                    <td>{{ ticket.partner.phone|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Email" %}</td>
+                                    <td>{{ ticket.partner.email|default:"-" }}</td>
+                                </tr>
+                                {% if ticket.partner.agency %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Agency" %}</td>
+                                    <td>{{ ticket.partner.agency.name }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Assignment" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-4">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Assigned To" %}</td>
+                                    <td>
+                                        {% if ticket.assigned_to %}
+                                            {{ ticket.assigned_to.full_name }}
+                                        {% else %}
+                                            <span class="text-muted">{% trans "Unassigned" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if ticket.assigned_to %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Position" %}</td>
+                                    <td>{{ ticket.assigned_to.position.name }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "System Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-4">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created" %}</td>
+                                    <td>{{ ticket.created|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Last Modified" %}</td>
+                                    <td>{{ ticket.modified|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                {% if ticket.created_by %}
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Created By" %}</td>
+                                    <td>
+                                        {% if ticket.created_by.get_full_name %}
+                                            {{ ticket.created_by.get_full_name }}
+                                        {% else %}
+                                            {{ ticket.created_by.email }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
