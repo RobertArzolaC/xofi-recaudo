@@ -44,7 +44,9 @@ class PaymentForm(forms.ModelForm):
                 }
             ),
             "payment_method": forms.Select(attrs={"class": "form-select"}),
-            "reference_number": forms.TextInput(attrs={"class": "form-control"}),
+            "reference_number": forms.TextInput(
+                attrs={"class": "form-control"}
+            ),
             "status": forms.Select(attrs={"class": "form-select"}),
             "notes": forms.Textarea(
                 attrs={
@@ -62,9 +64,9 @@ class PaymentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Optimize partner queryset
-        self.fields["partner"].queryset = Partner.objects.select_related().order_by(
-            "first_name"
-        )
+        self.fields[
+            "partner"
+        ].queryset = Partner.objects.select_related().order_by("first_name")
 
         # Set default values for new payments
         if not self.instance.pk:
@@ -301,7 +303,9 @@ class PartnerPaymentForm(forms.Form):
 
         if not token:
             raise ValidationError(
-                _("Payment token is required. Please complete the payment form.")
+                _(
+                    "Payment token is required. Please complete the payment form."
+                )
             )
 
         return token
@@ -325,7 +329,6 @@ class PaymentReceiptForm(forms.ModelForm):
         model = models.PaymentReceipt
         fields = [
             "partner",
-            "payment",
             "receipt_file",
             "amount",
             "payment_date",
@@ -333,9 +336,6 @@ class PaymentReceiptForm(forms.ModelForm):
         ]
         widgets = {
             "partner": forms.Select(
-                attrs={"class": "form-select", "data-control": "select2"}
-            ),
-            "payment": forms.Select(
                 attrs={"class": "form-select", "data-control": "select2"}
             ),
             "receipt_file": forms.FileInput(
@@ -371,20 +371,9 @@ class PaymentReceiptForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Optimize partner queryset
-        self.fields["partner"].queryset = Partner.objects.select_related().order_by(
-            "first_name"
-        )
-
-        # Make payment field optional
-        self.fields["payment"].required = False
-
-        # Filter payments if editing
-        if self.instance.pk and self.instance.partner:
-            self.fields["payment"].queryset = models.Payment.objects.filter(
-                partner=self.instance.partner
-            ).order_by("-created")
-        else:
-            self.fields["payment"].queryset = models.Payment.objects.none()
+        self.fields[
+            "partner"
+        ].queryset = Partner.objects.select_related().order_by("first_name")
 
     def clean_receipt_file(self):
         """Validate receipt file format and size."""

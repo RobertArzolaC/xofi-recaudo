@@ -256,9 +256,9 @@ class PaymentReceiptListView(
     model = models.PaymentReceipt
     template_name = "payments/receipt/list.html"
     context_object_name = "receipts"
+    filterset_class = filtersets.PaymentReceiptFilter
     permission_required = "payments.view_paymentreceipt"
     paginate_by = config.ITEMS_PER_PAGE
-    filterset_fields = ["status", "partner"]
 
     def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
         """Get optimized queryset for receipt list."""
@@ -280,7 +280,7 @@ class PaymentReceiptDetailView(
     def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
         """Get optimized queryset for receipt detail."""
         return models.PaymentReceipt.objects.select_related(
-            "partner", "payment", "validated_by"
+            "partner", "validated_by"
         )
 
 

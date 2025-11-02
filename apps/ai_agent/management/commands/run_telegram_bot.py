@@ -1,4 +1,3 @@
-"""Django management command to run the Telegram bot."""
 import logging
 
 from django.conf import settings
@@ -34,11 +33,15 @@ class Command(BaseCommand):
 
         if not token:
             self.stdout.write(
-                self.style.ERROR("TELEGRAM_BOT_TOKEN not configured in settings")
+                self.style.ERROR(
+                    "TELEGRAM_BOT_TOKEN not configured in settings"
+                )
             )
             return
 
-        self.stdout.write(self.style.SUCCESS("Starting Telegram AI Agent Bot..."))
+        self.stdout.write(
+            self.style.SUCCESS("Starting Telegram AI Agent Bot...")
+        )
 
         # Create application
         application = Application.builder().token(token).build()
@@ -48,8 +51,12 @@ class Command(BaseCommand):
 
         # Run bot
         if options["polling"] or not options.get("webhook_url"):
-            self.stdout.write(self.style.SUCCESS("Running bot in polling mode..."))
-            application.run_polling(allowed_updates=["message", "edited_message"])
+            self.stdout.write(
+                self.style.SUCCESS("Running bot in polling mode...")
+            )
+            application.run_polling(
+                allowed_updates=["message", "edited_message"]
+            )
         else:
             webhook_url = options["webhook_url"]
             self.stdout.write(

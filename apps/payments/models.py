@@ -273,14 +273,6 @@ class PaymentReceipt(
         related_name="payment_receipts",
         help_text=_("Partner who uploaded the receipt."),
     )
-    payment = models.ForeignKey(
-        Payment,
-        on_delete=models.SET_NULL,
-        related_name="receipts",
-        null=True,
-        blank=True,
-        help_text=_("Associated payment if linked."),
-    )
     receipt_file = models.FileField(
         _("Receipt File"),
         upload_to="payment_receipts/%Y/%m/%d/",

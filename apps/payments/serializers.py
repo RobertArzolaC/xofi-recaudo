@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.partners.models import Partner
-from apps.payments import choices, models
+from apps.payments import models
 
 
 class PartnerPaymentSummarySerializer(serializers.Serializer):
@@ -19,7 +19,9 @@ class PaymentConceptAllocationSerializer(serializers.Serializer):
     payment_id = serializers.IntegerField()
     concept_id = serializers.IntegerField()
     concept_type = serializers.CharField(max_length=50)
-    amount = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
+    amount = serializers.DecimalField(
+        max_digits=12, decimal_places=2, required=False
+    )
     notes = serializers.CharField(required=False, allow_blank=True)
 
     def validate_payment_id(self, value):
@@ -33,7 +35,9 @@ class PaymentConceptAllocationSerializer(serializers.Serializer):
     def validate_amount(self, value):
         """Validate amount is positive."""
         if value is not None and value <= 0:
-            raise serializers.ValidationError(_("Amount must be greater than 0."))
+            raise serializers.ValidationError(
+                _("Amount must be greater than 0.")
+            )
         return value
 
 
@@ -61,7 +65,9 @@ class ProcessPaymentSerializer(serializers.Serializer):
     def validate_amount(self, value):
         """Validate amount is positive."""
         if value <= 0:
-            raise serializers.ValidationError(_("Amount must be greater than 0."))
+            raise serializers.ValidationError(
+                _("Amount must be greater than 0.")
+            )
         return value
 
 
@@ -76,11 +82,15 @@ class AutoAllocatePaymentSerializer(serializers.Serializer):
 class PaymentSearchSerializer(serializers.ModelSerializer):
     """Serializer for payment search results."""
 
-    partner_name = serializers.CharField(source="partner.full_name", read_only=True)
+    partner_name = serializers.CharField(
+        source="partner.full_name", read_only=True
+    )
     concept_display = serializers.CharField(
         source="get_concept_display", read_only=True
     )
-    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    status_display = serializers.CharField(
+        source="get_status_display", read_only=True
+    )
     payment_method_display = serializers.CharField(
         source="get_payment_method_display", read_only=True
     )
@@ -130,8 +140,12 @@ class PaymentConceptAllocationListSerializer(serializers.ModelSerializer):
     partner_name = serializers.CharField(
         source="payment.partner.full_name", read_only=True
     )
-    concept_type = serializers.CharField(source="content_type.model", read_only=True)
-    concept_object_str = serializers.CharField(source="concept_object", read_only=True)
+    concept_type = serializers.CharField(
+        source="content_type.model", read_only=True
+    )
+    concept_object_str = serializers.CharField(
+        source="concept_object", read_only=True
+    )
     allocation_type_display = serializers.CharField(
         source="get_allocation_type_display", read_only=True
     )
@@ -156,11 +170,15 @@ class PaymentConceptAllocationListSerializer(serializers.ModelSerializer):
 class PaymentReceiptListSerializer(serializers.ModelSerializer):
     """Serializer for listing payment receipts."""
 
-    partner_name = serializers.CharField(source="partner.full_name", read_only=True)
+    partner_name = serializers.CharField(
+        source="partner.full_name", read_only=True
+    )
     partner_document = serializers.CharField(
         source="partner.document_number", read_only=True
     )
-    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    status_display = serializers.CharField(
+        source="get_status_display", read_only=True
+    )
     validated_by_name = serializers.CharField(
         source="validated_by.full_name", read_only=True
     )
@@ -197,16 +215,17 @@ class PaymentReceiptListSerializer(serializers.ModelSerializer):
 class PaymentReceiptDetailSerializer(serializers.ModelSerializer):
     """Serializer for payment receipt detail."""
 
-    partner_name = serializers.CharField(source="partner.full_name", read_only=True)
+    partner_name = serializers.CharField(
+        source="partner.full_name", read_only=True
+    )
     partner_document = serializers.CharField(
         source="partner.document_number", read_only=True
     )
-    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    status_display = serializers.CharField(
+        source="get_status_display", read_only=True
+    )
     validated_by_name = serializers.CharField(
         source="validated_by.full_name", read_only=True
-    )
-    payment_number = serializers.CharField(
-        source="payment.payment_number", read_only=True
     )
     is_pending = serializers.BooleanField(read_only=True)
     is_approved = serializers.BooleanField(read_only=True)
@@ -219,8 +238,6 @@ class PaymentReceiptDetailSerializer(serializers.ModelSerializer):
             "partner",
             "partner_name",
             "partner_document",
-            "payment",
-            "payment_number",
             "receipt_file",
             "amount",
             "payment_date",
@@ -241,7 +258,6 @@ class PaymentReceiptDetailSerializer(serializers.ModelSerializer):
             "id",
             "partner_name",
             "partner_document",
-            "payment_number",
             "status",
             "status_display",
             "validation_notes",
@@ -308,6 +324,10 @@ class PaymentReceiptValidateSerializer(serializers.Serializer):
         """Validate that rejection includes notes."""
         if data["action"] == "reject" and not data.get("validation_notes"):
             raise serializers.ValidationError(
-                {"validation_notes": _("Validation notes are required when rejecting a receipt.")}
+                {
+                    "validation_notes": _(
+                        "Validation notes are required when rejecting a receipt."
+                    )
+                }
             )
         return data

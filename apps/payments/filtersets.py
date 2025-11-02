@@ -139,3 +139,62 @@ class MagicPaymentLinkFilter(django_filters.FilterSet):
                 | Q(token__icontains=value)
             )
         return queryset
+
+
+class PaymentReceiptFilter(django_filters.FilterSet):
+    """FilterSet for PaymentReceipt model."""
+
+    search = django_filters.CharFilter(
+        method="filter_search",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _(
+                    "Search by partner name, document number, or notes..."
+                ),
+            }
+        ),
+        label=_("Search"),
+    )
+    partner = django_filters.ModelChoiceFilter(
+        queryset=Partner.objects.all(),
+        empty_label=_("All Partners"),
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+                "data-control": "select2",
+            }
+        ),
+        label=_("Partner"),
+    )
+    status = django_filters.ChoiceFilter(
+        choices=choices.ReceiptStatus.choices,
+        empty_label=_("All Statuses"),
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label=_("Status"),
+    )
+
+    class Meta:
+        model = models.PaymentReceipt
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        """Initialize filter with optimized querysets."""
+        super().__init__(*args, **kwargs)
+
+        # Optimize partner queryset
+        self.filters["partner"].queryset = Partner.objects.order_by(
+            "first_name"
+        )
+
+    def filter_search(self, queryset, name, value):
+        """Filter by search term across multiple fields."""
+        if value:
+            return queryset.filter(
+                Q(partner__first_name__icontains=value)
+                | Q(partner__last_name__icontains=value)
+                | Q(partner__document_number__icontains=value)
+                | Q(notes__icontains=value)
+                | Q(validation_notes__icontains=value)
+            )
+        return queryset

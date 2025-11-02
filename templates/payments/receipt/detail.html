@@ -88,16 +88,7 @@
                                         {% endif %}
                                     </td>
                                 </tr>
-                                {% if receipt.payment %}
-                                <tr>
-                                    <td class="fw-bold text-muted">{% trans "Linked Payment" %}</td>
-                                    <td>
-                                        <a href="{% url 'apps.payments:payment-detail' receipt.payment.pk %}" class="text-primary">
-                                            {{ receipt.payment.payment_number }}
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endif %}
+
                                 <tr>
                                     <td class="fw-bold text-muted">{% trans "Receipt File" %}</td>
                                     <td>

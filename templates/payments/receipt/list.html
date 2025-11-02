@@ -2,6 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load humanize %}
+{% load pagination %}
 
 {% block title_page %}{% trans "Payment Receipts" %}{% endblock title_page %}
 {% block toolbar_title %}{% trans "Payment Receipts" %}{% endblock %}
@@ -23,6 +24,56 @@
 
 {% block content %}
 <div class="container-xxl">
+    <!-- Filter Card -->
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">{% trans "Filters" %}</span>
+            </h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="collapse" data-bs-target="#kt_receipt_filters">
+                    <i class="ki-duotone ki-down fs-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pt-0 collapse show" id="kt_receipt_filters">
+            <form method="get" class="form">
+                <div class="row">
+                    <div class="col-lg-4 mb-3">
+                        <label class="form-label">{{ filter.form.search.label }}</label>
+                        {{ filter.form.search }}
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label">{{ filter.form.partner.label }}</label>
+                        {{ filter.form.partner }}
+                    </div>
+                    <div class="col-lg-2 mb-3">
+                        <label class="form-label">{{ filter.form.status.label }}</label>
+                        {{ filter.form.status }}
+                    </div>
+                    <div class="col-lg-3 mb-3 d-flex align-items-end">
+                        <div class="d-flex flex-column gap-2 w-100">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ki-duotone ki-magnifier fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Filter" %}
+                            </button>
+                            <a href="{% url 'apps.payments:payment-receipt-list' %}" class="btn btn-light btn-sm">
+                                <i class="ki-duotone ki-cross fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Clear" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Receipts List Card -->
     <div class="card">
         <div class="card-header border-0 pt-5">
@@ -147,7 +198,7 @@
                 <ul class="pagination">
                     {% if page_obj.has_previous %}
                     <li class="page-item previous">
-                        <a href="?page={{ page_obj.previous_page_number }}" class="page-link"><i class="previous"></i></a>
+                        <a href="{% param_replace page=page_obj.previous_page_number %}" class="page-link"><i class="previous"></i></a>
                     </li>
                     {% else %}
                     <li class="page-item previous disabled">
@@ -159,13 +210,13 @@
                         {% if page_obj.number == num %}
                         <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <li class="page-item"><a href="?page={{ num }}" class="page-link">{{ num }}</a></li>
+                        <li class="page-item"><a href="{% param_replace page=num %}" class="page-link">{{ num }}</a></li>
                         {% endif %}
                     {% endfor %}
 
                     {% if page_obj.has_next %}
                     <li class="page-item next">
-                        <a href="?page={{ page_obj.next_page_number }}" class="page-link"><i class="next"></i></a>
+                        <a href="{% param_replace page=page_obj.next_page_number %}" class="page-link"><i class="next"></i></a>
                     </li>
                     {% else %}
                     <li class="page-item next disabled">

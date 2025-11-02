@@ -29,7 +29,9 @@ class ConversationService:
         self, telegram_chat_id: str, telegram_username: str = ""
     ) -> models.AgentConversation:
         """Get or create a conversation for a Telegram chat."""
-        conversation, created = models.AgentConversation.objects.get_or_create(
+        conversation, created = models.AgentConversation.objects.select_related(
+            "partner"
+        ).get_or_create(
             telegram_chat_id=telegram_chat_id,
             defaults={"telegram_username": telegram_username},
         )

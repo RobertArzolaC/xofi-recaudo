@@ -1,6 +1,9 @@
 """Telegram bot handlers for AI agent."""
 
+import asyncio
 import logging
+import re
+from datetime import date, datetime
 
 from telegram import Update
 from telegram.ext import (
@@ -85,20 +88,145 @@ class TelegramBotHandler:
     ) -> None:
         """Handle photo uploads (payment receipts)."""
         chat_id = str(update.effective_chat.id)
+        username = update.effective_user.username or ""
+        caption = update.message.caption or ""
 
         logger.info(f"Received photo from {chat_id}")
 
-        # TODO: Implement payment receipt processing
-        # This would involve:
-        # 1. Download the photo
-        # 2. Process with OCR/AI to extract payment info
-        # 3. Create payment receipt record
-        # 4. Associate with partner
-        # Variables like photo and caption will be used when implementing the above
+        try:
+            # Get or create conversation
+            conversation = (
+                await self.conversation_service.aget_or_create_conversation(
+                    chat_id, username
+                )
+            )
+            logger.info(f"Conversation for chat {chat_id}: {conversation}")
 
-        await update.message.reply_text(
-            constants.PHOTO_RECEIVED_MESSAGE, parse_mode="Markdown"
-        )
+            # Check if user is authenticated
+            if not conversation.authenticated or not conversation.partner:
+                await update.message.reply_text(
+                    "Por favor, autentícate primero enviando tu DNI y año de nacimiento.\n\n"
+                    "Ejemplo: DNI 12345678 año 1990",
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Get the largest photo (best quality)
+            photo = update.message.photo[-1]
+
+            # Download the photo
+            photo_file = await photo.get_file()
+            photo_bytes = await photo_file.download_as_bytearray()
+
+            # Extract payment info from caption or use defaults
+            # For now, we'll ask the user to provide amount and date in the caption
+            # Format: "Pago de 100.50 fecha 2025-01-15"
+            amount = None
+            payment_date = None
+
+            if caption:
+                # Try to extract amount and date from caption
+                # Extract amount (supports formats: 100, 100.50, 100,50)
+                amount_match = re.search(
+                    r"(?:monto|pago|importe|cantidad)?\s*:?\s*(\d+[.,]?\d*)",
+                    caption.lower(),
+                )
+                if amount_match:
+                    amount_str = amount_match.group(1).replace(",", ".")
+                    amount = float(amount_str)
+
+                # Extract date (supports formats: 2025-01-15, 15/01/2025, 15-01-2025)
+                date_match = re.search(
+                    r"(?:fecha|date)?\s*:?\s*(\d{4}-\d{2}-\d{2}|\d{2}[/-]\d{2}[/-]\d{4})",
+                    caption.lower(),
+                )
+                if date_match:
+                    date_str = date_match.group(1)
+                    # Try to parse different date formats
+                    for fmt in ["%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"]:
+                        try:
+                            payment_date = datetime.strptime(
+                                date_str, fmt
+                            ).strftime("%Y-%m-%d")
+                            break
+                        except ValueError:
+                            continue
+
+            # If no amount or date provided, use defaults and ask user to update later
+            if not amount:
+                amount = 0.01  # Placeholder amount
+            if not payment_date:
+                payment_date = date.today().strftime("%Y-%m-%d")
+
+            # Generate filename
+            file_extension = "jpg"  # Default extension
+            if photo_file.file_path:
+                file_extension = photo_file.file_path.split(".")[-1]
+            filename = f"receipt_{conversation.partner.id}_{chat_id}_{photo.file_unique_id}.{file_extension}"
+
+            # Upload receipt via API
+            notes = (
+                f"Subido via Telegram Bot. Caption: {caption}"
+                if caption
+                else "Subido via Telegram Bot"
+            )
+
+            # Run synchronous API call in executor to avoid blocking
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                None,
+                self.conversation_service.api_service.upload_payment_receipt,
+                conversation.partner.id,
+                bytes(photo_bytes),
+                filename,
+                amount,
+                payment_date,
+                notes,
+            )
+
+            if result and result.get("id"):
+                # Success
+                response_message = (
+                    f"✅ *Boleta de pago recibida correctamente*\n\n"
+                    f"📝 Número de recibo: {result.get('id')}\n"
+                    f"💰 Monto: S/ {amount:.2f}\n"
+                    f"📅 Fecha: {payment_date}\n\n"
+                    f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
+                )
+
+                if not caption or not amount_match:
+                    response_message += (
+                        "💡 *Tip:* Puedes incluir el monto y fecha en el mensaje de la foto:\n"
+                        "Ejemplo: `Pago de 150.50 fecha 2025-01-15`"
+                    )
+
+                await update.message.reply_text(
+                    response_message, parse_mode="Markdown"
+                )
+
+                # Save message to conversation
+                await self.conversation_service.asave_message(
+                    conversation,
+                    "USER",
+                    f"[PHOTO] {caption}" if caption else "[PHOTO]",
+                    metadata={
+                        "receipt_id": result.get("id"),
+                        "filename": filename,
+                    },
+                )
+            else:
+                # Error
+                await update.message.reply_text(
+                    "❌ Hubo un error al procesar tu boleta de pago. "
+                    "Por favor, intenta nuevamente o contacta con soporte.",
+                    parse_mode="Markdown",
+                )
+
+        except Exception as e:
+            logger.error(f"Error processing photo: {e}", exc_info=True)
+            await update.message.reply_text(
+                constants.ERROR_PROCESSING_MESSAGE, parse_mode="Markdown"
+            )
 
     async def error_handler(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE

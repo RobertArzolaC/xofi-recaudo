@@ -7887,12 +7887,21 @@ msgid "Not validated yet"
 msgstr ""
 
 #: templates/payments/receipt/detail.html:199
+#: templates/payments/receipt/form.html:170
 msgid "Receipt Preview"
-msgstr ""
+msgstr "Vista previa del comprobante"
 
 #: templates/payments/receipt/detail.html:206
 msgid "Receipt"
-msgstr ""
+msgstr "Comprobante"
+
+#: templates/payments/receipt/form.html:178
+msgid "Hide Preview"
+msgstr "Ocultar vista previa"
+
+#: templates/payments/receipt/form.html:185
+msgid "Show Preview"
+msgstr "Mostrar vista previa"
 
 #: templates/payments/receipt/form.html:43
 msgid "Select the partner who made the payment"

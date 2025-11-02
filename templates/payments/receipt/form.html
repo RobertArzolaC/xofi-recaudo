@@ -46,17 +46,6 @@
 
                         <div class="row mb-6">
                             <div class="col-lg-12 mb-4">
-                                <label class="form-label">{{ form.payment.label }}</label>
-                                {{ form.payment|add_class:"form-select" }}
-                                {% if form.payment.errors %}
-                                    <div class="text-danger fs-7">{{ form.payment.errors.0 }}</div>
-                                {% endif %}
-                                <div class="form-text">{% trans "Optionally link this receipt to an existing payment" %}</div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-6">
-                            <div class="col-lg-12 mb-4">
                                 <label class="form-label required">{{ form.receipt_file.label }}</label>
                                 {{ form.receipt_file|add_class:"form-control" }}
                                 {% if form.receipt_file.errors %}
@@ -162,5 +151,108 @@
             </div>
         </div>
     </form>
+
+    <!-- Receipt Preview Section -->
+    {% if form.instance.receipt_file %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>{% trans "Receipt Preview" %}</h2>
+                    </div>
+                    <div class="card-toolbar">
+                        <button type="button" class="btn btn-sm btn-light" onclick="togglePreview()">
+                            <i class="ki-duotone ki-eye fs-4" id="toggle-icon">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <span id="toggle-text">{% trans "Hide Preview" %}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" id="preview-container">
+                    {% if form.instance.receipt_file.name|slice:"-4:" == ".pdf" or form.instance.receipt_file.name|slice:"-4:" == ".PDF" %}
+                        <iframe src="{{ form.instance.receipt_file.url }}" style="width: 100%; height: 600px;" frameborder="0" id="receipt-preview"></iframe>
+                    {% else %}
+                        <div class="text-center">
+                            <img src="{{ form.instance.receipt_file.url }}" alt="{% trans 'Receipt' %}" class="img-fluid" style="max-height: 600px;" id="receipt-preview">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+// Function to toggle preview visibility
+function togglePreview() {
+    const container = document.getElementById('preview-container');
+    const icon = document.getElementById('toggle-icon');
+    const text = document.getElementById('toggle-text');
+
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        text.textContent = '{% trans "Hide Preview" %}';
+        icon.innerHTML = '<span class="path1"></span><span class="path2"></span><span class="path3"></span>';
+    } else {
+        container.style.display = 'none';
+        text.textContent = '{% trans "Show Preview" %}';
+        icon.innerHTML = '<span class="path1"></span><span class="path2"></span>';
+    }
+}
+
+// Handle file input change to update preview
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                updatePreview(file);
+            }
+        });
+    }
+});
+
+// Function to update preview when new file is selected
+function updatePreview(file) {
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('receipt-preview');
+
+    if (!previewContainer || !file) return;
+
+    // Create a URL for the selected file
+    const fileURL = URL.createObjectURL(file);
+
+    // Check if it's a PDF or image
+    if (file.type === 'application/pdf') {
+        // Update iframe for PDF
+        if (preview && preview.tagName === 'IFRAME') {
+            preview.src = fileURL;
+        } else {
+            // Replace image with iframe
+            previewContainer.innerHTML = '<iframe src="' + fileURL + '" style="width: 100%; height: 600px;" frameborder="0" id="receipt-preview"></iframe>';
+        }
+    } else if (file.type.startsWith('image/')) {
+        // Update image
+        if (preview && preview.tagName === 'IMG') {
+            preview.src = fileURL;
+        } else {
+            // Replace iframe with image
+            previewContainer.innerHTML = '<div class="text-center"><img src="' + fileURL + '" alt="Receipt" class="img-fluid" style="max-height: 600px;" id="receipt-preview"></div>';
+        }
+    }
+
+    // Show the preview section if it was hidden
+    const previewSection = previewContainer.closest('.row');
+    if (previewSection) {
+        previewSection.style.display = 'block';
+    }
+}
+</script>
+
 {% endblock %}
