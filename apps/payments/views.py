@@ -263,7 +263,7 @@ class PaymentReceiptListView(
     def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
         """Get optimized queryset for receipt list."""
         return models.PaymentReceipt.objects.select_related(
-            "partner", "payment", "validated_by"
+            "partner", "validated_by"
         ).order_by("-created")
 
 
@@ -369,6 +369,7 @@ class PaymentReceiptDeleteView(
     """View to delete a payment receipt."""
 
     model = models.PaymentReceipt
+    context_object_name = "receipt"
     template_name = "payments/receipt/confirm_delete.html"
     permission_required = "payments.delete_paymentreceipt"
     success_url = reverse_lazy("apps.payments:payment-receipt-list")

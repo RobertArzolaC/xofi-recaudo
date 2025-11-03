@@ -2,8 +2,6 @@
 
 import asyncio
 import logging
-import re
-from datetime import date, datetime
 
 from telegram import Update
 from telegram.ext import (
@@ -16,6 +14,9 @@ from telegram.ext import (
 
 from apps.ai_agent import constants
 from apps.ai_agent.services.conversation import ConversationService
+from apps.ai_agent.services.receipt_extraction import (
+    ReceiptDataExtractionService,
+)
 from apps.core.services.chats.telegram import TelegramService
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,7 @@ class TelegramBotHandler:
         """Initialize handlers and services."""
         self.conversation_service = ConversationService()
         self.telegram_service = TelegramService()
+        self.receipt_extraction_service = ReceiptDataExtractionService()
 
     async def start_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
@@ -118,57 +120,33 @@ class TelegramBotHandler:
             photo_file = await photo.get_file()
             photo_bytes = await photo_file.download_as_bytearray()
 
-            # Extract payment info from caption or use defaults
-            # For now, we'll ask the user to provide amount and date in the caption
-            # Format: "Pago de 100.50 fecha 2025-01-15"
-            amount = None
-            payment_date = None
-
-            if caption:
-                # Try to extract amount and date from caption
-                # Extract amount (supports formats: 100, 100.50, 100,50)
-                amount_match = re.search(
-                    r"(?:monto|pago|importe|cantidad)?\s*:?\s*(\d+[.,]?\d*)",
-                    caption.lower(),
+            # Extract receipt data using the dedicated service
+            logger.info("Extracting receipt data using extraction service...")
+            amount, payment_date, filename, notes = (
+                self.receipt_extraction_service.prepare_receipt_data(
+                    caption=caption,
+                    partner_id=conversation.partner.id,
+                    chat_id=chat_id,
+                    file_unique_id=photo.file_unique_id,
+                    file_path=photo_file.file_path,
                 )
-                if amount_match:
-                    amount_str = amount_match.group(1).replace(",", ".")
-                    amount = float(amount_str)
+            )
 
-                # Extract date (supports formats: 2025-01-15, 15/01/2025, 15-01-2025)
-                date_match = re.search(
-                    r"(?:fecha|date)?\s*:?\s*(\d{4}-\d{2}-\d{2}|\d{2}[/-]\d{2}[/-]\d{4})",
-                    caption.lower(),
+            # Validate extracted data and get confidence scores
+            validation_results = (
+                self.receipt_extraction_service.validate_extracted_data(
+                    amount, payment_date
                 )
-                if date_match:
-                    date_str = date_match.group(1)
-                    # Try to parse different date formats
-                    for fmt in ["%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"]:
-                        try:
-                            payment_date = datetime.strptime(
-                                date_str, fmt
-                            ).strftime("%Y-%m-%d")
-                            break
-                        except ValueError:
-                            continue
+            )
+            confidence_scores = (
+                self.receipt_extraction_service.get_extraction_confidence(
+                    caption
+                )
+            )
 
-            # If no amount or date provided, use defaults and ask user to update later
-            if not amount:
-                amount = 0.01  # Placeholder amount
-            if not payment_date:
-                payment_date = date.today().strftime("%Y-%m-%d")
-
-            # Generate filename
-            file_extension = "jpg"  # Default extension
-            if photo_file.file_path:
-                file_extension = photo_file.file_path.split(".")[-1]
-            filename = f"receipt_{conversation.partner.id}_{chat_id}_{photo.file_unique_id}.{file_extension}"
-
-            # Upload receipt via API
-            notes = (
-                f"Subido via Telegram Bot. Caption: {caption}"
-                if caption
-                else "Subido via Telegram Bot"
+            logger.info(
+                f"Data validation: {validation_results}, "
+                f"Confidence: {confidence_scores['overall']:.2f}"
             )
 
             # Run synchronous API call in executor to avoid blocking
@@ -194,10 +172,25 @@ class TelegramBotHandler:
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
                 )
 
-                if not caption or not amount_match:
+                # Add contextual feedback based on data quality
+                if (
+                    validation_results["overall_valid"]
+                    and confidence_scores["overall"] > 0.5
+                ):
                     response_message += (
+                        "✨ *Datos extraídos correctamente del mensaje*\n"
+                        "Los datos han sido procesados automáticamente."
+                    )
+                elif amount == 0.01:  # Default placeholder amount
+                    response_message += (
+                        "⚠️ *Nota:* Se usó un monto predeterminado.\n"
                         "💡 *Tip:* Puedes incluir el monto y fecha en el mensaje de la foto:\n"
                         "Ejemplo: `Pago de 150.50 fecha 2025-01-15`"
+                    )
+                else:
+                    response_message += (
+                        "📝 *Datos procesados del mensaje*\n"
+                        "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
                     )
 
                 await update.message.reply_text(
