@@ -1,4 +1,3 @@
-from constance import config
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -24,7 +23,9 @@ from apps.credits import choices, filtersets, forms, models
 from apps.partners import mixins as partner_mixins
 
 
-class ProductTypeListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
+class ProductTypeListView(
+    LoginRequiredMixin, PermissionRequiredMixin, FilterView
+):
     """View to list all product types with filtering."""
 
     model = models.ProductType
@@ -32,10 +33,12 @@ class ProductTypeListView(LoginRequiredMixin, PermissionRequiredMixin, FilterVie
     context_object_name = "product_types"
     permission_required = "credits.view_producttype"
     filterset_class = filtersets.ProductTypeFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
-class ProductTypeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class ProductTypeDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """View to display product type details."""
 
     model = models.ProductType
@@ -102,10 +105,12 @@ class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     context_object_name = "products"
     permission_required = "credits.view_product"
     filterset_class = filtersets.ProductFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
-class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class ProductDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """View to display product details."""
 
     model = models.Product
@@ -174,7 +179,7 @@ class CreditListView(
     context_object_name = "credits"
     permission_required = "credits.view_credit"
     filterset_class = filtersets.CreditFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
 class CreditDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -194,9 +199,9 @@ class CreditDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         context["installments"] = credit.get_current_installments()
 
         # Add status history
-        context["status_history"] = credit.status_history.select_related("modified_by")[
-            :10
-        ]
+        context["status_history"] = credit.status_history.select_related(
+            "modified_by"
+        )[:10]
 
         # Check if user can change status
         context["can_change_status"] = self.request.user.has_perm(
@@ -266,7 +271,7 @@ class CreditApplicationListView(
     context_object_name = "credit_applications"
     permission_required = "credits.view_creditapplication"
     filterset_class = filtersets.CreditApplicationFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
 class CreditApplicationDetailView(
@@ -352,7 +357,7 @@ class CreditRescheduleRequestListView(
     context_object_name = "credit_reschedule_requests"
     permission_required = "credits.view_creditreschedulerequest"
     filterset_class = filtersets.CreditRescheduleRequestFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
 class CreditRescheduleRequestDetailView(
@@ -441,7 +446,9 @@ class CreditApplicationChangeStatusView(
 
     def dispatch(self, request, *args, **kwargs):
         """Get the credit application instance."""
-        self.application = get_object_or_404(models.CreditApplication, pk=kwargs["pk"])
+        self.application = get_object_or_404(
+            models.CreditApplication, pk=kwargs["pk"]
+        )
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -458,9 +465,9 @@ class CreditApplicationChangeStatusView(
         context["current_status_duration"] = (
             self.application.get_current_status_duration()
         )
-        context["status_history"] = self.application.status_history.select_related(
-            "modified_by"
-        )[:10]
+        context["status_history"] = (
+            self.application.status_history.select_related("modified_by")[:10]
+        )
         return context
 
     def form_valid(self, form):
@@ -474,12 +481,14 @@ class CreditApplicationChangeStatusView(
         )
 
         if success:
-            status_display = dict(choices.CreditApplicationStatus.choices)[new_status]
+            status_display = dict(choices.CreditApplicationStatus.choices)[
+                new_status
+            ]
             messages.success(
                 self.request,
-                _("Application status changed to '{status}' successfully.").format(
-                    status=status_display
-                ),
+                _(
+                    "Application status changed to '{status}' successfully."
+                ).format(status=status_display),
             )
         else:
             messages.error(
@@ -518,7 +527,9 @@ class CreditApplicationPaymentSchedulePDFView(
                 request,
                 _("Payment schedule is not available for this application."),
             )
-            return redirect("apps.credits:credit_application_detail", pk=application.pk)
+            return redirect(
+                "apps.credits:credit_application_detail", pk=application.pk
+            )
 
         context = {
             "application": application,
@@ -540,7 +551,9 @@ class CreditApplicationPaymentSchedulePDFView(
         return response
 
 
-class CreditChangeStatusView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+class CreditChangeStatusView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
     """View to change the status of a credit."""
 
     template_name = "credits/credit/change_status.html"
@@ -563,7 +576,9 @@ class CreditChangeStatusView(LoginRequiredMixin, PermissionRequiredMixin, FormVi
         """Add credit to context."""
         context = super().get_context_data(**kwargs)
         context["credit"] = self.credit
-        context["current_status_duration"] = self.credit.get_current_status_duration()
+        context["current_status_duration"] = (
+            self.credit.get_current_status_duration()
+        )
         context["status_history"] = self.credit.status_history.select_related(
             "modified_by"
         )[:10]
@@ -708,7 +723,7 @@ class CreditDisbursementListView(
     context_object_name = "disbursements"
     permission_required = "credits.view_creditdisbursement"
     filterset_class = filtersets.CreditDisbursementFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self):
         """Get queryset with related data."""
@@ -754,7 +769,9 @@ class CreditDisbursementDetailView(
     def get_context_data(self, **kwargs):
         """Add additional context data."""
         context = super().get_context_data(**kwargs)
-        context["status_history"] = self.object.status_history.order_by("-created")
+        context["status_history"] = self.object.status_history.order_by(
+            "-created"
+        )
         return context
 
 
@@ -864,8 +881,8 @@ class CreditDisbursementChangeStatusView(
         """Add disbursement to context."""
         context = super().get_context_data(**kwargs)
         context["disbursement"] = self.get_disbursement()
-        context["status_history"] = self.get_disbursement().status_history.order_by(
-            "-created"
+        context["status_history"] = (
+            self.get_disbursement().status_history.order_by("-created")
         )
         return context
 

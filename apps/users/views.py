@@ -1,4 +1,3 @@
-from constance import config
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -95,7 +94,7 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "users/user/list.html"
     context_object_name = "users"
     permission_required = "auth.view_user"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
     filterset_class = filtersets.UserFilter
 
     def get_queryset(self):
@@ -354,7 +353,7 @@ class RoleListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = "users/role/list.html"
     context_object_name = "roles"
     permission_required = "auth.view_group"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self):
         """Return all groups ordered by name."""

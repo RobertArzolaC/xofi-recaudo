@@ -164,7 +164,7 @@ class AgencyListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     context_object_name = "agencies"
     permission_required = "customers.view_agency"
     filterset_class = filtersets.AgencyFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Agency]:
         """Return queryset with optimized queries."""

@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from constance import config
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import (
@@ -40,7 +39,7 @@ class PaymentListView(
     context_object_name = "payments"
     filterset_class = filtersets.PaymentFilter
     permission_required = "payments.view_payment"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
 class PaymentDetailView(
@@ -258,7 +257,7 @@ class PaymentReceiptListView(
     context_object_name = "receipts"
     filterset_class = filtersets.PaymentReceiptFilter
     permission_required = "payments.view_paymentreceipt"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.PaymentReceipt]:
         """Get optimized queryset for receipt list."""
@@ -491,7 +490,7 @@ class MagicPaymentLinkListView(
     context_object_name = "magic_links"
     permission_required = "payments.view_magicpaymentlink"
     filterset_class = filtersets.MagicPaymentLinkFilter
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self):
         """Get optimized queryset."""

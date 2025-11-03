@@ -1,6 +1,5 @@
 from typing import Any
 
-from constance import config
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -27,14 +26,16 @@ class AreaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = "team/area/list.html"
     context_object_name = "areas"
     permission_required = "team.view_area"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Area]:
         """Return filtered and ordered queryset."""
         queryset = models.Area.objects.all()
 
         # Apply filters
-        self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
+        self.filterset = self.filterset_class(
+            self.request.GET, queryset=queryset
+        )
         return self.filterset.qs
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -63,7 +64,9 @@ class AreaDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
             {
                 "title": _("Area: {name}").format(name=self.object.name),
                 "subtitle": _("Area details and information"),
-                "employees": models.Employee.objects.filter(position__area=self.object),
+                "employees": models.Employee.objects.filter(
+                    position__area=self.object
+                ),
             }
         )
         return context
@@ -147,14 +150,16 @@ class PositionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = "team/position/list.html"
     context_object_name = "positions"
     permission_required = "team.view_position"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Position]:
         """Return filtered and ordered queryset."""
         queryset = models.Position.objects.select_related("area")
 
         # Apply filters
-        self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
+        self.filterset = self.filterset_class(
+            self.request.GET, queryset=queryset
+        )
         return self.filterset.qs
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -169,7 +174,9 @@ class PositionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context
 
 
-class PositionDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class PositionDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """Detail view for Position model."""
 
     model = models.Position
@@ -188,7 +195,9 @@ class PositionDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         return context
 
 
-class PositionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PositionCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Create view for Position model."""
 
     model = models.Position
@@ -213,7 +222,9 @@ class PositionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         return super().form_valid(form)
 
 
-class PositionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PositionUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update view for Position model."""
 
     model = models.Position
@@ -226,7 +237,9 @@ class PositionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "title": _("Edit Position: {name}").format(name=self.object.name),
+                "title": _("Edit Position: {name}").format(
+                    name=self.object.name
+                ),
                 "subtitle": _("Update position information"),
                 "form_action": _("Update"),
             }
@@ -238,7 +251,9 @@ class PositionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         return super().form_valid(form)
 
 
-class PositionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class PositionDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete view for Position model."""
 
     model = models.Position
@@ -251,7 +266,9 @@ class PositionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "title": _("Delete Position: {name}").format(name=self.object.name),
+                "title": _("Delete Position: {name}").format(
+                    name=self.object.name
+                ),
                 "subtitle": _("Confirm position deletion"),
             }
         )
@@ -267,7 +284,7 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = "team/employee/list.html"
     context_object_name = "employees"
     permission_required = "team.view_employee"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Employee]:
         """Return filtered and ordered queryset."""
@@ -276,7 +293,9 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         )
 
         # Apply filters
-        self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
+        self.filterset = self.filterset_class(
+            self.request.GET, queryset=queryset
+        )
         return self.filterset.qs
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -291,7 +310,9 @@ class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context
 
 
-class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class EmployeeDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """Detail view for Employee model."""
 
     model = models.Employee
@@ -319,7 +340,9 @@ class EmployeeDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         return context
 
 
-class EmployeeCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class EmployeeCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Create view for Employee model."""
 
     model = models.Employee
@@ -344,7 +367,9 @@ class EmployeeCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         return super().form_valid(form)
 
 
-class EmployeeUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EmployeeUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update view for Employee model."""
 
     model = models.Employee
@@ -372,7 +397,9 @@ class EmployeeUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         return super().form_valid(form)
 
 
-class EmployeeDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class EmployeeDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete view for Employee model."""
 
     model = models.Employee

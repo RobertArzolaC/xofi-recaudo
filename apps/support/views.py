@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from constance import config
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -33,7 +32,7 @@ class TicketListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "support/ticket/list.html"
     context_object_name = "tickets"
     permission_required = "support.view_ticket"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Ticket]:
         """Return filtered and ordered queryset."""
@@ -58,15 +57,15 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
             "assigned_to__position",
             "created_by",
             "modified_by",
-        ).prefetch_related(
-            "comments__created_by"
-        )
+        ).prefetch_related("comments__created_by")
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """Add extra context to template."""
         context = super().get_context_data(**kwargs)
         context["comment_form"] = forms.TicketCommentForm()
-        context["status_form"] = forms.TicketStatusUpdateForm(instance=self.object)
+        context["status_form"] = forms.TicketStatusUpdateForm(
+            instance=self.object
+        )
         return context
 
 
@@ -103,7 +102,9 @@ class TicketUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self) -> str:
         """Return success URL pointing to detail view."""
-        return reverse_lazy("apps.support:ticket-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "apps.support:ticket-detail", kwargs={"pk": self.object.pk}
+        )
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         """Add extra context to template."""
@@ -139,7 +140,9 @@ class TicketDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return super().form_valid(form)
 
 
-class TicketCommentCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class TicketCommentCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, View
+):
     """View to add comments to a ticket."""
 
     permission_required = "support.add_ticketcomment"
@@ -156,7 +159,9 @@ class TicketCommentCreateView(LoginRequiredMixin, PermissionRequiredMixin, View)
             comment.save()
             messages.success(request, _("Comment added successfully."))
         else:
-            messages.error(request, _("Error adding comment. Please try again."))
+            messages.error(
+                request, _("Error adding comment. Please try again.")
+            )
 
         return redirect("apps.support:ticket-detail", pk=pk)
 
@@ -177,6 +182,8 @@ class TicketStatusUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             ticket.save()
             messages.success(request, _("Ticket status updated successfully."))
         else:
-            messages.error(request, _("Error updating status. Please try again."))
+            messages.error(
+                request, _("Error updating status. Please try again.")
+            )
 
         return redirect("apps.support:ticket-detail", pk=pk)

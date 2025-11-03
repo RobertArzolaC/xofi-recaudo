@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from constance import config
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -33,7 +32,7 @@ class ApplicantListView(
     template_name = "partners/applicant/list.html"
     context_object_name = "applicants"
     permission_required = "partners.view_applicant"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Applicant]:
         """Return filtered and ordered queryset."""
@@ -127,7 +126,7 @@ class PartnerListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "partners/partner/list.html"
     context_object_name = "partners"
     permission_required = "partners.view_partner"
-    paginate_by = paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Partner]:
         """Return filtered and ordered queryset."""
@@ -293,7 +292,7 @@ class ProspectListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "partners/prospect/list.html"
     context_object_name = "prospects"
     permission_required = "partners.view_prospect"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Prospect]:
         """Return filtered and ordered queryset."""

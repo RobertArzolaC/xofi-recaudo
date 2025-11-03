@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from constance import config
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -32,7 +31,7 @@ class CampaignListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "campaigns/campaign/list.html"
     context_object_name = "campaigns"
     permission_required = "campaigns.view_campaign"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Campaign]:
         """Return filtered and ordered queryset."""
@@ -138,7 +137,7 @@ class GroupListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "campaigns/group/list.html"
     context_object_name = "groups"
     permission_required = "campaigns.view_group"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self) -> QuerySet[models.Group]:
         """Return filtered and ordered queryset."""

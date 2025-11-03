@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from constance import config
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -33,10 +32,12 @@ class ContributionListView(
     template_name = "compliance/contribution/list.html"
     context_object_name = "contributions"
     permission_required = "compliance.view_contribution"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
-class ContributionDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class ContributionDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """Detail view for Contribution model."""
 
     model = models.Contribution
@@ -55,7 +56,9 @@ class ContributionDetailView(LoginRequiredMixin, PermissionRequiredMixin, Detail
         ).prefetch_related("payments")
 
 
-class ContributionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ContributionCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Create view for Contribution model."""
 
     model = models.Contribution
@@ -77,7 +80,9 @@ class ContributionCreateView(LoginRequiredMixin, PermissionRequiredMixin, Create
         return super().form_valid(form)
 
 
-class ContributionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ContributionUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update view for Contribution model."""
 
     model = models.Contribution
@@ -104,7 +109,9 @@ class ContributionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Update
         return super().form_valid(form)
 
 
-class ContributionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class ContributionDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete view for Contribution model."""
 
     model = models.Contribution
@@ -130,10 +137,12 @@ class SocialSecurityListView(
     template_name = "compliance/social_security/list.html"
     context_object_name = "social_securities"
     permission_required = "compliance.view_socialsecurity"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
-class SocialSecurityDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class SocialSecurityDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """Detail view for SocialSecurity model."""
 
     model = models.SocialSecurity
@@ -152,7 +161,9 @@ class SocialSecurityDetailView(LoginRequiredMixin, PermissionRequiredMixin, Deta
         ).prefetch_related("payments")
 
 
-class SocialSecurityCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class SocialSecurityCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Create view for SocialSecurity model."""
 
     model = models.SocialSecurity
@@ -174,7 +185,9 @@ class SocialSecurityCreateView(LoginRequiredMixin, PermissionRequiredMixin, Crea
         return super().form_valid(form)
 
 
-class SocialSecurityUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class SocialSecurityUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update view for SocialSecurity model."""
 
     model = models.SocialSecurity
@@ -202,7 +215,9 @@ class SocialSecurityUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
         return super().form_valid(form)
 
 
-class SocialSecurityDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class SocialSecurityDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete view for SocialSecurity model."""
 
     model = models.SocialSecurity
@@ -228,10 +243,12 @@ class PenaltyListView(
     template_name = "compliance/penalty/list.html"
     context_object_name = "penalties"
     permission_required = "compliance.view_penalty"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
 
-class PenaltyDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class PenaltyDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
     """Detail view for Penalty model."""
 
     model = models.Penalty
@@ -250,7 +267,9 @@ class PenaltyDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
         ).prefetch_related("payments")
 
 
-class PenaltyCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PenaltyCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Create view for Penalty model."""
 
     model = models.Penalty
@@ -272,7 +291,9 @@ class PenaltyCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
         return super().form_valid(form)
 
 
-class PenaltyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PenaltyUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update view for Penalty model."""
 
     model = models.Penalty
@@ -299,7 +320,9 @@ class PenaltyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         return super().form_valid(form)
 
 
-class PenaltyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class PenaltyDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete view for Penalty model."""
 
     model = models.Penalty
