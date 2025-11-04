@@ -16,8 +16,9 @@ class XofiErpRouter:
         "support",
         "authtoken",
         "admin",
-        "contenttypes",
         "chatbot",
+        "cities_light",
+        "constance",
     }
 
     def db_for_read(self, model, **hints):
