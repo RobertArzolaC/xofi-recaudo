@@ -47,3 +47,20 @@ class NotificationChannel(models.TextChoices):
     WHATSAPP = "WHATSAPP", _("WhatsApp")
     SMS = "SMS", _("SMS")
     EMAIL = "EMAIL", _("Email")
+
+
+class ValidationStatus(models.TextChoices):
+    """Status choices for CSV campaign validation."""
+
+    PENDING = "PENDING", _("Pending")
+    PROCESSING = "PROCESSING", _("Processing")
+    VALIDATED = "VALIDATED", _("Validated")
+    FAILED = "FAILED", _("Failed")
+    PARTIAL = "PARTIAL", _("Partially Valid")
+
+
+class CampaignType(models.TextChoices):
+    """Types of campaigns."""
+
+    GROUP = "GROUP", _("Group-based Campaign")
+    FILE = "FILE", _("File-based Campaign")

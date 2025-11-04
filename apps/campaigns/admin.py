@@ -135,7 +135,7 @@ class CampaignNotificationAdmin(admin.ModelAdmin):
 
     list_display = [
         "campaign",
-        "partner",
+        "recipient",
         "notification_type",
         "channel",
         "status",
@@ -148,15 +148,14 @@ class CampaignNotificationAdmin(admin.ModelAdmin):
         "notification_type",
         "channel",
         "included_payment_link",
-        "campaign__status",
         "created",
         "scheduled_at",
         "sent_at",
     ]
     search_fields = [
         "campaign__name",
-        "partner__name",
-        "partner__email",
+        "recipient__name",
+        "recipient__email",
         "recipient_email",
         "recipient_phone",
     ]
@@ -168,7 +167,7 @@ class CampaignNotificationAdmin(admin.ModelAdmin):
         "sent_at",
         "last_attempt_at",
     ]
-    raw_id_fields = ["campaign", "partner"]
+    # raw_id_fields = ["campaign", "recipient"]
     date_hierarchy = "scheduled_at"
 
     fieldsets = (
@@ -177,7 +176,7 @@ class CampaignNotificationAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "campaign",
-                    "partner",
+                    "recipient",
                     "notification_type",
                     "channel",
                     "status",
