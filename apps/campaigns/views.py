@@ -363,6 +363,9 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
             # Queue the campaign execution task
             task = tasks.process_campaign_notifications.delay(campaign.id)
+            message = _(
+                "Campaign '{campaign_name}' has been queued for execution."
+            ).format(campaign_name=campaign.name)
 
             logger.info(
                 f"Campaign {campaign.id} '{campaign.name}' queued for execution by user {request.user.username}. "
@@ -372,7 +375,7 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
             return JsonResponse(
                 {
                     "success": True,
-                    "message": f"Campaign '{campaign.name}' has been queued for execution. Status will change to 'Processing' shortly.",
+                    "message": message,
                     "task_id": task.id,
                     "campaign_id": campaign.id,
                     "current_status": campaign.get_status_display(),

@@ -15,167 +15,6 @@ from apps.payments import utils as payment_utils
 logger = logging.getLogger(__name__)
 
 
-@shared_task(
-    name="campaigns.send_whatsapp_notification",
-    bind=True,
-    max_retries=3,
-    default_retry_delay=60,
-)
-def send_notification(self, notification_id: int) -> dict:
-    """
-    Send a notification for a campaign.
-
-    Args:
-        notification_id: ID of the CampaignNotification to send
-
-    Returns:
-        dict: Result with success status and details
-    """
-    try:
-        notification = models.CampaignNotification.objects.select_related(
-            "campaign", "partner"
-        ).get(id=notification_id)
-    except models.CampaignNotification.DoesNotExist:
-        logger.error(f"Notification {notification_id} not found")
-        return {"success": False, "error": "Notification not found"}
-
-    # Increment attempt counter
-    notification.increment_attempt()
-
-    # Determine which service to use based on notification channel
-    if notification.channel == choices.NotificationChannel.TELEGRAM:
-        messaging_service = telegram_service
-        channel_name = "Telegram"
-    elif notification.channel == choices.NotificationChannel.WHATSAPP:
-        messaging_service = whatsapp_service
-        channel_name = "WhatsApp"
-    else:
-        error_msg = f"Unsupported notification channel: {notification.channel}"
-        logger.error(error_msg)
-        notification.mark_as_failed(error_msg)
-        return {"success": False, "error": error_msg}
-
-    # Check if service is configured
-    if not messaging_service.is_configured():
-        error_msg = f"{channel_name} service is not configured"
-        logger.error(error_msg)
-        notification.mark_as_failed(error_msg)
-        return {"success": False, "error": error_msg}
-
-    # Get message template
-    try:
-        template = models.MessageTemplate.objects.get(
-            template_type=notification.notification_type,
-            channel=notification.channel,
-            is_active=True,
-        )
-    except models.MessageTemplate.DoesNotExist:
-        error_msg = (
-            f"No active template found for "
-            f"{notification.get_notification_type_display()} on {channel_name}"
-        )
-        logger.warning(error_msg)
-        # Use default message if no template exists
-        template = None
-
-    # Get detailed debt information for the partner
-    debt_detail = (
-        partner_services.PartnerDebtService.get_single_partner_debt_detail(
-            notification.partner
-        )
-    )
-
-    # Prepare message context
-    context = message_utils.prepare_message_context(notification, debt_detail)
-
-    # Render message
-    if template:
-        message = template.render_message(context)
-        include_payment_button = template.include_payment_button
-        payment_button_text = template.payment_button_text
-    else:
-        message = message_utils.generate_default_message(
-            notification, context, debt_detail
-        )
-        include_payment_button = notification.included_payment_link
-        payment_button_text = "Pagar ahora"
-
-    # Store the rendered message
-    notification.message_content = message
-    notification.save(update_fields=["message_content"])
-
-    # Send message via the appropriate service
-    try:
-        # Prepare recipient identifier based on channel
-        if notification.channel == choices.NotificationChannel.WHATSAPP:
-            recipient_identifier = notification.recipient_phone
-        elif notification.channel == choices.NotificationChannel.TELEGRAM:
-            recipient_identifier = notification.recipient_phone
-            # Set default chat ID for testing
-            recipient_identifier = 975005684
-        else:
-            recipient_identifier = notification.recipient_phone
-
-        if include_payment_button and notification.payment_link_url:
-            # Send message with payment link button
-            # Both services use the same method signature
-            if notification.channel == choices.NotificationChannel.WHATSAPP:
-                result = messaging_service.send_message_with_button(
-                    recipient_phone=recipient_identifier,
-                    message=message,
-                    button_text=payment_button_text,
-                    button_url=notification.payment_link_url,
-                )
-            elif notification.channel == choices.NotificationChannel.TELEGRAM:
-                result = messaging_service.send_message_with_button(
-                    recipient_id=recipient_identifier,
-                    message=message,
-                    button_text=payment_button_text,
-                    button_url=notification.payment_link_url,
-                )
-        else:
-            # Send plain text message
-            if notification.channel == choices.NotificationChannel.WHATSAPP:
-                result = messaging_service.send_text_message(
-                    recipient_phone=recipient_identifier,
-                    message=message,
-                )
-            elif notification.channel == choices.NotificationChannel.TELEGRAM:
-                result = messaging_service.send_text_message(
-                    recipient_id=recipient_identifier,
-                    message=message,
-                )
-
-        if result.get("success"):
-            notification.mark_as_sent()
-            logger.info(
-                f"Notification {notification_id} sent successfully "
-                f"to {notification.partner.full_name} ({notification.recipient_phone})"
-            )
-            return {
-                "success": True,
-                "notification_id": notification_id,
-                "response": result.get("response"),
-            }
-        else:
-            error_msg = result.get("error", "Unknown error")
-            notification.mark_as_failed(error_msg)
-            logger.error(
-                f"Failed to send notification {notification_id}: {error_msg}"
-            )
-
-            # Retry on failure
-            raise self.retry(exc=Exception(error_msg))
-
-    except Exception as exc:
-        error_msg = str(exc)
-        notification.mark_as_failed(error_msg)
-        logger.exception(f"Exception sending notification {notification_id}")
-
-        # Retry
-        raise self.retry(exc=exc)
-
-
 @shared_task(name="campaigns.process_campaign_notifications")
 def process_campaign_notifications(campaign_id: int) -> dict:
     """
@@ -307,7 +146,7 @@ def process_campaign_notifications(campaign_id: int) -> dict:
                 if magic_link:
                     payment_link_path = magic_link.get_public_url()
                     payment_link_url = (
-                        f"https://{config.COMPANY_DOMAIN}{payment_link_path}"
+                        f"http://{config.COMPANY_DOMAIN}{payment_link_path}"
                     )
                     logger.info(
                         f"Payment link generated for partner '{partner.full_name}': {payment_link_url}"
@@ -380,67 +219,6 @@ def process_campaign_notifications(campaign_id: int) -> dict:
         "total_partners": partners_count,
         "notification_ids": notification_ids,
         "message": result_message,
-    }
-
-
-@shared_task(name="campaigns.update_campaign_status")
-def update_campaign_status() -> dict:
-    """
-    Update campaign status based on notification completion.
-
-    This task checks ACTIVE and SENDING campaigns to see if they should be marked
-    as COMPLETED when all their notifications have been processed.
-
-    Flow transitions:
-    - ACTIVE → COMPLETED (if all notifications processed and some sent)
-    - SENDING → COMPLETED (if all notifications processed and some sent)
-
-    Returns:
-        dict: Summary of updated campaigns
-    """
-    logger.info("Starting campaign status update process")
-
-    # Get campaigns that might need status update
-    campaigns_to_check = models.Campaign.objects.filter(
-        status__in=[
-            choices.CampaignStatus.ACTIVE,
-            choices.CampaignStatus.SENDING,
-        ],
-        is_processing=False,  # Don't update campaigns currently being processed
-    )
-
-    updated_count = 0
-    status_transitions = []
-
-    for campaign in campaigns_to_check:
-        if campaign.should_be_completed():
-            old_status = campaign.get_status_display()
-            campaign.status = choices.CampaignStatus.COMPLETED
-            campaign.save(update_fields=["status"])
-            updated_count += 1
-
-            summary = campaign.get_notification_summary()
-            transition = f"{old_status} → COMPLETED"
-            status_transitions.append(transition)
-
-            logger.info(
-                f"Campaign {campaign.id} '{campaign.name}' status updated: {transition}. "
-                f"Stats: {summary['sent_notifications']} sent, "
-                f"{summary['failed_notifications']} failed, "
-                f"{summary['cancelled_notifications']} cancelled"
-            )
-
-    logger.info(
-        f"Campaign status update completed. Updated {updated_count} campaigns."
-    )
-
-    if status_transitions:
-        logger.info(f"Status transitions: {', '.join(status_transitions)}")
-
-    return {
-        "success": True,
-        "updated_count": updated_count,
-        "transitions": status_transitions,
     }
 
 
@@ -551,4 +329,226 @@ def send_scheduled_notifications() -> dict:
         "queued_count": sent_count,
         "failed_count": failed_count,
         "cancelled_count": cancelled_count,
+    }
+
+
+@shared_task(
+    name="campaigns.send_notification",
+    bind=True,
+    max_retries=3,
+    default_retry_delay=60,
+)
+def send_notification(self, notification_id: int) -> dict:
+    """
+    Send a notification for a campaign.
+
+    Args:
+        notification_id: ID of the CampaignNotification to send
+
+    Returns:
+        dict: Result with success status and details
+    """
+    try:
+        notification = models.CampaignNotification.objects.select_related(
+            "campaign", "partner"
+        ).get(id=notification_id)
+    except models.CampaignNotification.DoesNotExist:
+        logger.error(f"Notification {notification_id} not found")
+        return {"success": False, "error": "Notification not found"}
+
+    # Increment attempt counter
+    notification.increment_attempt()
+
+    # Determine which service to use based on notification channel
+    if notification.channel == choices.NotificationChannel.TELEGRAM:
+        messaging_service = telegram_service
+        channel_name = "Telegram"
+    elif notification.channel == choices.NotificationChannel.WHATSAPP:
+        messaging_service = whatsapp_service
+        channel_name = "WhatsApp"
+    else:
+        error_msg = f"Unsupported notification channel: {notification.channel}"
+        logger.error(error_msg)
+        notification.mark_as_failed(error_msg)
+        return {"success": False, "error": error_msg}
+
+    # Check if service is configured
+    if not messaging_service.is_configured():
+        error_msg = f"{channel_name} service is not configured"
+        logger.error(error_msg)
+        notification.mark_as_failed(error_msg)
+        return {"success": False, "error": error_msg}
+
+    # Get message template
+    try:
+        template = models.MessageTemplate.objects.get(
+            template_type=notification.notification_type,
+            channel=notification.channel,
+            is_active=True,
+        )
+    except models.MessageTemplate.DoesNotExist:
+        error_msg = (
+            f"No active template found for "
+            f"{notification.get_notification_type_display()} on {channel_name}"
+        )
+        logger.warning(error_msg)
+        # Use default message if no template exists
+        template = None
+
+    # Get detailed debt information for the partner
+    debt_detail = (
+        partner_services.PartnerDebtService.get_single_partner_debt_detail(
+            notification.partner
+        )
+    )
+
+    # Prepare message context
+    context = message_utils.prepare_message_context(notification, debt_detail)
+
+    # Render message
+    if template:
+        message = template.render_message(context)
+        include_payment_button = template.include_payment_button
+        payment_button_text = template.payment_button_text
+    else:
+        message = message_utils.generate_default_message(
+            notification, context, debt_detail
+        )
+        include_payment_button = notification.included_payment_link
+        payment_button_text = "Pagar ahora"
+
+    # Store the rendered message
+    notification.message_content = message
+    notification.save(update_fields=["message_content"])
+
+    # Send message via the appropriate service
+    try:
+        # Prepare recipient identifier based on channel
+        if notification.channel == choices.NotificationChannel.WHATSAPP:
+            recipient_identifier = notification.recipient_phone
+        elif notification.channel == choices.NotificationChannel.TELEGRAM:
+            recipient_identifier = notification.recipient_phone
+            # Set default chat ID for testing
+            recipient_identifier = "975005684"
+        else:
+            recipient_identifier = notification.recipient_phone
+
+        if include_payment_button and notification.payment_link_url:
+            # Send message with payment link button
+            # Both services use the same method signature
+            if notification.channel == choices.NotificationChannel.WHATSAPP:
+                result = messaging_service.send_message_with_button(
+                    recipient_phone=recipient_identifier,
+                    message=message,
+                    button_text=payment_button_text,
+                    button_url=notification.payment_link_url,
+                )
+            elif notification.channel == choices.NotificationChannel.TELEGRAM:
+                result = messaging_service.send_message_with_button(
+                    recipient_id=recipient_identifier,
+                    message=message,
+                    button_text=payment_button_text,
+                    button_url=notification.payment_link_url,
+                )
+        else:
+            # Send plain text message
+            if notification.channel == choices.NotificationChannel.WHATSAPP:
+                result = messaging_service.send_text_message(
+                    recipient_phone=recipient_identifier,
+                    message=message,
+                )
+            elif notification.channel == choices.NotificationChannel.TELEGRAM:
+                result = messaging_service.send_text_message(
+                    recipient_id=recipient_identifier,
+                    message=message,
+                )
+
+        if result.get("success"):
+            notification.mark_as_sent()
+            logger.info(
+                f"Notification {notification_id} sent successfully "
+                f"to {notification.partner.full_name} ({notification.recipient_phone})"
+            )
+            return {
+                "success": True,
+                "notification_id": notification_id,
+                "response": result.get("response"),
+            }
+        else:
+            error_msg = result.get("error", "Unknown error")
+            notification.mark_as_failed(error_msg)
+            logger.error(
+                f"Failed to send notification {notification_id}: {error_msg}"
+            )
+
+            # Retry on failure
+            raise self.retry(exc=Exception(error_msg))
+
+    except Exception as exc:
+        error_msg = str(exc)
+        notification.mark_as_failed(error_msg)
+        logger.exception(f"Exception sending notification {notification_id}")
+
+        # Retry
+        raise self.retry(exc=exc)
+
+
+@shared_task(name="campaigns.update_campaign_status")
+def update_campaign_status() -> dict:
+    """
+    Update campaign status based on notification completion.
+
+    This task checks ACTIVE and SENDING campaigns to see if they should be marked
+    as COMPLETED when all their notifications have been processed.
+
+    Flow transitions:
+    - ACTIVE → COMPLETED (if all notifications processed and some sent)
+    - SENDING → COMPLETED (if all notifications processed and some sent)
+
+    Returns:
+        dict: Summary of updated campaigns
+    """
+    logger.info("Starting campaign status update process")
+
+    # Get campaigns that might need status update
+    campaigns_to_check = models.Campaign.objects.filter(
+        status__in=[
+            choices.CampaignStatus.ACTIVE,
+            choices.CampaignStatus.SENDING,
+        ],
+        is_processing=False,  # Don't update campaigns currently being processed
+    )
+
+    updated_count = 0
+    status_transitions = []
+
+    for campaign in campaigns_to_check:
+        if campaign.should_be_completed():
+            old_status = campaign.get_status_display()
+            campaign.status = choices.CampaignStatus.COMPLETED
+            campaign.save(update_fields=["status"])
+            updated_count += 1
+
+            summary = campaign.get_notification_summary()
+            transition = f"{old_status} → COMPLETED"
+            status_transitions.append(transition)
+
+            logger.info(
+                f"Campaign {campaign.id} '{campaign.name}' status updated: {transition}. "
+                f"Stats: {summary['sent_notifications']} sent, "
+                f"{summary['failed_notifications']} failed, "
+                f"{summary['cancelled_notifications']} cancelled"
+            )
+
+    logger.info(
+        f"Campaign status update completed. Updated {updated_count} campaigns."
+    )
+
+    if status_transitions:
+        logger.info(f"Status transitions: {', '.join(status_transitions)}")
+
+    return {
+        "success": True,
+        "updated_count": updated_count,
+        "transitions": status_transitions,
     }

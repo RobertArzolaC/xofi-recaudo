@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-02 18:54-0500\n"
+"POT-Creation-Date: 2025-11-03 21:30-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,198 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: apps/chatbot/admin.py:46 templates/campaigns/campaign/form.html:39
-#: templates/credits/credit/form.html:32
-#: templates/customers/agency/detail.html:37
-#: templates/customers/agency/form.html:32
-#: templates/partners/partner/form.html:41 templates/team/employee/form.html:32
-#: templates/users/role/detail.html:46 templates/users/user/detail.html:53
-msgid "Basic Information"
-msgstr "Información de la Cuenta"
-
-#: apps/chatbot/admin.py:58
-msgid "Context Data"
-msgstr "Datos de contexto"
-
-#: apps/chatbot/admin.py:65
-msgid "Timestamps"
-msgstr "Marcas de tiempo"
-
-#: apps/chatbot/admin.py:93
-msgid "Message Preview"
-msgstr "Vista previa del mensaje"
-
-#: apps/chatbot/apps.py:8
-msgid "AI Agent"
-msgstr "Agente de IA"
-
-#: apps/chatbot/choices.py:8
-msgid "Pending Authentication"
-msgstr "Autenticación Pendiente"
-
-#: apps/chatbot/choices.py:9
-msgid "Authenticated"
-msgstr "Autenticado"
-
-#: apps/chatbot/choices.py:10 apps/campaigns/choices.py:12
-#: apps/campaigns/filtersets.py:41 apps/credits/choices.py:11
-#: apps/credits/filtersets.py:35 apps/credits/filtersets.py:71
-#: apps/customers/filtersets.py:18 apps/customers/filtersets.py:58
-#: apps/customers/forms.py:406 apps/partners/choices.py:14
-#: apps/payments/choices.py:54 apps/team/choices.py:12 apps/users/forms.py:93
-#: apps/users/forms.py:161 templates/credits/product/delete.html:64
-#: templates/credits/product/detail.html:49
-#: templates/credits/product/form.html:219
-#: templates/credits/product/list.html:132
-#: templates/credits/product_type/delete.html:62
-#: templates/credits/product_type/detail.html:49
-#: templates/credits/product_type/detail.html:119
-#: templates/credits/product_type/form.html:89
-#: templates/credits/product_type/list.html:118
-#: templates/customers/account/list.html:170
-#: templates/customers/agency/confirm_delete.html:54
-#: templates/customers/agency/detail.html:49
-#: templates/customers/agency/list.html:126
-#: templates/customers/company/detail.html:40
-#: templates/customers/company/detail.html:50
-#: templates/payments/magic_link/detail.html:104
-#: templates/payments/magic_link/list.html:134
-#: templates/team/employee/confirm_delete.html:64
-#: templates/team/employee/detail.html:61 templates/team/employee/list.html:134
-#: templates/users/user/detail.html:91 templates/users/user/list.html:150
-msgid "Active"
-msgstr "Activo"
-
-#: apps/chatbot/choices.py:11 apps/support/choices.py:21
-msgid "Closed"
-msgstr "Cerrado"
-
-#: apps/chatbot/choices.py:12
-msgid "Blocked"
-msgstr "Bloqueado"
-
-#: apps/chatbot/choices.py:18 apps/core/models.py:102
-#: apps/customers/models.py:55 apps/users/models.py:41
-#: templates/users/user/list.html:85 templates/users/user/list.html:130
-msgid "User"
-msgstr "Usuario"
-
-#: apps/chatbot/choices.py:19
-msgid "Agent"
-msgstr "Agente"
-
-#: apps/chatbot/choices.py:20
-msgid "System"
-msgstr "Sistema"
-
-#: apps/chatbot/choices.py:26
-msgid "Greeting"
-msgstr "Saludo"
-
-#: apps/chatbot/choices.py:27
-msgid "Authentication"
-msgstr "Autenticación"
-
-#: apps/chatbot/choices.py:28
-msgid "Partner Detail"
-msgstr "Detalles del Socio"
-
-#: apps/chatbot/choices.py:29
-msgid "Account Statement"
-msgstr "Estado de Cuenta"
-
-#: apps/chatbot/choices.py:30
-msgid "List Credits"
-msgstr "Listar Créditos"
-
-#: apps/chatbot/choices.py:31
-msgid "Credit Detail"
-msgstr "Detalles del Crédito"
-
-#: apps/chatbot/choices.py:32
-msgid "Create Support Ticket"
-msgstr ""
-
-#: apps/chatbot/choices.py:33
-msgid "Upload Payment Receipt"
-msgstr "Subir Comprobante de Pago"
-
-#: apps/chatbot/choices.py:34
-msgid "Help"
-msgstr "Ayuda"
-
-#: apps/chatbot/choices.py:35
-msgid "Goodbye"
-msgstr "Despedida"
-
-#: apps/chatbot/choices.py:36
-msgid "Unknown"
-msgstr "Desconocido"
-
-#: apps/chatbot/models.py:20
-msgid "Partner associated with this conversation"
-msgstr "Socio asociado con esta conversación"
-
-#: apps/chatbot/models.py:25
-msgid "Telegram chat ID for this conversation"
-msgstr "ID de chat de Telegram para esta conversación"
-
-#: apps/chatbot/models.py:30
-msgid "Telegram username of the user"
-msgstr "Nombre de usuario de Telegram del usuario"
-
-#: apps/chatbot/models.py:35
-msgid "Current status of the conversation"
-msgstr "Estado actual de la conversación."
-
-#: apps/chatbot/models.py:39
-msgid "Whether the user has been authenticated"
-msgstr "El usuario ha sido autenticado."
-
-#: apps/chatbot/models.py:43
-msgid "Last interaction timestamp"
-msgstr "Marca de tiempo de la última interacción"
-
-#: apps/chatbot/models.py:48
-msgid "Context data for the conversation (pending actions, state, etc.)"
-msgstr "Datos de contexto para la conversación (acciones pendientes, estado, etc.)"
-
-#: apps/chatbot/models.py:52
-msgid "Agent Conversation"
-msgstr "Conversación del Agente"
-
-#: apps/chatbot/models.py:53
-msgid "Agent Conversations"
-msgstr "Conversaciones del Agente"
-
-#: apps/chatbot/models.py:71
-msgid "Conversation this message belongs to"
-msgstr "Conversación a la que pertenece este mensaje."
-
-#: apps/chatbot/models.py:76
-msgid "Who sent this message"
-msgstr "Quién envió este mensaje"
-
-#: apps/chatbot/models.py:79
-msgid "Message content"
-msgstr "Contenido del mensaje"
-
-#: apps/chatbot/models.py:85
-msgid "Detected intent of the message"
-msgstr "Intención detectada del mensaje"
-
-#: apps/chatbot/models.py:90
-msgid "Additional metadata (API responses, file info, etc.)"
-msgstr "Metadatos adicionales (respuestas de API, información de archivos, etc.)"
-
-#: apps/chatbot/models.py:94
-msgid "Conversation Message"
-msgstr "Mensaje de la Conversación"
-
-#: apps/chatbot/models.py:95
-msgid "Conversation Messages"
-msgstr "Conversaciones de Mensajes"
 
 #: apps/authentication/forms.py:12 apps/partners/forms.py:143
 #: apps/partners/forms.py:333 apps/partners/forms.py:613 apps/team/forms.py:191
@@ -259,6 +67,35 @@ msgstr "En proceso"
 #: apps/campaigns/choices.py:11
 msgid "Sending"
 msgstr "Enviando"
+
+#: apps/campaigns/choices.py:12 apps/campaigns/filtersets.py:41
+#: apps/chatbot/choices.py:10 apps/credits/choices.py:11
+#: apps/credits/filtersets.py:35 apps/credits/filtersets.py:71
+#: apps/customers/filtersets.py:18 apps/customers/filtersets.py:58
+#: apps/customers/forms.py:406 apps/partners/choices.py:14
+#: apps/payments/choices.py:54 apps/team/choices.py:12 apps/users/forms.py:93
+#: apps/users/forms.py:161 templates/credits/product/delete.html:64
+#: templates/credits/product/detail.html:49
+#: templates/credits/product/form.html:219
+#: templates/credits/product/list.html:132
+#: templates/credits/product_type/delete.html:62
+#: templates/credits/product_type/detail.html:49
+#: templates/credits/product_type/detail.html:119
+#: templates/credits/product_type/form.html:89
+#: templates/credits/product_type/list.html:118
+#: templates/customers/account/list.html:170
+#: templates/customers/agency/confirm_delete.html:54
+#: templates/customers/agency/detail.html:49
+#: templates/customers/agency/list.html:126
+#: templates/customers/company/detail.html:40
+#: templates/customers/company/detail.html:50
+#: templates/payments/magic_link/detail.html:104
+#: templates/payments/magic_link/list.html:134
+#: templates/team/employee/confirm_delete.html:64
+#: templates/team/employee/detail.html:61 templates/team/employee/list.html:134
+#: templates/users/user/detail.html:91 templates/users/user/list.html:150
+msgid "Active"
+msgstr "Activo"
 
 #: apps/campaigns/choices.py:13
 msgid "Paused"
@@ -925,53 +762,223 @@ msgstr "Plantilla de Mensaje"
 msgid "Message Templates"
 msgstr "Plantillas de Mensajes"
 
-#: apps/campaigns/views.py:75 templates/campaigns/campaign/form.html:171
+#: apps/campaigns/views.py:74 templates/campaigns/campaign/form.html:171
 msgid "Create Campaign"
 msgstr "Crear Campaña"
 
-#: apps/campaigns/views.py:105
+#: apps/campaigns/views.py:104
 msgid "Edit Campaign"
 msgstr "Editar Campaña"
 
-#: apps/campaigns/views.py:128
+#: apps/campaigns/views.py:127
 #: templates/campaigns/campaign/confirm_delete.html:25
 #: templates/campaigns/campaign/confirm_delete.html:80
 msgid "Delete Campaign"
 msgstr "Eliminar Campaña"
 
-#: apps/campaigns/views.py:175 templates/campaigns/group/form.html:80
+#: apps/campaigns/views.py:174 templates/campaigns/group/form.html:80
 msgid "Create Group"
 msgstr "Crear Grupo"
 
-#: apps/campaigns/views.py:203
+#: apps/campaigns/views.py:202
 msgid "Edit Group"
 msgstr "Editar Grupo"
 
-#: apps/campaigns/views.py:224 templates/campaigns/group/confirm_delete.html:25
+#: apps/campaigns/views.py:223 templates/campaigns/group/confirm_delete.html:25
 #: templates/campaigns/group/confirm_delete.html:81
 msgid "Delete Group"
 msgstr "Eliminar Grupo"
 
-#: apps/campaigns/views.py:246 apps/campaigns/views.py:297
-#: apps/campaigns/views.py:313 templates/campaigns/group/detail.html:87
+#: apps/campaigns/views.py:245 apps/campaigns/views.py:296
+#: apps/campaigns/views.py:312 templates/campaigns/group/detail.html:87
 msgid "Bulk Add Partners"
 msgstr "Agregar socios en masa"
 
-#: apps/campaigns/views.py:307
+#: apps/campaigns/views.py:306
 msgid "An error occurred while processing the file."
 msgstr "Ocurrió un error al procesar el archivo."
 
-#: apps/campaigns/views.py:349
+#: apps/campaigns/views.py:348
 msgid "Campaign is already being processed"
 msgstr "Campaña ya está en proceso"
 
-#: apps/campaigns/views.py:352
+#: apps/campaigns/views.py:351
 msgid "Campaign has no execution date configured"
 msgstr "La campaña no tiene fecha de ejecución configurada"
 
-#: apps/campaigns/views.py:355
+#: apps/campaigns/views.py:354
 msgid "Campaign has no group assigned"
 msgstr "La campaña no tiene grupo asignado"
+
+#: apps/campaigns/views.py:367
+#, python-brace-format
+msgid "Campaign '{campaign_name}' has been queued for execution."
+msgstr "La campaña '{campaign_name}' ha sido puesta en cola para su ejecución."
+
+#: apps/chatbot/admin.py:46 templates/campaigns/campaign/form.html:39
+#: templates/credits/credit/form.html:32
+#: templates/customers/agency/detail.html:37
+#: templates/customers/agency/form.html:32
+#: templates/partners/partner/form.html:41 templates/team/employee/form.html:32
+#: templates/users/role/detail.html:46 templates/users/user/detail.html:53
+msgid "Basic Information"
+msgstr "Información de la Cuenta"
+
+#: apps/chatbot/admin.py:58
+msgid "Context Data"
+msgstr "Datos de contexto"
+
+#: apps/chatbot/admin.py:65
+msgid "Timestamps"
+msgstr "Marcas de tiempo"
+
+#: apps/chatbot/admin.py:93
+msgid "Message Preview"
+msgstr "Vista previa del mensaje"
+
+#: apps/chatbot/apps.py:8
+msgid "Chatbot"
+msgstr ""
+
+#: apps/chatbot/choices.py:8
+msgid "Pending Authentication"
+msgstr "Autenticación Pendiente"
+
+#: apps/chatbot/choices.py:9
+msgid "Authenticated"
+msgstr "Autenticado"
+
+#: apps/chatbot/choices.py:11 apps/support/choices.py:21
+msgid "Closed"
+msgstr "Cerrado"
+
+#: apps/chatbot/choices.py:12
+msgid "Blocked"
+msgstr "Bloqueado"
+
+#: apps/chatbot/choices.py:18 apps/core/models.py:102
+#: apps/customers/models.py:55 apps/users/models.py:41
+#: templates/users/user/list.html:85 templates/users/user/list.html:130
+msgid "User"
+msgstr "Usuario"
+
+#: apps/chatbot/choices.py:19
+msgid "Agent"
+msgstr "Agente"
+
+#: apps/chatbot/choices.py:20
+msgid "System"
+msgstr "Sistema"
+
+#: apps/chatbot/choices.py:26
+msgid "Greeting"
+msgstr "Saludo"
+
+#: apps/chatbot/choices.py:27
+msgid "Authentication"
+msgstr "Autenticación"
+
+#: apps/chatbot/choices.py:28
+msgid "Partner Detail"
+msgstr "Detalles del Socio"
+
+#: apps/chatbot/choices.py:29
+msgid "Account Statement"
+msgstr "Estado de Cuenta"
+
+#: apps/chatbot/choices.py:30
+msgid "List Credits"
+msgstr "Listar Créditos"
+
+#: apps/chatbot/choices.py:31
+msgid "Credit Detail"
+msgstr "Detalles del Crédito"
+
+#: apps/chatbot/choices.py:32
+msgid "Create Support Ticket"
+msgstr ""
+
+#: apps/chatbot/choices.py:33
+msgid "Upload Payment Receipt"
+msgstr "Subir Comprobante de Pago"
+
+#: apps/chatbot/choices.py:34
+msgid "Help"
+msgstr "Ayuda"
+
+#: apps/chatbot/choices.py:35
+msgid "Goodbye"
+msgstr "Despedida"
+
+#: apps/chatbot/choices.py:36
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: apps/chatbot/models.py:20
+msgid "Partner associated with this conversation"
+msgstr "Socio asociado con esta conversación"
+
+#: apps/chatbot/models.py:25
+msgid "Telegram chat ID for this conversation"
+msgstr "ID de chat de Telegram para esta conversación"
+
+#: apps/chatbot/models.py:30
+msgid "Telegram username of the user"
+msgstr "Nombre de usuario de Telegram del usuario"
+
+#: apps/chatbot/models.py:35
+msgid "Current status of the conversation"
+msgstr "Estado actual de la conversación."
+
+#: apps/chatbot/models.py:39
+msgid "Whether the user has been authenticated"
+msgstr "El usuario ha sido autenticado."
+
+#: apps/chatbot/models.py:43
+msgid "Last interaction timestamp"
+msgstr "Marca de tiempo de la última interacción"
+
+#: apps/chatbot/models.py:48
+msgid "Context data for the conversation (pending actions, state, etc.)"
+msgstr ""
+"Datos de contexto para la conversación (acciones pendientes, estado, etc.)"
+
+#: apps/chatbot/models.py:52
+msgid "Agent Conversation"
+msgstr "Conversación del Agente"
+
+#: apps/chatbot/models.py:53
+msgid "Agent Conversations"
+msgstr "Conversaciones del Agente"
+
+#: apps/chatbot/models.py:71
+msgid "Conversation this message belongs to"
+msgstr "Conversación a la que pertenece este mensaje."
+
+#: apps/chatbot/models.py:76
+msgid "Who sent this message"
+msgstr "Quién envió este mensaje"
+
+#: apps/chatbot/models.py:79
+msgid "Message content"
+msgstr "Contenido del mensaje"
+
+#: apps/chatbot/models.py:85
+msgid "Detected intent of the message"
+msgstr "Intención detectada del mensaje"
+
+#: apps/chatbot/models.py:90
+msgid "Additional metadata (API responses, file info, etc.)"
+msgstr ""
+"Metadatos adicionales (respuestas de API, información de archivos, etc.)"
+
+#: apps/chatbot/models.py:94
+msgid "Conversation Message"
+msgstr "Mensaje de la Conversación"
+
+#: apps/chatbot/models.py:95
+msgid "Conversation Messages"
+msgstr "Conversaciones de Mensajes"
 
 #: apps/compliance/admin.py:37 apps/compliance/admin.py:156
 #: templates/payments/detail.html:208 templates/payments/form.html:126
@@ -1340,47 +1347,47 @@ msgstr "Multa"
 msgid "Penalties"
 msgstr "Multas"
 
-#: apps/compliance/views.py:70 templates/compliance/contribution/form.html:138
+#: apps/compliance/views.py:73 templates/compliance/contribution/form.html:138
 msgid "Create Contribution"
 msgstr "Crear Aporte"
 
-#: apps/compliance/views.py:97
+#: apps/compliance/views.py:102
 msgid "Edit Contribution"
 msgstr "Editar Aporte"
 
-#: apps/compliance/views.py:98 apps/compliance/views.py:196
-#: apps/compliance/views.py:293 apps/partners/views.py:101
+#: apps/compliance/views.py:103 apps/compliance/views.py:209
+#: apps/compliance/views.py:314 apps/partners/views.py:100
 msgid "update"
 msgstr "actualizar"
 
-#: apps/compliance/views.py:118
+#: apps/compliance/views.py:125
 #: templates/compliance/contribution/confirm_delete.html:5
 msgid "Delete Contribution"
 msgstr "Eliminar Aporte"
 
-#: apps/compliance/views.py:167
+#: apps/compliance/views.py:178
 #: templates/compliance/social_security/form.html:142
 msgid "Create Social Security"
 msgstr "Crear Previsión Social"
 
-#: apps/compliance/views.py:195
+#: apps/compliance/views.py:208
 msgid "Edit Social Security"
 msgstr "Editar Previsión Social"
 
-#: apps/compliance/views.py:216
+#: apps/compliance/views.py:231
 #: templates/compliance/social_security/confirm_delete.html:5
 msgid "Delete Social Security"
 msgstr "Eliminar Previsión Social"
 
-#: apps/compliance/views.py:265 templates/compliance/penalty/form.html:145
+#: apps/compliance/views.py:284 templates/compliance/penalty/form.html:145
 msgid "Create Penalty"
 msgstr "Crear Multa"
 
-#: apps/compliance/views.py:292
+#: apps/compliance/views.py:313
 msgid "Edit Penalty"
 msgstr "Editar Multa"
 
-#: apps/compliance/views.py:313
+#: apps/compliance/views.py:336
 #: templates/compliance/penalty/confirm_delete.html:5
 msgid "Delete Penalty"
 msgstr "Eliminar Multa"
@@ -2938,128 +2945,128 @@ msgstr "Desembolso de Crédito"
 msgid "Credit Disbursements"
 msgstr "Desembolsos de Crédito"
 
-#: apps/credits/views.py:56
+#: apps/credits/views.py:59
 msgid "Product type created successfully."
 msgstr "Tipo de producto creado con éxito."
 
-#: apps/credits/views.py:75
+#: apps/credits/views.py:78
 msgid "Product type updated successfully."
 msgstr "Tipo de producto actualizado con éxito."
 
-#: apps/credits/views.py:93
+#: apps/credits/views.py:96
 msgid "Product type deleted successfully."
 msgstr "Tipo de producto eliminado con éxito."
 
-#: apps/credits/views.py:126
+#: apps/credits/views.py:131
 msgid "Product created successfully."
 msgstr "Producto creado con éxito."
 
-#: apps/credits/views.py:145
+#: apps/credits/views.py:150
 msgid "Product updated successfully."
 msgstr "Producto actualizado con éxito."
 
-#: apps/credits/views.py:163
+#: apps/credits/views.py:168
 msgid "Product deleted successfully."
 msgstr "Producto eliminado con éxito."
 
-#: apps/credits/views.py:218
+#: apps/credits/views.py:223
 msgid "Credit created successfully."
 msgstr "Crédito creado con éxito."
 
-#: apps/credits/views.py:237
+#: apps/credits/views.py:242
 msgid "Credit updated successfully."
 msgstr "Crédito actualizado con éxito."
 
-#: apps/credits/views.py:255
+#: apps/credits/views.py:260
 msgid "Credit deleted successfully."
 msgstr "Crédito eliminado con éxito."
 
-#: apps/credits/views.py:292
+#: apps/credits/views.py:297
 msgid "Credit application created successfully."
 msgstr "Solicitud de crédito creada con éxito."
 
-#: apps/credits/views.py:317
+#: apps/credits/views.py:322
 msgid "Credit application updated successfully."
 msgstr "Solicitud de crédito actualizada con éxito."
 
-#: apps/credits/views.py:341
+#: apps/credits/views.py:346
 msgid "Credit application deleted successfully."
 msgstr "Solicitud de crédito eliminada con éxito."
 
-#: apps/credits/views.py:378
+#: apps/credits/views.py:383
 msgid "Credit reschedule request created successfully."
 msgstr "Solicitud de reprogramación de crédito creada con éxito."
 
-#: apps/credits/views.py:404
+#: apps/credits/views.py:409
 msgid "Credit reschedule request updated successfully."
 msgstr "Solicitud de reprogramación de crédito actualizada con éxito."
 
-#: apps/credits/views.py:429
+#: apps/credits/views.py:434
 msgid "Credit reschedule request deleted successfully."
 msgstr "Solicitud de reprogramación de crédito eliminada con éxito."
 
-#: apps/credits/views.py:480
+#: apps/credits/views.py:490
 #, python-brace-format
 msgid "Application status changed to '{status}' successfully."
 msgstr "El estado de la solicitud ha cambiado a '{status}' con éxito."
 
-#: apps/credits/views.py:488 apps/credits/views.py:594
+#: apps/credits/views.py:497 apps/credits/views.py:609
 msgid "Could not change status. Please check the current status and try again."
 msgstr ""
 "No se pudo cambiar el estado. Por favor, verifique el estado actual y vuelva "
 "a intentarlo."
 
-#: apps/credits/views.py:519
+#: apps/credits/views.py:528
 msgid "Payment schedule is not available for this application."
 msgstr "El calendario de pagos no está disponible para esta solicitud."
 
-#: apps/credits/views.py:586
+#: apps/credits/views.py:601
 #, python-brace-format
 msgid "Credit status changed to '{status}' successfully."
 msgstr "El estado del crédito ha cambiado a '{status}' con éxito."
 
-#: apps/credits/views.py:641
+#: apps/credits/views.py:656
 msgid "Credit refinance request created successfully."
 msgstr "Solicitud de refinanciamiento de crédito creada con éxito."
 
-#: apps/credits/views.py:667
+#: apps/credits/views.py:682
 msgid "Credit refinance request updated successfully."
 msgstr "Solicitud de refinanciamiento de crédito actualizada con éxito."
 
-#: apps/credits/views.py:692
+#: apps/credits/views.py:707
 msgid "Credit refinance request deleted successfully."
 msgstr "Solicitud de refinanciamiento de crédito eliminada con éxito."
 
-#: apps/credits/views.py:770
+#: apps/credits/views.py:787
 msgid "Credit disbursement created successfully."
 msgstr "Desembolso de crédito creado con éxito."
 
-#: apps/credits/views.py:781
+#: apps/credits/views.py:798
 msgid "Create Credit Disbursement"
 msgstr "Crear Desembolso de Crédito"
 
-#: apps/credits/views.py:800
+#: apps/credits/views.py:817
 msgid "Credit disbursement updated successfully."
 msgstr "Desembolso de crédito actualizado con éxito."
 
-#: apps/credits/views.py:811
+#: apps/credits/views.py:828
 msgid "Update Credit Disbursement"
 msgstr "Actualizar Desembolso de Crédito"
 
-#: apps/credits/views.py:829
+#: apps/credits/views.py:846
 msgid "Credit disbursement deleted successfully."
 msgstr "Desembolso de crédito eliminado con éxito."
 
-#: apps/credits/views.py:841
+#: apps/credits/views.py:858
 msgid "Disbursement status changed successfully."
 msgstr "El estado del desembolso se ha actualizado con éxito."
 
-#: apps/credits/views.py:882
+#: apps/credits/views.py:899
 #, python-format
 msgid "Disbursement status changed to %(status)s"
 msgstr "El estado del desembolso ha cambiado a %(status)s."
 
-#: apps/credits/views.py:888
+#: apps/credits/views.py:905
 #, python-format
 msgid "Disbursement status was already %(status)s"
 msgstr "El estado del desembolso ya era %(status)s."
@@ -3495,7 +3502,9 @@ msgstr "Fecha de nacimiento"
 #: apps/partners/forms.py:182
 msgid ""
 "Status cannot be changed after approval. A partner record has been created."
-msgstr "El estado no se puede cambiar después de la aprobación. Se ha creado un registro de socio."
+msgstr ""
+"El estado no se puede cambiar después de la aprobación. Se ha creado un "
+"registro de socio."
 
 #: apps/partners/forms.py:199
 msgid ""
@@ -3709,7 +3718,7 @@ msgstr "Empleado asignado para hacer seguimiento a este aspirante"
 msgid "Prospect"
 msgstr "Aspirante"
 
-#: apps/partners/models.py:112 apps/partners/views.py:307
+#: apps/partners/models.py:112 apps/partners/views.py:306
 #: templates/partners/prospect/list.html:5
 #: templates/partners/prospect/list.html:64
 msgid "Prospects"
@@ -3989,7 +3998,8 @@ msgstr "Datos de Asignación"
 
 #: apps/payments/forms.py:307
 msgid "Payment token is required. Please complete the payment form."
-msgstr "Se requiere el token de pago. Por favor complete el formulario de pago."
+msgstr ""
+"Se requiere el token de pago. Por favor complete el formulario de pago."
 
 #: apps/payments/forms.py:320
 msgid "Please enter a valid payment amount."
@@ -4043,7 +4053,7 @@ msgstr "Incluir deudas por vencer"
 msgid "Además de las vencidas, incluir deudas próximas a vencer"
 msgstr "Además de las vencidas, incluir deudas próximas a vencer"
 
-#: apps/payments/forms.py:473 apps/payments/views.py:471
+#: apps/payments/forms.py:473 apps/payments/views.py:470
 #, python-format
 msgid "No se encontró un socio con el DNI %(document)s"
 msgstr "No se encontró un socio con el DNI %(document)s"
@@ -4265,7 +4275,8 @@ msgstr "Pago asociado con este enlace si se utilizó."
 msgid ""
 "Additional metadata including debt concepts: {'debts': [{'type': "
 "'installment', 'id': 123, 'amount': 387.00}, ...]}"
-msgstr "Metadatos adicionales que incluyen conceptos de deuda: {'deudas': [{'tipo': "
+msgstr ""
+"Metadatos adicionales que incluyen conceptos de deuda: {'deudas': [{'tipo': "
 "'cuota', 'id': 123, 'monto': 387.00}, ...]}"
 
 #: apps/payments/models.py:459
@@ -4309,75 +4320,77 @@ msgstr "Notas sobre la validación"
 msgid "Validation notes are required when rejecting a receipt."
 msgstr "Las notas de validación son obligatorias al rechazar un recibo."
 
-#: apps/payments/views.py:122
+#: apps/payments/views.py:121
 msgid ""
 "Payment #{} has been created successfully with {} allocation(s) totaling ${}."
-msgstr "El pago #{} se ha creado con éxito con {} asignación(es) por un total de ${}."
+msgstr ""
+"El pago #{} se ha creado con éxito con {} asignación(es) por un total de ${}."
 
-#: apps/payments/views.py:132
+#: apps/payments/views.py:131
 msgid "Payment #{} has been created successfully."
 msgstr "El pago #{} se ha creado con éxito."
 
-#: apps/payments/views.py:142 apps/payments/views.py:143
+#: apps/payments/views.py:141 apps/payments/views.py:142
 msgid "Create Payment"
 msgstr "Crear Pago"
 
-#: apps/payments/views.py:193
+#: apps/payments/views.py:192
 msgid ""
 "Payment #{} has been updated successfully with {} allocation(s) totaling ${}."
 msgstr ""
-"El pago #{} se ha actualizado con éxito con {} asignación(es) por un total de ${}."
+"El pago #{} se ha actualizado con éxito con {} asignación(es) por un total "
+"de ${}."
 
-#: apps/payments/views.py:205
+#: apps/payments/views.py:204
 msgid "Payment #{} has been updated successfully."
 msgstr "El pago #{} se ha actualizado con éxito."
 
-#: apps/payments/views.py:215
+#: apps/payments/views.py:214
 msgid "Edit Payment"
 msgstr "Editar Pago"
 
-#: apps/payments/views.py:216
+#: apps/payments/views.py:215
 msgid "Update Payment"
 msgstr "Actualizar Pago"
 
-#: apps/payments/views.py:239
+#: apps/payments/views.py:238
 msgid "Payment #{} has been deleted successfully."
 msgstr "El pago #{} se ha eliminado con éxito."
 
-#: apps/payments/views.py:314
+#: apps/payments/views.py:313
 msgid "Payment receipt has been created successfully."
 msgstr "Recibo de pago creado con éxito."
 
-#: apps/payments/views.py:322
+#: apps/payments/views.py:321
 msgid "New Payment Receipt"
 msgstr "Nuevo Recibo de Pago"
 
-#: apps/payments/views.py:323
+#: apps/payments/views.py:322
 msgid "Save Receipt"
 msgstr "Guardar Recibo"
 
-#: apps/payments/views.py:353
+#: apps/payments/views.py:352
 msgid "Payment receipt has been updated successfully."
 msgstr "El recibo de pago se ha actualizado con éxito."
 
-#: apps/payments/views.py:361
+#: apps/payments/views.py:360
 msgid "Edit Payment Receipt"
 msgstr "Editar Recibo de Pago"
 
-#: apps/payments/views.py:362
+#: apps/payments/views.py:361
 msgid "Update Receipt"
 msgstr "Actualizar Recibo"
 
-#: apps/payments/views.py:385
+#: apps/payments/views.py:384
 msgid "Payment receipt has been deleted successfully."
 msgstr "El recibo de pago se ha eliminado con éxito."
 
-#: apps/payments/views.py:437
+#: apps/payments/views.py:436
 #, python-format
 msgid "El socio con DNI %(document)s no tiene deudas pendientes."
 msgstr "El socio con DNI %(document)s no tiene deudas pendientes."
 
-#: apps/payments/views.py:456
+#: apps/payments/views.py:455
 #, python-format
 msgid ""
 "Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
@@ -4386,16 +4399,16 @@ msgstr ""
 "Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
 "%(count)d deuda(s)"
 
-#: apps/payments/views.py:478
+#: apps/payments/views.py:477
 #, python-format
 msgid "Error al crear el Magic Link: %(error)s"
 msgstr "Error al crear el Magic Link: %(error)s"
 
-#: apps/payments/views.py:558
+#: apps/payments/views.py:557
 msgid "Link de pago no encontrado"
 msgstr "Link de pago no encontrado"
 
-#: apps/payments/views.py:570 templates/payments/magic_link/expired.html:157
+#: apps/payments/views.py:569 templates/payments/magic_link/expired.html:157
 msgid "Link Expirado"
 msgstr "Link Expirado"
 
@@ -4496,44 +4509,44 @@ msgstr "Comentario del Ticket"
 msgid "Ticket Comments"
 msgstr "Comentarios del Ticket"
 
-#: apps/support/views.py:85 templates/support/ticket/form.html:127
+#: apps/support/views.py:84 templates/support/ticket/form.html:127
 #: templates/support/ticket/list.html:166
 msgid "Create Ticket"
 msgstr "Crear Ticket"
 
-#: apps/support/views.py:92
+#: apps/support/views.py:91
 msgid "Ticket created successfully."
 msgstr "Ticket creado con éxito."
 
-#: apps/support/views.py:111
+#: apps/support/views.py:112
 msgid "Edit Ticket"
 msgstr "Editar Ticket"
 
-#: apps/support/views.py:118
+#: apps/support/views.py:119
 msgid "Ticket updated successfully."
 msgstr "Ticket actualizado con éxito."
 
-#: apps/support/views.py:133 templates/support/ticket/confirm_delete.html:86
+#: apps/support/views.py:134 templates/support/ticket/confirm_delete.html:86
 msgid "Delete Ticket"
 msgstr "Eliminar Ticket"
 
-#: apps/support/views.py:138
+#: apps/support/views.py:139
 msgid "Ticket deleted successfully."
 msgstr "Ticket eliminado con éxito."
 
-#: apps/support/views.py:157
+#: apps/support/views.py:160
 msgid "Comment added successfully."
 msgstr "Comentario del Ticket creado con éxito."
 
-#: apps/support/views.py:159
+#: apps/support/views.py:163
 msgid "Error adding comment. Please try again."
 msgstr "Error al agregar comentario. Por favor, inténtalo de nuevo."
 
-#: apps/support/views.py:178
+#: apps/support/views.py:183
 msgid "Ticket status updated successfully."
 msgstr "Estado del Ticket actualizado con éxito."
 
-#: apps/support/views.py:180
+#: apps/support/views.py:186
 msgid "Error updating status. Please try again."
 msgstr "Error al actualizar el estado. Por favor, inténtalo de nuevo."
 
@@ -4633,8 +4646,9 @@ msgstr "Código postal"
 #: apps/team/forms.py:218
 msgid ""
 "Email address for the employee. A user account will be created automatically."
-msgstr "Dirección de correo electrónico para el empleado. Se creará una cuenta de usuario automáticamente."
-
+msgstr ""
+"Dirección de correo electrónico para el empleado. Se creará una cuenta de "
+"usuario automáticamente."
 
 #: apps/team/forms.py:220
 msgid "Select the position for this employee."
@@ -4646,13 +4660,14 @@ msgstr "Estado actual del empleo."
 
 #: apps/team/forms.py:250
 msgid "This email is already registered for another user account."
-msgstr "Este correo electrónico ya está registrado para otra cuenta de usuario."
+msgstr ""
+"Este correo electrónico ya está registrado para otra cuenta de usuario."
 
 #: apps/team/forms.py:261
 msgid "This email is already registered for another employee."
 msgstr "Este correo electrónico ya está registrado para otro empleado."
 
-#: apps/team/models.py:17 apps/team/views.py:44
+#: apps/team/models.py:17 apps/team/views.py:45
 #: templates/includes/aside.html:327 templates/team/area/list.html:5
 msgid "Areas"
 msgstr "Áreas"
@@ -4661,7 +4676,7 @@ msgstr "Áreas"
 msgid "Area this position belongs to."
 msgstr "Área a la que pertenece esta posición."
 
-#: apps/team/models.py:40 apps/team/views.py:164
+#: apps/team/models.py:40 apps/team/views.py:169
 #: templates/includes/aside.html:344 templates/team/position/list.html:5
 msgid "Positions"
 msgstr "Posiciones"
@@ -4678,7 +4693,7 @@ msgstr "Estado actual del empleado."
 msgid "Employee"
 msgstr "Empleado"
 
-#: apps/team/models.py:70 apps/team/views.py:286
+#: apps/team/models.py:70 apps/team/views.py:305
 #: templates/includes/aside.html:363 templates/team/area/detail.html:111
 #: templates/team/employee/list.html:5 templates/team/position/list.html:88
 msgid "Employees"
@@ -4756,132 +4771,132 @@ msgstr "Ya existe un empleado con este número de documento."
 msgid "An employee with this email already exists."
 msgstr "Ya existe un empleado con este correo electrónico."
 
-#: apps/team/views.py:45
+#: apps/team/views.py:46
 msgid "Manage organizational areas"
 msgstr "Gestionar áreas organizacionales"
 
-#: apps/team/views.py:64
+#: apps/team/views.py:65
 #, python-brace-format
 msgid "Area: {name}"
 msgstr "Área: {name}"
 
-#: apps/team/views.py:65
+#: apps/team/views.py:66
 msgid "Area details and information"
 msgstr "Detalles e información del área"
 
-#: apps/team/views.py:85
+#: apps/team/views.py:88
 msgid "Create Area"
 msgstr "Crear área"
 
-#: apps/team/views.py:86
+#: apps/team/views.py:89
 msgid "Add new organizational area"
 msgstr "Agregar nueva área organizacional"
 
-#: apps/team/views.py:110
+#: apps/team/views.py:113
 #, python-brace-format
 msgid "Edit Area: {name}"
 msgstr "Editar área: {name}"
 
-#: apps/team/views.py:111
+#: apps/team/views.py:114
 msgid "Update area information"
 msgstr "Actualizar información del área"
 
-#: apps/team/views.py:135
+#: apps/team/views.py:138
 #, python-brace-format
 msgid "Delete Area: {name}"
 msgstr "Eliminar área: {name}"
 
-#: apps/team/views.py:136
+#: apps/team/views.py:139
 msgid "Confirm area deletion"
 msgstr "Confirmar eliminación del área"
 
-#: apps/team/views.py:165
+#: apps/team/views.py:170
 msgid "Manage organizational positions"
 msgstr "Gestionar posiciones organizacionales"
 
-#: apps/team/views.py:184
+#: apps/team/views.py:191
 #, python-brace-format
 msgid "Position: {name}"
 msgstr "Posición: {name}"
 
-#: apps/team/views.py:185
+#: apps/team/views.py:192
 msgid "Position details and information"
 msgstr "Detalles e información de la posición"
 
-#: apps/team/views.py:204
+#: apps/team/views.py:213
 msgid "Create Position"
 msgstr "Crear posición"
 
-#: apps/team/views.py:205
+#: apps/team/views.py:214
 msgid "Add new organizational position"
 msgstr "Agregar nueva posición organizacional"
 
-#: apps/team/views.py:206 apps/team/views.py:337
+#: apps/team/views.py:215 apps/team/views.py:360
 #: templates/customers/account/form.html:124
 #: templates/partners/prospect/form.html:193 templates/users/profile.html:148
 msgid "Create"
 msgstr "Crear"
 
-#: apps/team/views.py:229
+#: apps/team/views.py:240
 #, python-brace-format
 msgid "Edit Position: {name}"
 msgstr "Editar posición: {name}"
 
-#: apps/team/views.py:230
+#: apps/team/views.py:243
 msgid "Update position information"
 msgstr "Actualizar información de la posición"
 
-#: apps/team/views.py:231 apps/team/views.py:365
+#: apps/team/views.py:244 apps/team/views.py:390
 #: templates/customers/account/form.html:125
 #: templates/support/ticket/detail.html:167 templates/users/profile.html:149
 msgid "Update"
 msgstr "Actualizar"
 
-#: apps/team/views.py:254
+#: apps/team/views.py:269
 #, python-brace-format
 msgid "Delete Position: {name}"
 msgstr "Eliminar posición: {name}"
 
-#: apps/team/views.py:255
+#: apps/team/views.py:272
 msgid "Confirm position deletion"
 msgstr "Confirmar eliminación de la posición"
 
-#: apps/team/views.py:287
+#: apps/team/views.py:306
 msgid "Manage employees"
 msgstr "Gestionar empleados"
 
-#: apps/team/views.py:312
+#: apps/team/views.py:333
 #, python-brace-format
 msgid "Employee: {first_name} {last_name}"
 msgstr "Empleado: {first_name} {last_name}"
 
-#: apps/team/views.py:316
+#: apps/team/views.py:337
 msgid "Employee details and information"
 msgstr "Detalles e información del empleado"
 
-#: apps/team/views.py:335 templates/team/employee/form.html:266
+#: apps/team/views.py:358 templates/team/employee/form.html:266
 msgid "Create Employee"
 msgstr "Crear empleado"
 
-#: apps/team/views.py:336
+#: apps/team/views.py:359
 msgid "Add new employee"
 msgstr "Agregar nuevo empleado"
 
-#: apps/team/views.py:360
+#: apps/team/views.py:385
 #, python-brace-format
 msgid "Edit Employee: {first_name} {last_name}"
 msgstr "Editar empleado: {first_name} {last_name}"
 
-#: apps/team/views.py:364
+#: apps/team/views.py:389
 msgid "Update employee information"
 msgstr "Actualizar información del empleado"
 
-#: apps/team/views.py:388
+#: apps/team/views.py:415
 #, python-brace-format
 msgid "Delete Employee: {first_name} {last_name}"
 msgstr "Eliminar empleado: {first_name} {last_name}"
 
-#: apps/team/views.py:392
+#: apps/team/views.py:419
 msgid "Confirm employee deletion"
 msgstr "Confirmar eliminación del empleado"
 
@@ -4989,23 +5004,23 @@ msgstr "Designa si el usuario es un socio."
 msgid "Users"
 msgstr "Usuarios"
 
-#: apps/users/views.py:34
+#: apps/users/views.py:33
 msgid "Profile"
 msgstr "Perfil"
 
-#: apps/users/views.py:42
+#: apps/users/views.py:41
 msgid "Settings updated successfully"
 msgstr "Configuración actualizada con éxito"
 
-#: apps/users/views.py:49 templates/includes/aside.html:374
+#: apps/users/views.py:48 templates/includes/aside.html:374
 msgid "Settings"
 msgstr "Configuración"
 
-#: apps/users/views.py:233 templates/users/user/detail.html:24
+#: apps/users/views.py:232 templates/users/user/detail.html:24
 msgid "Manage Roles"
 msgstr "Gestionar Roles"
 
-#: apps/users/views.py:282 apps/users/views.py:483
+#: apps/users/views.py:281 apps/users/views.py:482
 #: templates/users/role/detail.html:25 templates/users/user/detail.html:32
 msgid "Manage Permissions"
 msgstr "Gestionar Permisos"
@@ -5013,10 +5028,6 @@ msgstr "Gestionar Permisos"
 #: config/settings/base.py:168
 msgid "Spanish"
 msgstr "Español"
-
-#: config/settings/base.py:169
-msgid "English"
-msgstr "Inglés"
 
 #: config/settings/base.py:239
 msgid "Xofi Collections API"
@@ -5091,8 +5102,8 @@ msgid ""
 msgstr ""
 "\n"
 "                            Por favor confirme que <a href=\"mailto:"
-"%(email)s\">%(email)s</a> es una dirección de correo electrónico para el ""usuario "
-"%(user_display)s.\n"
+"%(email)s\">%(email)s</a> es una dirección de correo electrónico para el "
+"usuario %(user_display)s.\n"
 "                        "
 
 #: templates/account/email_confirm.html:32
@@ -5434,14 +5445,12 @@ msgid "Executing..."
 msgstr "Ejecutando..."
 
 #: templates/campaigns/campaign/detail.html:258
-#, fuzzy
-#| msgid "Details"
 msgid "Campaign Queued"
-msgstr "Detalles"
+msgstr "Campaña en Cola"
 
 #: templates/campaigns/campaign/detail.html:262
 msgid "Task ID"
-msgstr ""
+msgstr "ID de la Tarea"
 
 #: templates/campaigns/campaign/detail.html:263
 msgid "Campaign ID"
@@ -5503,8 +5512,8 @@ msgid ""
 "Include payment links in campaign notifications to allow partners to pay "
 "directly online"
 msgstr ""
-"Incluir enlaces de pago en las notificaciones de la campaña para permitir que "
-"los socios paguen directamente en línea"
+"Incluir enlaces de pago en las notificaciones de la campaña para permitir "
+"que los socios paguen directamente en línea"
 
 #: templates/campaigns/campaign/form.html:152
 msgid "How it works"
@@ -5516,7 +5525,8 @@ msgid ""
 "at the scheduled execution date and time. Partners with outstanding debts "
 "will receive reminders with their debt details."
 msgstr ""
-"La campaña enviará notificaciones a todos los socios en el grupo ""seleccionado en la fecha y hora de ejecución programada. Los socios con "
+"La campaña enviará notificaciones a todos los socios en el grupo "
+"seleccionado en la fecha y hora de ejecución programada. Los socios con "
 "deudas pendientes recibirán recordatorios con los detalles de su deuda."
 
 #: templates/campaigns/campaign/form.html:173
@@ -5706,8 +5716,9 @@ msgid ""
 "The following document numbers were not found in the system. Please verify "
 "the document numbers or ensure the partners are registered."
 msgstr ""
-"Los siguientes números de documento no se encontraron en el sistema. Por favor "
-"verifique los números de documento o asegúrese de que los socios estén ""registrados."
+"Los siguientes números de documento no se encontraron en el sistema. Por "
+"favor verifique los números de documento o asegúrese de que los socios estén "
+"registrados."
 
 #: templates/campaigns/group/confirm_delete.html:27
 msgid "Are you sure you want to delete this group?"
@@ -5818,8 +5829,8 @@ msgid ""
 msgstr ""
 "\n"
 "                                Está a punto de eliminar permanentemente la "
-"contribución para <strong>%(partner)s</strong> para el período <strong>%(period)s</"
-"strong>. Esta acción no se puede deshacer.\n"
+"contribución para <strong>%(partner)s</strong> para el período "
+"<strong>%(period)s</strong>. Esta acción no se puede deshacer.\n"
 "                            "
 
 #: templates/compliance/contribution/confirm_delete.html:37
@@ -6080,8 +6091,8 @@ msgid ""
 msgstr ""
 "\n"
 "                                Está a punto de eliminar permanentemente el "
-"registro de seguridad social para <strong>%(partner)s</strong> para el período "
-"<strong>%(period)s</strong>. Esta acción no se puede deshacer.\n"
+"registro de seguridad social para <strong>%(partner)s</strong> para el "
+"período <strong>%(period)s</strong>. Esta acción no se puede deshacer.\n"
 "                            "
 
 #: templates/compliance/social_security/detail.html:5
@@ -6178,8 +6189,8 @@ msgid ""
 msgstr ""
 "\n"
 "                                Está a punto de eliminar permanentemente el "
-"crédito para <strong>%(partner)s</strong> - <strong>%(product)s</strong> con monto "
-"<strong>S/ %(amount)s</strong>. Esta acción no se puede deshacer.\n"
+"crédito para <strong>%(partner)s</strong> - <strong>%(product)s</strong> con "
+"monto <strong>S/ %(amount)s</strong>. Esta acción no se puede deshacer.\n"
 "                            "
 
 #: templates/credits/credit/delete.html:41
@@ -6284,11 +6295,13 @@ msgid_plural ""
 "                                                    "
 msgstr[0] ""
 "\n"
-"                                                        Hace %(days)s día de retraso\n"
+"                                                        Hace %(days)s día de "
+"retraso\n"
 "                                                    "
 msgstr[1] ""
 "\n"
-"                                                        Hace %(days)s días de retraso\n"
+"                                                        Hace %(days)s días "
+"de retraso\n"
 "                                                    "
 
 #: templates/credits/credit/detail.html:306 templates/payments/detail.html:157
@@ -6529,7 +6542,9 @@ msgstr "Cantidad de Productos"
 
 #: templates/credits/product_type/delete.html:82
 msgid "This product type has associated products that will also be affected."
-msgstr "Este tipo de producto tiene productos asociados que también se verán afectados."
+msgstr ""
+"Este tipo de producto tiene productos asociados que también se verán "
+"afectados."
 
 #: templates/credits/product_type/detail.html:5
 msgid "Product Type Details"
@@ -6559,11 +6574,14 @@ msgstr "Nuevo Tipo de Producto"
 
 #: templates/credits/product_type/form.html:53
 msgid "A product type name is required and recommended to be unique."
-msgstr "Se requiere un nombre de tipo de producto y se recomienda que sea único."
+msgstr ""
+"Se requiere un nombre de tipo de producto y se recomienda que sea único."
 
 #: templates/credits/product_type/form.html:64
 msgid "Set a description for the product type for better visibility."
-msgstr "Establezca una descripción para el tipo de producto para una mejor visibilidad."
+msgstr ""
+"Establezca una descripción para el tipo de producto para una mejor "
+"visibilidad."
 
 #: templates/credits/product_type/form.html:92
 msgid "Set the product type status."
@@ -6899,8 +6917,8 @@ msgstr "Eliminar logo"
 msgid ""
 "Set the company logo. Only *.png, *.jpg and *.jpeg image files are accepted"
 msgstr ""
-"Establezca el logo de la empresa. Solo se aceptan archivos de "
-"imagen *.png, *.jpg y *.jpeg"
+"Establezca el logo de la empresa. Solo se aceptan archivos de imagen *.png, "
+"*.jpg y *.jpeg"
 
 #: templates/dashboard/index.html:13
 msgid "Last updated"
@@ -7123,8 +7141,8 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                        Está a punto de eliminar el socio "
-"<strong>%(name)s</strong>.\n"
+"                        Está a punto de eliminar el socio <strong>%(name)s</"
+"strong>.\n"
 "                        <br>Esta acción no se puede deshacer.\n"
 "                    "
 
@@ -7246,7 +7264,8 @@ msgid ""
 "This action cannot be undone. All data related to this payment will be "
 "permanently deleted."
 msgstr ""
-"Esta acción no se puede deshacer. Todos los datos relacionados con este pago se eliminarán de forma permanente."
+"Esta acción no se puede deshacer. Todos los datos relacionados con este pago "
+"se eliminarán de forma permanente."
 
 #: templates/payments/confirm_delete.html:54
 msgid "Payment to Delete"
@@ -7265,7 +7284,9 @@ msgid "Payment allocations"
 msgstr "Asignaciones de Pago"
 
 #: templates/payments/confirm_delete.html:135
-msgid "Historial de Pagos"
+#, fuzzy
+#| msgid "Payment History"
+msgid "Payment history"
 msgstr "Historial de Pagos"
 
 #: templates/payments/confirm_delete.html:141
@@ -7329,11 +7350,14 @@ msgstr "Asignar"
 msgid ""
 "This amount will be automatically updated when you select debt allocations"
 msgstr ""
-"Este monto se actualizará automáticamente cuando seleccione asignaciones de deuda"
+"Este monto se actualizará automáticamente cuando seleccione asignaciones de "
+"deuda"
 
 #: templates/payments/form.html:83 templates/payments/form.html:282
 msgid "Enter amount manually or select debts to auto-calculate"
-msgstr "Ingrese el monto manualmente o seleccione deudas para calcular automáticamente"
+msgstr ""
+"Ingrese el monto manualmente o seleccione deudas para calcular "
+"automáticamente"
 
 #: templates/payments/form.html:135 templates/payments/form.html:462
 msgid "Select a partner to view information"
@@ -7370,7 +7394,8 @@ msgstr "Totalmente asignado"
 #: templates/payments/form.html:288 templates/payments/form.html:294
 #: templates/payments/form.html:300
 msgid "Amount automatically calculated from selected allocations"
-msgstr "Monto calculado automáticamente a partir de las asignaciones seleccionadas"
+msgstr ""
+"Monto calculado automáticamente a partir de las asignaciones seleccionadas"
 
 #: templates/payments/form.html:291
 msgid "Over-allocated"
@@ -7771,7 +7796,8 @@ msgstr "Eliminar Comprobante de Pago"
 msgid ""
 "You are about to delete this payment receipt. This action cannot be undone."
 msgstr ""
-"Está a punto de eliminar este comprobante de pago. Esta acción no se puede ""deshacer."
+"Está a punto de eliminar este comprobante de pago. Esta acción no se puede "
+"deshacer."
 
 #: templates/payments/receipt/confirm_delete.html:42
 msgid "Receipt Details"
@@ -7871,7 +7897,8 @@ msgstr "entradas"
 msgid ""
 "This action cannot be undone. All related comments will also be deleted."
 msgstr ""
-"Esta acción no se puede deshacer. Todos los comentarios relacionados también se eliminarán."
+"Esta acción no se puede deshacer. Todos los comentarios relacionados también "
+"se eliminarán."
 
 #: templates/support/ticket/confirm_delete.html:39
 #: templates/support/ticket/detail.html:5
@@ -7970,8 +7997,8 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                Estás a punto de eliminar permanentemente el área "
-"<strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                                Estás a punto de eliminar permanentemente el "
+"área <strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
 "                            "
 
 #: templates/team/area/confirm_delete.html:59
@@ -8041,7 +8068,8 @@ msgstr "No se encontraron posiciones en esta área"
 
 #: templates/team/area/detail.html:164
 msgid "Add positions to this area to organize your team structure."
-msgstr "Agrega posiciones a esta área para organizar la estructura de tu equipo."
+msgstr ""
+"Agrega posiciones a esta área para organizar la estructura de tu equipo."
 
 #: templates/team/area/detail.html:187
 msgid "Employees in Area"
@@ -8120,17 +8148,15 @@ msgstr "Información de la Cuenta"
 #: templates/team/employee/confirm_delete.html:106
 msgid ""
 "Deleting this employee will remove all their information from the system."
-msgstr ""
-"Eliminar a este empleado eliminará toda su información del sistema."
-
+msgstr "Eliminar a este empleado eliminará toda su información del sistema."
 
 #: templates/team/employee/confirm_delete.html:107
 msgid ""
 "The associated user account will remain active but will no longer be linked "
 "to this employee record."
 msgstr ""
-"Esta cuenta de usuario permanecerá activa pero ya no estará vinculada "
-"a este registro de empleado."
+"Esta cuenta de usuario permanecerá activa pero ya no estará vinculada a este "
+"registro de empleado."
 
 #: templates/team/employee/detail.html:5
 msgid "Employee Details"
@@ -8306,7 +8332,8 @@ msgid ""
 "This action cannot be undone. All users assigned to this role will lose "
 "their permissions."
 msgstr ""
-"Esta acción no se puede deshacer. Todos los usuarios asignados a este rol ""perderán sus permisos."
+"Esta acción no se puede deshacer. Todos los usuarios asignados a este rol "
+"perderán sus permisos."
 
 #: templates/users/role/detail.html:6
 msgid "Role Details"
@@ -8354,7 +8381,8 @@ msgstr "Información del Rol"
 msgid ""
 "Enter a unique name for this role (e.g., Administrator, Manager, Employee)"
 msgstr ""
-"Ingresa un nombre único para este rol (por ejemplo, Administrador, Gerente, ""Empleado)"
+"Ingresa un nombre único para este rol (por ejemplo, Administrador, Gerente, "
+"Empleado)"
 
 #: templates/users/role/form.html:56 templates/users/user/form.html:155
 #: templates/users/user/roles.html:121
@@ -8531,8 +8559,8 @@ msgid ""
 "Select one or more roles to assign to this user. Users will inherit all "
 "permissions from their assigned roles."
 msgstr ""
-"Seleccione uno o más roles para asignar a este usuario. Los usuarios heredarán "
-"todos los permisos de sus roles asignados."
+"Seleccione uno o más roles para asignar a este usuario. Los usuarios "
+"heredarán todos los permisos de sus roles asignados."
 
 #: templates/users/user/form.html:153
 msgid "No roles available. Please create roles first."
@@ -8613,9 +8641,9 @@ msgid ""
 "Users can have multiple roles, and their effective permissions will be the "
 "combination of all permissions from their assigned roles."
 msgstr ""
-"Los roles son grupos de permisos que se pueden asignar a los usuarios. Cuando "
-"asignas un rol a un usuario, heredan todos los permisos de ese rol. Los "
-"usuarios pueden tener múltiples roles, y sus permisos efectivos serán la "
+"Los roles son grupos de permisos que se pueden asignar a los usuarios. "
+"Cuando asignas un rol a un usuario, heredan todos los permisos de ese rol. "
+"Los usuarios pueden tener múltiples roles, y sus permisos efectivos serán la "
 "combinación de todos los permisos de sus roles asignados."
 
 #: templates/users/user/roles.html:106
@@ -8633,6 +8661,15 @@ msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 #: templates/users/user/roles.html:137
 msgid "Save Roles"
 msgstr "Guardar Roles"
+
+#~ msgid "AI Agent"
+#~ msgstr "Agente de IA"
+
+#~ msgid "English"
+#~ msgstr "Inglés"
+
+#~ msgid "Historial de Pagos"
+#~ msgstr "Historial de Pagos"
 
 #, fuzzy
 #~| msgid "Account Settings"
