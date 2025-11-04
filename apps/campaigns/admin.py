@@ -10,6 +10,7 @@ class CampaignAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "status",
+        "channel",
         "target_amount",
         "execution_date",
         "is_processing",
@@ -19,6 +20,7 @@ class CampaignAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "status",
+        "channel",
         "is_processing",
         "use_payment_link",
         "created",
@@ -57,7 +59,7 @@ class CampaignAdmin(admin.ModelAdmin):
         (
             "Notification Configuration",
             {
-                "fields": ("use_payment_link",),
+                "fields": ("channel", "use_payment_link"),
             },
         ),
         (

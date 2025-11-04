@@ -43,8 +43,7 @@ class NotificationStatus(models.TextChoices):
 class NotificationChannel(models.TextChoices):
     """Channels for campaign notifications."""
 
-    EMAIL = "EMAIL", _("Email")
-    SMS = "SMS", _("SMS")
-    WHATSAPP = "WHATSAPP", _("WhatsApp")
     TELEGRAM = "TELEGRAM", _("Telegram")
-    PHONE_CALL = "PHONE_CALL", _("Phone Call")
+    WHATSAPP = "WHATSAPP", _("WhatsApp")
+    SMS = "SMS", _("SMS")
+    EMAIL = "EMAIL", _("Email")

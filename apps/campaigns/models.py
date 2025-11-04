@@ -122,6 +122,13 @@ class Campaign(
         default=False,
         help_text=_("Include payment link in campaign notifications."),
     )
+    channel = models.CharField(
+        _("Channel"),
+        max_length=20,
+        choices=choices.NotificationChannel.choices,
+        default=choices.NotificationChannel.TELEGRAM,
+        help_text=_("Communication channel for campaign notifications."),
+    )
 
     # Execution tracking fields
     is_processing = models.BooleanField(

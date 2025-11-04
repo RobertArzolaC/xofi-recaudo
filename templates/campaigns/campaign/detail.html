@@ -110,6 +110,29 @@
                                 -
                             {% endif %}
                         </div>
+
+                        <div class="fw-bold mt-5">{% trans "Channel" %}</div>
+                        <div class="text-gray-600">
+                            {% if campaign.channel == "WHATSAPP" %}
+                                <span class="badge badge-light-success">
+                                    <i class="fab fa-whatsapp"></i> {{ campaign.get_channel_display }}
+                                </span>
+                            {% elif campaign.channel == "TELEGRAM" %}
+                                <span class="badge badge-light-info">
+                                    <i class="fab fa-telegram"></i> {{ campaign.get_channel_display }}
+                                </span>
+                            {% elif campaign.channel == "EMAIL" %}
+                                <span class="badge badge-light-primary">
+                                    <i class="fas fa-envelope"></i> {{ campaign.get_channel_display }}
+                                </span>
+                            {% elif campaign.channel == "SMS" %}
+                                <span class="badge badge-light-warning">
+                                    <i class="fas fa-sms"></i> {{ campaign.get_channel_display }}
+                                </span>
+                            {% else %}
+                                {{ campaign.get_channel_display }}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

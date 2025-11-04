@@ -158,7 +158,7 @@ def process_campaign_notifications(campaign_id: int) -> dict:
                     campaign=campaign,
                     partner=partner,
                     notification_type=choices.NotificationType.SCHEDULED,
-                    channel=choices.NotificationChannel.TELEGRAM,
+                    channel=campaign.channel,
                     defaults={
                         "recipient_email": partner.email,
                         "recipient_phone": partner.phone,
@@ -360,12 +360,18 @@ def send_notification(self, notification_id: int) -> dict:
     notification.increment_attempt()
 
     # Determine which service to use based on notification channel
+    messaging_service = None
+    channel_name = notification.get_channel_display()
+
     if notification.channel == choices.NotificationChannel.TELEGRAM:
         messaging_service = telegram_service
-        channel_name = "Telegram"
     elif notification.channel == choices.NotificationChannel.WHATSAPP:
         messaging_service = whatsapp_service
-        channel_name = "WhatsApp"
+    elif notification.channel in [choices.NotificationChannel.EMAIL, choices.NotificationChannel.SMS]:
+        error_msg = f"Channel {channel_name} is not yet implemented"
+        logger.warning(error_msg)
+        notification.mark_as_failed(error_msg)
+        return {"success": False, "error": error_msg}
     else:
         error_msg = f"Unsupported notification channel: {notification.channel}"
         logger.error(error_msg)
@@ -373,7 +379,7 @@ def send_notification(self, notification_id: int) -> dict:
         return {"success": False, "error": error_msg}
 
     # Check if service is configured
-    if not messaging_service.is_configured():
+    if messaging_service and not messaging_service.is_configured():
         error_msg = f"{channel_name} service is not configured"
         logger.error(error_msg)
         notification.mark_as_failed(error_msg)

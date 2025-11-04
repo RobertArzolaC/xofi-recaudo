@@ -2,7 +2,7 @@ from dal import autocomplete
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns import models
+from apps.campaigns import choices, models
 
 
 class CampaignForm(forms.ModelForm):
@@ -19,6 +19,7 @@ class CampaignForm(forms.ModelForm):
             "target_amount",
             "average_cost",
             "use_payment_link",
+            "channel",
         ]
         widgets = {
             "name": forms.TextInput(
@@ -64,6 +65,9 @@ class CampaignForm(forms.ModelForm):
             "use_payment_link": forms.CheckboxInput(
                 attrs={"class": "form-check-input"}
             ),
+            "channel": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
+            ),
         }
         labels = {
             "name": _("Name"),
@@ -74,11 +78,21 @@ class CampaignForm(forms.ModelForm):
             "target_amount": _("Target Amount"),
             "average_cost": _("Average Cost"),
             "use_payment_link": _("Use Payment Link"),
+            "channel": _("Channel"),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["name"].required = True
+
+        # Restrict status choices to only DRAFT and SCHEDULED for create/update operations
+        self.fields["status"].choices = [
+            (choices.CampaignStatus.DRAFT, choices.CampaignStatus.DRAFT.label),
+            (
+                choices.CampaignStatus.SCHEDULED,
+                choices.CampaignStatus.SCHEDULED.label,
+            ),
+        ]
 
         # If we have an instance with a group, set the target_amount to the group's total debt
         if self.instance and self.instance.pk and self.instance.group:
