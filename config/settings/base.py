@@ -166,7 +166,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 LANGUAGES = (
     ("es", _("Spanish")),
-    ("en", _("English")),
+    # ("en", _("English")),
 )
 
 LOCALE_PATHS = [BASE_DIR / "locale/"]

@@ -4021,406 +4021,361 @@ msgstr "Ej: Pago de deudas pendientes - Enero 2025"
 
 #: apps/payments/forms.py:437
 msgid "Título del Magic Link"
-msgstr ""
+msgstr "Título del Magic Link"
 
 #: apps/payments/forms.py:438
 msgid "Se generará automáticamente si se deja vacío"
-msgstr ""
+msgstr "Se generará automáticamente si se deja vacío"
 
 #: apps/payments/forms.py:452
 msgid "Horas de Expiración"
-msgstr ""
+msgstr "Horas de Expiración"
 
 #: apps/payments/forms.py:453
 msgid "El link expirará en estas horas (máximo 7 días)"
-msgstr ""
+msgstr "El link expirará en estas horas (máximo 7 días)"
 
 #: apps/payments/forms.py:460
 msgid "Incluir deudas por vencer"
-msgstr ""
+msgstr "Incluir deudas por vencer"
 
 #: apps/payments/forms.py:461
 msgid "Además de las vencidas, incluir deudas próximas a vencer"
-msgstr ""
+msgstr "Además de las vencidas, incluir deudas próximas a vencer"
 
 #: apps/payments/forms.py:473 apps/payments/views.py:471
 #, python-format
 msgid "No se encontró un socio con el DNI %(document)s"
-msgstr ""
+msgstr "No se encontró un socio con el DNI %(document)s"
 
 #: apps/payments/mixins.py:69
 msgid "Allocated via payment form"
-msgstr ""
+msgstr "Asignado a través del formulario de pago"
 
 #: apps/payments/mixins.py:109
 msgid "You must be registered as a partner to access this page."
-msgstr ""
+msgstr "Debe estar registrado como socio para acceder a esta página."
 
 #: apps/payments/models.py:32 templates/payments/detail.html:55
-#, fuzzy
-#| msgid "Document number"
 msgid "Payment Number"
-msgstr "Número de documento"
+msgstr "Número de pago"
 
 #: apps/payments/models.py:34
 msgid "Unique payment identifier or number."
-msgstr ""
+msgstr "Identificador o número de pago único."
 
 #: apps/payments/models.py:38
 msgid "Date when the payment was actually made."
-msgstr ""
+msgstr "Fecha en que se realizó el pago."
 
 #: apps/payments/models.py:45
 msgid "Amount paid."
-msgstr ""
+msgstr "Monto pagado."
 
 #: apps/payments/models.py:52
 msgid "Method used for the payment."
-msgstr ""
+msgstr "Método utilizado para el pago."
 
 #: apps/payments/models.py:58
 msgid "Bank reference, check number, or transaction ID."
-msgstr ""
+msgstr "Referencia bancaria, número de cheque o ID de transacción."
 
 #: apps/payments/models.py:65
 msgid "Status of this payment."
-msgstr ""
+msgstr "Estado de este pago."
 
 #: apps/payments/models.py:70
-#, fuzzy
-#| msgid "Optional note about the status change."
 msgid "Additional notes about the payment."
-msgstr "Nota opcional sobre el cambio de estado."
+msgstr "Nota opcional sobre el pago."
 
 #: apps/payments/models.py:73 apps/payments/models.py:446
 msgid "Metadata"
-msgstr ""
+msgstr "Metadatos"
 
 #: apps/payments/models.py:76
 msgid "Additional data specific to the payment concept."
-msgstr ""
+msgstr "Datos adicionales específicos del concepto de pago."
 
 #: apps/payments/models.py:81
 msgid "Payment"
-msgstr ""
+msgstr "Pago"
 
 #: apps/payments/models.py:201
 msgid "Payment being allocated."
-msgstr ""
+msgstr "Pago que se está asignando."
 
 #: apps/payments/models.py:207
 msgid ""
 "Type of concept receiving the payment (Installment, Contribution, Penalty, "
 "etc.)."
 msgstr ""
+"Tipo de concepto que recibe el pago (Cuota, Contribución, Penalidad, etc.)."
 
 #: apps/payments/models.py:211
 msgid "ID of the concept receiving the payment."
-msgstr ""
+msgstr "ID del concepto que recibe el pago."
 
 #: apps/payments/models.py:215 templates/payments/detail.html:155
-#, fuzzy
-#| msgid "Account Type"
 msgid "Amount Applied"
-msgstr "Tipo de Cuenta"
+msgstr "Monto Aplicado"
 
 #: apps/payments/models.py:219
 msgid "Amount from the payment applied to this concept."
-msgstr ""
+msgstr "Monto del pago aplicado a este concepto."
 
 #: apps/payments/models.py:224
 msgid "Date when the payment was applied to this concept."
-msgstr ""
+msgstr "Fecha en que se aplicó el pago a este concepto."
 
 #: apps/payments/models.py:227
-#, fuzzy
-#| msgid "Account Type"
 msgid "Allocation Type"
-msgstr "Tipo de Cuenta"
+msgstr "Tipo de Asignación"
 
 #: apps/payments/models.py:231
 msgid "Type of allocation."
-msgstr ""
+msgstr "Tipo de asignación."
 
 #: apps/payments/models.py:236
-#, fuzzy
-#| msgid "Optional note about the status change."
 msgid "Additional notes about this payment allocation."
-msgstr "Nota opcional sobre el cambio de estado."
+msgstr "Nota opcional sobre la asignación de pago."
 
 #: apps/payments/models.py:241
 msgid "Payment Concept Allocation"
-msgstr ""
+msgstr "Asignación de Concepto de Pago"
 
 #: apps/payments/models.py:242
 msgid "Payment Concept Allocations"
-msgstr ""
+msgstr "Asignaciones de Concepto de Pago"
 
 #: apps/payments/models.py:257
 msgid "Cannot allocate more than the payment amount."
-msgstr ""
+msgstr "No se puede asignar más del monto del pago."
 
 #: apps/payments/models.py:274
 msgid "Partner who uploaded the receipt."
-msgstr ""
+msgstr "Socio que subió el recibo."
 
 #: apps/payments/models.py:277 templates/payments/receipt/detail.html:93
 msgid "Receipt File"
-msgstr ""
+msgstr "Archivo de Recibo"
 
 #: apps/payments/models.py:279
 msgid "Uploaded receipt file (PDF, JPG, PNG)."
-msgstr ""
+msgstr "Archivo de recibo subido (PDF, JPG, PNG)."
 
 #: apps/payments/models.py:286
 msgid "Amount shown on the receipt."
-msgstr ""
+msgstr "Monto mostrado en el recibo."
 
 #: apps/payments/models.py:290
 msgid "Date when the payment was made according to the receipt."
-msgstr ""
+msgstr "Fecha en que se realizó el pago según el recibo."
 
 #: apps/payments/models.py:293
-#, fuzzy
-#| msgid "Validating"
 msgid "Validation Status"
-msgstr "Validando"
+msgstr "Estado de Validación"
 
 #: apps/payments/models.py:297
 msgid "Validation status of the receipt."
-msgstr ""
+msgstr "Estado de validación del recibo."
 
 #: apps/payments/models.py:300 templates/payments/receipt/detail.html:151
-#, fuzzy
-#| msgid "Validating"
 msgid "Validation Notes"
-msgstr "Validando"
+msgstr "Notas de Validación"
 
 #: apps/payments/models.py:302
 msgid "Notes from the employee who validated the receipt."
-msgstr ""
+msgstr "Notas del empleado que validó el recibo."
 
 #: apps/payments/models.py:310
 msgid "Employee who validated this receipt."
-msgstr ""
+msgstr "Empleado que validó este recibo."
 
 #: apps/payments/models.py:313 templates/payments/receipt/detail.html:140
-#, fuzzy
-#| msgid "Validating"
 msgid "Validated At"
-msgstr "Validando"
+msgstr "Validado en"
 
 #: apps/payments/models.py:316
 msgid "Date and time when the receipt was validated."
-msgstr ""
+msgstr "Fecha y hora en que se validó el recibo."
 
 #: apps/payments/models.py:321
-#, fuzzy
-#| msgid "Optional note about the status change."
 msgid "Additional notes about the receipt."
-msgstr "Nota opcional sobre el cambio de estado."
+msgstr "Nota opcional sobre el recibo."
 
 #: apps/payments/models.py:325
 msgid "Payment Receipt"
-msgstr ""
+msgstr "Recibo de Pago"
 
 #: apps/payments/models.py:326 templates/includes/aside.html:256
 #: templates/payments/receipt/list.html:7
 #: templates/payments/receipt/list.html:8
 #: templates/payments/receipt/list.html:81
 msgid "Payment Receipts"
-msgstr ""
+msgstr "Recibos de Pago"
 
 #: apps/payments/models.py:405
 msgid "Partner for whom this link was created."
-msgstr ""
+msgstr "Socio para quien se creó este enlace."
 
 #: apps/payments/models.py:408 templates/payments/magic_link/detail.html:171
 msgid "Token"
-msgstr ""
+msgstr "Token"
 
 #: apps/payments/models.py:411
 msgid "Unique short token for the payment link URL."
-msgstr ""
+msgstr "Token corto único para la URL del enlace de pago."
 
 #: apps/payments/models.py:414 templates/compliance/contribution/detail.html:74
 #: templates/compliance/penalty/detail.html:76
 #: templates/compliance/social_security/detail.html:76
 #: templates/payments/magic_link/detail.html:57
 msgid "Total Amount"
-msgstr ""
+msgstr "Monto Total"
 
 #: apps/payments/models.py:418
 msgid "Total amount to be paid (sum of all included debts)."
-msgstr ""
+msgstr "Monto total a pagar (suma de todas las deudas incluidas)."
 
 #: apps/payments/models.py:421
 msgid "Expires At"
-msgstr ""
+msgstr "Expira en"
 
 #: apps/payments/models.py:422
 msgid "Date and time when this link expires."
-msgstr ""
+msgstr "Fecha y hora en que expira este enlace."
 
 #: apps/payments/models.py:429
-#, fuzzy
-#| msgid "Optional note about the status change."
 msgid "Status of the payment link."
-msgstr "Nota opcional sobre el cambio de estado."
+msgstr "Estado del enlace de pago."
 
 #: apps/payments/models.py:432 templates/payments/magic_link/detail.html:175
 msgid "Used At"
-msgstr ""
+msgstr "Utilizado en"
 
 #: apps/payments/models.py:435
 msgid "Date and time when this link was used for payment."
-msgstr ""
+msgstr "Fecha y hora en que se utilizó este enlace para el pago."
 
 #: apps/payments/models.py:443
-#, fuzzy
-#| msgid "Agency associated with this person"
 msgid "Payment associated with this link if used."
-msgstr "Agencia asociada con esta persona"
+msgstr "Pago asociado con este enlace si se utilizó."
 
 #: apps/payments/models.py:450
 msgid ""
 "Additional metadata including debt concepts: {'debts': [{'type': "
 "'installment', 'id': 123, 'amount': 387.00}, ...]}"
-msgstr ""
+msgstr "Metadatos adicionales que incluyen conceptos de deuda: {'deudas': [{'tipo': "
+"'cuota', 'id': 123, 'monto': 387.00}, ...]}"
 
 #: apps/payments/models.py:459
 msgid "Source or campaign that generated this link."
-msgstr ""
+msgstr "Fuente o campaña que generó este enlace."
 
 #: apps/payments/models.py:463
-#, fuzzy
-#| msgid "Patients"
 msgid "Magic Payment Link"
-msgstr "Pacientes"
+msgstr "Enlace de Pago Mágico"
 
 #: apps/payments/models.py:464 templates/payments/magic_link/list.html:5
 #: templates/payments/magic_link/list.html:6
-#, fuzzy
-#| msgid "Patients"
 msgid "Magic Payment Links"
-msgstr "Pacientes"
+msgstr "Enlaces de Pago Mágicos"
 
 #: apps/payments/serializers.py:32
-#, fuzzy
-#| msgid "Page not found"
 msgid "Payment not found."
-msgstr "Página no encontrada"
+msgstr "Pago no encontrado."
 
 #: apps/payments/serializers.py:39 apps/payments/serializers.py:69
 msgid "Amount must be greater than 0."
-msgstr ""
+msgstr "El monto debe ser mayor que 0."
 
 #: apps/payments/serializers.py:62
-#, fuzzy
-#| msgid "Page not found"
 msgid "Partner not found."
-msgstr "Página no encontrada"
+msgstr "Socio no encontrado."
 
 #: apps/payments/serializers.py:296
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: apps/payments/serializers.py:315
 msgid "Action to perform: approve or reject"
-msgstr ""
+msgstr "Acción a realizar: aprobar o rechazar"
 
 #: apps/payments/serializers.py:320
 msgid "Notes about the validation"
-msgstr ""
+msgstr "Notas sobre la validación"
 
 #: apps/payments/serializers.py:329
 msgid "Validation notes are required when rejecting a receipt."
-msgstr ""
+msgstr "Las notas de validación son obligatorias al rechazar un recibo."
 
 #: apps/payments/views.py:122
 msgid ""
 "Payment #{} has been created successfully with {} allocation(s) totaling ${}."
-msgstr ""
+msgstr "El pago #{} se ha creado con éxito con {} asignación(es) por un total de ${}."
 
 #: apps/payments/views.py:132
-#, fuzzy
-#| msgid "Account created successfully"
 msgid "Payment #{} has been created successfully."
-msgstr "Cuenta creada con éxito"
+msgstr "El pago #{} se ha creado con éxito."
 
 #: apps/payments/views.py:142 apps/payments/views.py:143
-#, fuzzy
-#| msgid "Create"
 msgid "Create Payment"
-msgstr "Crear"
+msgstr "Crear Pago"
 
 #: apps/payments/views.py:193
 msgid ""
 "Payment #{} has been updated successfully with {} allocation(s) totaling ${}."
 msgstr ""
+"El pago #{} se ha actualizado con éxito con {} asignación(es) por un total de ${}."
 
 #: apps/payments/views.py:205
-#, fuzzy
-#| msgid "Settings updated successfully"
 msgid "Payment #{} has been updated successfully."
-msgstr "Configuración actualizada con éxito"
+msgstr "El pago #{} se ha actualizado con éxito."
 
 #: apps/payments/views.py:215
 msgid "Edit Payment"
-msgstr ""
+msgstr "Editar Pago"
 
 #: apps/payments/views.py:216
-#, fuzzy
-#| msgid "Update"
 msgid "Update Payment"
-msgstr "Actualizar"
+msgstr "Actualizar Pago"
 
 #: apps/payments/views.py:239
-#, fuzzy
-#| msgid "Avatar has been successfully uploaded"
 msgid "Payment #{} has been deleted successfully."
-msgstr "El avatar se ha subido con éxito"
+msgstr "El pago #{} se ha eliminado con éxito."
 
 #: apps/payments/views.py:314
-#, fuzzy
-#| msgid "Account created successfully"
 msgid "Payment receipt has been created successfully."
-msgstr "Cuenta creada con éxito"
+msgstr "Recibo de pago creado con éxito."
 
 #: apps/payments/views.py:322
 msgid "New Payment Receipt"
-msgstr ""
+msgstr "Nuevo Recibo de Pago"
 
 #: apps/payments/views.py:323
 msgid "Save Receipt"
-msgstr ""
+msgstr "Guardar Recibo"
 
 #: apps/payments/views.py:353
-#, fuzzy
-#| msgid "Settings updated successfully"
 msgid "Payment receipt has been updated successfully."
-msgstr "Configuración actualizada con éxito"
+msgstr "El recibo de pago se ha actualizado con éxito."
 
 #: apps/payments/views.py:361
 msgid "Edit Payment Receipt"
-msgstr ""
+msgstr "Editar Recibo de Pago"
 
 #: apps/payments/views.py:362
-#, fuzzy
-#| msgid "Update"
 msgid "Update Receipt"
-msgstr "Actualizar"
+msgstr "Actualizar Recibo"
 
 #: apps/payments/views.py:385
-#, fuzzy
-#| msgid "Avatar has been successfully uploaded"
 msgid "Payment receipt has been deleted successfully."
-msgstr "El avatar se ha subido con éxito"
+msgstr "El recibo de pago se ha eliminado con éxito."
 
 #: apps/payments/views.py:437
 #, python-format
 msgid "El socio con DNI %(document)s no tiene deudas pendientes."
-msgstr ""
+msgstr "El socio con DNI %(document)s no tiene deudas pendientes."
 
 #: apps/payments/views.py:456
 #, python-format
@@ -4428,531 +4383,438 @@ msgid ""
 "Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
 "%(count)d deuda(s)"
 msgstr ""
+"Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
+"%(count)d deuda(s)"
 
 #: apps/payments/views.py:478
 #, python-format
 msgid "Error al crear el Magic Link: %(error)s"
-msgstr ""
+msgstr "Error al crear el Magic Link: %(error)s"
 
 #: apps/payments/views.py:558
 msgid "Link de pago no encontrado"
-msgstr ""
+msgstr "Link de pago no encontrado"
 
 #: apps/payments/views.py:570 templates/payments/magic_link/expired.html:157
 msgid "Link Expirado"
-msgstr ""
+msgstr "Link Expirado"
 
 #: apps/support/apps.py:8 templates/includes/aside.html:179
 msgid "Support"
-msgstr ""
+msgstr "Soporte"
 
 #: apps/support/choices.py:17
 msgid "Open"
-msgstr ""
+msgstr "Abierto"
 
 #: apps/support/choices.py:18
-#, fuzzy
-#| msgid "Is Processing"
 msgid "In Progress"
 msgstr "En proceso"
 
 #: apps/support/choices.py:19
 msgid "Waiting for Customer"
-msgstr ""
+msgstr "Esperando al Cliente"
 
 #: apps/support/choices.py:20
 msgid "Resolved"
-msgstr ""
+msgstr "Resuelto"
 
 #: apps/support/filtersets.py:18
-#, fuzzy
-#| msgid "Search by partner name, credit..."
 msgid "Search by subject, partner or ticket #..."
-msgstr "Buscar por nombre de socio, crédito..."
+msgstr "Buscar por asunto, socio o ticket #..."
 
 #: apps/support/filtersets.py:54
-#, fuzzy
-#| msgid "Create"
 msgid "Created After"
-msgstr "Crear"
+msgstr "Creado Después"
 
 #: apps/support/forms.py:29
-#, fuzzy
-#| msgid "Select partners..."
 msgid "Select partner..."
-msgstr "Seleccionar socios..."
+msgstr "Seleccionar socio..."
 
 #: apps/support/forms.py:35 apps/support/models.py:36
-#, fuzzy
-#| msgid "Description"
 msgid "Brief description of the issue"
-msgstr "Descripción"
+msgstr "Descripción breve del problema"
 
 #: apps/support/forms.py:42 apps/support/models.py:41
-#, fuzzy
-#| msgid "Optional description of the product"
 msgid "Detailed description of the issue"
-msgstr "Descripción opcional del producto"
+msgstr "Descripción detallada del problema"
 
 #: apps/support/forms.py:62
 msgid "Auto-assign or select employee..."
-msgstr ""
+msgstr "Auto-asignar o seleccionar empleado..."
 
 #: apps/support/forms.py:71
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "Auto-assign"
-msgstr "No se asignaron permisos"
+msgstr "Auto-asignar"
 
 #: apps/support/forms.py:92
 msgid "Add your comment here..."
-msgstr ""
+msgstr "Agrega tu comentario aquí..."
 
 #: apps/support/models.py:20
-#, fuzzy
-#| msgid "Partner who requested the credit"
 msgid "Partner who created the ticket"
 msgstr "Socio que solicitó el crédito"
 
 #: apps/support/models.py:29
-#, fuzzy
-#| msgid "Assigned To"
 msgid "Assigned to"
 msgstr "Asignado A"
 
 #: apps/support/models.py:30
-#, fuzzy
-#| msgid "Employee assigned to review this application"
 msgid "Employee assigned to handle this ticket"
 msgstr "Empleado asignado para revisar esta solicitud"
 
 #: apps/support/models.py:57 apps/support/models.py:151
 #: templates/support/ticket/detail.html:6
 msgid "Ticket"
-msgstr ""
+msgstr "Ticket"
 
 #: apps/support/models.py:58 templates/includes/aside.html:194
 msgid "Tickets"
-msgstr ""
+msgstr "Tickets"
 
 #: apps/support/models.py:155
-#, fuzzy
-#| msgid "Document type"
 msgid "Comment"
-msgstr "Tipo de documento"
+msgstr "Comentario"
 
 #: apps/support/models.py:155
-#, fuzzy
-#| msgid "Parent Account"
 msgid "Comment content"
-msgstr "Cuenta Principal"
+msgstr "Contenido del comentario"
 
 #: apps/support/models.py:160
-#, fuzzy
-#| msgid "Interest Rate"
 msgid "Internal Note"
-msgstr "Tasa de Interés"
+msgstr "Nota Interna"
 
 #: apps/support/models.py:161
 msgid "Internal notes are only visible to employees"
-msgstr ""
+msgstr "Las notas internas son visibles solo para los empleados"
 
 #: apps/support/models.py:165
-#, fuzzy
-#| msgid "Receipt Document"
 msgid "Ticket Comment"
-msgstr "Documento de Recibo"
+msgstr "Comentario del Ticket"
 
 #: apps/support/models.py:166
 msgid "Ticket Comments"
-msgstr ""
+msgstr "Comentarios del Ticket"
 
 #: apps/support/views.py:85 templates/support/ticket/form.html:127
 #: templates/support/ticket/list.html:166
-#, fuzzy
-#| msgid "Create"
 msgid "Create Ticket"
-msgstr "Crear"
+msgstr "Crear Ticket"
 
 #: apps/support/views.py:92
-#, fuzzy
-#| msgid "Credit created successfully."
 msgid "Ticket created successfully."
-msgstr "Crédito creado con éxito."
+msgstr "Ticket creado con éxito."
 
 #: apps/support/views.py:111
-#, fuzzy
-#| msgid "National Identity Document"
 msgid "Edit Ticket"
-msgstr "Documento Nacional de Identidad"
+msgstr "Editar Ticket"
 
 #: apps/support/views.py:118
-#, fuzzy
-#| msgid "Credit updated successfully."
 msgid "Ticket updated successfully."
-msgstr "Crédito actualizado con éxito."
+msgstr "Ticket actualizado con éxito."
 
 #: apps/support/views.py:133 templates/support/ticket/confirm_delete.html:86
-#, fuzzy
-#| msgid "Deleted!"
 msgid "Delete Ticket"
-msgstr "¡Eliminado!"
+msgstr "Eliminar Ticket"
 
 #: apps/support/views.py:138
-#, fuzzy
-#| msgid "Credit deleted successfully."
 msgid "Ticket deleted successfully."
-msgstr "Crédito eliminado con éxito."
+msgstr "Ticket eliminado con éxito."
 
 #: apps/support/views.py:157
-#, fuzzy
-#| msgid "Credit created successfully."
 msgid "Comment added successfully."
-msgstr "Crédito creado con éxito."
+msgstr "Comentario del Ticket creado con éxito."
 
 #: apps/support/views.py:159
 msgid "Error adding comment. Please try again."
-msgstr ""
+msgstr "Error al agregar comentario. Por favor, inténtalo de nuevo."
 
 #: apps/support/views.py:178
-#, fuzzy
-#| msgid "Settings updated successfully"
 msgid "Ticket status updated successfully."
-msgstr "Configuración actualizada con éxito"
+msgstr "Estado del Ticket actualizado con éxito."
 
 #: apps/support/views.py:180
 msgid "Error updating status. Please try again."
-msgstr ""
+msgstr "Error al actualizar el estado. Por favor, inténtalo de nuevo."
 
 #: apps/team/apps.py:8
 msgid "Team"
-msgstr ""
+msgstr "Equipo"
 
 #: apps/team/choices.py:14 templates/team/employee/confirm_delete.html:68
 #: templates/team/employee/detail.html:65 templates/team/employee/list.html:138
 msgid "On Leave"
-msgstr ""
+msgstr "De Licencia"
 
 #: apps/team/filtersets.py:61
 msgid "All areas"
-msgstr ""
+msgstr "Todas las áreas"
 
 #: apps/team/filtersets.py:62 apps/team/models.py:16
 #: templates/team/employee/detail.html:78 templates/team/employee/list.html:95
 #: templates/team/position/list.html:86
 msgid "Area"
-msgstr ""
+msgstr "Área"
 
 #: apps/team/filtersets.py:87
 msgid "Search by name, email or phone..."
-msgstr ""
+msgstr "Buscar por nombre, correo electrónico o teléfono..."
 
 #: apps/team/filtersets.py:97
-#, fuzzy
-#| msgid "Actions"
 msgid "All positions"
-msgstr "Acciones"
+msgstr "Todas las posiciones"
 
 #: apps/team/filtersets.py:98 apps/team/forms.py:198 apps/team/models.py:39
 #: templates/support/ticket/detail.html:236 templates/team/area/detail.html:197
 #: templates/team/employee/detail.html:75 templates/team/employee/list.html:94
-#, fuzzy
-#| msgid "Description"
 msgid "Position"
-msgstr "Descripción"
+msgstr "Posición"
 
 #: apps/team/forms.py:20
-#, fuzzy
-#| msgid "Enter your email address"
 msgid "Enter area name"
-msgstr "Ingrese su dirección de correo electrónico"
+msgstr "Ingrese el nombre del área"
 
 #: apps/team/forms.py:27
-#, fuzzy
-#| msgid "Description"
 msgid "Enter area description"
-msgstr "Descripción"
+msgstr "Ingrese la descripción del área"
 
 #: apps/team/forms.py:43
 msgid "Enter position name"
-msgstr ""
+msgstr "Ingrese el nombre de la posición"
 
 #: apps/team/forms.py:50
 msgid "Enter position description"
-msgstr ""
+msgstr "Ingrese la descripción de la posición"
 
 #: apps/team/forms.py:60
 msgid "Select the area for this position."
-msgstr ""
+msgstr "Seleccione el área para esta posición."
 
 #: apps/team/forms.py:92
-#, fuzzy
-#| msgid "Enter your email address"
 msgid "Enter email address"
 msgstr "Ingrese su dirección de correo electrónico"
 
 #: apps/team/forms.py:98
-#, fuzzy
-#| msgid "First name"
 msgid "Enter first name"
-msgstr "Nombre"
+msgstr "Ingrese el nombre"
 
 #: apps/team/forms.py:104
-#, fuzzy
-#| msgid "Paternal last name"
 msgid "Enter paternal last name"
-msgstr "Apellido paterno"
+msgstr "Ingrese el apellido paterno"
 
 #: apps/team/forms.py:110
-#, fuzzy
-#| msgid "Paternal last name"
 msgid "Enter maternal last name"
-msgstr "Apellido paterno"
+msgstr "Ingrese el apellido materno"
 
 #: apps/team/forms.py:117
-#, fuzzy
-#| msgid "Document number"
 msgid "Enter document number"
-msgstr "Número de documento"
+msgstr "Ingrese el número de documento"
 
 #: apps/team/forms.py:130
 msgid "Enter phone number"
-msgstr ""
+msgstr "Ingrese el número de teléfono"
 
 #: apps/team/forms.py:149
-#, fuzzy
-#| msgid "Enter your email address"
 msgid "Enter address"
-msgstr "Ingrese su dirección de correo electrónico"
+msgstr "Ingrese su dirección"
 
 #: apps/team/forms.py:155
-#, fuzzy
-#| msgid "Zip code"
 msgid "Enter zip code"
-msgstr "Código postal"
+msgstr "Ingrese el código postal"
 
 #: apps/team/forms.py:197 templates/customers/agency/detail.html:135
 #: templates/customers/company/detail.html:120
 #: templates/partners/applicant/detail.html:167
 #: templates/partners/partner/detail.html:159
 #: templates/team/employee/detail.html:138
-#, fuzzy
-#| msgid "Zip code"
 msgid "Zip Code"
 msgstr "Código postal"
 
 #: apps/team/forms.py:218
 msgid ""
 "Email address for the employee. A user account will be created automatically."
-msgstr ""
+msgstr "Dirección de correo electrónico para el empleado. Se creará una cuenta de usuario automáticamente."
+
 
 #: apps/team/forms.py:220
 msgid "Select the position for this employee."
-msgstr ""
+msgstr "Seleccione la posición para este empleado."
 
 #: apps/team/forms.py:221
 msgid "Current employment status."
-msgstr ""
+msgstr "Estado actual del empleo."
 
 #: apps/team/forms.py:250
 msgid "This email is already registered for another user account."
-msgstr ""
+msgstr "Este correo electrónico ya está registrado para otra cuenta de usuario."
 
 #: apps/team/forms.py:261
 msgid "This email is already registered for another employee."
-msgstr ""
+msgstr "Este correo electrónico ya está registrado para otro empleado."
 
 #: apps/team/models.py:17 apps/team/views.py:44
 #: templates/includes/aside.html:327 templates/team/area/list.html:5
 msgid "Areas"
-msgstr ""
+msgstr "Áreas"
 
 #: apps/team/models.py:33 apps/team/serializers.py:106
 msgid "Area this position belongs to."
-msgstr ""
+msgstr "Área a la que pertenece esta posición."
 
 #: apps/team/models.py:40 apps/team/views.py:164
 #: templates/includes/aside.html:344 templates/team/position/list.html:5
-#, fuzzy
-#| msgid "Actions"
 msgid "Positions"
-msgstr "Acciones"
+msgstr "Posiciones"
 
 #: apps/team/models.py:57 apps/team/serializers.py:177
 msgid "Position of the employee."
-msgstr ""
+msgstr "Posición del empleado."
 
 #: apps/team/models.py:64 apps/team/serializers.py:178
 msgid "Current status of the employee."
-msgstr ""
+msgstr "Estado actual del empleado."
 
 #: apps/team/models.py:69 templates/team/employee/list.html:93
 msgid "Employee"
-msgstr ""
+msgstr "Empleado"
 
 #: apps/team/models.py:70 apps/team/views.py:286
 #: templates/includes/aside.html:363 templates/team/area/detail.html:111
 #: templates/team/employee/list.html:5 templates/team/position/list.html:88
 msgid "Employees"
-msgstr ""
+msgstr "Empleados"
 
 #: apps/team/serializers.py:25
 msgid "Name of the area."
-msgstr ""
+msgstr "Nombre del área."
 
 #: apps/team/serializers.py:27
-#, fuzzy
-#| msgid "Description"
 msgid "Description of the area."
-msgstr "Descripción"
+msgstr "Descripción del área."
 
 #: apps/team/serializers.py:55
-#, fuzzy
-#| msgid "An account with this email already exists"
 msgid "An area with this name already exists."
-msgstr "Ya existe una cuenta con este correo electrónico."
+msgstr "Ya existe un área con este nombre."
 
 #: apps/team/serializers.py:101
 msgid "Name of the position."
-msgstr ""
+msgstr "Nombre de la posición."
 
 #: apps/team/serializers.py:103
 msgid "Description of the position."
-msgstr ""
+msgstr "Descripción de la posición."
 
 #: apps/team/serializers.py:166
 msgid "First name of the employee."
-msgstr ""
+msgstr "Nombre del empleado."
 
 #: apps/team/serializers.py:167
-#, fuzzy
-#| msgid "Paternal last name"
 msgid "Paternal last name."
-msgstr "Apellido paterno"
+msgstr "Apellido paterno."
 
 #: apps/team/serializers.py:168
-#, fuzzy
-#| msgid "Maternal last name"
 msgid "Maternal last name."
-msgstr "Apellido materno"
+msgstr "Apellido materno."
 
 #: apps/team/serializers.py:169
 msgid "Type of identification document."
-msgstr ""
+msgstr "Tipo de documento de identificación."
 
 #: apps/team/serializers.py:170
-#, fuzzy
-#| msgid "Document number"
 msgid "Document identification number."
-msgstr "Número de documento"
+msgstr "Número de documento."
 
 #: apps/team/serializers.py:171
 msgid "Gender of the employee."
-msgstr ""
+msgstr "Género del empleado."
 
 #: apps/team/serializers.py:172
 msgid "Date of birth."
-msgstr ""
+msgstr "Fecha de nacimiento."
 
 #: apps/team/serializers.py:173
-#, fuzzy
-#| msgid "Document number"
 msgid "Phone number."
-msgstr "Número de documento"
+msgstr "Número de teléfono."
 
 #: apps/team/serializers.py:174
-#, fuzzy
-#| msgid "email address"
 msgid "Email address."
-msgstr "dirección de correo electrónico"
+msgstr "Dirección de correo electrónico."
 
 #: apps/team/serializers.py:175
-#, fuzzy
-#| msgid "email address"
 msgid "Physical address."
-msgstr "dirección de correo electrónico"
+msgstr "Dirección física."
 
 #: apps/team/serializers.py:176
 msgid "Postal code."
-msgstr ""
+msgstr "Código postal."
 
 #: apps/team/serializers.py:204
-#, fuzzy
-#| msgid "An account with this email already exists"
 msgid "An employee with this document number already exists."
-msgstr "Ya existe una cuenta con este correo electrónico."
+msgstr "Ya existe un empleado con este número de documento."
 
 #: apps/team/serializers.py:232
-#, fuzzy
-#| msgid "An account with this email already exists"
 msgid "An employee with this email already exists."
-msgstr "Ya existe una cuenta con este correo electrónico."
+msgstr "Ya existe un empleado con este correo electrónico."
 
 #: apps/team/views.py:45
 msgid "Manage organizational areas"
-msgstr ""
+msgstr "Gestionar áreas organizacionales"
 
 #: apps/team/views.py:64
 #, python-brace-format
 msgid "Area: {name}"
-msgstr ""
+msgstr "Área: {name}"
 
 #: apps/team/views.py:65
 msgid "Area details and information"
-msgstr ""
+msgstr "Detalles e información del área"
 
 #: apps/team/views.py:85
-#, fuzzy
-#| msgid "Create"
 msgid "Create Area"
-msgstr "Crear"
+msgstr "Crear área"
 
 #: apps/team/views.py:86
 msgid "Add new organizational area"
-msgstr ""
+msgstr "Agregar nueva área organizacional"
 
 #: apps/team/views.py:110
 #, python-brace-format
 msgid "Edit Area: {name}"
-msgstr ""
+msgstr "Editar área: {name}"
 
 #: apps/team/views.py:111
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Update area information"
-msgstr "Información Personal"
+msgstr "Actualizar información del área"
 
 #: apps/team/views.py:135
 #, python-brace-format
 msgid "Delete Area: {name}"
-msgstr ""
+msgstr "Eliminar área: {name}"
 
 #: apps/team/views.py:136
 msgid "Confirm area deletion"
-msgstr ""
+msgstr "Confirmar eliminación del área"
 
 #: apps/team/views.py:165
 msgid "Manage organizational positions"
-msgstr ""
+msgstr "Gestionar posiciones organizacionales"
 
 #: apps/team/views.py:184
 #, python-brace-format
 msgid "Position: {name}"
-msgstr ""
+msgstr "Posición: {name}"
 
 #: apps/team/views.py:185
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Position details and information"
-msgstr "Información Personal"
+msgstr "Detalles e información de la posición"
 
 #: apps/team/views.py:204
 msgid "Create Position"
-msgstr ""
+msgstr "Crear posición"
 
 #: apps/team/views.py:205
 msgid "Add new organizational position"
-msgstr ""
+msgstr "Agregar nueva posición organizacional"
 
 #: apps/team/views.py:206 apps/team/views.py:337
 #: templates/customers/account/form.html:124
@@ -4963,13 +4825,11 @@ msgstr "Crear"
 #: apps/team/views.py:229
 #, python-brace-format
 msgid "Edit Position: {name}"
-msgstr ""
+msgstr "Editar posición: {name}"
 
 #: apps/team/views.py:230
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Update position information"
-msgstr "Información Personal"
+msgstr "Actualizar información de la posición"
 
 #: apps/team/views.py:231 apps/team/views.py:365
 #: templates/customers/account/form.html:125
@@ -4980,50 +4840,50 @@ msgstr "Actualizar"
 #: apps/team/views.py:254
 #, python-brace-format
 msgid "Delete Position: {name}"
-msgstr ""
+msgstr "Eliminar posición: {name}"
 
 #: apps/team/views.py:255
 msgid "Confirm position deletion"
-msgstr ""
+msgstr "Confirmar eliminación de la posición"
 
 #: apps/team/views.py:287
 msgid "Manage employees"
-msgstr ""
+msgstr "Gestionar empleados"
 
 #: apps/team/views.py:312
 #, python-brace-format
 msgid "Employee: {first_name} {last_name}"
-msgstr ""
+msgstr "Empleado: {first_name} {last_name}"
 
 #: apps/team/views.py:316
 msgid "Employee details and information"
-msgstr ""
+msgstr "Detalles e información del empleado"
 
 #: apps/team/views.py:335 templates/team/employee/form.html:266
 msgid "Create Employee"
-msgstr ""
+msgstr "Crear empleado"
 
 #: apps/team/views.py:336
 msgid "Add new employee"
-msgstr ""
+msgstr "Agregar nuevo empleado"
 
 #: apps/team/views.py:360
 #, python-brace-format
 msgid "Edit Employee: {first_name} {last_name}"
-msgstr ""
+msgstr "Editar empleado: {first_name} {last_name}"
 
 #: apps/team/views.py:364
 msgid "Update employee information"
-msgstr ""
+msgstr "Actualizar información del empleado"
 
 #: apps/team/views.py:388
 #, python-brace-format
 msgid "Delete Employee: {first_name} {last_name}"
-msgstr ""
+msgstr "Eliminar empleado: {first_name} {last_name}"
 
 #: apps/team/views.py:392
 msgid "Confirm employee deletion"
-msgstr ""
+msgstr "Confirmar eliminación del empleado"
 
 #: apps/users/api.py:24
 msgid "Invalid action"
@@ -5051,53 +4911,45 @@ msgstr "El correo electrónico de verificación se ha enviado con éxito"
 
 #: apps/users/filtersets.py:16
 msgid "Search by name or email"
-msgstr ""
+msgstr "Buscar por nombre o correo electrónico"
 
 #: apps/users/filtersets.py:22
 msgid "Filter by active/inactive users"
-msgstr ""
+msgstr "Filtrar por usuarios activos/inactivos"
 
 #: apps/users/filtersets.py:28 templates/users/role/list.html:59
 msgid "Role"
-msgstr ""
+msgstr "Rol"
 
 #: apps/users/filtersets.py:29
 msgid "Filter by assigned role"
-msgstr ""
+msgstr "Filtrar por rol asignado"
 
 #: apps/users/forms.py:37
-#, fuzzy
-#| msgid "Passport"
 msgid "Password"
-msgstr "Pasaporte"
+msgstr "Contraseña"
 
 #: apps/users/forms.py:41
-#, fuzzy
-#| msgid "Change Password"
 msgid "Enter password"
-msgstr "Cambiar Contraseña"
+msgstr "Introducir contraseña"
 
 #: apps/users/forms.py:46
-#, fuzzy
-#| msgid "Change Password"
 msgid "Confirm Password"
-msgstr "Cambiar Contraseña"
+msgstr "Confirmar Contraseña"
 
 #: apps/users/forms.py:50
-#, fuzzy
-#| msgid "Change Password"
 msgid "Confirm password"
-msgstr "Cambiar Contraseña"
+msgstr "Confirmar contraseña"
 
 #: apps/users/forms.py:58 apps/users/forms.py:126 apps/users/forms.py:180
 #: templates/includes/aside.html:441 templates/users/role/list.html:5
 #: templates/users/user/list.html:87
 msgid "Roles"
-msgstr ""
+msgstr "Roles"
 
 #: apps/users/forms.py:106
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Las contraseñas no coinciden"
 
 #: apps/users/forms.py:203 apps/users/forms.py:251
 #: templates/users/profile.html:138
@@ -5105,14 +4957,12 @@ msgid "Permissions"
 msgstr "Permisos"
 
 #: apps/users/forms.py:229
-#, fuzzy
-#| msgid "Project name."
 msgid "Role name"
-msgstr "Nombre del proyecto."
+msgstr "Nombre del rol."
 
 #: apps/users/managers.py:16
 msgid "The Email must be set"
-msgstr "El correo electrónico debe estar configurado"
+msgstr "El correo electrónico debe ser establecido"
 
 #: apps/users/managers.py:32
 msgid "Superuser must have is_staff=True."
@@ -5128,20 +4978,16 @@ msgstr "dirección de correo electrónico"
 
 #: apps/users/models.py:19
 msgid "Is partner"
-msgstr ""
+msgstr "Es socio"
 
 #: apps/users/models.py:20
-#, fuzzy
-#| msgid "Designates whether this entry is active"
 msgid "Designates whether the user is a partner."
-msgstr "Designa si esta entrada está activa"
+msgstr "Designa si el usuario es un socio."
 
 #: apps/users/models.py:42 templates/includes/aside.html:425
 #: templates/users/user/list.html:6
-#, fuzzy
-#| msgid "User"
 msgid "Users"
-msgstr "Usuario"
+msgstr "Usuarios"
 
 #: apps/users/views.py:34
 msgid "Profile"
@@ -5157,14 +5003,12 @@ msgstr "Configuración"
 
 #: apps/users/views.py:233 templates/users/user/detail.html:24
 msgid "Manage Roles"
-msgstr ""
+msgstr "Gestionar Roles"
 
 #: apps/users/views.py:282 apps/users/views.py:483
 #: templates/users/role/detail.html:25 templates/users/user/detail.html:32
-#, fuzzy
-#| msgid "Permissions"
 msgid "Manage Permissions"
-msgstr "Permisos"
+msgstr "Gestionar Permisos"
 
 #: config/settings/base.py:168
 msgid "Spanish"
@@ -5176,11 +5020,11 @@ msgstr "Inglés"
 
 #: config/settings/base.py:239
 msgid "Xofi Collections API"
-msgstr ""
+msgstr "API de Xofi Collections"
 
 #: config/settings/base.py:240
 msgid "API documentation for Xofi Collections"
-msgstr ""
+msgstr "Documentación de la API para Xofi Collections"
 
 #: config/settings/tools/django_constance.py:24
 msgid "Project name."
@@ -5195,10 +5039,8 @@ msgid "Website domain."
 msgstr "Dominio del sitio web."
 
 #: config/settings/tools/django_constance.py:27
-#, fuzzy
-#| msgid "Company logo"
 msgid "Company contact phone."
-msgstr "Logo de la empresa"
+msgstr "Teléfono de contacto de la empresa."
 
 #: config/settings/tools/django_constance.py:30
 msgid "Test json field"
@@ -5214,15 +5056,15 @@ msgstr "Habilitar la verificación de correo electrónico."
 
 #: config/settings/tools/django_constance.py:37
 msgid "Number of items to display per page in list views."
-msgstr ""
+msgstr "Número de elementos para mostrar por página en las vistas de lista."
 
 #: config/settings/tools/django_constance.py:51
 msgid "Day of the month for contribution payment (1-31)."
-msgstr ""
+msgstr "Día del mes para el pago de contribuciones (1-31)."
 
 #: config/settings/tools/django_constance.py:55
 msgid "Day of the month for social security payment (1-31)."
-msgstr ""
+msgstr "Día del mes para el pago de la seguridad social (1-31)."
 
 #: templates/account/account_inactive.html:7
 #: templates/account/account_inactive.html:17
@@ -5247,6 +5089,11 @@ msgid ""
 "%(email)s\">%(email)s</a> is an email address for user %(user_display)s.\n"
 "                        "
 msgstr ""
+"\n"
+"                            Por favor confirme que <a href=\"mailto:"
+"%(email)s\">%(email)s</a> es una dirección de correo electrónico para el ""usuario "
+"%(user_display)s.\n"
+"                        "
 
 #: templates/account/email_confirm.html:32
 msgid "After confirming your email, please follow these steps:"
@@ -5379,31 +5226,31 @@ msgstr "Verificar su dirección de correo electrónico"
 #: templates/users/user/form.html:16 templates/users/user/permissions.html:17
 #: templates/users/user/roles.html:16
 msgid "Back"
-msgstr ""
+msgstr "Volver"
 
 #: templates/campaigns/campaign/confirm_delete.html:27
 msgid "Are you sure you want to delete this campaign?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar esta campaña?"
 
 #: templates/campaigns/campaign/confirm_delete.html:39
 #: templates/campaigns/group/confirm_delete.html:39
 #: templates/credits/product/delete.html:81
 #: templates/credits/product_type/delete.html:80
 #: templates/users/role/confirm_delete.html:45
-#, fuzzy
-#| msgid "Morning"
 msgid "Warning"
-msgstr "Mañana"
+msgstr "Advertencia"
 
 #: templates/campaigns/campaign/confirm_delete.html:41
 msgid ""
 "This action cannot be undone. Deleting this campaign will also delete all "
 "associated groups."
 msgstr ""
+"Esta acción no se puede deshacer. Eliminar esta campaña también eliminará "
+"todos los grupos asociados."
 
 #: templates/campaigns/campaign/confirm_delete.html:49
 msgid "Campaign Name:"
-msgstr ""
+msgstr "Nombre de la campaña:"
 
 #: templates/campaigns/campaign/confirm_delete.html:53
 #: templates/campaigns/group/confirm_delete.html:53
@@ -5411,14 +5258,12 @@ msgstr ""
 #: templates/customers/agency/confirm_delete.html:46
 #: templates/team/area/confirm_delete.html:54
 #: templates/team/position/confirm_delete.html:58
-#, fuzzy
-#| msgid "Description"
 msgid "Description:"
 msgstr "Descripción"
 
 #: templates/campaigns/campaign/confirm_delete.html:58
 msgid "Group:"
-msgstr ""
+msgstr "Grupo:"
 
 #: templates/campaigns/campaign/confirm_delete.html:62
 #: templates/compliance/contribution/confirm_delete.html:53
@@ -5428,8 +5273,6 @@ msgstr ""
 #: templates/customers/agency/confirm_delete.html:51
 #: templates/partners/applicant/confirm_delete.html:49
 #: templates/team/employee/confirm_delete.html:61
-#, fuzzy
-#| msgid "Status"
 msgid "Status:"
 msgstr "Estado"
 
@@ -5485,10 +5328,8 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: templates/campaigns/campaign/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Campaign Details"
-msgstr "Detalles"
+msgstr "Detalles de la Campaña"
 
 #: templates/campaigns/campaign/detail.html:23
 #: templates/campaigns/group/detail.html:23
@@ -5513,56 +5354,48 @@ msgstr "Editar"
 
 #: templates/campaigns/campaign/detail.html:31
 msgid "Execute Campaign"
-msgstr ""
+msgstr "Ejecutar Campaña"
 
 #: templates/campaigns/campaign/detail.html:46
-#, fuzzy
-#| msgid "Account Information"
 msgid "Campaign Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de la Campaña"
 
 #: templates/campaigns/campaign/detail.html:90
 #: templates/campaigns/campaign/list.html:113
 #: templates/partners/partner/list.html:84
 msgid "partners"
-msgstr ""
+msgstr "socios"
 
 #: templates/campaigns/campaign/detail.html:123
-#, fuzzy
-#| msgid "Details"
 msgid "Campaign Statistics"
-msgstr "Detalles"
+msgstr "Estadísticas de la Campaña"
 
 #: templates/campaigns/campaign/detail.html:138
 msgid "Scheduled Execution"
-msgstr ""
+msgstr "Ejecución Programada"
 
 #: templates/campaigns/campaign/detail.html:143
 #: templates/campaigns/campaign/list.html:125
-#, fuzzy
-#| msgid "Not delivered"
 msgid "Not scheduled"
-msgstr "No entregado"
+msgstr "No programado"
 
 #: templates/campaigns/campaign/detail.html:161
 #: templates/campaigns/campaign/list.html:93 templates/includes/aside.html:240
 #: templates/payments/magic_link/detail.html:139
-#, fuzzy
-#| msgid "Patients"
 msgid "Payment Link"
-msgstr "Pacientes"
+msgstr "Enlace de Pago"
 
 #: templates/campaigns/campaign/detail.html:164
 msgid "Enabled"
-msgstr ""
+msgstr "Habilitado"
 
 #: templates/campaigns/campaign/detail.html:166
 msgid "Disabled"
-msgstr ""
+msgstr "Deshabilitado"
 
 #: templates/campaigns/campaign/detail.html:180
 msgid "Group Partners"
-msgstr ""
+msgstr "Socios del Grupo"
 
 #: templates/campaigns/campaign/detail.html:191
 #: templates/campaigns/campaign/list.html:94
@@ -5594,11 +5427,11 @@ msgstr "Acciones"
 #: templates/campaigns/campaign/detail.html:217
 #: templates/campaigns/group/detail.html:126
 msgid "No partners in this group"
-msgstr ""
+msgstr "No hay socios en este grupo"
 
 #: templates/campaigns/campaign/detail.html:241
 msgid "Executing..."
-msgstr ""
+msgstr "Ejecutando..."
 
 #: templates/campaigns/campaign/detail.html:258
 #, fuzzy
@@ -5611,73 +5444,71 @@ msgid "Task ID"
 msgstr ""
 
 #: templates/campaigns/campaign/detail.html:263
-#, fuzzy
-#| msgid "Details"
 msgid "Campaign ID"
-msgstr "Detalles"
+msgstr "ID de la Campaña"
 
 #: templates/campaigns/campaign/detail.html:265
 msgid ""
 "The campaign will be processed in the background. You can monitor its "
 "progress by refreshing this page."
 msgstr ""
+"La campaña se procesará en segundo plano. Puede monitorear su progreso "
+"actualizando esta página."
 
 #: templates/campaigns/campaign/detail.html:267
 msgid "Reload Page"
-msgstr ""
+msgstr "Actualizar Página"
 
 #: templates/campaigns/campaign/detail.html:269
 #: templates/campaigns/campaign/detail.html:290
 #: templates/campaigns/campaign/detail.html:306
 #: templates/partners/modals/document_detail_modal.html:140
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #: templates/campaigns/campaign/detail.html:283
 msgid "Execution Failed"
-msgstr ""
+msgstr "La ejecución falló"
 
 #: templates/campaigns/campaign/detail.html:285
 msgid "The campaign could not be executed:"
-msgstr ""
+msgstr "La campaña no pudo ser ejecutada:"
 
 #: templates/campaigns/campaign/detail.html:304
-#, fuzzy
-#| msgid "Error!"
 msgid "Error"
 msgstr "¡Error!"
 
 #: templates/campaigns/campaign/detail.html:305
 msgid "An unexpected error occurred while executing the campaign."
-msgstr ""
+msgstr "Ocurrió un error inesperado al ejecutar la campaña."
 
 #: templates/campaigns/campaign/form.html:70
 msgid "Select the group of partners for this campaign"
-msgstr ""
+msgstr "Seleccione el grupo de socios para esta campaña"
 
 #: templates/campaigns/campaign/form.html:81
 msgid "Date and time when the campaign notifications will be sent"
-msgstr ""
+msgstr "Fecha y hora en que se enviarán las notificaciones de la campaña"
 
 #: templates/campaigns/campaign/form.html:110
 msgid "Average cost per notification (optional)"
-msgstr ""
+msgstr "Costo promedio por notificación (opcional)"
 
 #: templates/campaigns/campaign/form.html:123
-#, fuzzy
-#| msgid "Details"
 msgid "Campaign Settings"
-msgstr "Detalles"
+msgstr "Configuración de la Campaña"
 
 #: templates/campaigns/campaign/form.html:138
 msgid ""
 "Include payment links in campaign notifications to allow partners to pay "
 "directly online"
 msgstr ""
+"Incluir enlaces de pago en las notificaciones de la campaña para permitir que "
+"los socios paguen directamente en línea"
 
 #: templates/campaigns/campaign/form.html:152
 msgid "How it works"
-msgstr ""
+msgstr "Cómo funciona"
 
 #: templates/campaigns/campaign/form.html:154
 msgid ""
@@ -5685,45 +5516,47 @@ msgid ""
 "at the scheduled execution date and time. Partners with outstanding debts "
 "will receive reminders with their debt details."
 msgstr ""
+"La campaña enviará notificaciones a todos los socios en el grupo ""seleccionado en la fecha y hora de ejecución programada. Los socios con "
+"deudas pendientes recibirán recordatorios con los detalles de su deuda."
 
 #: templates/campaigns/campaign/form.html:173
 msgid "Update Campaign"
-msgstr ""
+msgstr "Actualizar Campaña"
 
 #: templates/campaigns/campaign/form.html:195 templates/payments/form.html:347
 msgid "Loading..."
-msgstr ""
+msgstr "Cargando..."
 
 #: templates/campaigns/campaign/form.html:228
 msgid "Debt Summary"
-msgstr ""
+msgstr "Resumen de Deuda"
 
 #: templates/campaigns/campaign/form.html:230
 msgid "Credit Debt"
-msgstr ""
+msgstr "Deuda de Crédito"
 
 #: templates/campaigns/campaign/form.html:230
 msgid "installments"
-msgstr ""
+msgstr "cuotas"
 
 #: templates/campaigns/campaign/form.html:231
 #: templates/campaigns/campaign/form.html:232
 #: templates/campaigns/campaign/form.html:233
 msgid "records"
-msgstr ""
+msgstr "registros"
 
 #: templates/campaigns/campaign/form.html:235
 msgid "Total Partners with Debt"
-msgstr ""
+msgstr "Total de Socios con Deuda"
 
 #: templates/campaigns/campaign/list.html:6
 msgid "List Campaigns"
-msgstr ""
+msgstr "Listar Campañas"
 
 #: templates/campaigns/campaign/list.html:17
 #: templates/campaigns/campaign/list.html:210
 msgid "Add Campaign"
-msgstr ""
+msgstr "Agregar Campaña"
 
 #: templates/campaigns/campaign/list.html:29
 #: templates/campaigns/group/list.html:29
@@ -5741,10 +5574,8 @@ msgstr ""
 #: templates/support/ticket/list.html:14 templates/team/area/list.html:29
 #: templates/team/employee/list.html:29 templates/team/position/list.html:29
 #: templates/users/user/list.html:30
-#, fuzzy
-#| msgid "Filter"
 msgid "Filters"
-msgstr "Filtrar"
+msgstr "Filtros"
 
 #: templates/campaigns/campaign/list.html:59
 #: templates/campaigns/group/list.html:59
@@ -5763,7 +5594,7 @@ msgstr "Filtrar"
 #: templates/support/ticket/list.html:48 templates/team/area/list.html:51
 #: templates/team/employee/list.html:63 templates/team/position/list.html:55
 msgid "Filter"
-msgstr "Filtrar"
+msgstr "Filtros"
 
 #: templates/campaigns/campaign/list.html:66
 #: templates/campaigns/group/list.html:66
@@ -5781,40 +5612,36 @@ msgstr "Filtrar"
 #: templates/support/ticket/list.html:55 templates/team/area/list.html:58
 #: templates/team/employee/list.html:70 templates/team/position/list.html:62
 msgid "Clear"
-msgstr ""
+msgstr "Limpiar"
 
 #: templates/campaigns/campaign/list.html:79
 msgid "Campaigns List"
-msgstr ""
+msgstr "Lista de Campañas"
 
 #: templates/campaigns/campaign/list.html:80
 #: templates/campaigns/group/list.html:122
 msgid "campaigns"
-msgstr ""
+msgstr "campañas"
 
 #: templates/campaigns/campaign/list.html:207
-#, fuzzy
-#| msgid "No panels found"
 msgid "No campaigns found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron campañas"
 
 #: templates/campaigns/campaign/list.html:208
 msgid "Start by creating your first campaign"
-msgstr ""
+msgstr "Comience creando su primera campaña"
 
 #: templates/campaigns/group/bulk_add_partners.html:27
-#, fuzzy
-#| msgid "Document type"
 msgid "Upload Document File"
 msgstr "Tipo de documento"
 
 #: templates/campaigns/group/bulk_add_partners.html:28
 msgid "Upload a file with document numbers to add partners in bulk"
-msgstr ""
+msgstr "Suba un archivo con números de documento para agregar socios en masa"
 
 #: templates/campaigns/group/bulk_add_partners.html:51
 msgid "File Format"
-msgstr ""
+msgstr "Formato de Archivo"
 
 #: templates/campaigns/group/bulk_add_partners.html:52
 msgid ""
@@ -5822,160 +5649,143 @@ msgid ""
 "will search for partners with matching document numbers and add them to this "
 "group."
 msgstr ""
+"Suba un archivo .txt o .csv con un número de documento por línea. El sistema "
+"buscará socios con números de documento coincidentes y los agregará a este "
+"grupo."
 
 #: templates/campaigns/group/bulk_add_partners.html:63
-#, fuzzy
-#| msgid "Processing"
 msgid "Process File"
 msgstr "En proceso"
 
 #: templates/campaigns/group/bulk_add_partners.html:73
 msgid "Example File Format"
-msgstr ""
+msgstr "Formato de Archivo de Ejemplo"
 
 #: templates/campaigns/group/bulk_add_partners.html:77
 msgid "Text file (.txt):"
-msgstr ""
+msgstr "Archivo de texto (.txt):"
 
 #: templates/campaigns/group/bulk_add_partners.html:87
 msgid "CSV file (.csv):"
-msgstr ""
+msgstr "Archivo CSV (.csv):"
 
 #: templates/campaigns/group/bulk_add_partners.html:102
-#, fuzzy
-#| msgid "Processing"
 msgid "Processing Results"
 msgstr "En proceso"
 
 #: templates/campaigns/group/bulk_add_partners.html:118
 msgid "Total documents in file"
-msgstr ""
+msgstr "Total de documentos en el archivo"
 
 #: templates/campaigns/group/bulk_add_partners.html:133
-#, fuzzy
-#| msgid "Successfully verified account."
 msgid "Successfully added"
-msgstr "Cuenta verificada con éxito."
+msgstr "Agregado con éxito."
 
 #: templates/campaigns/group/bulk_add_partners.html:149
 msgid "Already in group"
-msgstr ""
+msgstr "Ya está en el grupo."
 
 #: templates/campaigns/group/bulk_add_partners.html:164
-#, fuzzy
-#| msgid "Page not found"
 msgid "Not found"
-msgstr "Página no encontrada"
+msgstr "No encontrado"
 
 #: templates/campaigns/group/bulk_add_partners.html:180
 msgid "Added Partners"
-msgstr ""
+msgstr "Socios Agregados"
 
 #: templates/campaigns/group/bulk_add_partners.html:212
 msgid "Already in Group"
-msgstr ""
+msgstr "Ya está en el Grupo"
 
 #: templates/campaigns/group/bulk_add_partners.html:230
-#, fuzzy
-#| msgid "Document type"
 msgid "Documents Not Found"
-msgstr "Tipo de documento"
+msgstr "Documentos No Encontrados"
 
 #: templates/campaigns/group/bulk_add_partners.html:234
 msgid ""
 "The following document numbers were not found in the system. Please verify "
 "the document numbers or ensure the partners are registered."
 msgstr ""
+"Los siguientes números de documento no se encontraron en el sistema. Por favor "
+"verifique los números de documento o asegúrese de que los socios estén ""registrados."
 
 #: templates/campaigns/group/confirm_delete.html:27
 msgid "Are you sure you want to delete this group?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar este grupo?"
 
 #: templates/campaigns/group/confirm_delete.html:41
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Esta acción no se puede deshacer."
 
 #: templates/campaigns/group/confirm_delete.html:49
-#, fuzzy
-#| msgid "Full Name"
 msgid "Group Name:"
-msgstr "Nombre Completo"
+msgstr "Nombre del Grupo"
 
 #: templates/campaigns/group/confirm_delete.html:57
 msgid "Priority:"
-msgstr ""
+msgstr "Prioridad:"
 
 #: templates/campaigns/group/confirm_delete.html:60
 msgid "Partners:"
-msgstr ""
+msgstr "Socios:"
 
 #: templates/campaigns/group/confirm_delete.html:63
 msgid "Used in Campaigns:"
-msgstr ""
+msgstr "Usado en Campañas:"
 
 #: templates/campaigns/group/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Group Details"
-msgstr "Detalles"
+msgstr "Detalles del Grupo"
 
 #: templates/campaigns/group/detail.html:37
-#, fuzzy
-#| msgid "Account Information"
 msgid "Group Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Grupo"
 
 #: templates/campaigns/group/detail.html:63
 msgid "Total Partners"
-msgstr ""
+msgstr "Total de Socios"
 
 #: templates/campaigns/group/detail.html:66
 #: templates/campaigns/group/list.html:92
 msgid "Used in Campaigns"
-msgstr ""
+msgstr "Usado en Campañas"
 
 #: templates/campaigns/group/detail.html:67
 msgid "campaign(s)"
-msgstr ""
+msgstr "campaña(s)"
 
 #: templates/campaigns/group/form.html:69
 msgid "Select the partners to include in this group"
-msgstr ""
+msgstr "Seleccione los socios para incluir en este grupo"
 
 #: templates/campaigns/group/form.html:82
-#, fuzzy
-#| msgid "Update"
 msgid "Update Group"
-msgstr "Actualizar"
+msgstr "Actualizar Grupo"
 
 #: templates/campaigns/group/list.html:6
 msgid "List Groups"
-msgstr ""
+msgstr "Listar Grupos"
 
 #: templates/campaigns/group/list.html:17
 #: templates/campaigns/group/list.html:168
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add Group"
-msgstr "Agregar Cuenta"
+msgstr "Agregar Grupo"
 
 #: templates/campaigns/group/list.html:79
 msgid "Groups List"
-msgstr ""
+msgstr "Lista de Grupos"
 
 #: templates/campaigns/group/list.html:80
 msgid "groups"
-msgstr ""
+msgstr "grupos"
 
 #: templates/campaigns/group/list.html:165
-#, fuzzy
-#| msgid "No panels found"
 msgid "No groups found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron grupos."
 
 #: templates/campaigns/group/list.html:166
 msgid "Start by creating your first group"
-msgstr ""
+msgstr "Comience creando su primer grupo."
 
 #: templates/compliance/contribution/confirm_delete.html:14
 #: templates/compliance/penalty/confirm_delete.html:14
@@ -5990,14 +5800,12 @@ msgstr ""
 #: templates/team/area/confirm_delete.html:26
 #: templates/team/employee/confirm_delete.html:26
 #: templates/team/position/confirm_delete.html:26
-#, fuzzy
-#| msgid "Confirm"
 msgid "Confirm Deletion"
-msgstr "Confirmar"
+msgstr "Confirmar Eliminación"
 
 #: templates/compliance/contribution/confirm_delete.html:24
 msgid "Are you sure you want to delete this contribution?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar esta contribución?"
 
 #: templates/compliance/contribution/confirm_delete.html:27
 #, python-format
@@ -6008,41 +5816,44 @@ msgid ""
 "strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente la "
+"contribución para <strong>%(partner)s</strong> para el período <strong>%(period)s</"
+"strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/compliance/contribution/confirm_delete.html:37
 #: templates/compliance/penalty/confirm_delete.html:37
 #: templates/compliance/social_security/confirm_delete.html:37
 #: templates/credits/credit/delete.html:37
 msgid "Partner:"
-msgstr ""
+msgstr "Socio:"
 
 #: templates/compliance/contribution/confirm_delete.html:41
 #: templates/compliance/social_security/confirm_delete.html:41
 msgid "Period:"
-msgstr ""
+msgstr "Período:"
 
 #: templates/compliance/contribution/confirm_delete.html:45
 #: templates/compliance/penalty/confirm_delete.html:45
 #: templates/compliance/social_security/confirm_delete.html:45
 #: templates/credits/credit/delete.html:45
-#, fuzzy
-#| msgid "Account"
 msgid "Amount:"
-msgstr "Cuenta"
+msgstr "Monto:"
 
 #: templates/compliance/contribution/confirm_delete.html:49
 #: templates/compliance/penalty/confirm_delete.html:53
 #: templates/compliance/social_security/confirm_delete.html:49
 msgid "Due Date:"
-msgstr ""
+msgstr "Fecha de Vencimiento:"
 
 #: templates/compliance/contribution/confirm_delete.html:58
 msgid "Payment Date:"
-msgstr ""
+msgstr "Fecha de Pago:"
 
 #: templates/compliance/contribution/confirm_delete.html:64
 msgid "Reference:"
-msgstr ""
+msgstr "Referencia:"
 
 #: templates/compliance/contribution/confirm_delete.html:83
 #: templates/compliance/penalty/confirm_delete.html:86
@@ -6054,67 +5865,63 @@ msgstr ""
 #: templates/team/employee/confirm_delete.html:123
 #: templates/team/position/confirm_delete.html:102
 #: templates/users/role/confirm_delete.html:60
-#, fuzzy
-#| msgid "Yes, delete it!"
 msgid "Yes, Delete"
 msgstr "¡Sí, elimínalo!"
 
 #: templates/compliance/contribution/detail.html:5
 msgid "Contribution Details"
-msgstr ""
+msgstr "Detalles de la Contribución"
 
 #: templates/compliance/contribution/detail.html:6
 msgid "Detail Contribution"
-msgstr ""
+msgstr "Detalle de la Contribución"
 
 #: templates/compliance/contribution/detail.html:37
 msgid "Contribution Summary"
-msgstr ""
+msgstr "Resumen de la Contribución"
 
 #: templates/compliance/contribution/detail.html:65
 #: templates/compliance/penalty/detail.html:67
 #: templates/compliance/social_security/detail.html:67
 #: templates/payments/detail.html:252
 msgid "Payment Summary"
-msgstr ""
+msgstr "Resumen de Pagos"
 
 #: templates/compliance/contribution/detail.html:77
 #: templates/compliance/penalty/detail.html:79
 #: templates/compliance/social_security/detail.html:79
 msgid "Total Paid"
-msgstr ""
+msgstr "Total Pagado"
 
 #: templates/compliance/contribution/detail.html:80
 #: templates/compliance/penalty/detail.html:82
 #: templates/compliance/social_security/detail.html:82
 msgid "Remaining Balance"
-msgstr ""
+msgstr "Saldo Restante:"
 
 #: templates/compliance/contribution/detail.html:84
 #: templates/compliance/penalty/detail.html:86
 #: templates/compliance/social_security/detail.html:86
 msgid "Days Overdue"
-msgstr ""
+msgstr "Días de Retraso"
 
 #: templates/compliance/contribution/detail.html:85
 #: templates/compliance/penalty/detail.html:87
 #: templates/compliance/social_security/detail.html:87
 #: templates/credits/credit/change_status.html:57
 msgid "days"
-msgstr ""
+msgstr "días"
 
 #: templates/compliance/contribution/detail.html:98
-#, fuzzy
-#| msgid "Account Information"
 msgid "Contribution Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de la Contribución"
 
 #: templates/compliance/contribution/detail.html:114
 #: templates/compliance/contribution/list.html:79
 #: templates/compliance/social_security/detail.html:116
 #: templates/compliance/social_security/list.html:79
 msgid "Period"
-msgstr ""
+msgstr "Período:"
 
 #: templates/compliance/contribution/detail.html:142
 #: templates/compliance/penalty/detail.html:148
@@ -6138,33 +5945,25 @@ msgstr ""
 #: templates/support/ticket/confirm_delete.html:60
 #: templates/support/ticket/detail.html:258
 #: templates/support/ticket/list.html:83 templates/team/area/list.html:83
-#, fuzzy
-#| msgid "Create"
 msgid "Created"
-msgstr "Crear"
+msgstr "Creado"
 
 #: templates/compliance/contribution/detail.html:146
 #: templates/compliance/penalty/detail.html:152
 #: templates/compliance/social_security/detail.html:148
-#, fuzzy
-#| msgid "Verified"
 msgid "Modified"
-msgstr "Verificado"
+msgstr "Modificado"
 
 #: templates/compliance/contribution/form.html:32
 #: templates/compliance/social_security/form.html:32
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Partner and Period Information"
-msgstr "Información Personal"
+msgstr "Información de la Contribución"
 
 #: templates/compliance/contribution/form.html:120
 #: templates/compliance/penalty/form.html:127
 #: templates/compliance/social_security/form.html:124
-#, fuzzy
-#| msgid "Validating"
 msgid "Validation Error"
-msgstr "Validando"
+msgstr "Error de Validación"
 
 #: templates/compliance/contribution/form.html:140
 #: templates/compliance/penalty/form.html:147
@@ -6179,35 +5978,33 @@ msgstr "Guardar Cambios"
 #: templates/compliance/contribution/list.html:6
 #: templates/compliance/contribution/list.html:68
 msgid "List Contribution"
-msgstr ""
+msgstr "Listar Contribución"
 
 #: templates/compliance/contribution/list.html:69
-#, fuzzy
-#| msgid "Collection Instructions"
 msgid "contributions"
-msgstr "Instrucciones de colección"
+msgstr "contribuciones"
 
 #: templates/compliance/contribution/list.html:124
 #: templates/compliance/penalty/list.html:124
 #: templates/compliance/social_security/list.html:124
 msgid "days overdue"
-msgstr ""
+msgstr "días de retraso"
 
 #: templates/compliance/contribution/list.html:163
 msgid "No contributions found"
-msgstr ""
+msgstr "No se encontraron contribuciones"
 
 #: templates/compliance/contribution/list.html:166
 msgid "Start by creating your first contribution"
-msgstr ""
+msgstr "Comienza creando tu primera contribución"
 
 #: templates/compliance/contribution/list.html:167
 msgid "Add Contribution"
-msgstr ""
+msgstr "Agregar Contribución"
 
 #: templates/compliance/penalty/confirm_delete.html:24
 msgid "Are you sure you want to delete this penalty?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar esta penalización?"
 
 #: templates/compliance/penalty/confirm_delete.html:27
 #, python-format
@@ -6218,60 +6015,59 @@ msgid ""
 "strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente la "
+"penalización para <strong>%(partner)s</strong> - <strong>%(penalty_type)s</"
+"strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/compliance/penalty/confirm_delete.html:41
 msgid "Penalty Type:"
-msgstr ""
+msgstr "Tipo de Penalización:"
 
 #: templates/compliance/penalty/confirm_delete.html:49
 msgid "Issue Date:"
-msgstr ""
+msgstr "Fecha de Emisión:"
 
 #: templates/compliance/penalty/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Penalty Details"
-msgstr "Detalles"
+msgstr "Detalles de la Penalización"
 
 #: templates/compliance/penalty/detail.html:37
 msgid "Penalty Summary"
-msgstr ""
+msgstr "Resumen de la Penalización"
 
 #: templates/compliance/penalty/form.html:32
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Partner and Penalty Information"
-msgstr "Información Personal"
+msgstr "Información de la Penalización"
 
 #: templates/compliance/penalty/list.html:6
 msgid "List Penalty"
-msgstr ""
+msgstr "Listar Penalización"
 
 #: templates/compliance/penalty/list.html:68
 msgid "Penalties List"
-msgstr ""
+msgstr "Lista de Penalizaciones"
 
 #: templates/compliance/penalty/list.html:69
 msgid "penalties"
-msgstr ""
+msgstr "penalizaciones"
 
 #: templates/compliance/penalty/list.html:163
-#, fuzzy
-#| msgid "No panels found"
 msgid "No penalties found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron penalizaciones"
 
 #: templates/compliance/penalty/list.html:165
 msgid "Start by creating your first penalty"
-msgstr ""
+msgstr "Comienza creando tu primera penalización"
 
 #: templates/compliance/penalty/list.html:166
 msgid "Add Penalty"
-msgstr ""
+msgstr "Agregar Penalización"
 
 #: templates/compliance/social_security/confirm_delete.html:24
 msgid "Are you sure you want to delete this social security record?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar este registro de seguridad social?"
 
 #: templates/compliance/social_security/confirm_delete.html:27
 #, python-format
@@ -6282,97 +6078,94 @@ msgid ""
 "<strong>%(period)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente el "
+"registro de seguridad social para <strong>%(partner)s</strong> para el período "
+"<strong>%(period)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/compliance/social_security/detail.html:5
 msgid "Social Security Details"
-msgstr ""
+msgstr "Detalles de la Seguridad Social"
 
 #: templates/compliance/social_security/detail.html:37
 msgid "Social Security Summary"
-msgstr ""
+msgstr "Resumen de la Seguridad Social"
 
 #: templates/compliance/social_security/detail.html:100
-#, fuzzy
-#| msgid "Account Information"
 msgid "Social Security Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de la Seguridad Social"
 
 #: templates/compliance/social_security/list.html:6
 #: templates/compliance/social_security/list.html:68
 msgid "List Security Social"
-msgstr ""
+msgstr "Listar Seguridad Social"
 
 #: templates/compliance/social_security/list.html:69
 msgid "social security records"
-msgstr ""
+msgstr "registros de seguridad social"
 
 #: templates/compliance/social_security/list.html:163
 msgid "No social security records found"
-msgstr ""
+msgstr "No se encontraron registros de seguridad social"
 
 #: templates/compliance/social_security/list.html:166
 msgid "Start by creating your first social security record"
-msgstr ""
+msgstr "Comienza creando tu primer registro de seguridad social"
 
 #: templates/compliance/social_security/list.html:167
 msgid "Add Social Security"
-msgstr ""
+msgstr "Agregar Seguridad Social"
 
 #: templates/credits/credit/change_status.html:7
 msgid "Change Credit Status"
-msgstr ""
+msgstr "Cambiar Estado del Crédito"
 
 #: templates/credits/credit/change_status.html:8
 #: templates/credits/credit/change_status.html:97
 #: templates/credits/credit/change_status.html:133
 #: templates/credits/credit/detail.html:24
-#, fuzzy
-#| msgid "Change avatar"
 msgid "Change Status"
-msgstr "Cambiar avatar"
+msgstr "Cambiar Estado"
 
 #: templates/credits/credit/change_status.html:30
-#, fuzzy
-#| msgid "Previous Status"
 msgid "Current Status"
-msgstr "Estado anterior"
+msgstr "Estado Actual"
 
 #: templates/credits/credit/change_status.html:55
 msgid "In this status for"
-msgstr ""
+msgstr "En este estado durante"
 
 #: templates/credits/credit/change_status.html:60
 msgid "hours"
-msgstr ""
+msgstr "horas"
 
 #: templates/credits/credit/change_status.html:62
 msgid "Less than an hour"
-msgstr ""
+msgstr "Menos de una hora"
 
 #: templates/credits/credit/change_status.html:84
 msgid "Outstanding"
-msgstr ""
+msgstr "Pendiente"
 
 #: templates/credits/credit/change_status.html:167
 msgid "Initial status"
-msgstr ""
+msgstr "Estado inicial"
 
 #: templates/credits/credit/change_status.html:174
 #: templates/payments/receipt/detail.html:162
 #: templates/payments/receipt/detail.html:171 templates/team/area/list.html:108
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: templates/credits/credit/delete.html:5
 #: templates/credits/credit/delete.html:6
-#, fuzzy
-#| msgid "Deleted!"
 msgid "Delete Credit"
-msgstr "¡Eliminado!"
+msgstr "Eliminar Crédito"
 
 #: templates/credits/credit/delete.html:24
 msgid "Are you sure you want to delete this credit?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar este crédito?"
 
 #: templates/credits/credit/delete.html:27
 #, python-format
@@ -6383,51 +6176,50 @@ msgid ""
 "amount <strong>S/ %(amount)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente el "
+"crédito para <strong>%(partner)s</strong> - <strong>%(product)s</strong> con monto "
+"<strong>S/ %(amount)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/credits/credit/delete.html:41
 msgid "Product:"
-msgstr ""
+msgstr "Producto:"
 
 #: templates/credits/credit/delete.html:49
 msgid "Interest Rate:"
-msgstr ""
+msgstr "Tasa de Interés:"
 
 #: templates/credits/credit/delete.html:53
 msgid "Term Duration:"
-msgstr ""
+msgstr "Duración del Plazo:"
 
 #: templates/credits/credit/delete.html:54
 #: templates/credits/credit/detail.html:151
 #: templates/credits/product/detail.html:129
 #: templates/credits/product/detail.html:133
 msgid "months"
-msgstr ""
+msgstr "meses"
 
 #: templates/credits/credit/delete.html:61
 msgid "Outstanding Balance:"
-msgstr ""
+msgstr "Saldo Pendiente:"
 
 #: templates/credits/credit/delete.html:65
 msgid "Application Date:"
-msgstr ""
+msgstr "Fecha de Solicitud:"
 
 #: templates/credits/credit/detail.html:47
-#, fuzzy
-#| msgid "Account Information"
 msgid "Credit Information"
 msgstr "Información de la Cuenta"
 
 #: templates/credits/credit/detail.html:83
-#, fuzzy
-#| msgid "National Identity Document"
 msgid "Partner Document"
 msgstr "Documento Nacional de Identidad"
 
 #: templates/credits/credit/detail.html:106
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Dates Information"
-msgstr "Información Personal"
+msgstr "Información de Fechas"
 
 #: templates/credits/credit/detail.html:118
 #: templates/credits/product/detail.html:165
@@ -6439,46 +6231,44 @@ msgstr "Información Personal"
 #: templates/partners/partner/detail.html:185
 #: templates/payments/receipt/detail.html:167
 #: templates/support/ticket/detail.html:262
-#, fuzzy
-#| msgid "Last updated"
 msgid "Last Modified"
 msgstr "Última actualización"
 
 #: templates/credits/credit/detail.html:134
 msgid "Credit Terms"
-msgstr ""
+msgstr "Términos del Crédito"
 
 #: templates/credits/credit/detail.html:177
 msgid "Financial Summary"
-msgstr ""
+msgstr "Resumen Financiero"
 
 #: templates/credits/credit/detail.html:185
 msgid "Original Amount"
-msgstr ""
+msgstr "Monto Original"
 
 #: templates/credits/credit/detail.html:193
 msgid "Total Interest"
-msgstr ""
+msgstr "Total de Intereses"
 
 #: templates/credits/credit/detail.html:197
 msgid "Total Repayment"
-msgstr ""
+msgstr "Total a Pagar"
 
 #: templates/credits/credit/detail.html:211
 msgid "Installments Schedule"
-msgstr ""
+msgstr "Calendario de Cuotas"
 
 #: templates/credits/credit/detail.html:216
 msgid "installments total"
-msgstr ""
+msgstr "total de cuotas"
 
 #: templates/credits/credit/detail.html:229
 msgid "Principal"
-msgstr ""
+msgstr "Capital"
 
 #: templates/credits/credit/detail.html:231
 msgid "Balance After"
-msgstr ""
+msgstr "Saldo Después"
 
 #: templates/credits/credit/detail.html:245
 #, python-format
@@ -6493,88 +6283,76 @@ msgid_plural ""
 "overdue\n"
 "                                                    "
 msgstr[0] ""
+"\n"
+"                                                        Hace %(days)s día de retraso\n"
+"                                                    "
 msgstr[1] ""
+"\n"
+"                                                        Hace %(days)s días de retraso\n"
+"                                                    "
 
 #: templates/credits/credit/detail.html:306 templates/payments/detail.html:157
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: templates/credits/credit/detail.html:307
-#, fuzzy
-#| msgid "Status"
 msgid "From Status"
-msgstr "Estado"
+msgstr "Desde Estado"
 
 #: templates/credits/credit/detail.html:308
-#, fuzzy
-#| msgid "Status"
 msgid "To Status"
-msgstr "Estado"
+msgstr "Hasta Estado"
 
 #: templates/credits/credit/detail.html:309
-#, fuzzy
-#| msgid "Change avatar"
 msgid "Changed By"
-msgstr "Cambiar avatar"
+msgstr "Cambiado Por"
 
 #: templates/credits/credit/detail.html:327
 #, python-format
 msgid "%(previous_display)s"
-msgstr ""
+msgstr "%(previous_display)s"
 
 #: templates/credits/credit/detail.html:385
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Additional Information"
 msgstr "Información Personal"
 
 #: templates/credits/credit/form.html:130
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Financial Information"
-msgstr "Información Personal"
+msgstr "Información Financiera"
 
 #: templates/credits/credit/form.html:179
-#, fuzzy
-#| msgid "Update"
 msgid "Update Credit"
-msgstr "Actualizar"
+msgstr "Actualizar Crédito"
 
 #: templates/credits/credit/form.html:181
-#, fuzzy
-#| msgid "Create"
 msgid "Create Credit"
-msgstr "Crear"
+msgstr "Crear Crédito"
 
 #: templates/credits/credit/list.html:64
 msgid "Credits List"
-msgstr ""
+msgstr "Lista de Créditos"
 
 #: templates/credits/credit/list.html:65
 msgid "credits"
-msgstr ""
+msgstr "créditos"
 
 #: templates/credits/credit/list.html:157
-#, fuzzy
-#| msgid "No medical tests found"
 msgid "No credits found"
-msgstr "No se encontraron pruebas médicas"
+msgstr "No se encontraron créditos"
 
 #: templates/credits/credit/list.html:159
 msgid "Start by creating your first credit"
-msgstr ""
+msgstr "Comienza creando tu primer crédito"
 
 #: templates/credits/credit/list.html:161
 msgid "Add Credit"
-msgstr ""
+msgstr "Agregar Crédito"
 
 #: templates/credits/product/delete.html:5
 #: templates/credits/product/delete.html:6
 #: templates/credits/product/delete.html:103
-#, fuzzy
-#| msgid "Deleted!"
 msgid "Delete Product"
-msgstr "¡Eliminado!"
+msgstr "Eliminar Producto"
 
 #: templates/credits/product/delete.html:36
 #: templates/credits/product_type/delete.html:36
@@ -6596,46 +6374,45 @@ msgid ""
 "                        <br>This action cannot be undone.\n"
 "                    "
 msgstr ""
+"\n"
+"                        Está a punto de eliminar el producto "
+"<strong>%(name)s</strong>.\n"
+"                        <br>Esta acción no se puede deshacer.\n"
+"                    "
 
 #: templates/credits/product/delete.html:61
 #: templates/credits/product/list.html:92
 msgid "Interest Range"
-msgstr ""
+msgstr "Rango de Interés"
 
 #: templates/credits/product/delete.html:83
 msgid "This product has associated credits that will also be affected."
-msgstr ""
+msgstr "Este producto tiene créditos asociados que también se verán afectados."
 
 #: templates/credits/product/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Product Details"
-msgstr "Detalles"
+msgstr "Detalles del Producto"
 
 #: templates/credits/product/detail.html:37
-#, fuzzy
-#| msgid "Account Information"
 msgid "Product Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Producto"
 
 #: templates/credits/product/detail.html:79
-#, fuzzy
-#| msgid "Account Information"
 msgid "Amount & Interest Configuration"
-msgstr "Información de la Cuenta"
+msgstr "Configuración de Monto e Interés"
 
 #: templates/credits/product/detail.html:120
 #: templates/credits/product/form.html:180
 msgid "Term Configuration"
-msgstr ""
+msgstr "Configuración del Plazo"
 
 #: templates/credits/product/detail.html:128
 msgid "Minimum Term"
-msgstr ""
+msgstr "Plazo Mínimo"
 
 #: templates/credits/product/detail.html:132
 msgid "Maximum Term"
-msgstr ""
+msgstr "Plazo Máximo"
 
 #: templates/credits/product/detail.html:153
 #: templates/credits/product_type/detail.html:143
@@ -6645,110 +6422,90 @@ msgstr ""
 #: templates/partners/modals/document_detail_modal.html:100
 #: templates/partners/partner/detail.html:173
 #: templates/support/ticket/detail.html:250
-#, fuzzy
-#| msgid "Account Information"
 msgid "System Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Sistema"
 
 #: templates/credits/product/detail.html:170
 #: templates/credits/product_type/detail.html:74
 #: templates/credits/product_type/detail.html:160
-#, fuzzy
-#| msgid "Create"
 msgid "Created by"
-msgstr "Crear"
+msgstr "Creado por"
 
 #: templates/credits/product/detail.html:176
 #: templates/credits/product_type/detail.html:166
 msgid "Modified by"
-msgstr ""
+msgstr "Modificado por"
 
 #: templates/credits/product/form.html:8 templates/credits/product/form.html:16
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "Edit Product"
-msgstr "Editar Perfil"
+msgstr "Editar Producto"
 
 #: templates/credits/product/form.html:10
 #: templates/credits/product/form.html:18
 msgid "New Product"
-msgstr ""
+msgstr "Nuevo Producto"
 
 #: templates/credits/product/form.html:45
 #: templates/credits/product_type/form.html:45
-#, fuzzy
-#| msgid "Personal Information"
 msgid "General Information"
-msgstr "Información Personal"
+msgstr "Información General"
 
 #: templates/credits/product/form.html:105
-#, fuzzy
-#| msgid "Account Information"
 msgid "Amount Configuration"
-msgstr "Información de la Cuenta"
+msgstr "Configuración de Monto"
 
 #: templates/credits/product/form.html:132
 msgid "Interest Configuration"
-msgstr ""
+msgstr "Configuración de Interés"
 
 #: templates/credits/product/form.html:210
 #: templates/credits/product_type/form.html:80
-#, fuzzy
-#| msgid "Settings"
 msgid "Status & Settings"
 msgstr "Configuración"
 
 #: templates/credits/product/form.html:222
 msgid "Set the product status."
-msgstr ""
+msgstr "Establecer el estado del producto."
 
 #: templates/credits/product/form.html:238
-#, fuzzy
-#| msgid "Update"
 msgid "Update Product"
-msgstr "Actualizar"
+msgstr "Actualizar Producto"
 
 #: templates/credits/product/form.html:240
-#, fuzzy
-#| msgid "Create"
 msgid "Create Product"
-msgstr "Crear"
+msgstr "Crear Producto"
 
 #: templates/credits/product/list.html:6
 msgid "List Product"
-msgstr ""
+msgstr "Lista de Productos"
 
 #: templates/credits/product/list.html:17
 #: templates/credits/product/list.html:181
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add Product"
-msgstr "Agregar Cuenta"
+msgstr "Agregar Producto"
 
 #: templates/credits/product/list.html:79
 msgid "Products List"
-msgstr ""
+msgstr "Lista de Productos"
 
 #: templates/credits/product/list.html:80
 msgid "products"
-msgstr ""
+msgstr "productos"
 
 #: templates/credits/product/list.html:178
 #: templates/credits/product_type/detail.html:132
-#, fuzzy
-#| msgid "No panels found"
 msgid "No products found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron productos"
 
 #: templates/credits/product/list.html:179
 msgid "Start by creating your first product"
-msgstr ""
+msgstr "Comience creando su primer producto"
 
 #: templates/credits/product_type/delete.html:5
 #: templates/credits/product_type/delete.html:6
 #: templates/credits/product_type/delete.html:102
 msgid "Delete Product Type"
-msgstr ""
+msgstr "Eliminar Tipo de Producto"
 
 #: templates/credits/product_type/delete.html:39
 #, python-format
@@ -6759,92 +6516,87 @@ msgid ""
 "                        <br>This action cannot be undone.\n"
 "                    "
 msgstr ""
+"\n"
+"                        Está a punto de eliminar el tipo de producto "
+"<strong>%(name)s</strong>.\n"
+"                        <br>Esta acción no se puede deshacer.\n"
+"                    "
 
 #: templates/credits/product_type/delete.html:67
 #: templates/credits/product_type/detail.html:65
 msgid "Products Count"
-msgstr ""
+msgstr "Cantidad de Productos"
 
 #: templates/credits/product_type/delete.html:82
 msgid "This product type has associated products that will also be affected."
-msgstr ""
+msgstr "Este tipo de producto tiene productos asociados que también se verán afectados."
 
 #: templates/credits/product_type/detail.html:5
 msgid "Product Type Details"
-msgstr ""
+msgstr "Detalles del Tipo de Producto"
 
 #: templates/credits/product_type/detail.html:37
-#, fuzzy
-#| msgid "Account Information"
 msgid "Product Type Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Tipo de Producto"
 
 #: templates/credits/product_type/detail.html:59
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: templates/credits/product_type/detail.html:133
 msgid "This product type doesn't have any products yet."
-msgstr ""
+msgstr "Este tipo de producto no tiene productos aún."
 
 #: templates/credits/product_type/form.html:8
 #: templates/credits/product_type/form.html:16
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "Edit Product Type"
-msgstr "Editar Perfil"
+msgstr "Editar Tipo de Producto"
 
 #: templates/credits/product_type/form.html:10
 #: templates/credits/product_type/form.html:18
 msgid "New Product Type"
-msgstr ""
+msgstr "Nuevo Tipo de Producto"
 
 #: templates/credits/product_type/form.html:53
 msgid "A product type name is required and recommended to be unique."
-msgstr ""
+msgstr "Se requiere un nombre de tipo de producto y se recomienda que sea único."
 
 #: templates/credits/product_type/form.html:64
 msgid "Set a description for the product type for better visibility."
-msgstr ""
+msgstr "Establezca una descripción para el tipo de producto para una mejor visibilidad."
 
 #: templates/credits/product_type/form.html:92
 msgid "Set the product type status."
-msgstr ""
+msgstr "Establezca el estado del tipo de producto."
 
 #: templates/credits/product_type/form.html:108
 msgid "Update Product Type"
-msgstr ""
+msgstr "Actualizar Tipo de Producto"
 
 #: templates/credits/product_type/form.html:110
 msgid "Create Product Type"
-msgstr ""
+msgstr "Crear Tipo de Producto"
 
 #: templates/credits/product_type/list.html:17
 #: templates/credits/product_type/list.html:173
-#, fuzzy
-#| msgid "Account Type"
 msgid "Add Product Type"
-msgstr "Tipo de Cuenta"
+msgstr "Agregar Tipo de Producto"
 
 #: templates/credits/product_type/list.html:79
 msgid "Product Types List"
-msgstr ""
+msgstr "Lista de Tipos de Producto"
 
 #: templates/credits/product_type/list.html:80
-#, fuzzy
-#| msgid "Document type"
 msgid "product types"
-msgstr "Tipo de documento"
+msgstr "tipos de producto"
 
 #: templates/credits/product_type/list.html:170
-#, fuzzy
-#| msgid "No medical tests found"
 msgid "No product types found"
-msgstr "No se encontraron pruebas médicas"
+msgstr "No se encontraron tipos de producto"
 
 #: templates/credits/product_type/list.html:171
 msgid "Start by creating your first product type"
-msgstr ""
+msgstr "Comience creando su primer tipo de producto"
 
 #: templates/customers/account/form.html:17 templates/users/settings.html:24
 msgid "Avatar"
@@ -6974,14 +6726,12 @@ msgid "There was a problem activating/deactivating the user."
 msgstr "Hubo un problema al activar/desactivar el usuario."
 
 #: templates/customers/agency/confirm_delete.html:5
-#, fuzzy
-#| msgid "Agency"
 msgid "Delete Agency"
-msgstr "Agencia"
+msgstr "Eliminar Agencia"
 
 #: templates/customers/agency/confirm_delete.html:24
 msgid "Are you sure you want to delete this agency?"
-msgstr ""
+msgstr "¿Está seguro de que desea eliminar esta agencia?"
 
 #: templates/customers/agency/confirm_delete.html:27
 #, python-format
@@ -6991,48 +6741,42 @@ msgid ""
 "agency <strong>%(name)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente la "
+"agencia <strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/customers/agency/confirm_delete.html:37
 #: templates/partners/applicant/confirm_delete.html:37
 #: templates/team/area/confirm_delete.html:49
 #: templates/team/employee/confirm_delete.html:49
 #: templates/team/position/confirm_delete.html:49
-#, fuzzy
-#| msgid "Name"
 msgid "Name:"
 msgstr "Nombre"
 
 #: templates/customers/agency/confirm_delete.html:41
 msgid "Code:"
-msgstr ""
+msgstr "Código"
 
 #: templates/customers/agency/confirm_delete.html:62
 #: templates/partners/applicant/confirm_delete.html:54
 #: templates/team/employee/confirm_delete.html:76
-#, fuzzy
-#| msgid "Email"
 msgid "Email:"
 msgstr "Correo electrónico"
 
 #: templates/customers/agency/confirm_delete.html:68
 #: templates/partners/applicant/confirm_delete.html:60
 #: templates/team/employee/confirm_delete.html:82
-#, fuzzy
-#| msgid "Phone"
 msgid "Phone:"
 msgstr "Teléfono"
 
 #: templates/customers/agency/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Agency Details"
-msgstr "Detalles"
+msgstr "Detalles de la Agencia"
 
 #: templates/customers/agency/detail.html:6
-#, fuzzy
-#| msgid "Agency"
 msgid "Detail Agency"
-msgstr "Agencia"
+msgstr "Detalles de la Agencia"
 
 #: templates/customers/agency/detail.html:75
 #: templates/customers/agency/form.html:86
@@ -7042,10 +6786,8 @@ msgstr "Agencia"
 #: templates/partners/partner/form.html:142
 #: templates/team/employee/detail.html:104
 #: templates/team/employee/form.html:175
-#, fuzzy
-#| msgid "Account Information"
 msgid "Contact Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de Contacto"
 
 #: templates/customers/agency/detail.html:106
 #: templates/customers/agency/form.html:113
@@ -7055,10 +6797,8 @@ msgstr "Información de la Cuenta"
 #: templates/partners/applicant/form.html:166
 #: templates/partners/partner/detail.html:130
 #: templates/partners/partner/form.html:179
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Address Information"
-msgstr "Información Personal"
+msgstr "Información de Dirección"
 
 #: templates/customers/agency/detail.html:166
 #: templates/customers/company/detail.html:147
@@ -7067,48 +6807,38 @@ msgstr "Información Personal"
 #: templates/support/ticket/detail.html:267 templates/team/area/detail.html:67
 #: templates/team/employee/detail.html:157
 #: templates/team/position/detail.html:81
-#, fuzzy
-#| msgid "Create"
 msgid "Created By"
-msgstr "Crear"
+msgstr "Creado Por"
 
 #: templates/customers/agency/detail.html:172
 #: templates/partners/prospect/detail.html:125
 msgid "Modified By"
-msgstr ""
+msgstr "Modificado Por"
 
 #: templates/customers/agency/form.html:174
-#, fuzzy
-#| msgid "Agency"
 msgid "Create Agency"
-msgstr "Agencia"
+msgstr "Crear Agencia"
 
 #: templates/customers/agency/form.html:176
-#, fuzzy
-#| msgid "Agency"
 msgid "Update Agency"
-msgstr "Agencia"
+msgstr "Actualizar Agencia"
 
 #: templates/customers/agency/list.html:6
-#, fuzzy
-#| msgid "Agency"
 msgid "List Agency"
-msgstr "Agencia"
+msgstr "Lista de Agencias"
 
 #: templates/customers/agency/list.html:17
 #: templates/customers/agency/list.html:175
-#, fuzzy
-#| msgid "Agency"
 msgid "Add Agency"
-msgstr "Agencia"
+msgstr "Agregar Agencia"
 
 #: templates/customers/agency/list.html:78
 msgid "Agencies List"
-msgstr ""
+msgstr "Lista de Agencias"
 
 #: templates/customers/agency/list.html:79
 msgid "agencies"
-msgstr ""
+msgstr "agencias"
 
 #: templates/customers/agency/list.html:90
 #: templates/partners/applicant/list.html:95
@@ -7116,76 +6846,60 @@ msgstr ""
 #: templates/partners/prospect/list.html:77 templates/team/area/detail.html:198
 #: templates/team/employee/list.html:98 templates/team/position/detail.html:112
 msgid "Contact"
-msgstr ""
+msgstr "Contacto"
 
 #: templates/customers/agency/list.html:172
-#, fuzzy
-#| msgid "No panels found"
 msgid "No agencies found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron agencias"
 
 #: templates/customers/agency/list.html:173
 msgid "Start by creating your first agency"
-msgstr ""
+msgstr "Comience creando su primera agencia"
 
 #: templates/customers/company/detail.html:5
 #: templates/customers/company/form.html:73
-#, fuzzy
-#| msgid "Company logo"
 msgid "Company Details"
-msgstr "Logo de la empresa"
+msgstr "Detalles de la Empresa"
 
 #: templates/customers/company/detail.html:6
 msgid "Detail Company"
-msgstr ""
+msgstr "Detalles de la Empresa"
 
 #: templates/customers/company/detail.html:30
-#, fuzzy
-#| msgid "Account Information"
 msgid "Company Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de la Empresa"
 
 #: templates/customers/company/detail.html:73
-#, fuzzy
-#| msgid "Website domain."
 msgid "Website"
-msgstr "Dominio del sitio web."
+msgstr "Sitio web"
 
 #: templates/customers/company/detail.html:157
 #: templates/team/area/detail.html:73 templates/team/employee/detail.html:166
 #: templates/team/position/detail.html:87
 msgid "Last Modified By"
-msgstr ""
+msgstr "Último Modificado Por"
 
 #: templates/customers/company/form.html:9
 msgid "Edit Company"
-msgstr ""
+msgstr "Editar Empresa"
 
 #: templates/customers/company/form.html:30
-#, fuzzy
-#| msgid "Company logo"
 msgid "Change logo"
-msgstr "Logo de la empresa"
+msgstr "Cambiar logo"
 
 #: templates/customers/company/form.html:40
-#, fuzzy
-#| msgid "Cancel"
 msgid "Cancel logo"
 msgstr "Cancelar"
 
 #: templates/customers/company/form.html:48
 msgid "Remove logo"
-msgstr ""
+msgstr "Eliminar logo"
 
 #: templates/customers/company/form.html:57
-#, fuzzy
-#| msgid ""
-#| "Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files "
-#| "are accepted"
 msgid ""
 "Set the company logo. Only *.png, *.jpg and *.jpeg image files are accepted"
 msgstr ""
-"Establezca la imagen en miniatura del producto. Solo se aceptan archivos de "
+"Establezca el logo de la empresa. Solo se aceptan archivos de "
 "imagen *.png, *.jpg y *.jpeg"
 
 #: templates/dashboard/index.html:13
@@ -7205,30 +6919,22 @@ msgid "System Error"
 msgstr "Error del sistema"
 
 #: templates/includes/aside.html:20
-#, fuzzy
-#| msgid "Patients"
 msgid "Clients"
-msgstr "Pacientes"
+msgstr "Clientes"
 
 #: templates/includes/aside.html:77
-#, fuzzy
-#| msgid "Patients"
 msgid "My Payments"
-msgstr "Pacientes"
+msgstr "Mis Pagos"
 
 #: templates/includes/aside.html:91
 msgid "Make Payment"
-msgstr ""
+msgstr "Realizar Pago"
 
 #: templates/includes/aside.html:109
-#, fuzzy
-#| msgid "Status History"
 msgid "Payment History"
-msgstr "Historial de estado"
+msgstr "Historial de Pagos"
 
 #: templates/includes/aside.html:312
-#, fuzzy
-#| msgid "Permissions Management"
 msgid "Team Management"
 msgstr "Gestión de Permisos"
 
@@ -7272,25 +6978,27 @@ msgid ""
 "applicant <strong>%(name)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Está a punto de eliminar permanentemente el "
+"solicitante <strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/partners/applicant/confirm_delete.html:41
 msgid "External ID:"
-msgstr ""
+msgstr "ID Externo:"
 
 #: templates/partners/applicant/confirm_delete.html:45
 #: templates/team/employee/confirm_delete.html:87
-#, fuzzy
-#| msgid "Document type"
 msgid "Document:"
-msgstr "Tipo de documento"
+msgstr "Documento:"
 
 #: templates/partners/applicant/detail.html:5
 msgid "Applicant Details"
-msgstr ""
+msgstr "Detalles del Solicitante"
 
 #: templates/partners/applicant/detail.html:6
 msgid "Detail Applicant"
-msgstr ""
+msgstr "Detalle del Solicitante"
 
 #: templates/partners/applicant/detail.html:37
 #: templates/partners/applicant/form.html:32
@@ -7302,114 +7010,102 @@ msgstr "Información Personal"
 #: templates/partners/applicant/detail.html:80
 #: templates/partners/partner/detail.html:72
 msgid "years old"
-msgstr ""
+msgstr "años"
 
 #: templates/partners/applicant/form.html:227
 msgid "Create Applicant"
-msgstr ""
+msgstr "Crear Solicitante"
 
 #: templates/partners/applicant/form.html:229
 msgid "Update Applicant"
-msgstr ""
+msgstr "Actualizar Solicitante"
 
 #: templates/partners/applicant/list.html:6
 msgid "List Applicant"
-msgstr ""
+msgstr "Lista de Solicitantes"
 
 #: templates/partners/applicant/list.html:17
 #: templates/partners/applicant/list.html:192
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add Applicant"
-msgstr "Agregar Cuenta"
+msgstr "Agregar Solicitante"
 
 #: templates/partners/applicant/list.html:83
 msgid "Applicants List"
-msgstr ""
+msgstr "Lista de Solicitantes"
 
 #: templates/partners/applicant/list.html:84
 msgid "applicants"
-msgstr ""
+msgstr "solicitantes"
 
 #: templates/partners/applicant/list.html:189
-#, fuzzy
-#| msgid "No panels found"
 msgid "No applicants found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron solicitantes"
 
 #: templates/partners/applicant/list.html:190
 msgid "Start by creating your first applicant"
-msgstr ""
+msgstr "Comience creando su primer solicitante"
 
 #: templates/partners/modals/document_detail_modal.html:5
-#, fuzzy
-#| msgid "Document type"
 msgid "Document Details"
-msgstr "Tipo de documento"
+msgstr "Detalles del Documento"
 
 #: templates/partners/modals/document_detail_modal.html:37
-#, fuzzy
-#| msgid "Document number"
 msgid "Document Number:"
 msgstr "Número de documento"
 
 #: templates/partners/modals/document_detail_modal.html:50
 #: templates/partners/modals/document_edit_modal.html:31
-#, fuzzy
-#| msgid "Account Information"
 msgid "Document Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Documento"
 
 #: templates/partners/modals/document_detail_modal.html:62
 msgid "Category"
-msgstr ""
+msgstr "Categoría"
 
 #: templates/partners/modals/document_detail_modal.html:67
 msgid "File"
-msgstr ""
+msgstr "Archivo"
 
 #: templates/partners/modals/document_detail_modal.html:75
 #: templates/payments/receipt/detail.html:100
 msgid "Download File"
-msgstr ""
+msgstr "Descargar Archivo"
 
 #: templates/partners/modals/document_detail_modal.html:85
 msgid "Expiry Date"
-msgstr ""
+msgstr "Fecha de Expiración"
 
 #: templates/partners/modals/document_detail_modal.html:126
 msgid "Related To"
-msgstr ""
+msgstr "Relacionado Con"
 
 #: templates/partners/modals/document_detail_modal.html:147
 msgid "Download"
-msgstr ""
+msgstr "Descargar"
 
 #: templates/partners/modals/document_edit_modal.html:6
-#, fuzzy
-#| msgid "National Identity Document"
 msgid "Edit Document"
-msgstr "Documento Nacional de Identidad"
+msgstr "Editar Documento"
 
 #: templates/partners/modals/document_edit_modal.html:88
-#, fuzzy
-#| msgid "Personal Information"
 msgid "File Information"
-msgstr "Información Personal"
+msgstr "Información del Archivo"
 
 #: templates/partners/modals/document_edit_modal.html:100
 msgid "Current file:"
-msgstr ""
+msgstr "Archivo actual:"
 
 #: templates/partners/modals/document_edit_modal.html:101
 msgid ""
 "Upload a new file to replace the current one, or leave empty to keep the "
 "existing file."
 msgstr ""
+"Suba un nuevo archivo para reemplazar el actual, o déjelo vacío para "
+"mantener el archivo existente."
 
 #: templates/partners/modals/document_edit_modal.html:114
 msgid "Accepted formats: PDF, DOC, DOCX, JPG, PNG, GIF"
-msgstr ""
+msgstr "Formatos aceptados: PDF, DOC, DOCX, JPG, PNG, GIF"
 
 #: templates/partners/modals/document_edit_modal.html:130
 #: templates/partners/prospect/form.html:197 templates/payments/form.html:223
@@ -7426,477 +7122,422 @@ msgid ""
 "                        <br>This action cannot be undone.\n"
 "                    "
 msgstr ""
+"\n"
+"                        Está a punto de eliminar el socio "
+"<strong>%(name)s</strong>.\n"
+"                        <br>Esta acción no se puede deshacer.\n"
+"                    "
 
 #: templates/partners/partner/confirm_delete.html:78
-#, fuzzy
-#| msgid "Delete"
 msgid "Delete Partner"
-msgstr "Eliminar"
+msgstr "Eliminar Socio"
 
 #: templates/partners/partner/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Partner Details"
-msgstr "Detalles"
+msgstr "Detalles del Socio"
 
 #: templates/partners/partner/form.html:241
-#, fuzzy
-#| msgid "Create"
 msgid "Create Partner"
-msgstr "Crear"
+msgstr "Crear Socio"
 
 #: templates/partners/partner/form.html:243
-#, fuzzy
-#| msgid "Update"
 msgid "Update Partner"
-msgstr "Actualizar"
+msgstr "Actualizar Socio"
 
 #: templates/partners/partner/list.html:6
 msgid "List Partner"
-msgstr ""
+msgstr "Lista de Socios"
 
 #: templates/partners/partner/list.html:17
 #: templates/partners/partner/list.html:177
 msgid "Add Partner"
-msgstr ""
+msgstr "Agregar Socio"
 
 #: templates/partners/partner/list.html:83
 msgid "Partners List"
-msgstr ""
+msgstr "Lista de Socios"
 
 #: templates/partners/partner/list.html:174
-#, fuzzy
-#| msgid "No panels found"
 msgid "No partners found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron socios"
 
 #: templates/partners/partner/list.html:175
 msgid "Start by creating your first partner"
-msgstr ""
+msgstr "Comience creando su primer socio"
 
 #: templates/partners/prospect/detail.html:6
-#, fuzzy
-#| msgid "Details"
 msgid "Prospect Details"
-msgstr "Detalles"
+msgstr "Detalles del Prospecto"
 
 #: templates/partners/prospect/detail.html:16
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "Edit Prospect"
-msgstr "Editar Perfil"
+msgstr "Editar Prospecto"
 
 #: templates/partners/prospect/detail.html:24
 #: templates/payments/receipt/detail.html:16
 msgid "Back to List"
-msgstr ""
+msgstr "Volver a la Lista"
 
 #: templates/partners/prospect/detail.html:72
 #: templates/partners/prospect/list.html:123
 #: templates/team/employee/detail.html:92
 msgid "years"
-msgstr ""
+msgstr "años"
 
 #: templates/partners/prospect/detail.html:90
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Prospect Information"
-msgstr "Información Personal"
+msgstr "Información del Prospecto"
 
 #: templates/partners/prospect/detail.html:98
 msgid "Registration Date"
-msgstr ""
+msgstr "Fecha de Registro"
 
 #: templates/partners/prospect/detail.html:102
-#, fuzzy
-#| msgid "Last updated"
 msgid "Last Updated"
-msgstr "Última actualización"
+msgstr "Última Actualización"
 
 #: templates/partners/prospect/detail.html:107
-#, fuzzy
-#| msgid "First name"
 msgid "First Contact"
-msgstr "Nombre"
+msgstr "Primer Contacto"
 
 #: templates/partners/prospect/detail.html:113
-#, fuzzy
-#| msgid "Address"
 msgid "IP Address"
-msgstr "Dirección"
+msgstr "Dirección IP"
 
 #: templates/partners/prospect/list.html:6
 msgid "List Prospect"
-msgstr ""
+msgstr "Lista de Prospectos"
 
 #: templates/partners/prospect/list.html:65
 msgid "prospects"
-msgstr ""
+msgstr "prospectos"
 
 #: templates/partners/prospect/list.html:79
-#, fuzzy
-#| msgid "Agency"
 msgid "Age"
-msgstr "Agencia"
+msgstr "Edad"
 
 #: templates/partners/prospect/list.html:100
 msgid "From"
-msgstr ""
+msgstr "Desde"
 
 #: templates/partners/prospect/list.html:129
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "Not assigned"
-msgstr "No se asignaron permisos"
+msgstr "No asignado"
 
 #: templates/partners/prospect/list.html:168
-#, fuzzy
-#| msgid "No panels found"
 msgid "No prospects found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron prospectos"
 
 #: templates/partners/prospect/list.html:170
-#, fuzzy
-#| msgid "The email address is not registered with us."
 msgid "There are no prospects registered yet."
-msgstr "La dirección de correo electrónico no está registrada con nosotros."
+msgstr "No hay prospectos registrados aún."
 
 #: templates/payments/confirm_delete.html:5
 #: templates/payments/confirm_delete.html:6
-#, fuzzy
-#| msgid "Delete"
 msgid "Delete Payment"
-msgstr "Eliminar"
+msgstr "Eliminar Pago"
 
 #: templates/payments/confirm_delete.html:45
-#, fuzzy
-#| msgid "Morning"
 msgid "Warning!"
-msgstr "Mañana"
+msgstr "Advertencia"
 
 #: templates/payments/confirm_delete.html:46
 msgid ""
 "This action cannot be undone. All data related to this payment will be "
 "permanently deleted."
 msgstr ""
+"Esta acción no se puede deshacer. Todos los datos relacionados con este pago se eliminarán de forma permanente."
 
 #: templates/payments/confirm_delete.html:54
 msgid "Payment to Delete"
-msgstr ""
+msgstr "Pago a Eliminar"
 
 #: templates/payments/confirm_delete.html:112
-#, fuzzy
-#| msgid "The account has been deleted."
 msgid "What will be deleted?"
-msgstr "La cuenta ha sido eliminada."
+msgstr "¿Qué se eliminará?"
 
 #: templates/payments/confirm_delete.html:119
 msgid "Payment record"
-msgstr ""
+msgstr "Registro de Pago"
 
 #: templates/payments/confirm_delete.html:127
 msgid "Payment allocations"
-msgstr ""
+msgstr "Asignaciones de Pago"
 
 #: templates/payments/confirm_delete.html:135
-#, fuzzy
-#| msgid "Status History"
-msgid "Payment history"
-msgstr "Historial de estado"
+msgid "Historial de Pagos"
+msgstr "Historial de Pagos"
 
 #: templates/payments/confirm_delete.html:141
 msgid "Important:"
-msgstr ""
+msgstr "Importante:"
 
 #: templates/payments/confirm_delete.html:142
 msgid ""
 "This payment has allocations. Deleting it may affect related installments or "
 "obligations."
 msgstr ""
+"Este pago tiene asignaciones. Eliminarlo puede afectar las cuotas u "
+"obligaciones relacionadas."
 
 #: templates/payments/confirm_delete.html:168
-#, fuzzy
-#| msgid "Yes, delete it!"
 msgid "Yes, Delete Payment"
-msgstr "¡Sí, elimínalo!"
+msgstr "¡Sí, elimina el pago!"
 
 #: templates/payments/detail.html:6
 msgid "Detail Payment"
-msgstr ""
+msgstr "Detalles del Pago"
 
 #: templates/payments/detail.html:70 templates/payments/detail.html:265
 msgid "Total Allocated"
-msgstr ""
+msgstr "Total Asignado"
 
 #: templates/payments/detail.html:76 templates/payments/detail.html:272
 msgid "Unallocated Amount"
-msgstr ""
+msgstr "Monto No Asignado"
 
 #: templates/payments/detail.html:146
-#, fuzzy
-#| msgid "Parent Account"
 msgid "Payment Allocations"
-msgstr "Cuenta Principal"
+msgstr "Asignaciones de Pago"
 
 #: templates/payments/detail.html:156
 #: templates/payments/magic_link/detail.html:203
-#, fuzzy
-#| msgid "User Type"
 msgid "Type"
-msgstr "Tipo de Usuario"
+msgstr "Tipo"
 
 #: templates/payments/detail.html:241
 msgid "View Partner Details"
-msgstr ""
+msgstr "Ver Detalles del Socio"
 
 #: templates/payments/detail.html:282 templates/payments/detail.html:297
 msgid "Allocate Payment"
-msgstr ""
+msgstr "Asignar Pago"
 
 #: templates/payments/detail.html:306
 msgid "Available amount to allocate"
-msgstr ""
+msgstr "Monto disponible para asignar"
 
 #: templates/payments/detail.html:309
 msgid "Allocation functionality will be implemented in the next phase."
-msgstr ""
+msgstr "La funcionalidad de asignación se implementará en la próxima fase."
 
 #: templates/payments/detail.html:314
 msgid "Allocate"
-msgstr ""
+msgstr "Asignar"
 
 #: templates/payments/form.html:75
 msgid ""
 "This amount will be automatically updated when you select debt allocations"
 msgstr ""
+"Este monto se actualizará automáticamente cuando seleccione asignaciones de deuda"
 
 #: templates/payments/form.html:83 templates/payments/form.html:282
 msgid "Enter amount manually or select debts to auto-calculate"
-msgstr ""
+msgstr "Ingrese el monto manualmente o seleccione deudas para calcular automáticamente"
 
 #: templates/payments/form.html:135 templates/payments/form.html:462
 msgid "Select a partner to view information"
-msgstr ""
+msgstr "Seleccione un socio para ver información"
 
 #: templates/payments/form.html:144
-#, fuzzy
-#| msgid "Pending"
 msgid "Pending Debts"
-msgstr "Pendiente"
+msgstr "Deudas Pendientes"
 
 #: templates/payments/form.html:165
 msgid "Auto Allocate"
-msgstr ""
+msgstr "Asignar Automáticamente"
 
 #: templates/payments/form.html:178
 msgid "Allocation Summary"
-msgstr ""
+msgstr "Resumen de Asignación"
 
 #: templates/payments/form.html:191 templates/payments/list.html:128
 msgid "Allocated"
-msgstr ""
+msgstr "Asignado"
 
 #: templates/payments/form.html:198
 msgid "Remaining"
-msgstr ""
+msgstr "Restante"
 
 #: templates/payments/form.html:209 templates/payments/form.html:279
 msgid "No allocations"
-msgstr ""
+msgstr "Sin asignaciones"
 
 #: templates/payments/form.html:285
 msgid "Fully allocated"
-msgstr ""
+msgstr "Totalmente asignado"
 
 #: templates/payments/form.html:288 templates/payments/form.html:294
 #: templates/payments/form.html:300
 msgid "Amount automatically calculated from selected allocations"
-msgstr ""
+msgstr "Monto calculado automáticamente a partir de las asignaciones seleccionadas"
 
 #: templates/payments/form.html:291
 msgid "Over-allocated"
-msgstr ""
+msgstr "Sobreasignado"
 
 #: templates/payments/form.html:297
-#, fuzzy
-#| msgid "Actions"
 msgid "allocation(s)"
-msgstr "Acciones"
+msgstr "Asignación(es)"
 
 #: templates/payments/form.html:349
 msgid "Loading partner information..."
-msgstr ""
+msgstr "Cargando información del socio..."
 
 #: templates/payments/form.html:381
 msgid "Overdue Payments"
-msgstr ""
+msgstr "Pagos Vencidos"
 
 #: templates/payments/form.html:404
 msgid "Due"
-msgstr ""
+msgstr "Vencido"
 
 #: templates/payments/form.html:436
 msgid "No pending debts"
-msgstr ""
+msgstr "Sin deudas pendientes"
 
 #: templates/payments/form.html:450
 msgid "Error loading partner information"
-msgstr ""
+msgstr "Error al cargar la información del socio"
 
 #: templates/payments/form.html:540
 msgid "No pending debts available for allocation"
-msgstr ""
+msgstr "No hay deudas pendientes disponibles para asignar"
 
 #: templates/payments/form.html:578
 msgid "Please enter a valid payment amount"
-msgstr ""
+msgstr "Por favor, ingrese un monto de pago válido"
 
 #: templates/payments/list.html:6
 msgid "List Payment"
-msgstr ""
+msgstr "Listar Pago"
 
 #: templates/payments/list.html:17 templates/payments/list.html:202
 msgid "Add Payment"
-msgstr ""
+msgstr "Agregar Pago"
 
 #: templates/payments/list.html:83
 msgid "Payments List"
-msgstr ""
+msgstr "Lista de Pagos"
 
 #: templates/payments/list.html:84
-#, fuzzy
-#| msgid "Patients"
 msgid "payments"
-msgstr "Pacientes"
+msgstr "pagos"
 
 #: templates/payments/list.html:93
 msgid "Payment #"
-msgstr ""
+msgstr "Pago #"
 
 #: templates/payments/list.html:96
 msgid "Allocation Status"
-msgstr ""
+msgstr "Estado de Asignación"
 
 #: templates/payments/list.html:134
 msgid "Fully Allocated"
-msgstr ""
+msgstr "Totalmente Asignado"
 
 #: templates/payments/list.html:136
 msgid "Partially Allocated"
-msgstr ""
+msgstr "Parcialmente Asignado"
 
 #: templates/payments/list.html:138
 msgid "Unallocated"
-msgstr ""
+msgstr "Sin Asignar"
 
 #: templates/payments/list.html:199
-#, fuzzy
-#| msgid "No panels found"
 msgid "No payments found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron pagos"
 
 #: templates/payments/list.html:200
 msgid "Start by creating your first payment"
-msgstr ""
+msgstr "Comience creando su primer pago"
 
 #: templates/payments/magic_link/create.html:6
 #: templates/payments/magic_link/create.html:7
-#, fuzzy
-#| msgid "Create"
 msgid "Create Magic Payment Link"
-msgstr "Crear"
+msgstr "Crear Enlace de Pago Mágico"
 
 #: templates/payments/magic_link/create.html:30
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Magic Payment Link Information"
-msgstr "Información Personal"
+msgstr "Información del Enlace de Pago Mágico"
 
 #: templates/payments/magic_link/create.html:31
 msgid "Create a personalized payment link for a partner"
-msgstr ""
+msgstr "Crea un enlace de pago personalizado para un socio"
 
 #: templates/payments/magic_link/create.html:129
-#, fuzzy
-#| msgid "Agency"
 msgid "Create Magic Link"
-msgstr "Agencia"
+msgstr "Crear Enlace Mágico"
 
 #: templates/payments/magic_link/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Magic Payment Link Details"
-msgstr "Detalles"
+msgstr "Detalles del Enlace de Pago Mágico"
 
 #: templates/payments/magic_link/detail.html:71
 #: templates/payments/magic_link/list.html:95
 msgid "Debts"
-msgstr ""
+msgstr "Deudas"
 
 #: templates/payments/magic_link/detail.html:115
 msgid "Link Title"
-msgstr ""
+msgstr "Título del Enlace"
 
 #: templates/payments/magic_link/detail.html:121
-#, fuzzy
-#| msgid "Patients"
 msgid "Partial Payments"
-msgstr "Pacientes"
+msgstr "Pagos Parciales"
 
 #: templates/payments/magic_link/detail.html:123
 msgid "Allowed"
-msgstr ""
+msgstr "Permitido"
 
 #: templates/payments/magic_link/detail.html:152
 msgid "Share this link with the partner to view and pay their debts"
-msgstr ""
+msgstr "Comparte este enlace con el socio para ver y pagar sus deudas"
 
 #: templates/payments/magic_link/detail.html:161
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 #: templates/payments/magic_link/detail.html:180
-#, fuzzy
-#| msgid "Create"
 msgid "Associated Payment"
-msgstr "Crear"
+msgstr "Pago Asociado"
 
 #: templates/payments/magic_link/detail.html:182
-#, fuzzy
-#| msgid "Document type"
 msgid "View Payment"
-msgstr "Tipo de documento"
+msgstr "Ver Pago"
 
 #: templates/payments/magic_link/detail.html:194
 msgid "Included Debts"
-msgstr ""
+msgstr "Deudas Incluidas"
 
 #: templates/payments/magic_link/detail.html:250
 msgid "No debts included"
-msgstr ""
+msgstr "No hay deudas incluidas"
 
 #: templates/payments/magic_link/detail.html:251
 msgid "This magic link has no associated debts"
-msgstr ""
+msgstr "Este enlace mágico no tiene deudas asociadas"
 
 #: templates/payments/magic_link/detail.html:269
 #: templates/payments/magic_link/detail.html:271
 msgid "Link copied to clipboard!"
-msgstr ""
+msgstr "¡Enlace copiado al portapapeles!"
 
 #: templates/payments/magic_link/expired.html:163
 msgid "Este enlace de pago ha expirado"
-msgstr ""
+msgstr "Este enlace de pago ha expirado"
 
 #: templates/payments/magic_link/expired.html:165
 msgid ""
 "Lo sentimos, pero este enlace de pago mágico ya no está disponible. Los "
 "enlaces de pago tienen una validez limitada por seguridad."
 msgstr ""
+"Lo sentimos, pero este enlace de pago mágico ya no está disponible. Los "
+"enlaces de pago tienen una validez limitada por seguridad."
 
 #: templates/payments/magic_link/expired.html:176
 msgid "¿Por qué expiró este enlace?"
-msgstr ""
+msgstr "¿Por qué expiró este enlace?"
 
 #: templates/payments/magic_link/expired.html:179
 msgid ""
@@ -7904,153 +7545,152 @@ msgid ""
 "determinado para garantizar la seguridad de tus transacciones y mantener la "
 "información actualizada."
 msgstr ""
+"Los enlaces de pago expiran automáticamente después de un período "
+"determinado para garantizar la seguridad de tus transacciones y mantener la "
+"información actualizada."
 
 #: templates/payments/magic_link/expired.html:187
-#, fuzzy
-#| msgid "Patients"
 msgid "Cliente:"
-msgstr "Pacientes"
+msgstr "Clientes:"
 
 #: templates/payments/magic_link/expired.html:191
 msgid "DNI:"
-msgstr ""
+msgstr "DNI:"
 
 #: templates/payments/magic_link/expired.html:195
-#, fuzzy
-#| msgid "Create"
 msgid "Creado:"
-msgstr "Crear"
+msgstr "Creado:"
 
 #: templates/payments/magic_link/expired.html:199
 msgid "Expiró:"
-msgstr ""
+msgstr "Expiró:"
 
 #: templates/payments/magic_link/expired.html:204
 msgid "Estado:"
-msgstr ""
+msgstr "Estado:"
 
 #: templates/payments/magic_link/expired.html:205
 msgid "Ya fue utilizado"
-msgstr ""
+msgstr "Ya fue utilizado"
 
 #: templates/payments/magic_link/expired.html:218
 msgid "Solicitar Nuevo Enlace"
-msgstr ""
+msgstr "Solicitar Nuevo Enlace"
 
 #: templates/payments/magic_link/expired.html:224
 msgid "¿Necesitas ayuda?"
-msgstr ""
+msgstr "¿Necesitas ayuda?"
 
 #: templates/payments/magic_link/expired.html:230
 msgid "Contacta a nuestro soporte"
-msgstr ""
+msgstr "Contacta a nuestro soporte"
 
 #: templates/payments/magic_link/expired.html:237
 msgid "Solicita un nuevo enlace de pago"
-msgstr ""
+msgstr "Solicita un nuevo enlace de pago"
 
 #: templates/payments/magic_link/expired.html:250
 msgid ""
 "Por favor contacta con el administrador para solicitar un nuevo enlace de "
 "pago"
 msgstr ""
+"Por favor contacta con el administrador para solicitar un nuevo enlace de "
+"pago"
 
 #: templates/payments/magic_link/list.html:16
 #: templates/payments/magic_link/list.html:182
 msgid "Add Magic Link"
-msgstr ""
+msgstr "Agregar Enlace Mágico"
 
 #: templates/payments/magic_link/list.html:81
-#, fuzzy
-#| msgid "Patients"
 msgid "Magic Payment Links List"
-msgstr "Pacientes"
+msgstr "Lista de Enlaces de Pago Mágicos"
 
 #: templates/payments/magic_link/list.html:82
 msgid "magic links"
-msgstr ""
+msgstr "enlaces mágicos"
 
 #: templates/payments/magic_link/list.html:93
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: templates/payments/magic_link/list.html:98
 msgid "Expires"
-msgstr ""
+msgstr "Expira"
 
 #: templates/payments/magic_link/list.html:180
-#, fuzzy
-#| msgid "No panels found"
 msgid "No magic links found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron enlaces mágicos"
 
 #: templates/payments/magic_link/list.html:181
 msgid "Start by creating your first magic link"
-msgstr ""
+msgstr "Comienza creando tu primer enlace mágico"
 
 #: templates/payments/magic_link/public.html:330
 msgid "deudas pendientes"
-msgstr ""
+msgstr "deudas pendientes"
 
 #: templates/payments/magic_link/public.html:340
 msgid "Deudas Disponibles"
-msgstr ""
+msgstr "Deudas Disponibles"
 
 #: templates/payments/magic_link/public.html:342
 #: templates/payments/magic_link/public.html:589
 msgid "Seleccionar todas"
-msgstr ""
+msgstr "Seleccionar todas"
 
 #: templates/payments/magic_link/public.html:389
 msgid "Vence:"
-msgstr ""
+msgstr "Vence:"
 
 #: templates/payments/magic_link/public.html:410
 msgid "Nota importante:"
-msgstr ""
+msgstr "Nota importante:"
 
 #: templates/payments/magic_link/public.html:411
 msgid ""
 "Las deudas vencidas se pagan primero. Puede seleccionar las deudas que desea "
 "pagar."
 msgstr ""
+"Las deudas vencidas se pagan primero. Puede seleccionar las deudas que desea "
+"pagar."
 
 #: templates/payments/magic_link/public.html:419
 msgid "Resumen de Pago"
-msgstr ""
+msgstr "Resumen de Pago"
 
 #: templates/payments/magic_link/public.html:422
 msgid "Subtotal"
-msgstr ""
+msgstr "Subtotal"
 
 #: templates/payments/magic_link/public.html:427
 msgid "Total a Pagar:"
-msgstr ""
+msgstr "Total a Pagar:"
 
 #: templates/payments/magic_link/public.html:436
 #: templates/payments/magic_link/public.html:731
 msgid "Proceder al Pago"
-msgstr ""
+msgstr "Proceder al Pago"
 
 #: templates/payments/magic_link/public.html:441
 msgid "Métodos de Pago Aceptados"
-msgstr ""
+msgstr "Métodos de Pago Aceptados"
 
 #: templates/payments/magic_link/public.html:447
 msgid "Tarjetas de Crédito y Débito"
-msgstr ""
+msgstr "Tarjetas de Crédito y Débito"
 
 #: templates/payments/magic_link/public.html:456
 msgid "Yape - Billeteras Digitales"
-msgstr ""
+msgstr "Yape - Billeteras Digitales"
 
 #: templates/payments/magic_link/public.html:463
 msgid "Banca Móvil e Internet"
-msgstr ""
+msgstr "Banca Móvil e Internet"
 
 #: templates/payments/magic_link/public.html:473
 msgid "Agentes y Tiendas Autorizadas"
-msgstr ""
+msgstr "Agentes y Tiendas Autorizadas"
 
 #: templates/payments/magic_link/public.html:483
 msgid ""
@@ -8058,121 +7698,116 @@ msgid ""
 "completarse. Recibirá una confirmación por correo electrónico una vez "
 "procesado el pago."
 msgstr ""
+"El proceso de pago puede tomar hasta 48 horas o 2 días hábiles en "
+"completarse. Recibirá una confirmación por correo electrónico una vez "
+"procesado el pago."
 
 #: templates/payments/magic_link/public.html:491
 #, python-format
 msgid "Transacción 100%% segura y encriptada"
-msgstr ""
+msgstr "Transacción 100%% segura y encriptada"
 
 #: templates/payments/magic_link/public.html:586
 msgid "Deseleccionar todas"
-msgstr ""
+msgstr "Deseleccionar todas"
 
 #: templates/payments/magic_link/public.html:611
 msgid "Selección requerida"
-msgstr ""
+msgstr "Selección requerida"
 
 #: templates/payments/magic_link/public.html:612
 msgid "Por favor selecciona al menos una deuda para pagar"
-msgstr ""
+msgstr "Por favor selecciona al menos una deuda para pagar"
 
 #: templates/payments/magic_link/public.html:622
 msgid "Pago de Deudas"
-msgstr ""
+msgstr "Pago de Deudas"
 
 #: templates/payments/magic_link/public.html:626
 msgid "Pago de"
-msgstr ""
+msgstr "Pago de"
 
 #: templates/payments/magic_link/public.html:626
 msgid "deuda(s) pendiente(s)"
-msgstr ""
+msgstr "deuda(s) pendiente(s)"
 
 #: templates/payments/magic_link/public.html:654
-#, fuzzy
-#| msgid "Processing"
 msgid "Procesando..."
-msgstr "En proceso"
+msgstr "Procesando..."
 
 #: templates/payments/magic_link/public.html:664
 #: templates/payments/magic_link/public.html:725
 msgid "Error de Pago"
-msgstr ""
+msgstr "Error de Pago"
 
 #: templates/payments/magic_link/public.html:665
 msgid ""
 "No se pudo inicializar el sistema de pagos. Por favor, intente nuevamente."
 msgstr ""
+"No se pudo inicializar el sistema de pagos. Por favor, intente nuevamente."
 
 #: templates/payments/magic_link/public.html:704
 msgid "¡Pago Procesado!"
-msgstr ""
+msgstr "¡Pago Procesado!"
 
 #: templates/payments/magic_link/public.html:705
 msgid ""
 "Su pago ha sido procesado exitosamente. Recibirá una confirmación por correo "
 "electrónico."
 msgstr ""
+"Su pago ha sido procesado exitosamente. Recibirá una confirmación por correo "
+"electrónico."
 
 #: templates/payments/magic_link/public.html:718
 msgid "Ocurrió un error durante el procesamiento del pago"
-msgstr ""
+msgstr "Ocurrió un error durante el procesamiento del pago."
 
 #: templates/payments/receipt/confirm_delete.html:6
 #: templates/payments/receipt/confirm_delete.html:7
 msgid "Delete Payment Receipt"
-msgstr ""
+msgstr "Eliminar Comprobante de Pago"
 
 #: templates/payments/receipt/confirm_delete.html:35
 msgid ""
 "You are about to delete this payment receipt. This action cannot be undone."
 msgstr ""
+"Está a punto de eliminar este comprobante de pago. Esta acción no se puede ""deshacer."
 
 #: templates/payments/receipt/confirm_delete.html:42
-#, fuzzy
-#| msgid "Details"
 msgid "Receipt Details"
-msgstr "Detalles"
+msgstr "Detalles del Comprobante"
 
 #: templates/payments/receipt/confirm_delete.html:100
-#, fuzzy
-#| msgid "Yes, delete it!"
 msgid "Yes, Delete Receipt"
 msgstr "¡Sí, elimínalo!"
 
 #: templates/payments/receipt/detail.html:6
 #: templates/payments/receipt/detail.html:7
 msgid "Payment Receipt Detail"
-msgstr ""
+msgstr "Detalle del Comprobante de Pago"
 
 #: templates/payments/receipt/detail.html:50
 #: templates/payments/receipt/form.html:32
-#, fuzzy
-#| msgid "Account Information"
 msgid "Receipt Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Comprobante"
 
 #: templates/payments/receipt/detail.html:122
-#, fuzzy
-#| msgid "Account Information"
 msgid "Validation Information"
-msgstr "Información de la Cuenta"
+msgstr "Información de Validación"
 
 #: templates/payments/receipt/detail.html:130
 #: templates/payments/receipt/list.html:94
-#, fuzzy
-#| msgid "Validating"
 msgid "Validated By"
-msgstr "Validando"
+msgstr "Validado por"
 
 #: templates/payments/receipt/detail.html:135
 msgid "Not validated yet"
-msgstr ""
+msgstr "No validado aún"
 
 #: templates/payments/receipt/detail.html:190
 #: templates/payments/receipt/form.html:162
 msgid "Receipt Preview"
-msgstr "Vista previa del comprobante"
+msgstr "Vista Previa del Comprobante"
 
 #: templates/payments/receipt/detail.html:197
 #: templates/payments/receipt/form.html:180
@@ -8181,177 +7816,150 @@ msgstr "Comprobante"
 
 #: templates/payments/receipt/form.html:43
 msgid "Select the partner who made the payment"
-msgstr ""
+msgstr "Seleccione el socio que realizó el pago"
 
 #: templates/payments/receipt/form.html:54
 msgid "Accepted formats: PDF, JPG, PNG (Max size: 5MB)"
-msgstr ""
+msgstr "Formatos aceptados: PDF, JPG, PNG (Tamaño máximo: 5MB)"
 
 #: templates/payments/receipt/form.html:62
 msgid "View Current File"
-msgstr ""
+msgstr "Ver Archivo Actual"
 
 #: templates/payments/receipt/form.html:135
-#, fuzzy
-#| msgid "Previous Status"
 msgid "Receipt Status"
-msgstr "Estado anterior"
+msgstr "Estado del Comprobante"
 
 #: templates/payments/receipt/form.html:171
 #: templates/payments/receipt/form.html:199
 msgid "Hide Preview"
-msgstr "Ocultar vista previa"
+msgstr "Ocultar Vista Previa"
 
 #: templates/payments/receipt/form.html:203
 msgid "Show Preview"
-msgstr "Mostrar vista previa"
+msgstr "Mostrar Vista Previa"
 
 #: templates/payments/receipt/list.html:19
 msgid "Upload Receipt"
-msgstr ""
+msgstr "Subir Comprobante"
 
 #: templates/payments/receipt/list.html:82
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: templates/payments/receipt/list.html:183
-#, fuzzy
-#| msgid "No panels found"
 msgid "No payment receipts found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron comprobantes de pago"
 
 #: templates/payments/receipt/list.html:196
 msgid "Showing"
-msgstr ""
+msgstr "Mostrando"
 
 #: templates/payments/receipt/list.html:196
 msgid "to"
-msgstr ""
+msgstr "a"
 
 #: templates/payments/receipt/list.html:196
 msgid "of"
-msgstr ""
+msgstr "de"
 
 #: templates/payments/receipt/list.html:196
 msgid "entries"
-msgstr ""
+msgstr "entradas"
 
 #: templates/support/ticket/confirm_delete.html:34
 msgid ""
 "This action cannot be undone. All related comments will also be deleted."
 msgstr ""
+"Esta acción no se puede deshacer. Todos los comentarios relacionados también se eliminarán."
 
 #: templates/support/ticket/confirm_delete.html:39
 #: templates/support/ticket/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Ticket Details"
-msgstr "Detalles"
+msgstr "Detalles del Ticket"
 
 #: templates/support/ticket/confirm_delete.html:44
 msgid "Ticket ID"
-msgstr ""
+msgstr "ID del Ticket"
 
 #: templates/support/ticket/confirm_delete.html:64
 #: templates/support/ticket/detail.html:61
-#, fuzzy
-#| msgid "Patients"
 msgid "Comments"
-msgstr "Pacientes"
+msgstr "Comentarios"
 
 #: templates/support/ticket/detail.html:82
 msgid "Internal"
-msgstr ""
+msgstr "Interno"
 
 #: templates/support/ticket/detail.html:93
-#, fuzzy
-#| msgid "Document type"
 msgid "No comments yet"
-msgstr "Tipo de documento"
+msgstr "No hay comentarios aún"
 
 #: templates/support/ticket/detail.html:102
 #: templates/support/ticket/detail.html:120
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add Comment"
-msgstr "Agregar Cuenta"
+msgstr "Agregar Comentario"
 
 #: templates/support/ticket/detail.html:155
-#, fuzzy
-#| msgid "New Status"
 msgid "Update Status"
-msgstr "Nuevo Estado"
+msgstr "Actualizar Estado"
 
 #: templates/support/ticket/detail.html:217
-#, fuzzy
-#| msgid "Assigned To"
 msgid "Assignment"
 msgstr "Asignado A"
 
 #: templates/support/ticket/detail.html:230
 #: templates/support/ticket/list.html:135
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "Unassigned"
-msgstr "No se asignaron permisos"
+msgstr "No Asignado"
 
 #: templates/support/ticket/form.html:40
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Ticket Information"
-msgstr "Información Personal"
+msgstr "Información del Ticket"
 
 #: templates/support/ticket/form.html:82
 msgid "Priority & Assignment"
-msgstr ""
+msgstr "Prioridad y Asignación"
 
 #: templates/support/ticket/form.html:111
 msgid "Leave empty for automatic assignment based on workload"
-msgstr ""
+msgstr "Dejar vacío para la asignación automática según la carga de trabajo"
 
 #: templates/support/ticket/form.html:129
-#, fuzzy
-#| msgid "Update"
 msgid "Update Ticket"
-msgstr "Actualizar"
+msgstr "Actualizar Ticket"
 
 #: templates/support/ticket/list.html:5
 msgid "Support Tickets"
-msgstr ""
+msgstr "Tickets de Soporte"
 
 #: templates/support/ticket/list.html:6
-#, fuzzy
-#| msgid "Permissions Management"
 msgid "Ticket Management"
-msgstr "Gestión de Permisos"
+msgstr "Gestión de Tickets"
 
 #: templates/support/ticket/list.html:68
 msgid "Tickets List"
-msgstr ""
+msgstr "Lista de Tickets"
 
 #: templates/support/ticket/list.html:69
 msgid "tickets"
-msgstr ""
+msgstr "tickets"
 
 #: templates/support/ticket/list.html:163
-#, fuzzy
-#| msgid "No medical tests found"
 msgid "No tickets found"
-msgstr "No se encontraron pruebas médicas"
+msgstr "No se encontraron tickets"
 
 #: templates/support/ticket/list.html:164
 msgid "Start by creating your first ticket"
-msgstr ""
+msgstr "Comienza creando tu primer ticket"
 
 #: templates/team/area/confirm_delete.html:5
-#, fuzzy
-#| msgid "Delete"
 msgid "Delete Area"
-msgstr "Eliminar"
+msgstr "Eliminar Área"
 
 #: templates/team/area/confirm_delete.html:36
 msgid "Are you sure you want to delete this area?"
-msgstr ""
+msgstr "¿Estás seguro de que deseas eliminar esta área?"
 
 #: templates/team/area/confirm_delete.html:39
 #, python-format
@@ -8361,137 +7969,127 @@ msgid ""
 "<strong>%(name)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Estás a punto de eliminar permanentemente el área "
+"<strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/team/area/confirm_delete.html:59
 #: templates/team/employee/confirm_delete.html:91
 #: templates/team/position/confirm_delete.html:63
-#, fuzzy
-#| msgid "Create"
 msgid "Created by:"
-msgstr "Crear"
+msgstr "Creado por:"
 
 #: templates/team/area/confirm_delete.html:63
 #: templates/team/employee/confirm_delete.html:95
 #: templates/team/position/confirm_delete.html:67
-#, fuzzy
-#| msgid "Create"
 msgid "Created date:"
-msgstr "Crear"
+msgstr "Fecha de Creación:"
 
 #: templates/team/area/confirm_delete.html:68
 msgid "Positions:"
-msgstr ""
+msgstr "Posiciones:"
 
 #: templates/team/area/confirm_delete.html:74
 #: templates/team/position/confirm_delete.html:72
 msgid "Employees:"
-msgstr ""
+msgstr "Empleados:"
 
 #: templates/team/area/confirm_delete.html:85
 #: templates/team/position/confirm_delete.html:83
 msgid "Warning: Dependencies Detected"
-msgstr ""
+msgstr "Advertencia: Dependencias Detectadas"
 
 #: templates/team/area/confirm_delete.html:88
 msgid "This area has positions that will be deleted."
-msgstr ""
+msgstr "Esta área tiene posiciones que serán eliminadas."
 
 #: templates/team/area/confirm_delete.html:91
 msgid "There are employees assigned to this area that will be affected."
-msgstr ""
+msgstr "Hay empleados asignados a esta área que se verán afectados."
 
 #: templates/team/area/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Area Details"
-msgstr "Detalles"
+msgstr "Detalles del Área"
 
 #: templates/team/area/detail.html:49 templates/team/area/form.html:34
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Area Information"
-msgstr "Información Personal"
+msgstr "Información del Área"
 
 #: templates/team/area/detail.html:70 templates/team/employee/detail.html:160
 #: templates/team/position/detail.html:84
-#, fuzzy
-#| msgid "Create"
 msgid "Created Date"
-msgstr "Crear"
+msgstr "Fecha de Creación"
 
 #: templates/team/area/detail.html:76 templates/team/employee/detail.html:169
 #: templates/team/position/detail.html:90
-#, fuzzy
-#| msgid "Last updated"
 msgid "Last Modified Date"
 msgstr "Última actualización"
 
 #: templates/team/area/detail.html:88
 msgid "Positions in Area"
-msgstr ""
+msgstr "Posiciones en el Área"
 
 #: templates/team/area/detail.html:98 templates/team/area/detail.html:173
 #: templates/team/position/list.html:17 templates/team/position/list.html:166
 msgid "Add Position"
-msgstr ""
+msgstr "Agregar Posición"
 
 #: templates/team/area/detail.html:162
 msgid "No positions found in this area"
-msgstr ""
+msgstr "No se encontraron posiciones en esta área"
 
 #: templates/team/area/detail.html:164
 msgid "Add positions to this area to organize your team structure."
-msgstr ""
+msgstr "Agrega posiciones a esta área para organizar la estructura de tu equipo."
 
 #: templates/team/area/detail.html:187
 msgid "Employees in Area"
-msgstr ""
+msgstr "Empleados en el Área"
 
 #: templates/team/area/detail.html:245
 msgid "No employees found in this area"
-msgstr ""
+msgstr "No se encontraron empleados en esta área"
 
 #: templates/team/area/detail.html:247
 msgid "Employees will appear here when they are assigned to this area."
-msgstr ""
+msgstr "Los empleados aparecerán aquí cuando sean asignados a esta área."
 
 #: templates/team/area/form.html:75 templates/team/position/form.html:88
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: templates/team/area/list.html:6
 msgid "List Area"
-msgstr ""
+msgstr "Lista de Áreas"
 
 #: templates/team/area/list.html:17 templates/team/area/list.html:155
 msgid "Add Area"
-msgstr ""
+msgstr "Agregar Área"
 
 #: templates/team/area/list.html:71
 msgid "Areas List"
-msgstr ""
+msgstr "Lista de Áreas"
 
 #: templates/team/area/list.html:72
 msgid "areas"
-msgstr ""
+msgstr "áreas"
 
 #: templates/team/area/list.html:152
-#, fuzzy
-#| msgid "No panels found"
 msgid "No areas found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron áreas"
 
 #: templates/team/area/list.html:153
 msgid "Start by creating your first area"
-msgstr ""
+msgstr "Comienza creando tu primera área"
 
 #: templates/team/employee/confirm_delete.html:5
 msgid "Delete Employee"
-msgstr ""
+msgstr "Eliminar Empleado"
 
 #: templates/team/employee/confirm_delete.html:36
 msgid "Are you sure you want to delete this employee?"
-msgstr ""
+msgstr "¿Estás seguro de que deseas eliminar a este empleado?"
 
 #: templates/team/employee/confirm_delete.html:39
 #, python-format
@@ -8501,21 +8099,21 @@ msgid ""
 "employee <strong>%(name)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Estás a punto de eliminar permanentemente al "
+"empleado <strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/team/employee/confirm_delete.html:53
-#, fuzzy
-#| msgid "Description"
 msgid "Position:"
-msgstr "Descripción"
+msgstr "Posición"
 
 #: templates/team/employee/confirm_delete.html:57
 #: templates/team/position/confirm_delete.html:53
 msgid "Area:"
-msgstr ""
+msgstr "Área:"
 
 #: templates/team/employee/confirm_delete.html:104
-#, fuzzy
-#| msgid "Account Information"
 msgid "Warning: Important Information"
 msgstr "Información de la Cuenta"
 
@@ -8523,75 +8121,69 @@ msgstr "Información de la Cuenta"
 msgid ""
 "Deleting this employee will remove all their information from the system."
 msgstr ""
+"Eliminar a este empleado eliminará toda su información del sistema."
+
 
 #: templates/team/employee/confirm_delete.html:107
 msgid ""
 "The associated user account will remain active but will no longer be linked "
 "to this employee record."
 msgstr ""
+"Esta cuenta de usuario permanecerá activa pero ya no estará vinculada "
+"a este registro de empleado."
 
 #: templates/team/employee/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Employee Details"
-msgstr "Detalles"
+msgstr "Detalles del Empleado"
 
 #: templates/team/employee/detail.html:49
-#, fuzzy
-#| msgid "Account Information"
 msgid "Employee Information"
-msgstr "Información de la Cuenta"
+msgstr "Información del Empleado"
 
 #: templates/team/employee/detail.html:81
-#, fuzzy
-#| msgid "Account"
 msgid "User Account"
-msgstr "Cuenta"
+msgstr "Cuenta de Usuario"
 
 #: templates/team/employee/detail.html:132
 msgid "City"
-msgstr ""
+msgstr "Ciudad"
 
 #: templates/team/employee/form.html:268
 msgid "Update Employee"
-msgstr ""
+msgstr "Actualizar Empleado"
 
 #: templates/team/employee/list.html:6
 msgid "List Employee"
-msgstr ""
+msgstr "Lista de Empleados"
 
 #: templates/team/employee/list.html:17 templates/team/employee/list.html:197
 msgid "Add Employee"
-msgstr ""
+msgstr "Agregar Empleado"
 
 #: templates/team/employee/list.html:83
 msgid "Employees List"
-msgstr ""
+msgstr "Lista de Empleados"
 
 #: templates/team/employee/list.html:84 templates/team/position/detail.html:79
 #: templates/team/position/list.html:120
 msgid "employees"
-msgstr ""
+msgstr "empleados"
 
 #: templates/team/employee/list.html:194
-#, fuzzy
-#| msgid "No panels found"
 msgid "No employees found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron empleados"
 
 #: templates/team/employee/list.html:195
 msgid "Start by creating your first employee"
-msgstr ""
+msgstr "Comienza creando tu primer empleado"
 
 #: templates/team/position/confirm_delete.html:5
-#, fuzzy
-#| msgid "Description"
 msgid "Delete Position"
-msgstr "Descripción"
+msgstr "Eliminar Posición"
 
 #: templates/team/position/confirm_delete.html:36
 msgid "Are you sure you want to delete this position?"
-msgstr ""
+msgstr "¿Estás seguro de que deseas eliminar esta posición?"
 
 #: templates/team/position/confirm_delete.html:39
 #, python-format
@@ -8601,74 +8193,70 @@ msgid ""
 "position <strong>%(name)s</strong>. This action cannot be undone.\n"
 "                            "
 msgstr ""
+"\n"
+"                                Estás a punto de eliminar permanentemente la "
+"posición <strong>%(name)s</strong>. Esta acción no se puede deshacer.\n"
+"                            "
 
 #: templates/team/position/confirm_delete.html:85
 msgid ""
 "This position has employees assigned to it. Deleting this position will "
 "affect these employees."
 msgstr ""
+"This position has employees assigned to it. Deleting this position will "
+"affect these employees."
 
 #: templates/team/position/detail.html:5
-#, fuzzy
-#| msgid "Details"
 msgid "Position Details"
-msgstr "Detalles"
+msgstr "Detalles de la Posición"
 
 #: templates/team/position/detail.html:49 templates/team/position/form.html:34
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Position Information"
-msgstr "Información Personal"
+msgstr "Información de la Posición"
 
 #: templates/team/position/detail.html:78
 msgid "Number of Employees"
-msgstr ""
+msgstr "Número de Empleados"
 
 #: templates/team/position/detail.html:102
 msgid "Employees in Position"
-msgstr ""
+msgstr "Empleados en la Posición"
 
 #: templates/team/position/detail.html:113
 msgid "Join Date"
-msgstr ""
+msgstr "Fecha de Ingreso"
 
 #: templates/team/position/detail.html:162
 msgid "No employees found in this position"
-msgstr ""
+msgstr "No se encontraron empleados en esta posición"
 
 #: templates/team/position/detail.html:164
 msgid "Employees will appear here when they are assigned to this position."
-msgstr ""
+msgstr "Los empleados aparecerán aquí cuando se les asigne a esta posición."
 
 #: templates/team/position/list.html:6
 msgid "List Position"
-msgstr ""
+msgstr "Lista de Posiciones"
 
 #: templates/team/position/list.html:75
 msgid "Positions List"
-msgstr ""
+msgstr "Lista de Posiciones"
 
 #: templates/team/position/list.html:76
-#, fuzzy
-#| msgid "Actions"
 msgid "positions"
-msgstr "Acciones"
+msgstr "posiciones"
 
 #: templates/team/position/list.html:113
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "No area assigned"
-msgstr "No se asignaron permisos"
+msgstr "No se asignaron áreas"
 
 #: templates/team/position/list.html:163
-#, fuzzy
-#| msgid "No panels found"
 msgid "No positions found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron posiciones"
 
 #: templates/team/position/list.html:164
 msgid "Start by creating your first position"
-msgstr ""
+msgstr "Comienza creando tu primera posición"
 
 #: templates/users/profile.html:69 templates/users/profile.html:103
 #: templates/users/settings.html:103
@@ -8706,169 +8294,133 @@ msgid "No permissions assigned"
 msgstr "No se asignaron permisos"
 
 #: templates/users/role/confirm_delete.html:32
-#, fuzzy
-#| msgid "Delete"
 msgid "Delete Role"
-msgstr "Eliminar"
+msgstr "Eliminar Rol"
 
 #: templates/users/role/confirm_delete.html:35
 msgid "Are you sure you want to delete the role"
-msgstr ""
+msgstr "¿Estás seguro de que deseas eliminar el rol?"
 
 #: templates/users/role/confirm_delete.html:46
 msgid ""
 "This action cannot be undone. All users assigned to this role will lose "
 "their permissions."
 msgstr ""
+"Esta acción no se puede deshacer. Todos los usuarios asignados a este rol ""perderán sus permisos."
 
 #: templates/users/role/detail.html:6
-#, fuzzy
-#| msgid "Details"
 msgid "Role Details"
-msgstr "Detalles"
+msgstr "Detalles del Rol"
 
 #: templates/users/role/detail.html:7
-#, fuzzy
-#| msgid "Details"
 msgid "Detail Role"
-msgstr "Detalles"
+msgstr "Detalles del Rol"
 
 #: templates/users/role/detail.html:63 templates/users/role/list.html:65
 #: templates/users/user/detail.html:159 templates/users/user/detail.html:189
 #: templates/users/user/roles.html:94
-#, fuzzy
-#| msgid "Permissions"
 msgid "permissions"
 msgstr "Permisos"
 
 #: templates/users/role/detail.html:71
-#, fuzzy
-#| msgid "Full Name"
 msgid "Role Name"
-msgstr "Nombre Completo"
+msgstr "Nombre del Rol"
 
 #: templates/users/role/detail.html:74
-#, fuzzy
-#| msgid "Permissions"
 msgid "Total Permissions"
-msgstr "Permisos"
+msgstr "Total de Permisos"
 
 #: templates/users/role/detail.html:87
-#, fuzzy
-#| msgid "Permissions"
 msgid "Assigned Permissions"
-msgstr "Permisos"
+msgstr "Permisos Asignados"
 
 #: templates/users/role/detail.html:96
-#, fuzzy
-#| msgid "Permissions"
 msgid "Edit Permissions"
-msgstr "Permisos"
+msgstr "Editar Permisos"
 
 #: templates/users/role/detail.html:131
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "This role has no permissions assigned yet"
-msgstr "No se asignaron permisos"
+msgstr "Este rol no tiene permisos asignados aún"
 
 #: templates/users/role/detail.html:133
-#, fuzzy
-#| msgid "Permissions"
 msgid "Assign Permissions"
-msgstr "Permisos"
+msgstr "Asignar Permisos"
 
 #: templates/users/role/form.html:32
-#, fuzzy
-#| msgid "Personal Information"
 msgid "Role Information"
-msgstr "Información Personal"
+msgstr "Información del Rol"
 
 #: templates/users/role/form.html:43
 msgid ""
 "Enter a unique name for this role (e.g., Administrator, Manager, Employee)"
 msgstr ""
+"Ingresa un nombre único para este rol (por ejemplo, Administrador, Gerente, ""Empleado)"
 
 #: templates/users/role/form.html:56 templates/users/user/form.html:155
 #: templates/users/user/roles.html:121
-#, fuzzy
-#| msgid "Create"
 msgid "Create Role"
-msgstr "Crear"
+msgstr "Crear Rol"
 
 #: templates/users/role/form.html:58
-#, fuzzy
-#| msgid "Create"
 msgid "Update Role"
-msgstr "Crear"
+msgstr "Actualizar Rol"
 
 #: templates/users/role/list.html:6
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "List Roles"
-msgstr "Editar Perfil"
+msgstr "Listar Roles"
 
 #: templates/users/role/list.html:17 templates/users/role/list.html:119
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "Add Role"
-msgstr "Editar Perfil"
+msgstr "Agregar Rol"
 
 #: templates/users/role/list.html:29
 msgid "Roles List"
-msgstr ""
+msgstr "Lista de Roles"
 
 #: templates/users/role/list.html:30
 msgid "roles"
-msgstr ""
+msgstr "roles"
 
 #: templates/users/role/list.html:40
-#, fuzzy
-#| msgid "Permissions"
 msgid "Permissions Count"
-msgstr "Permisos"
+msgstr "Conteo de Permisos"
 
 #: templates/users/role/list.html:116
-#, fuzzy
-#| msgid "No panels found"
 msgid "No roles found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron roles"
 
 #: templates/users/role/list.html:117
 msgid "Start by creating your first role"
-msgstr ""
+msgstr "Comienza creando tu primer rol"
 
 #: templates/users/role/permissions.html:36
-#, fuzzy
-#| msgid "Permissions"
 msgid "Manage Permissions for"
-msgstr "Permisos"
+msgstr "Gestionar Permisos para"
 
 #: templates/users/role/permissions.html:45
 #: templates/users/user/permissions.html:45 templates/users/user/roles.html:43
 msgid "Select All"
-msgstr ""
+msgstr "Seleccionar Todo"
 
 #: templates/users/role/permissions.html:52
 #: templates/users/user/permissions.html:52 templates/users/user/roles.html:50
 msgid "Deselect All"
-msgstr ""
+msgstr "Deseleccionar Todo"
 
 #: templates/users/role/permissions.html:85
 #: templates/users/user/permissions.html:98
 msgid "Select All in Section"
-msgstr ""
+msgstr "Seleccionar Todo en la Sección"
 
 #: templates/users/role/permissions.html:92
 #: templates/users/user/permissions.html:105
 msgid "Deselect All in Section"
-msgstr ""
+msgstr "Deseleccionar Todo en la Sección"
 
 #: templates/users/role/permissions.html:135
 #: templates/users/user/permissions.html:148
-#, fuzzy
-#| msgid "Permissions"
 msgid "Save Permissions"
-msgstr "Permisos"
+msgstr "Guardar Permisos"
 
 #: templates/users/settings.html:29
 msgid "Change avatar"
@@ -8907,80 +8459,64 @@ msgstr ""
 "de restablecimiento de contraseña."
 
 #: templates/users/user/detail.html:6
-#, fuzzy
-#| msgid "Details"
 msgid "User Details"
-msgstr "Detalles"
+msgstr "Detalles del Usuario"
 
 #: templates/users/user/detail.html:7
-#, fuzzy
-#| msgid "Details"
 msgid "Detail User"
-msgstr "Detalles"
+msgstr "Detalles del Usuario"
 
 #: templates/users/user/detail.html:79 templates/users/user/list.html:118
 msgid "Superuser"
-msgstr ""
+msgstr "Superusuario"
 
 #: templates/users/user/detail.html:87 templates/users/user/list.html:124
 msgid "Staff"
-msgstr ""
+msgstr "Personal"
 
 #: templates/users/user/detail.html:113
-#, fuzzy
-#| msgid "Last name"
 msgid "Last Login"
-msgstr "Apellido"
+msgstr "Último Acceso"
 
 #: templates/users/user/detail.html:126
 msgid "Assigned Roles"
-msgstr ""
+msgstr "Roles Asignados"
 
 #: templates/users/user/detail.html:135
-#, fuzzy
-#| msgid "Edit Profile"
 msgid "Edit Roles"
-msgstr "Editar Perfil"
+msgstr "Editar Roles"
 
 #: templates/users/user/detail.html:173 templates/users/user/list.html:144
-#, fuzzy
-#| msgid "No permissions assigned"
 msgid "No roles assigned"
-msgstr "No se asignaron permisos"
+msgstr "No se asignaron roles"
 
 #: templates/users/user/detail.html:174
 msgid "This user has no roles assigned yet"
-msgstr ""
+msgstr "Este usuario no tiene roles asignados aún"
 
 #: templates/users/user/detail.html:176 templates/users/user/form.html:112
 msgid "Assign Roles"
-msgstr ""
+msgstr "Asignar Roles"
 
 #: templates/users/user/detail.html:188
-#, fuzzy
-#| msgid "Permissions"
 msgid "Effective Permissions"
-msgstr "Permisos"
+msgstr "Permisos Efectivos"
 
 #: templates/users/user/detail.html:221
-#, fuzzy
-#| msgid "Permissions"
 msgid "No permissions"
-msgstr "Permisos"
+msgstr "No hay permisos"
 
 #: templates/users/user/detail.html:222
 msgid "This user has no permissions assigned through roles"
-msgstr ""
+msgstr "Este usuario no tiene permisos asignados a través de roles"
 
 #: templates/users/user/form.html:32
-#, fuzzy
-#| msgid "Personal Information"
 msgid "User Information"
-msgstr "Información Personal"
+msgstr "Información del Usuario"
 
 #: templates/users/user/form.html:43
 msgid "Email address will be used for login"
-msgstr ""
+msgstr "La dirección de correo electrónico se utilizará para iniciar sesión"
 
 #: templates/users/user/form.html:72
 msgid "Minimum 8 characters"
@@ -8988,99 +8524,87 @@ msgstr ""
 
 #: templates/users/user/form.html:95
 msgid "Inactive users cannot log in"
-msgstr ""
+msgstr "Los usuarios inactivos no pueden iniciar sesión"
 
 #: templates/users/user/form.html:119
 msgid ""
 "Select one or more roles to assign to this user. Users will inherit all "
 "permissions from their assigned roles."
 msgstr ""
+"Seleccione uno o más roles para asignar a este usuario. Los usuarios heredarán "
+"todos los permisos de sus roles asignados."
 
 #: templates/users/user/form.html:153
 msgid "No roles available. Please create roles first."
-msgstr ""
+msgstr "No hay roles disponibles. Por favor, cree roles primero."
 
 #: templates/users/user/form.html:174
-#, fuzzy
-#| msgid "Create"
 msgid "Create User"
-msgstr "Crear"
+msgstr "Crear Usuario"
 
 #: templates/users/user/form.html:180
-#, fuzzy
-#| msgid "Update"
 msgid "Update User"
-msgstr "Actualizar"
+msgstr "Actualizar Usuario"
 
 #: templates/users/user/list.html:7
 msgid "List Users"
-msgstr ""
+msgstr "Listar Usuarios"
 
 #: templates/users/user/list.html:18 templates/users/user/list.html:204
-#, fuzzy
-#| msgid "User"
 msgid "Add User"
-msgstr "Usuario"
+msgstr "Agregar Usuario"
 
 #: templates/users/user/list.html:55
-#, fuzzy
-#| msgid "Filter"
 msgid "Apply Filters"
-msgstr "Filtrar"
+msgstr "Aplicar Filtros"
 
 #: templates/users/user/list.html:62
-#, fuzzy
-#| msgid "Filter"
 msgid "Clear Filters"
-msgstr "Filtrar"
+msgstr "Limpiar Filtros"
 
 #: templates/users/user/list.html:75
 msgid "Users List"
-msgstr ""
+msgstr "Lista de Usuarios"
 
 #: templates/users/user/list.html:76
 msgid "users"
-msgstr ""
+msgstr "usuarios"
 
 #: templates/users/user/list.html:89
-#, fuzzy
-#| msgid "Date Joined"
 msgid "Joined"
-msgstr "Fecha de Creación"
+msgstr "Unido"
 
 #: templates/users/user/list.html:201
-#, fuzzy
-#| msgid "No panels found"
 msgid "No users found"
-msgstr "No se encontraron paneles"
+msgstr "No se encontraron usuarios"
 
 #: templates/users/user/list.html:202
 msgid "Start by creating your first user"
-msgstr ""
+msgstr "Comience creando su primer usuario"
 
 #: templates/users/user/permissions.html:36
 msgid "Manage Direct Permissions for"
-msgstr ""
+msgstr "Gestionar Permisos Directos para"
 
 #: templates/users/user/permissions.html:65
-#, fuzzy
-#| msgid "Permissions"
 msgid "About Direct Permissions"
-msgstr "Permisos"
+msgstr "Acerca de los Permisos Directos"
 
 #: templates/users/user/permissions.html:66
 msgid ""
 "These are specific permissions assigned directly to this user, in addition "
 "to any permissions inherited from their roles."
 msgstr ""
+"Estos son permisos específicos asignados directamente a este usuario, además "
+"de cualquier permiso heredado de sus roles."
 
 #: templates/users/user/roles.html:34
 msgid "Manage Roles for"
-msgstr ""
+msgstr "Gestionar Roles para"
 
 #: templates/users/user/roles.html:62
 msgid "About Roles and Permissions"
-msgstr ""
+msgstr "Acerca de los Roles y Permisos"
 
 #: templates/users/user/roles.html:64
 msgid ""
@@ -9089,26 +8613,26 @@ msgid ""
 "Users can have multiple roles, and their effective permissions will be the "
 "combination of all permissions from their assigned roles."
 msgstr ""
+"Los roles son grupos de permisos que se pueden asignar a los usuarios. Cuando "
+"asignas un rol a un usuario, heredan todos los permisos de ese rol. Los "
+"usuarios pueden tener múltiples roles, y sus permisos efectivos serán la "
+"combinación de todos los permisos de sus roles asignados."
 
 #: templates/users/user/roles.html:106
-#, fuzzy
-#| msgid "Details"
 msgid "View Details"
-msgstr "Detalles"
+msgstr "Ver Detalles"
 
 #: templates/users/user/roles.html:118
 msgid "No roles available"
-msgstr ""
+msgstr "No hay roles disponibles."
 
 #: templates/users/user/roles.html:119
 msgid "Please create roles first before assigning them to users"
-msgstr ""
+msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 
 #: templates/users/user/roles.html:137
-#, fuzzy
-#| msgid "Save Changes"
 msgid "Save Roles"
-msgstr "Guardar Cambios"
+msgstr "Guardar Roles"
 
 #, fuzzy
 #~| msgid "Account Settings"
