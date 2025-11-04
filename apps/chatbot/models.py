@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
-from apps.ai_agent import choices
+from apps.chatbot import choices
 from apps.core import models as core_models
 
 

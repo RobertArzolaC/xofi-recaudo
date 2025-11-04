@@ -1,5 +1,3 @@
-"""Telegram bot handlers for AI agent."""
-
 import asyncio
 import logging
 
@@ -12,9 +10,9 @@ from telegram.ext import (
     filters,
 )
 
-from apps.ai_agent import constants
-from apps.ai_agent.services.conversation import ConversationService
-from apps.ai_agent.services.receipt_extraction import (
+from apps.chatbot import constants
+from apps.chatbot.conversation import ConversationService
+from apps.chatbot.services.receipt_extraction import (
     ReceiptDataExtractionService,
 )
 from apps.core.services.chats.telegram import TelegramService

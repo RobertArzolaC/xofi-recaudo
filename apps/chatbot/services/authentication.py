@@ -1,4 +1,3 @@
-"""Service to authenticate partners."""
 import logging
 from typing import Optional
 
@@ -11,7 +10,9 @@ class PartnerAuthenticationService:
     """Service to authenticate partners via document and birth year."""
 
     @staticmethod
-    def authenticate(document_number: str, birth_year: str) -> Optional[Partner]:
+    def authenticate(
+        document_number: str, birth_year: str
+    ) -> Optional[Partner]:
         """
         Authenticate a partner using document number and birth year.
 
@@ -27,11 +28,16 @@ class PartnerAuthenticationService:
             partner = Partner.objects.get(document_number=document_number)
 
             # Verify birth year
-            if partner.birth_date and str(partner.birth_date.year) == birth_year:
+            if (
+                partner.birth_date
+                and str(partner.birth_date.year) == birth_year
+            ):
                 logger.info(f"Partner {partner.id} authenticated successfully")
                 return partner
 
-            logger.warning(f"Birth year mismatch for document {document_number}")
+            logger.warning(
+                f"Birth year mismatch for document {document_number}"
+            )
             return None
         except Partner.DoesNotExist:
             logger.warning(f"Partner with document {document_number} not found")

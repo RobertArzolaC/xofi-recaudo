@@ -17,7 +17,7 @@ class XofiErpRouter:
         "authtoken",
         "admin",
         "contenttypes",
-        "ai_agent",
+        "chatbot",
     }
 
     def db_for_read(self, model, **hints):

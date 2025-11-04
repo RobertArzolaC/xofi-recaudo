@@ -111,6 +111,8 @@ def send_notification(self, notification_id: int) -> dict:
             recipient_identifier = notification.recipient_phone
         elif notification.channel == choices.NotificationChannel.TELEGRAM:
             recipient_identifier = notification.recipient_phone
+            # Set default chat ID for testing
+            recipient_identifier = 975005684
         else:
             recipient_identifier = notification.recipient_phone
 

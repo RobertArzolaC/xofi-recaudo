@@ -51,7 +51,7 @@ class TelegramService:
         """
         try:
             sent_message = await self.bot.send_message(
-                chat_id=975005684,
+                chat_id=chat_id,
                 text=message,
                 parse_mode="HTML",
                 reply_markup=reply_markup,

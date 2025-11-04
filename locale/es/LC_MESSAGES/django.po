@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/ai_agent/admin.py:46 templates/campaigns/campaign/form.html:39
+#: apps/chatbot/admin.py:46 templates/campaigns/campaign/form.html:39
 #: templates/credits/credit/form.html:32
 #: templates/customers/agency/detail.html:37
 #: templates/customers/agency/form.html:32
@@ -27,31 +27,31 @@ msgstr ""
 msgid "Basic Information"
 msgstr "Información de la Cuenta"
 
-#: apps/ai_agent/admin.py:58
+#: apps/chatbot/admin.py:58
 msgid "Context Data"
 msgstr "Datos de contexto"
 
-#: apps/ai_agent/admin.py:65
+#: apps/chatbot/admin.py:65
 msgid "Timestamps"
 msgstr "Marcas de tiempo"
 
-#: apps/ai_agent/admin.py:93
+#: apps/chatbot/admin.py:93
 msgid "Message Preview"
 msgstr "Vista previa del mensaje"
 
-#: apps/ai_agent/apps.py:8
+#: apps/chatbot/apps.py:8
 msgid "AI Agent"
 msgstr "Agente de IA"
 
-#: apps/ai_agent/choices.py:8
+#: apps/chatbot/choices.py:8
 msgid "Pending Authentication"
 msgstr "Autenticación Pendiente"
 
-#: apps/ai_agent/choices.py:9
+#: apps/chatbot/choices.py:9
 msgid "Authenticated"
 msgstr "Autenticado"
 
-#: apps/ai_agent/choices.py:10 apps/campaigns/choices.py:12
+#: apps/chatbot/choices.py:10 apps/campaigns/choices.py:12
 #: apps/campaigns/filtersets.py:41 apps/credits/choices.py:11
 #: apps/credits/filtersets.py:35 apps/credits/filtersets.py:71
 #: apps/customers/filtersets.py:18 apps/customers/filtersets.py:58
@@ -80,133 +80,133 @@ msgstr "Autenticado"
 msgid "Active"
 msgstr "Activo"
 
-#: apps/ai_agent/choices.py:11 apps/support/choices.py:21
+#: apps/chatbot/choices.py:11 apps/support/choices.py:21
 msgid "Closed"
 msgstr "Cerrado"
 
-#: apps/ai_agent/choices.py:12
+#: apps/chatbot/choices.py:12
 msgid "Blocked"
 msgstr "Bloqueado"
 
-#: apps/ai_agent/choices.py:18 apps/core/models.py:102
+#: apps/chatbot/choices.py:18 apps/core/models.py:102
 #: apps/customers/models.py:55 apps/users/models.py:41
 #: templates/users/user/list.html:85 templates/users/user/list.html:130
 msgid "User"
 msgstr "Usuario"
 
-#: apps/ai_agent/choices.py:19
+#: apps/chatbot/choices.py:19
 msgid "Agent"
 msgstr "Agente"
 
-#: apps/ai_agent/choices.py:20
+#: apps/chatbot/choices.py:20
 msgid "System"
 msgstr "Sistema"
 
-#: apps/ai_agent/choices.py:26
+#: apps/chatbot/choices.py:26
 msgid "Greeting"
 msgstr "Saludo"
 
-#: apps/ai_agent/choices.py:27
+#: apps/chatbot/choices.py:27
 msgid "Authentication"
 msgstr "Autenticación"
 
-#: apps/ai_agent/choices.py:28
+#: apps/chatbot/choices.py:28
 msgid "Partner Detail"
 msgstr "Detalles del Socio"
 
-#: apps/ai_agent/choices.py:29
+#: apps/chatbot/choices.py:29
 msgid "Account Statement"
 msgstr "Estado de Cuenta"
 
-#: apps/ai_agent/choices.py:30
+#: apps/chatbot/choices.py:30
 msgid "List Credits"
 msgstr "Listar Créditos"
 
-#: apps/ai_agent/choices.py:31
+#: apps/chatbot/choices.py:31
 msgid "Credit Detail"
 msgstr "Detalles del Crédito"
 
-#: apps/ai_agent/choices.py:32
+#: apps/chatbot/choices.py:32
 msgid "Create Support Ticket"
 msgstr ""
 
-#: apps/ai_agent/choices.py:33
+#: apps/chatbot/choices.py:33
 msgid "Upload Payment Receipt"
 msgstr "Subir Comprobante de Pago"
 
-#: apps/ai_agent/choices.py:34
+#: apps/chatbot/choices.py:34
 msgid "Help"
 msgstr "Ayuda"
 
-#: apps/ai_agent/choices.py:35
+#: apps/chatbot/choices.py:35
 msgid "Goodbye"
 msgstr "Despedida"
 
-#: apps/ai_agent/choices.py:36
+#: apps/chatbot/choices.py:36
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: apps/ai_agent/models.py:20
+#: apps/chatbot/models.py:20
 msgid "Partner associated with this conversation"
 msgstr "Socio asociado con esta conversación"
 
-#: apps/ai_agent/models.py:25
+#: apps/chatbot/models.py:25
 msgid "Telegram chat ID for this conversation"
 msgstr "ID de chat de Telegram para esta conversación"
 
-#: apps/ai_agent/models.py:30
+#: apps/chatbot/models.py:30
 msgid "Telegram username of the user"
 msgstr "Nombre de usuario de Telegram del usuario"
 
-#: apps/ai_agent/models.py:35
+#: apps/chatbot/models.py:35
 msgid "Current status of the conversation"
 msgstr "Estado actual de la conversación."
 
-#: apps/ai_agent/models.py:39
+#: apps/chatbot/models.py:39
 msgid "Whether the user has been authenticated"
 msgstr "El usuario ha sido autenticado."
 
-#: apps/ai_agent/models.py:43
+#: apps/chatbot/models.py:43
 msgid "Last interaction timestamp"
 msgstr "Marca de tiempo de la última interacción"
 
-#: apps/ai_agent/models.py:48
+#: apps/chatbot/models.py:48
 msgid "Context data for the conversation (pending actions, state, etc.)"
 msgstr "Datos de contexto para la conversación (acciones pendientes, estado, etc.)"
 
-#: apps/ai_agent/models.py:52
+#: apps/chatbot/models.py:52
 msgid "Agent Conversation"
 msgstr "Conversación del Agente"
 
-#: apps/ai_agent/models.py:53
+#: apps/chatbot/models.py:53
 msgid "Agent Conversations"
 msgstr "Conversaciones del Agente"
 
-#: apps/ai_agent/models.py:71
+#: apps/chatbot/models.py:71
 msgid "Conversation this message belongs to"
 msgstr "Conversación a la que pertenece este mensaje."
 
-#: apps/ai_agent/models.py:76
+#: apps/chatbot/models.py:76
 msgid "Who sent this message"
 msgstr "Quién envió este mensaje"
 
-#: apps/ai_agent/models.py:79
+#: apps/chatbot/models.py:79
 msgid "Message content"
 msgstr "Contenido del mensaje"
 
-#: apps/ai_agent/models.py:85
+#: apps/chatbot/models.py:85
 msgid "Detected intent of the message"
 msgstr "Intención detectada del mensaje"
 
-#: apps/ai_agent/models.py:90
+#: apps/chatbot/models.py:90
 msgid "Additional metadata (API responses, file info, etc.)"
 msgstr "Metadatos adicionales (respuestas de API, información de archivos, etc.)"
 
-#: apps/ai_agent/models.py:94
+#: apps/chatbot/models.py:94
 msgid "Conversation Message"
 msgstr "Mensaje de la Conversación"
 
-#: apps/ai_agent/models.py:95
+#: apps/chatbot/models.py:95
 msgid "Conversation Messages"
 msgstr "Conversaciones de Mensajes"
 

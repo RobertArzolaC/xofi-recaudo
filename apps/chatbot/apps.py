@@ -2,7 +2,7 @@ from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
 
 
-class AiAgentConfig(AppConfig):
+class ChatbotConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.ai_agent"
-    verbose_name = _("AI Agent")
+    name = "apps.chatbot"
+    verbose_name = _("Chatbot")

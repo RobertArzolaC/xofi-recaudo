@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from telegram.ext import Application
 
-from apps.ai_agent.handlers import setup_handlers
+from apps.chatbot.channels.telegram import setup_handlers
 
 logger = logging.getLogger(__name__)
 

@@ -61,7 +61,7 @@ LOCAL_APPS = [
     "apps.credits.apps.CreditsConfig",
     "apps.campaigns.apps.CampaignsConfig",
     "apps.support.apps.SupportConfig",
-    "apps.ai_agent.apps.AiAgentConfig",
+    "apps.chatbot.apps.ChatbotConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

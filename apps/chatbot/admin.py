@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from apps.ai_agent import models
+from apps.chatbot import models
 
 
 class ConversationMessageInline(admin.TabularInline):

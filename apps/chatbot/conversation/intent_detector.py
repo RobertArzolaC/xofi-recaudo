@@ -2,9 +2,9 @@ import logging
 import re
 from typing import Dict, Optional
 
-from apps.ai_agent.choices import IntentType
-from apps.ai_agent.constants import INTENT_KEYWORDS
-from apps.ai_agent.services.ai_agent import get_ai_agent_service
+from apps.chatbot.choices import IntentType
+from apps.chatbot.constants import INTENT_KEYWORDS
+from apps.chatbot.services.gemini import get_gemini_service
 
 logger = logging.getLogger(__name__)
 
@@ -88,10 +88,8 @@ class IntentDetector:
             Detected IntentType
         """
         try:
-            # Import here to avoid circular imports
-
-            ai_service = get_ai_agent_service()
-            ai_result = ai_service.analyze_intent_with_ai(message)
+            gemini_service = get_gemini_service()
+            ai_result = gemini_service.analyze_intent_with_ai(message)
 
             intent_str = ai_result.get("intent", "UNKNOWN")
             confidence = ai_result.get("confidence", 0)

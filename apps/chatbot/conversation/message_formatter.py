@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from apps.ai_agent import constants
+from apps.chatbot import constants
 
 
 class MessageFormatter:

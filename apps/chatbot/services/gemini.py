@@ -4,19 +4,19 @@ from typing import Any, Dict, Optional
 
 from django.conf import settings
 
-from apps.ai_agent import constants
+from apps.chatbot import constants
 
 logger = logging.getLogger(__name__)
 
 
-class AIAgentService:
+class GeminiService:
     """
-    AI Agent service using Google Gemini.
-    Handles complex queries that cannot be resolved with rule-based matching.
+    Google Gemini AI service for chatbot.
+    Handles complex queries and intent analysis using Gemini AI models.
     """
 
     def __init__(self):
-        """Initialize AI agent with Gemini configuration."""
+        """Initialize Gemini service with API configuration."""
         self.gemini_api_key = getattr(settings, "GOOGLE_GEMINI_API_KEY", "")
         self.model_name = getattr(settings, "GEMINI_MODEL_NAME", "gemini-pro")
 
@@ -161,12 +161,12 @@ Resumen de cuenta:
 
 
 # Singleton instance
-_ai_agent_service = None
+_gemini_service = None
 
 
-def get_ai_agent_service() -> AIAgentService:
-    """Get or create singleton AI agent service instance."""
-    global _ai_agent_service
-    if _ai_agent_service is None:
-        _ai_agent_service = AIAgentService()
-    return _ai_agent_service
+def get_gemini_service() -> GeminiService:
+    """Get or create singleton Gemini service instance."""
+    global _gemini_service
+    if _gemini_service is None:
+        _gemini_service = GeminiService()
+    return _gemini_service
