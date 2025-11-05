@@ -1,21 +1,458 @@
 {% extends "layouts/dashboard.html" %}
 {% load static %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title_page %}Dashboard{% endblock title_page %}
 {% block toolbar_title %}Dashboard{% endblock %}
 
 {% block content %}
 <main class="container-xxl">
-  <div class="row">
-    <div class="text-end mb-4">
-      <small class="text-muted">
-          {% trans "Last updated" %}: {{ last_updated|date:"Y-m-d H:i" }}
-      </small>
+
+  <!-- KPIs de Cobranza -->
+  <div class="row g-5 g-xl-8">
+    <!-- Cartera Total -->
+    <div class="col-xl-3">
+      <div class="card card-xl-stretch mb-xl-8">
+        <div class="card-body">
+          <span class="svg-icon svg-icon-primary svg-icon-3x ms-n1">
+            <i class="bi bi-wallet2 fs-2x text-primary"></i>
+          </span>
+          <div class="text-gray-900 fw-bold fs-2 mb-2 mt-5">
+            S/ {{ total_portfolio|floatformat:2|intcomma }}
+          </div>
+          <div class="fw-semibold text-gray-400">Cartera Total</div>
+          <div class="text-muted mt-2">
+            <small>{{ total_credits }} créditos activos</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cartera Vencida -->
+    <div class="col-xl-3">
+      <div class="card card-xl-stretch mb-xl-8">
+        <div class="card-body">
+          <span class="svg-icon svg-icon-danger svg-icon-3x ms-n1">
+            <i class="bi bi-exclamation-triangle fs-2x text-danger"></i>
+          </span>
+          <div class="text-gray-900 fw-bold fs-2 mb-2 mt-5">
+            S/ {{ overdue_amount|floatformat:2|intcomma }}
+          </div>
+          <div class="fw-semibold text-gray-400">Cartera Vencida</div>
+          <div class="text-muted mt-2">
+            <small>{{ overdue_count }} cuotas vencidas</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasa de Morosidad -->
+    <div class="col-xl-3">
+      <div class="card card-xl-stretch mb-xl-8">
+        <div class="card-body">
+          <span class="svg-icon svg-icon-warning svg-icon-3x ms-n1">
+            <i class="bi bi-pie-chart fs-2x text-warning"></i>
+          </span>
+          <div class="text-gray-900 fw-bold fs-2 mb-2 mt-5">
+            {{ delinquency_rate }}%
+          </div>
+          <div class="fw-semibold text-gray-400">Tasa de Morosidad</div>
+          <div class="progress h-6px mt-3">
+            <div class="progress-bar {% if delinquency_rate < 10 %}bg-success{% elif delinquency_rate < 15 %}bg-warning{% else %}bg-danger{% endif %}"
+                 style="width: {{ delinquency_rate }}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recaudación del Mes -->
+    <div class="col-xl-3">
+      <div class="card card-xl-stretch mb-xl-8">
+        <div class="card-body">
+          <span class="svg-icon svg-icon-success svg-icon-3x ms-n1">
+            <i class="bi bi-cash-coin fs-2x text-success"></i>
+          </span>
+          <div class="text-gray-900 fw-bold fs-2 mb-2 mt-5">
+            S/ {{ collected_month|floatformat:2|intcomma }}
+          </div>
+          <div class="fw-semibold text-gray-400">Recaudado (Mes)</div>
+          <div class="text-muted mt-2">
+            <small>{{ payments_count_month }} pagos | {{ goal_percentage|floatformat:0 }}% de meta</small>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row g-xl-8">
 
+  <!-- Gráficos -->
+  <div class="row g-5 g-xl-8">
+    <!-- Evolución de Recaudación -->
+    <div class="col-xl-8">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Evolución de Recaudación</span>
+            <span class="text-muted fw-semibold fs-7">Últimos 6 meses</span>
+          </h3>
+        </div>
+        <div class="card-body">
+          <canvas id="recaudacionChart" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución de Morosidad -->
+    <div class="col-xl-4">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Morosidad por Días</span>
+            <span class="text-muted fw-semibold fs-7">Distribución actual</span>
+          </h3>
+        </div>
+        <div class="card-body d-flex justify-content-center">
+          <div style="position: relative; height: 300px; width: 100%;">
+            <canvas id="moraChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Top Deudores -->
+  <div class="row g-5 g-xl-8">
+    <div class="col-xl-12">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Top 10 Deudores</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Clientes con mayor morosidad</span>
+          </h3>
+        </div>
+        <div class="card-body py-3">
+          <div class="table-responsive">
+            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+              <thead>
+                <tr class="fw-bold text-muted">
+                  <th class="min-w-50px">#</th>
+                  <th class="min-w-150px">Cliente</th>
+                  <th class="min-w-100px">Documento</th>
+                  <th class="min-w-100px text-center">Cuotas</th>
+                  <th class="min-w-120px text-end">Deuda Total</th>
+                  <th class="min-w-100px text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for debtor in top_debtors %}
+                <tr>
+                  <td>
+                    <span class="text-dark fw-bold fs-6">{{ forloop.counter }}</span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="d-flex justify-content-start flex-column">
+                        <span class="text-dark fw-bold fs-6">{{ debtor.partner.get_full_name }}</span>
+                        <span class="text-muted fw-semibold text-muted d-block fs-7">
+                          {{ debtor.partner.phone|default:"-" }}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-muted fw-semibold d-block fs-7">
+                      {{ debtor.partner.document_number }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge badge-light-danger fs-7 fw-bold">{{ debtor.installments_count }}</span>
+                  </td>
+                  <td class="text-end">
+                    <span class="text-danger fw-bold fs-5">S/ {{ debtor.debt|floatformat:2|intcomma }}</span>
+                  </td>
+                  <td class="text-center">
+                    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                      <i class="bi bi-eye fs-4"></i>
+                    </a>
+                    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                      <i class="bi bi-megaphone fs-4"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-10">
+                    No hay deudores morosos
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Campañas y Pagos -->
+  <div class="row g-5 g-xl-8">
+    <!-- Campañas Activas -->
+    <div class="col-xl-6">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Campañas de Cobranza</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Estado de campañas</span>
+          </h3>
+        </div>
+        <div class="card-body pt-5">
+          <div class="d-flex flex-stack mb-5">
+            <div class="d-flex align-items-center me-2">
+              <div class="symbol symbol-50px me-3">
+                <div class="symbol-label bg-light-success">
+                  <i class="bi bi-check-circle fs-2x text-success"></i>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-800 fw-bold fs-6 d-block">Campañas Activas</span>
+                <span class="text-muted fw-semibold d-block fs-7">En ejecución</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="text-gray-800 fw-bold fs-2">{{ campaigns_stats.active }}</span>
+            </div>
+          </div>
+
+          <div class="d-flex flex-stack mb-5">
+            <div class="d-flex align-items-center me-2">
+              <div class="symbol symbol-50px me-3">
+                <div class="symbol-label bg-light-primary">
+                  <i class="bi bi-send fs-2x text-primary"></i>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-800 fw-bold fs-6 d-block">Enviando</span>
+                <span class="text-muted fw-semibold d-block fs-7">En proceso</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="text-gray-800 fw-bold fs-2">{{ campaigns_stats.sending }}</span>
+            </div>
+          </div>
+
+          <div class="d-flex flex-stack">
+            <div class="d-flex align-items-center me-2">
+              <div class="symbol symbol-50px me-3">
+                <div class="symbol-label bg-light-info">
+                  <i class="bi bi-check-all fs-2x text-info"></i>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-800 fw-bold fs-6 d-block">Completadas</span>
+                <span class="text-muted fw-semibold d-block fs-7">Este mes</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="text-gray-800 fw-bold fs-2">{{ campaigns_stats.completed }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagos Recientes -->
+    <div class="col-xl-6">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Pagos Recientes</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Últimas transacciones</span>
+          </h3>
+        </div>
+        <div class="card-body pt-5">
+          {% for payment in recent_payments|slice:":5" %}
+          <div class="d-flex flex-stack {% if not forloop.last %}mb-5{% endif %}">
+            <div class="d-flex align-items-center me-2">
+              <div class="symbol symbol-40px me-3">
+                <div class="symbol-label bg-light-success">
+                  <i class="bi bi-check-circle fs-3 text-success"></i>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-800 fw-bold fs-6 d-block">{{ payment.partner.get_full_name|truncatechars:30 }}</span>
+                <span class="text-muted fw-semibold d-block fs-7">{{ payment.payment_date|date:"d/m/Y H:i" }}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="text-success fw-bold fs-4">S/ {{ payment.amount|floatformat:2|intcomma }}</span>
+              <span class="text-muted fw-semibold d-block fs-7">{{ payment.payment_method }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="text-center text-muted py-10">
+            No hay pagos recientes
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio por Producto -->
+  <div class="row g-5 g-xl-8">
+    <div class="col-xl-12">
+      <div class="card card-xl-stretch mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Portfolio por Producto</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Distribución de cartera activa</span>
+          </h3>
+        </div>
+        <div class="card-body py-3">
+          <div class="table-responsive">
+            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+              <thead>
+                <tr class="fw-bold text-muted">
+                  <th class="min-w-200px">Producto</th>
+                  <th class="min-w-100px text-center">Créditos</th>
+                  <th class="min-w-150px text-end">Saldo Activo</th>
+                  <th class="min-w-150px text-end">Total Desembolsado</th>
+                  <th class="min-w-100px text-end">% del Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in portfolio_by_product %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-45px me-5">
+                        <div class="symbol-label bg-light-primary">
+                          <i class="bi bi-briefcase fs-2 text-primary"></i>
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <span class="text-dark fw-bold fs-6">{{ product.product__name|default:"Sin producto" }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge badge-light-primary fs-7 fw-bold">{{ product.count }}</span>
+                  </td>
+                  <td class="text-end">
+                    <span class="text-dark fw-bold fs-6">S/ {{ product.total_active|floatformat:2|intcomma }}</span>
+                  </td>
+                  <td class="text-end">
+                    <span class="text-muted fw-semibold fs-7">S/ {{ product.total_disbursed|floatformat:2|intcomma }}</span>
+                  </td>
+                  <td class="text-end">
+                    {% widthratio product.total_active total_portfolio 100 as percentage %}
+                    <span class="text-muted fw-semibold fs-7">{{ percentage|floatformat:1 }}%</span>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-10">
+                    No hay datos disponibles
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 {% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  // Datos del backend
+  const recaudacionData = {{ recaudacion_evolution|safe }};
+  const moraRanges = {{ mora_ranges|safe }};
+
+  // Gráfico de Recaudación
+  const recaudacionCtx = document.getElementById('recaudacionChart');
+  if (recaudacionCtx) {
+    new Chart(recaudacionCtx, {
+      type: 'line',
+      data: {
+        labels: recaudacionData.map(d => d.month),
+        datasets: [{
+          label: 'Recaudación',
+          data: recaudacionData.map(d => d.amount),
+          borderColor: '#50CD89',
+          backgroundColor: 'rgba(80, 205, 137, 0.1)',
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return 'S/ ' + (value / 1000).toFixed(0) + 'k';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Gráfico de Morosidad
+  const moraCtx = document.getElementById('moraChart');
+  if (moraCtx) {
+    new Chart(moraCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['1-30 días', '31-60 días', '61-90 días', '+90 días'],
+        datasets: [{
+          data: [moraRanges['1-30'], moraRanges['31-60'], moraRanges['61-90'], moraRanges['90+']],
+          backgroundColor: ['#FFC700', '#F1416C', '#7239EA', '#181C32'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              font: {
+                size: 12
+              },
+              usePointStyle: true
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return label + ': ' + value + ' cuotas (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+</script>
+{% endblock extra_js %}
