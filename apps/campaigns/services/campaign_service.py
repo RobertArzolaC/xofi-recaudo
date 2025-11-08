@@ -1,10 +1,3 @@
-"""
-Services for campaign management and execution.
-
-This module contains business logic for campaign operations, extracted from
-the Campaign model to improve code organization and reusability.
-"""
-
 import logging
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
@@ -132,7 +125,9 @@ class CampaignExecutionService:
 
         update_fields = ["is_processing", "last_execution_result"]
         original_status = getattr(
-            campaign, "_original_status", choices.CampaignStatus.DRAFT
+            campaign,
+            "_original_status",
+            choices.CampaignStatus.DRAFT,
         )
         old_status = campaign.status
 
@@ -224,13 +219,25 @@ class CampaignNotificationService:
         Returns:
             List of created notification instances
         """
-        from apps.campaigns.models import CampaignNotification
+        from django.contrib.contenttypes.models import ContentType
+
+        from apps.notifications.models import CampaignNotification
 
         if not campaign.group:
             return []
 
         if partners is None:
             partners = campaign.group.partners.all()
+
+        if not partners:
+            return []
+
+        # Get ContentType instances for the generic foreign keys
+        campaign_content_type = ContentType.objects.get_for_model(campaign)
+        # Get ContentType for Partner model
+        from apps.partners.models import Partner
+
+        partner_content_type = ContentType.objects.get_for_model(Partner)
 
         notifications = []
         for partner in partners:
@@ -239,8 +246,10 @@ class CampaignNotificationService:
             )
 
             notification = CampaignNotification(
-                campaign=campaign,
-                partner=partner,
+                campaign_type=campaign_content_type,
+                campaign_id=campaign.id,
+                recipient_type=partner_content_type,
+                recipient_id=partner.id,
                 notification_type=notification_type,
                 channel=choices.NotificationChannel.WHATSAPP,  # Default channel
                 recipient_email=partner.email,
@@ -269,17 +278,35 @@ class CampaignNotificationService:
         Returns:
             Dict with notification counts by status
         """
-        summary = campaign.notifications.aggregate(
+        from django.contrib.contenttypes.models import ContentType
+
+        from apps.notifications.models import CampaignNotification
+
+        # Get the ContentType for the campaign model
+        campaign_content_type = ContentType.objects.get_for_model(campaign)
+
+        # Query notifications using GenericForeignKey fields
+        notifications_queryset = CampaignNotification.objects.filter(
+            campaign_type=campaign_content_type, campaign_id=campaign.id
+        )
+
+        summary = notifications_queryset.aggregate(
             total=Count("id"),
             pending=Count(
-                "id", filter=Q(status=choices.NotificationStatus.PENDING)
+                "id",
+                filter=Q(status=choices.NotificationStatus.PENDING),
             ),
-            sent=Count("id", filter=Q(status=choices.NotificationStatus.SENT)),
+            sent=Count(
+                "id",
+                filter=Q(status=choices.NotificationStatus.SENT),
+            ),
             failed=Count(
-                "id", filter=Q(status=choices.NotificationStatus.FAILED)
+                "id",
+                filter=Q(status=choices.NotificationStatus.FAILED),
             ),
             cancelled=Count(
-                "id", filter=Q(status=choices.NotificationStatus.CANCELLED)
+                "id",
+                filter=Q(status=choices.NotificationStatus.CANCELLED),
             ),
         )
 

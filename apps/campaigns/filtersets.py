@@ -58,9 +58,19 @@ class CampaignFilterSet(django_filters.FilterSet):
         label=_("Use Payment Link"),
     )
 
+    # Channel filter
+    channel = django_filters.ChoiceFilter(
+        choices=choices.NotificationChannel.choices,
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
+        empty_label=_("All channels"),
+        label=_("Channel"),
+    )
+
     class Meta:
         model = models.Campaign
-        fields = ["search", "status", "use_payment_link"]
+        fields = ["search", "status", "channel", "use_payment_link"]
 
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""

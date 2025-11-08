@@ -13,6 +13,7 @@ class XofiErpRouter:
         "team",
         "credits",
         "campaigns",
+        "notifications",
         "support",
         "authtoken",
         "admin",

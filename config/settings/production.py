@@ -120,16 +120,16 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=22, minute=0),
         "kwargs": {},
     },
-    "send-scheduled-notifications": {
-        "task": "campaigns.send_scheduled_notifications",
-        "schedule": crontab(minute="*/10"),  # Cada 10 minutos
-    },
     "update-campaign-status": {
         "task": "campaigns.update_campaign_status",
         "schedule": crontab(minute="*/5"),  # Cada 5 minutos
         "options": {
             "expires": 240,  # Expira después de 4 minutos
         },
+    },
+    "send-scheduled-notifications": {
+        "task": "notifications.send_scheduled_notifications",
+        "schedule": crontab(minute="*/10"),  # Cada 10 minutos
     },
 }
 

@@ -1,5 +1,6 @@
 from dal import autocomplete
 from django import forms
+from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
 
 from apps.campaigns import choices, models
@@ -87,7 +88,10 @@ class CampaignForm(forms.ModelForm):
 
         # Restrict status choices to only DRAFT and SCHEDULED for create/update operations
         self.fields["status"].choices = [
-            (choices.CampaignStatus.DRAFT, choices.CampaignStatus.DRAFT.label),
+            (
+                choices.CampaignStatus.DRAFT,
+                choices.CampaignStatus.DRAFT.label,
+            ),
             (
                 choices.CampaignStatus.SCHEDULED,
                 choices.CampaignStatus.SCHEDULED.label,
@@ -304,3 +308,157 @@ class BulkAddPartnersForm(forms.Form):
                 results["not_found"].append(document)
 
         return results
+
+
+class CampaignCSVFileForm(forms.ModelForm):
+    """Form for creating and editing CSV/Excel file-based campaigns."""
+
+    class Meta:
+        model = models.CampaignCSVFile
+        fields = [
+            "name",
+            "description",
+            "file",
+            "execution_date",
+            "status",
+            "channel",
+            "use_payment_link",
+            "target_amount",
+            "average_cost",
+        ]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Campaign name"),
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Campaign description"),
+                    "rows": 4,
+                }
+            ),
+            "file": forms.FileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": ".csv,.xlsx,.xls",
+                }
+            ),
+            "execution_date": forms.DateTimeInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "datetime-local",
+                },
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "status": forms.Select(attrs={"class": "form-select"}),
+            "channel": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
+            ),
+            "use_payment_link": forms.CheckboxInput(
+                attrs={"class": "form-check-input"}
+            ),
+            "target_amount": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Target amount"),
+                    "step": "0.01",
+                    "min": "0",
+                }
+            ),
+            "average_cost": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Average cost"),
+                    "step": "0.01",
+                    "min": "0",
+                }
+            ),
+        }
+        labels = {
+            "name": _("Name"),
+            "description": _("Description"),
+            "file": _("CSV/Excel File"),
+            "execution_date": _("Execution Date"),
+            "status": _("Status"),
+            "channel": _("Channel"),
+            "use_payment_link": _("Use Payment Link"),
+            "target_amount": _("Target Amount"),
+            "average_cost": _("Average Cost"),
+        }
+        help_texts = {
+            "file": _(
+                "Upload a CSV or Excel file with contact information. "
+                "Required columns: full_name, amount. "
+                "Optional columns: email, phone, document_number."
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name"].required = True
+        self.fields["file"].required = not self.instance.pk
+
+        # Restrict status choices to only DRAFT and SCHEDULED
+        self.fields["status"].choices = [
+            (
+                choices.CampaignStatus.DRAFT,
+                choices.CampaignStatus.DRAFT.label,
+            ),
+            (
+                choices.CampaignStatus.SCHEDULED,
+                choices.CampaignStatus.SCHEDULED.label,
+            ),
+        ]
+
+        # Add file validator
+        self.fields["file"].validators.append(
+            FileExtensionValidator(
+                allowed_extensions=["csv", "xlsx", "xls"],
+                message=_("Only CSV and Excel files are allowed."),
+            )
+        )
+
+    def clean_file(self):
+        """Validate the uploaded file."""
+        file = self.cleaned_data.get("file")
+
+        if file:
+            # Check file size (max 10MB)
+            if file.size > 10 * 1024 * 1024:
+                raise forms.ValidationError(
+                    _("File size too large. Maximum size is 10MB.")
+                )
+
+            # Check file extension
+            file_extension = file.name.split(".")[-1].lower()
+            if file_extension not in ["csv", "xlsx", "xls"]:
+                raise forms.ValidationError(
+                    _(
+                        "Invalid file format. Only CSV and Excel files are allowed."
+                    )
+                )
+
+        return file
+
+    def save(self, commit=True):
+        """Save the form and trigger validation if file is new."""
+        instance = super().save(commit=False)
+
+        # Set campaign type
+        instance.campaign_type = choices.CampaignType.FILE
+
+        if commit:
+            instance.save()
+
+            # If a new file was uploaded, trigger validation
+            if "file" in self.changed_data and instance.file:
+                # Import here to avoid circular imports
+                from apps.campaigns import tasks
+
+                # Queue validation task
+                tasks.validate_csv_campaign.delay(instance.id)
+
+        return instance

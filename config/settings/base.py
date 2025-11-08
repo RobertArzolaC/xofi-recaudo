@@ -60,6 +60,7 @@ LOCAL_APPS = [
     "apps.team.apps.TeamConfig",
     "apps.credits.apps.CreditsConfig",
     "apps.campaigns.apps.CampaignsConfig",
+    "apps.notifications.apps.NotificationsConfig",
     "apps.support.apps.SupportConfig",
     "apps.chatbot.apps.ChatbotConfig",
 ]

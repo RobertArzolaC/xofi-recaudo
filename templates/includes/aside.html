@@ -288,7 +288,7 @@
 
         <div class="menu-item">
           {% if perms.campaigns.view_campaign %}
-            <a class="menu-link {% if "campaign" in request.path and "group" not in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-list' %}">
+            <a class="menu-link {% if "campaign/" in request.path and "group" not in request.path and "csv" not in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-list' %}">
               <span class="menu-icon">
                 <i class="ki-duotone ki-notification-on fs-2 me-2">
                   <span class="path1"></span>
@@ -300,6 +300,22 @@
               </span>
               <span class="menu-title">
                 {% trans 'Campaigns' %}
+              </span>
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="menu-item">
+          {% if perms.campaigns.view_campaigncsvfile %}
+            <a class="menu-link {% if "campaign-csv" in request.path or "campaigns-csv" in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-csv-list' %}">
+              <span class="menu-icon">
+                <i class="ki-duotone ki-file fs-2 me-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </span>
+              <span class="menu-title">
+                {% trans 'CSV Campaigns' %}
               </span>
             </a>
           {% endif %}

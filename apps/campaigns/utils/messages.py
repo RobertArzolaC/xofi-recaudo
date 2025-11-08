@@ -1,12 +1,13 @@
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 from constance import config
 
-from apps.campaigns import models
+if TYPE_CHECKING:
+    from apps.notifications.models import CampaignNotification
 
 
 def prepare_message_context(
-    notification: models.CampaignNotification, debt_detail: Dict
+    notification: "CampaignNotification", debt_detail: Dict
 ) -> dict:
     """
     Prepare context dictionary for message rendering.
@@ -72,7 +73,7 @@ def prepare_message_context(
 
 
 def generate_default_message(
-    notification: models.CampaignNotification,
+    notification: "CampaignNotification",
     context: Dict,
     debt_detail: Dict,
 ) -> str:

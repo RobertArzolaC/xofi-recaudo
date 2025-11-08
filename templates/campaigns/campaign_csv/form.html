@@ -1,0 +1,220 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{{ title }}{% endblock title_page %}
+{% block toolbar_title %}{{ title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.campaigns:campaign-csv-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" enctype="multipart/form-data" class="form" id="campaign-csv-form">
+        {% csrf_token %}
+
+        <div class="card mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">{{ title }}</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-5 g-xl-8">
+                    <!-- Basic Information -->
+                    <div class="col-xl-6">
+                        <div class="card card-flush mb-6 mb-xl-9">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <h2 class="mb-0">{% trans "Basic Information" %}</h2>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label required">{{ form.name.label }}</label>
+                                        {{ form.name }}
+                                        {% if form.name.errors %}
+                                            <div class="text-danger fs-7">{{ form.name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label">{{ form.description.label }}</label>
+                                        {{ form.description }}
+                                        {% if form.description.errors %}
+                                            <div class="text-danger fs-7">{{ form.description.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label required">{{ form.file.label }}</label>
+                                        {{ form.file }}
+                                        {% if form.file.errors %}
+                                            <div class="text-danger fs-7">{{ form.file.errors.0 }}</div>
+                                        {% endif %}
+                                        <div class="form-text">{{ form.file.help_text }}</div>
+                                        {% if form.instance.file %}
+                                        <div class="mt-2">
+                                            <span class="text-muted">{% trans "Current file:" %}</span>
+                                            <a href="{{ form.instance.file.url }}" class="text-primary" download>{{ form.instance.file.name|slice:"20:" }}</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label">{{ form.execution_date.label }}</label>
+                                        {{ form.execution_date }}
+                                        {% if form.execution_date.errors %}
+                                            <div class="text-danger fs-7">{{ form.execution_date.errors.0 }}</div>
+                                        {% endif %}
+                                        <div class="form-text">{% trans "Date and time when the campaign notifications will be sent" %}</div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.status.label }}</label>
+                                        {{ form.status }}
+                                        {% if form.status.errors %}
+                                            <div class="text-danger fs-7">{{ form.status.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <label class="form-label">{{ form.target_amount.label }}</label>
+                                        {{ form.target_amount }}
+                                        {% if form.target_amount.errors %}
+                                            <div class="text-danger fs-7">{{ form.target_amount.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campaign Settings -->
+                    <div class="col-xl-6">
+                        <div class="card card-flush">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <h2 class="mb-0">{% trans "Campaign Settings" %}</h2>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <label class="form-label required">{{ form.channel.label }}</label>
+                                        {{ form.channel }}
+                                        {% if form.channel.errors %}
+                                            <div class="text-danger fs-7">{{ form.channel.errors.0 }}</div>
+                                        {% endif %}
+                                        <div class="form-text">{% trans "Select the communication channel for sending notifications" %}</div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-6">
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            {{ form.use_payment_link }}
+                                            <label class="form-check-label" for="{{ form.use_payment_link.id_for_label }}">
+                                                {{ form.use_payment_link.label }}
+                                            </label>
+                                        </div>
+                                        {% if form.use_payment_link.errors %}
+                                            <div class="text-danger fs-7">{{ form.use_payment_link.errors.0 }}</div>
+                                        {% endif %}
+                                        <div class="form-text">{% trans "Include payment links in campaign notifications to allow partners to pay directly online" %}</div>
+                                    </div>
+                                </div>
+
+                                <div class="separator my-6"></div>
+
+                                <div class="notice d-flex bg-light-info rounded border-info border border-dashed p-6">
+                                    <i class="ki-duotone ki-information fs-2tx text-info me-4">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <div class="d-flex flex-stack flex-grow-1">
+                                        <div class="fw-semibold">
+                                            <h4 class="text-gray-900 fw-bold mb-2">{% trans "CSV/Excel File Requirements" %}</h4>
+                                            <div class="fs-6 text-gray-700">
+                                                <p class="mb-2">{% trans "Your file must include the following columns:" %}</p>
+                                                <ul class="mb-2">
+                                                    <li><strong>full_name</strong>: {% trans "Contact's full name (required)" %}</li>
+                                                    <li><strong>amount</strong>: {% trans "Amount to notify (required)" %}</li>
+                                                    <li><strong>email</strong>: {% trans "Email address (optional)" %}</li>
+                                                    <li><strong>phone</strong>: {% trans "Phone number (optional)" %}</li>
+                                                    <li><strong>document_number</strong>: {% trans "ID/Document number (optional)" %}</li>
+                                                </ul>
+                                                <p class="mb-0 text-muted">{% trans "After uploading, the file will be validated automatically. You'll see the validation results on the detail page." %}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if form.instance.pk and form.instance.csv_contacts.exists %}
+                                <div class="separator my-6"></div>
+
+                                <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
+                                    <i class="ki-duotone ki-check-circle fs-2tx text-success me-4">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <div class="d-flex flex-stack flex-grow-1">
+                                        <div class="fw-semibold">
+                                            <h4 class="text-gray-900 fw-bold mb-2">{% trans "File Validated" %}</h4>
+                                            <div class="fs-6 text-gray-700">
+                                                {% with total=form.instance.csv_contacts.count valid=form.instance.csv_contacts.filter|length %}
+                                                <p class="mb-0">
+                                                    {% trans "Total contacts:" %} <strong>{{ total }}</strong><br>
+                                                    {% trans "Valid contacts:" %} <strong class="text-success">{{ valid }}</strong><br>
+                                                    {% trans "Invalid contacts:" %} <strong class="text-danger">{{ total|add:"-"|add:valid }}</strong>
+                                                </p>
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-6">
+            <a href="{% url 'apps.campaigns:campaign-csv-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary">
+                {% if action == "create" %}
+                    {% trans "Create CSV Campaign" %}
+                {% else %}
+                    {% trans "Update CSV Campaign" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media.js }}
+{% endblock %}
