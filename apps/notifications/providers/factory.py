@@ -78,7 +78,8 @@ class ProviderFactory:
             cls.register_providers()
 
         if channel == choices.NotificationChannel.WHATSAPP:
-            return cls._get_whatsapp_provider(provider_name)
+            default_provider_name = "whapi"
+            return cls._get_whatsapp_provider(default_provider_name)
         elif channel == choices.NotificationChannel.TELEGRAM:
             return cls._get_telegram_provider(provider_name)
         elif channel == choices.NotificationChannel.EMAIL:

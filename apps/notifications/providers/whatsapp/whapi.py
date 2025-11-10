@@ -1,12 +1,5 @@
-"""
-WHAPI WhatsApp Provider.
-
-This module provides WhatsApp messaging via WHAPI.cloud service.
-WHAPI provides more flexibility than Meta's official API.
-"""
-
 import logging
-from typing import Dict, Optional
+from typing import Dict
 
 import requests
 from django.conf import settings
@@ -57,7 +50,10 @@ class WHAPIProvider(BaseProvider):
             dict: Response with success status
         """
         if not self.is_configured():
-            return {"success": False, "error": "WHAPI provider is not configured"}
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
+            }
 
         if not self.validate_recipient(recipient):
             return {"success": False, "error": "Invalid recipient phone number"}
@@ -80,7 +76,9 @@ class WHAPIProvider(BaseProvider):
             response.raise_for_status()
             result = response.json()
 
-            self.logger.info(f"Message sent to {clean_phone} via WHAPI: {result}")
+            self.logger.info(
+                f"Message sent to {clean_phone} via WHAPI: {result}"
+            )
             return {
                 "success": True,
                 "message_id": result.get("id"),
@@ -115,7 +113,10 @@ class WHAPIProvider(BaseProvider):
             dict: Response with success status
         """
         if not self.is_configured():
-            return {"success": False, "error": "WHAPI provider is not configured"}
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
+            }
 
         if not self.validate_recipient(recipient):
             return {"success": False, "error": "Invalid recipient phone number"}
