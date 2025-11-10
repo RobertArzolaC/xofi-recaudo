@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.campaigns import choices as notifications_choices
 from apps.campaigns import models as campaign_models
+from apps.notifications import choices as notification_choices
 from apps.notifications import models
 from apps.notifications.services import (
     NotificationSenderService,
@@ -219,9 +220,10 @@ def send_scheduled_notifications() -> dict:
 )
 def send_notification(self, notification_id: int) -> dict:
     """
-    Send a notification for a campaign.
+    Send a notification for a campaign with WhatsApp rate limiting.
 
     Uses NotificationSenderService for sending messages via different channels.
+    For WhatsApp, applies rate limiting to comply with WHAPI best practices.
 
     Args:
         notification_id: ID of the CampaignNotification to send
@@ -236,6 +238,23 @@ def send_notification(self, notification_id: int) -> dict:
     except models.CampaignNotification.DoesNotExist:
         logger.error(f"Notification {notification_id} not found")
         return {"success": False, "error": "Notification not found"}
+
+    # Check WhatsApp rate limits before sending
+    if notification.channel == notification_choices.NotificationChannel.WHATSAPP:
+        from apps.notifications.services.whatsapp_rate_limiter import (
+            WhatsAppRateLimiter,
+        )
+
+        rate_check = WhatsAppRateLimiter.can_send_message()
+        if not rate_check.get("allowed"):
+            wait_seconds = rate_check.get("wait_seconds", 60)
+            reason = rate_check.get("reason", "Rate limit exceeded")
+            logger.warning(
+                f"WhatsApp rate limit reached for notification {notification_id}: {reason}. "
+                f"Retrying in {wait_seconds} seconds."
+            )
+            # Retry after the wait period
+            raise self.retry(countdown=wait_seconds)
 
     # Increment attempt counter
     notification.increment_attempt()

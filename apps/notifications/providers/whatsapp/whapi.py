@@ -1,10 +1,12 @@
 import logging
+import time
 from typing import Dict
 
 import requests
 from django.conf import settings
 
 from apps.notifications.providers.base import BaseProvider
+from apps.notifications.services.whatsapp_rate_limiter import WhatsAppRateLimiter
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,12 @@ class WHAPIProvider(BaseProvider):
         self, recipient: str, message: str, **kwargs
     ) -> Dict[str, any]:
         """
-        Send a text message via WHAPI.
+        Send a text message via WHAPI with rate limiting and human-like behavior.
+
+        Implements WHAPI best practices:
+        - Typing indicator before sending
+        - Random delays between messages
+        - Rate limiting (6-12 messages/minute)
 
         Args:
             recipient: Phone number in international format
@@ -61,6 +68,13 @@ class WHAPIProvider(BaseProvider):
         try:
             clean_phone = self._clean_phone_number(recipient)
 
+            # Apply typing indicator for human-like behavior
+            self._send_typing_indicator(clean_phone)
+
+            # Random delay to simulate human typing (5-10 seconds)
+            delay = WhatsAppRateLimiter.get_random_delay()
+            time.sleep(delay)
+
             payload = {
                 "to": clean_phone,
                 "body": message,
@@ -75,6 +89,9 @@ class WHAPIProvider(BaseProvider):
 
             response.raise_for_status()
             result = response.json()
+
+            # Record message sent for rate limiting
+            WhatsAppRateLimiter.record_message_sent()
 
             self.logger.info(
                 f"Message sent to {clean_phone} via WHAPI: {result}"
@@ -98,15 +115,16 @@ class WHAPIProvider(BaseProvider):
         **kwargs,
     ) -> Dict[str, any]:
         """
-        Send a message with a URL button via WHAPI.
+        Send a message with a URL button via WHAPI with rate limiting.
 
         WHAPI supports interactive messages with buttons.
+        Implements best practices for human-like behavior.
 
         Args:
             recipient: Phone number in international format
             message: Text message to send
             button_text: Text for the button
-            button_url: URL for the button
+            button_url: URL for the button (will be converted to HTTPS)
             **kwargs: Additional parameters
 
         Returns:
@@ -123,6 +141,18 @@ class WHAPIProvider(BaseProvider):
 
         try:
             clean_phone = self._clean_phone_number(recipient)
+
+            # Ensure HTTPS link (WHAPI recommendation)
+            if button_url.startswith("http://"):
+                button_url = button_url.replace("http://", "https://", 1)
+                self.logger.warning(f"Converted HTTP link to HTTPS: {button_url}")
+
+            # Apply typing indicator for human-like behavior
+            self._send_typing_indicator(clean_phone)
+
+            # Random delay to simulate human typing (5-10 seconds)
+            delay = WhatsAppRateLimiter.get_random_delay()
+            time.sleep(delay)
 
             # WHAPI supports interactive messages with buttons
             payload = {
@@ -147,6 +177,9 @@ class WHAPIProvider(BaseProvider):
 
             response.raise_for_status()
             result = response.json()
+
+            # Record message sent for rate limiting
+            WhatsAppRateLimiter.record_message_sent()
 
             self.logger.info(
                 f"Message with button sent to {clean_phone} via WHAPI: {result}"
@@ -198,4 +231,34 @@ class WHAPIProvider(BaseProvider):
             "configured": self.is_configured(),
             "supports_buttons": True,
             "supports_templates": False,
+            "rate_limit_status": WhatsAppRateLimiter.get_rate_limit_status(),
         }
+
+    def _send_typing_indicator(self, recipient: str) -> None:
+        """
+        Send typing indicator to simulate human behavior.
+
+        WHAPI recommendation: "Use 'typing...' or 'recording audio...' indicators"
+
+        Args:
+            recipient: Formatted phone number
+        """
+        try:
+            payload = {"to": recipient, "state": "typing"}
+
+            response = requests.post(
+                f"{self.api_url}/messages/presence",
+                json=payload,
+                headers=self.headers,
+                timeout=10,
+            )
+
+            if response.status_code == 200:
+                self.logger.debug(f"Typing indicator sent to {recipient}")
+            else:
+                self.logger.warning(
+                    f"Failed to send typing indicator: {response.status_code}"
+                )
+        except Exception as e:
+            # Don't fail the whole message if typing indicator fails
+            self.logger.warning(f"Error sending typing indicator: {e}")
