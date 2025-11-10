@@ -13,11 +13,13 @@ class XofiErpRouter:
         "team",
         "credits",
         "campaigns",
+        "notifications",
         "support",
         "authtoken",
         "admin",
-        "contenttypes",
         "chatbot",
+        "cities_light",
+        "constance",
     }
 
     def db_for_read(self, model, **hints):

@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
 )
 from django.db.models import QuerySet
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
@@ -17,7 +19,8 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 
-from apps.campaigns import filtersets, forms, models
+from apps.campaigns import choices, filtersets, forms, models
+from apps.notifications import tasks as notification_tasks
 
 logger = logging.getLogger(__name__)
 
@@ -322,10 +325,6 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def post(self, request, pk):
         """Execute campaign and return result as JSON."""
-        from django.http import JsonResponse
-        from django.shortcuts import get_object_or_404
-
-        from apps.campaigns import tasks
 
         try:
             campaign = get_object_or_404(models.Campaign, pk=pk)
@@ -333,8 +332,6 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
             # Check if campaign can be executed
             if not campaign.can_be_executed:
                 reasons = []
-                from apps.campaigns import choices
-
                 valid_statuses = [
                     choices.CampaignStatus.ACTIVE,
                     choices.CampaignStatus.SCHEDULED,
@@ -362,7 +359,9 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
                 )
 
             # Queue the campaign execution task
-            task = tasks.process_campaign_notifications.delay(campaign.id)
+            task = notification_tasks.process_campaign_notifications.delay(
+                campaign.id, campaign.campaign_type
+            )
             message = _(
                 "Campaign '{campaign_name}' has been queued for execution."
             ).format(campaign_name=campaign.name)
@@ -401,8 +400,6 @@ class GroupDebtAjaxView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get(self, request, group_id):
         """Return group debt information as JSON."""
-        from django.http import JsonResponse
-        from django.shortcuts import get_object_or_404
 
         try:
             group = get_object_or_404(models.Group, id=group_id)
@@ -449,6 +446,212 @@ class GroupDebtAjaxView(LoginRequiredMixin, PermissionRequiredMixin, View):
                 {
                     "success": False,
                     "error": "Error retrieving group debt information",
+                },
+                status=500,
+            )
+
+
+# CSV Campaign Views
+class CampaignCSVFileListView(
+    LoginRequiredMixin, PermissionRequiredMixin, FilterView
+):
+    """List view for CSV/Excel file-based campaigns with filtering."""
+
+    model = models.CampaignCSVFile
+    filterset_class = filtersets.CampaignFilterSet
+    template_name = "campaigns/campaign_csv/list.html"
+    context_object_name = "campaigns"
+    permission_required = "campaigns.view_campaigncsvfile"
+    paginate_by = 5
+
+    def get_queryset(self) -> QuerySet[models.CampaignCSVFile]:
+        """Return filtered and ordered queryset."""
+        return models.CampaignCSVFile.objects.order_by("-created")
+
+
+class CampaignCSVFileDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
+    """Detail view for CSV/Excel file-based campaign."""
+
+    model = models.CampaignCSVFile
+    template_name = "campaigns/campaign_csv/detail.html"
+    context_object_name = "campaign"
+    permission_required = "campaigns.view_campaigncsvfile"
+
+    def get_queryset(self) -> QuerySet[models.CampaignCSVFile]:
+        """Return queryset with related objects."""
+        return models.CampaignCSVFile.objects.prefetch_related("csv_contacts")
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add extra context to template."""
+        context = super().get_context_data(**kwargs)
+
+        # Get validation summary
+        campaign = self.object
+        context["validation_summary"] = {
+            "total_contacts": campaign.csv_contacts.count(),
+            "valid_contacts": campaign.csv_contacts.filter(
+                is_valid=True
+            ).count(),
+            "invalid_contacts": campaign.csv_contacts.filter(
+                is_valid=False
+            ).count(),
+        }
+
+        return context
+
+
+class CampaignCSVFileCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
+    """Create view for CSV/Excel file-based campaign."""
+
+    model = models.CampaignCSVFile
+    form_class = forms.CampaignCSVFileForm
+    template_name = "campaigns/campaign_csv/form.html"
+    permission_required = "campaigns.add_campaigncsvfile"
+    success_url = reverse_lazy("apps.campaigns:campaign-csv-list")
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add extra context to template."""
+        context = super().get_context_data(**kwargs)
+        context["title"] = _("Create CSV Campaign")
+        context["action"] = "create"
+        return context
+
+    def form_valid(self, form):
+        """Set user tracking fields."""
+        form.instance.created_by = self.request.user
+        form.instance.modified_by = self.request.user
+        return super().form_valid(form)
+
+
+class CampaignCSVFileUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
+    """Update view for CSV/Excel file-based campaign."""
+
+    model = models.CampaignCSVFile
+    form_class = forms.CampaignCSVFileForm
+    template_name = "campaigns/campaign_csv/form.html"
+    permission_required = "campaigns.change_campaigncsvfile"
+
+    def get_success_url(self) -> str:
+        """Return success URL pointing to detail view."""
+        return reverse_lazy(
+            "apps.campaigns:campaign-csv-detail", kwargs={"pk": self.object.pk}
+        )
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add extra context to template."""
+        context = super().get_context_data(**kwargs)
+        context["title"] = f"{_('Edit CSV Campaign')}: {self.object.name}"
+        context["action"] = "update"
+        return context
+
+    def form_valid(self, form):
+        """Update user tracking fields."""
+        form.instance.modified_by = self.request.user
+        return super().form_valid(form)
+
+
+class CampaignCSVFileDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
+    """Delete view for CSV/Excel file-based campaign."""
+
+    model = models.CampaignCSVFile
+    template_name = "campaigns/campaign_csv/confirm_delete.html"
+    permission_required = "campaigns.delete_campaigncsvfile"
+    success_url = reverse_lazy("apps.campaigns:campaign-csv-list")
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        """Add extra context to template."""
+        context = super().get_context_data(**kwargs)
+        context["title"] = f"{_('Delete CSV Campaign')}: {self.object.name}"
+        return context
+
+
+class CampaignCSVFileExecuteView(
+    LoginRequiredMixin, PermissionRequiredMixin, View
+):
+    """View to execute a CSV/Excel file-based campaign."""
+
+    permission_required = "campaigns.change_campaigncsvfile"
+
+    def post(self, request, pk):
+        """Execute CSV campaign and return result as JSON."""
+
+        try:
+            campaign = get_object_or_404(models.CampaignCSVFile, pk=pk)
+
+            # Check if campaign can be executed
+            if not campaign.can_be_executed:
+                reasons = []
+                from apps.campaigns import choices
+
+                valid_statuses = [
+                    choices.CampaignStatus.ACTIVE,
+                    choices.CampaignStatus.SCHEDULED,
+                ]
+                if campaign.status not in valid_statuses:
+                    reasons.append(
+                        f"Campaign status is {campaign.get_status_display()}, "
+                        f"must be ACTIVE or SCHEDULED"
+                    )
+                if campaign.is_processing:
+                    reasons.append(_("Campaign is already being processed"))
+                if not campaign.execution_date:
+                    reasons.append(
+                        _("Campaign has no execution date configured")
+                    )
+                if not campaign.file:
+                    reasons.append(_("Campaign has no file uploaded"))
+
+                # Check if file has been validated
+                if not campaign.csv_contacts.exists():
+                    reasons.append(
+                        _("Campaign file has not been validated yet")
+                    )
+
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "; ".join(reasons),
+                    },
+                    status=400,
+                )
+
+            # Queue the campaign execution task
+            task = notification_tasks.process_campaign_notifications.delay(
+                campaign.id, campaign.campaign_type
+            )
+            message = _(
+                "CSV Campaign '{campaign_name}' has been queued for execution."
+            ).format(campaign_name=campaign.name)
+
+            logger.info(
+                f"CSV Campaign {campaign.id} '{campaign.name}' queued for execution by user {request.user.username}. "
+                f"Current status: {campaign.get_status_display()}"
+            )
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": message,
+                    "task_id": task.id,
+                    "campaign_id": campaign.id,
+                    "current_status": campaign.get_status_display(),
+                }
+            )
+
+        except Exception as e:
+            logger.exception(f"Error executing CSV campaign {pk}: {e}")
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"An error occurred while executing the campaign: {str(e)}",
                 },
                 status=500,
             )

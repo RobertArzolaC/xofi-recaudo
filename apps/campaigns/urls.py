@@ -32,6 +32,37 @@ urlpatterns = [
         views.CampaignExecuteView.as_view(),
         name="campaign-execute",
     ),
+    # CSV Campaign URLs
+    path(
+        "campaigns-csv/",
+        views.CampaignCSVFileListView.as_view(),
+        name="campaign-csv-list",
+    ),
+    path(
+        "campaign-csv/<int:pk>/",
+        views.CampaignCSVFileDetailView.as_view(),
+        name="campaign-csv-detail",
+    ),
+    path(
+        "campaign-csv/create/",
+        views.CampaignCSVFileCreateView.as_view(),
+        name="campaign-csv-create",
+    ),
+    path(
+        "campaign-csv/<int:pk>/edit/",
+        views.CampaignCSVFileUpdateView.as_view(),
+        name="campaign-csv-edit",
+    ),
+    path(
+        "campaign-csv/<int:pk>/delete/",
+        views.CampaignCSVFileDeleteView.as_view(),
+        name="campaign-csv-delete",
+    ),
+    path(
+        "campaign-csv/<int:pk>/execute/",
+        views.CampaignCSVFileExecuteView.as_view(),
+        name="campaign-csv-execute",
+    ),
     # Group URLs
     path("groups/", views.GroupListView.as_view(), name="group-list"),
     path(

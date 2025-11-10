@@ -102,6 +102,9 @@ class Person(BaseAddress, BaseContact):
         verbose_name=_("User"),
         help_text=_("User account associated with this person"),
     )
+    telegram_id = models.CharField(
+        _("Telegram ID"), max_length=50, blank=True, null=True
+    )
 
     class Meta:
         abstract = True

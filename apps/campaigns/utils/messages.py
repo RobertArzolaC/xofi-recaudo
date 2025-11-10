@@ -2,11 +2,11 @@ from typing import Dict
 
 from constance import config
 
-from apps.campaigns import models
+from apps.notifications.models import CampaignNotification
 
 
 def prepare_message_context(
-    notification: models.CampaignNotification, debt_detail: Dict
+    notification: "CampaignNotification", debt_detail: Dict
 ) -> dict:
     """
     Prepare context dictionary for message rendering.
@@ -18,11 +18,11 @@ def prepare_message_context(
     Returns:
         dict: Context dictionary for template rendering
     """
-    partner = notification.partner
+    recipient = notification.recipient
     campaign = notification.campaign
 
     context = {
-        "partner_name": partner.full_name,
+        "partner_name": recipient.full_name,
         "debt_amount": f"S/ {notification.total_debt_amount:,.2f}",
         "payment_link": notification.payment_link_url or "",
         "campaign_name": campaign.name,
@@ -72,7 +72,7 @@ def prepare_message_context(
 
 
 def generate_default_message(
-    notification: models.CampaignNotification,
+    notification: "CampaignNotification",
     context: Dict,
     debt_detail: Dict,
 ) -> str:
