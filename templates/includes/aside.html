@@ -305,6 +305,34 @@
           {% endif %}
         </div>
 
+        {% if perms.reports.view_report %}
+        <div class="menu-item pt-5">
+          <div class="menu-content">
+            <span class="fw-bold text-muted text-uppercase fs-7">
+              {% trans 'Analytics' %}
+            </span>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          {% if perms.reports.view_report %}
+            <a class="menu-link {% if "reports" in request.path %}active{% endif %}" href="{% url 'apps.reports:report-list' %}">
+              <span class="menu-icon">
+                <i class="ki-duotone ki-chart-simple fs-2 me-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                  <span class="path4"></span>
+                </i>
+              </span>
+              <span class="menu-title">
+                {% trans 'Reports' %}
+              </span>
+            </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
         {% if perms.team.view_area or perms.team.view_position or perms.team.view_employee %}
         <div class="menu-item pt-5">
           <div class="menu-content">
