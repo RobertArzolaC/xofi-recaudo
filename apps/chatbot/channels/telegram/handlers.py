@@ -171,21 +171,7 @@ class TelegramBotHandler:
                 )
 
                 # Add contextual feedback based on data quality
-                if (
-                    validation_results["overall_valid"]
-                    and confidence_scores["overall"] > 0.5
-                ):
-                    response_message += (
-                        "✨ *Datos extraídos correctamente del mensaje*\n"
-                        "Los datos han sido procesados automáticamente."
-                    )
-                elif amount == 0.01:  # Default placeholder amount
-                    response_message += (
-                        "⚠️ *Nota:* Se usó un monto predeterminado.\n"
-                        "💡 *Tip:* Puedes incluir el monto y fecha en el mensaje de la foto:\n"
-                        "Ejemplo: `Pago de 150.50 fecha 2025-01-15`"
-                    )
-                else:
+                if amount:
                     response_message += (
                         "📝 *Datos procesados del mensaje*\n"
                         "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
