@@ -76,15 +76,15 @@ class PartnerAPIService:
 
     def create_support_ticket(
         self,
-        partner_id: int,
+        partner_document: str,
         subject: str,
         description: str,
-        priority: str = "MEDIUM",
+        priority: int = 2,
     ) -> Dict[str, Any]:
         """Create a support ticket via API."""
         url = f"{self.base_url}/api/v1/support/tickets/"
         data = {
-            "partner": partner_id,
+            "partner_document": partner_document,
             "subject": subject,
             "description": description,
             "priority": priority,
@@ -93,6 +93,7 @@ class PartnerAPIService:
             response = requests.post(
                 url, headers=self.headers, json=data, timeout=10
             )
+            logger.info(f"Support ticket created: {response.json()}")
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:

@@ -113,7 +113,38 @@ class ConversationService:
         if not conversation.authenticated:
             return self._handle_authentication(conversation, user_message)
 
-        # Detect intent
+        # Check if there's a pending action in context - priority over intent detection
+        context = conversation.context_data
+        pending_action = context.get("pending_action")
+
+        if pending_action:
+            # Route directly to the pending action handler without intent detection
+            logger.info(
+                f"Continuing pending action: {pending_action} for conversation {conversation.id}"
+            )
+
+            # Map pending actions to their corresponding intents
+            pending_action_to_intent = {
+                "create_ticket": choices.IntentType.CREATE_TICKET,
+                "credit_detail": choices.IntentType.CREDIT_DETAIL,
+            }
+
+            intent = pending_action_to_intent.get(
+                pending_action, choices.IntentType.UNKNOWN
+            )
+            response = self._route_intent(conversation, user_message, intent)
+
+            # Save agent response
+            self.save_message(
+                conversation,
+                choices.MessageSender.AGENT,
+                response,
+                intent=intent,
+            )
+
+            return response
+
+        # Detect intent only if no pending action
         intent = self.intent_detector.detect_intent(user_message)
         logger.info(f"Detected intent: {intent} for message: {user_message}")
 
@@ -161,7 +192,40 @@ class ConversationService:
             )
             return response
 
-        # Detect intent
+        # Check if there's a pending action in context - priority over intent detection
+        context = conversation.context_data
+        pending_action = context.get("pending_action")
+
+        if pending_action:
+            # Route directly to the pending action handler without intent detection
+            logger.info(
+                f"Continuing pending action: {pending_action} for conversation {conversation.id}"
+            )
+
+            # Map pending actions to their corresponding intents
+            pending_action_to_intent = {
+                "create_ticket": choices.IntentType.CREATE_TICKET,
+                "credit_detail": choices.IntentType.CREDIT_DETAIL,
+            }
+
+            intent = pending_action_to_intent.get(
+                pending_action, choices.IntentType.UNKNOWN
+            )
+            response = await self._aroute_intent(
+                conversation, user_message, intent
+            )
+
+            # Save agent response
+            await self.asave_message(
+                conversation,
+                choices.MessageSender.AGENT,
+                response,
+                intent=intent,
+            )
+
+            return response
+
+        # Detect intent only if no pending action
         intent = await sync_to_async(self.intent_detector.detect_intent)(
             user_message
         )
@@ -380,7 +444,7 @@ class ConversationService:
         elif step == "description":
             subject = context.get("ticket_subject", "Consulta desde chatbot")
             ticket_data = self.api_service.create_support_ticket(
-                conversation.partner.id, subject, message
+                conversation.partner.document_number, subject, message
             )
 
             if ticket_data:
