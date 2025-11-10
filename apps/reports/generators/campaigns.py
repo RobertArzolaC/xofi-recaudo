@@ -6,10 +6,11 @@ This module contains report generators for campaign-related reports.
 
 from typing import Any, List
 
-from django.db.models import Count, Q, QuerySet, Sum
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns.models import Campaign, CampaignNotification
+from apps.campaigns.models import Campaign
+from apps.notifications.models import CampaignNotification
 from apps.reports.generators.base import BaseReportGenerator
 
 
@@ -20,9 +21,9 @@ class CollectionCampaignsSummaryReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered campaigns queryset."""
-        queryset = Campaign.objects.select_related("group", "created_by").prefetch_related(
-            "notifications"
-        )
+        queryset = Campaign.objects.select_related(
+            "group", "created_by"
+        ).prefetch_related("notifications")
 
         # Apply filters
         status = self.filters.get("status")

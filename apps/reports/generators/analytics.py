@@ -8,12 +8,13 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, List
 
-from django.db.models import Count, Q, QuerySet, Sum
+from django.db.models import QuerySet, Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns.models import Campaign, CampaignNotification
+from apps.campaigns.models import Campaign
 from apps.credits.models import Installment
+from apps.notifications.models import CampaignNotification
 from apps.payments.models import MagicPaymentLink, Payment
 from apps.reports.generators.base import BaseReportGenerator
 
@@ -77,7 +78,9 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
         while current_date <= end_date:
             # Calculate next month
             if current_date.month == 12:
-                next_month = current_date.replace(year=current_date.year + 1, month=1)
+                next_month = current_date.replace(
+                    year=current_date.year + 1, month=1
+                )
             else:
                 next_month = current_date.replace(month=current_date.month + 1)
 
@@ -94,7 +97,9 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
                 created__gte=current_date, created__lt=next_month
             )
             total_notifications = notifications.count()
-            successful_notifications = notifications.filter(status="sent").count()
+            successful_notifications = notifications.filter(
+                status="sent"
+            ).count()
             notification_success_rate = (
                 (successful_notifications / total_notifications * 100)
                 if total_notifications > 0
@@ -107,10 +112,14 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
                 payment_date__lt=next_month,
                 status="paid",
             )
-            total_amount = payments.aggregate(Sum("amount"))["amount__sum"] or Decimal("0")
+            total_amount = payments.aggregate(Sum("amount"))[
+                "amount__sum"
+            ] or Decimal("0")
             total_payments = payments.count()
             avg_payment = (
-                total_amount / total_payments if total_payments > 0 else Decimal("0")
+                total_amount / total_payments
+                if total_payments > 0
+                else Decimal("0")
             )
 
             # Magic link metrics
@@ -128,9 +137,9 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
                 status__in=["pending", "partial"], due_date__lt=next_month
             )
             overdue_count = overdue_installments.count()
-            overdue_amount = overdue_installments.aggregate(Sum("installment_amount"))[
-                "installment_amount__sum"
-            ] or Decimal("0")
+            overdue_amount = overdue_installments.aggregate(
+                Sum("installment_amount")
+            )["installment_amount__sum"] or Decimal("0")
 
             row = [
                 current_date.year,
@@ -244,7 +253,8 @@ class CollectionManagementAuditReportGenerator(BaseReportGenerator):
                 if campaign.last_execution_at
                 else "-",
                 (campaign.last_execution_result[:100] + "...")
-                if campaign.last_execution_result and len(campaign.last_execution_result) > 100
+                if campaign.last_execution_result
+                and len(campaign.last_execution_result) > 100
                 else (campaign.last_execution_result or "-"),
             ]
             data.append(row)

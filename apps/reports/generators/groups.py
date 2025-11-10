@@ -1,15 +1,10 @@
-"""
-Report generators for Collection Groups.
-
-This module contains report generators for group-related reports.
-"""
-
 from typing import Any, List
 
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns.models import CampaignNotification, Group
+from apps.campaigns.models import Group
+from apps.notifications.models import CampaignNotification
 from apps.reports.generators.base import BaseReportGenerator
 
 
@@ -80,7 +75,9 @@ class CollectionGroupEffectivenessReportGenerator(BaseReportGenerator):
             )
             total_notifications = all_notifications.count()
             sent_notifications = all_notifications.filter(status="sent").count()
-            failed_notifications = all_notifications.filter(status="failed").count()
+            failed_notifications = all_notifications.filter(
+                status="failed"
+            ).count()
 
             # Calculate success rate
             success_rate = (
