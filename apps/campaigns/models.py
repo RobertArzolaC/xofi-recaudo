@@ -154,6 +154,11 @@ class Group(
     def __str__(self):
         return self.name
 
+    def start_execution(self):
+        """Mark group as being processed."""
+        self.status = choices.CampaignStatus.ACTIVE
+        self.save(update_fields=["status"])
+
     @property
     def partner_count(self):
         """Return the number of partners in the group."""

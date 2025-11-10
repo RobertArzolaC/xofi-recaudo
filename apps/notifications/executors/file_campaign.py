@@ -3,7 +3,8 @@ from typing import Dict, Optional
 
 from constance import config
 
-from apps.campaigns import choices
+from apps.campaigns import choices as campaign_choices
+from apps.notifications import choices
 from apps.notifications.executors.base import BaseCampaignExecutor
 from apps.notifications.models import CampaignNotification
 from apps.payments import choices as payment_choices
@@ -24,12 +25,12 @@ class FileCampaignExecutor(BaseCampaignExecutor):
         """
         return (
             self.campaign.validation_status
-            == choices.ValidationStatus.VALIDATED
+            == campaign_choices.ValidationStatus.VALIDATED
             and self.campaign.valid_contacts > 0
             and self.campaign.status
             in [
-                choices.CampaignStatus.ACTIVE,
-                choices.CampaignStatus.SCHEDULED,
+                campaign_choices.CampaignStatus.ACTIVE,
+                campaign_choices.CampaignStatus.SCHEDULED,
             ]
             and not self.campaign.is_processing
             and self.campaign.execution_date is not None
@@ -44,7 +45,7 @@ class FileCampaignExecutor(BaseCampaignExecutor):
         """
         if (
             self.campaign.validation_status
-            != choices.ValidationStatus.VALIDATED
+            != campaign_choices.ValidationStatus.VALIDATED
         ):
             return (
                 False,
@@ -59,8 +60,8 @@ class FileCampaignExecutor(BaseCampaignExecutor):
             return False, "Campaign has no execution date"
 
         valid_statuses = [
-            choices.CampaignStatus.ACTIVE,
-            choices.CampaignStatus.SCHEDULED,
+            campaign_choices.CampaignStatus.ACTIVE,
+            campaign_choices.CampaignStatus.SCHEDULED,
         ]
         if self.campaign.status not in valid_statuses:
             return (
@@ -251,13 +252,14 @@ class FileCampaignExecutor(BaseCampaignExecutor):
             "modified_by": self.campaign.modified_by,
         }
 
-        # Get content types
-        campaign_content_type = ContentType.objects.get(
-            app_label="campaigns", model="campaigncsvfile"
-        )
-        contact_content_type = ContentType.objects.get(
-            app_label="campaigns", model="csvcontact"
-        )
+        # Get content types dynamically based on actual instance types
+        # Use the xofi-erp database explicitly since that's where notifications are stored
+        campaign_content_type = ContentType.objects.db_manager(
+            "xofi-erp"
+        ).get_for_model(self.campaign)
+        contact_content_type = ContentType.objects.db_manager(
+            "xofi-erp"
+        ).get_for_model(contact)
 
         notification, created = CampaignNotification.objects.update_or_create(
             campaign_type=campaign_content_type,

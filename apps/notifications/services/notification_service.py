@@ -1,17 +1,8 @@
-"""
-Notification Service.
-
-This module provides the main service for executing campaigns and creating notifications.
-"""
-
 import logging
 from typing import Dict
 
 from apps.campaigns import choices
-from apps.notifications.executors import (
-    FileCampaignExecutor,
-    GroupCampaignExecutor,
-)
+from apps.notifications import executors
 
 logger = logging.getLogger(__name__)
 
@@ -59,9 +50,9 @@ class NotificationService:
         campaign_type = getattr(campaign, "campaign_type", None)
 
         if campaign_type == choices.CampaignType.GROUP:
-            return GroupCampaignExecutor(campaign)
+            return executors.GroupCampaignExecutor(campaign)
         elif campaign_type == choices.CampaignType.FILE:
-            return FileCampaignExecutor(campaign)
+            return executors.FileCampaignExecutor(campaign)
         else:
             logger.error(f"Unknown campaign type: {campaign_type}")
             raise ValueError(f"Unknown campaign type: {campaign_type}")

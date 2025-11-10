@@ -5,9 +5,12 @@ from typing import Dict, Optional
 from constance import config
 from django.contrib.contenttypes.models import ContentType
 
-from apps.campaigns import choices
+from apps.campaigns import choices as campaign_choices
+from apps.campaigns import models as campaign_models
+from apps.notifications import choices
 from apps.notifications.executors.base import BaseCampaignExecutor
 from apps.notifications.models import CampaignNotification
+from apps.partners import models as partner_models
 from apps.partners import services as partner_services
 from apps.payments import choices as payment_choices
 from apps.payments import utils as payment_utils
@@ -26,8 +29,8 @@ class GroupCampaignExecutor(BaseCampaignExecutor):
             bool: True if campaign can be executed
         """
         valid_statuses = [
-            choices.CampaignStatus.ACTIVE,
-            choices.CampaignStatus.SCHEDULED,
+            campaign_choices.CampaignStatus.ACTIVE,
+            campaign_choices.CampaignStatus.SCHEDULED,
         ]
         return (
             self.campaign.status in valid_statuses
@@ -50,8 +53,8 @@ class GroupCampaignExecutor(BaseCampaignExecutor):
             return False, "Campaign has no execution date"
 
         valid_statuses = [
-            choices.CampaignStatus.ACTIVE,
-            choices.CampaignStatus.SCHEDULED,
+            campaign_choices.CampaignStatus.ACTIVE,
+            campaign_choices.CampaignStatus.SCHEDULED,
         ]
         if self.campaign.status not in valid_statuses:
             return (
@@ -232,13 +235,14 @@ class GroupCampaignExecutor(BaseCampaignExecutor):
             "modified_by": self.campaign.modified_by,
         }
 
-        # Get content type for Campaign model
-        campaign_content_type = ContentType.objects.get(
-            app_label="campaigns", model="campaign"
-        )
-        partner_content_type = ContentType.objects.get(
-            app_label="partners", model="partner"
-        )
+        # Get content types dynamically based on actual instance types
+        # Use the xofi-erp database explicitly since that's where notifications are stored
+        campaign_content_type = ContentType.objects.db_manager(
+            "xofi-erp"
+        ).get_for_model(campaign_models.Campaign)
+        partner_content_type = ContentType.objects.db_manager(
+            "xofi-erp"
+        ).get_for_model(partner_models.Partner)
 
         notification, created = CampaignNotification.objects.update_or_create(
             campaign_type=campaign_content_type,

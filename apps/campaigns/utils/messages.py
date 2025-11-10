@@ -1,9 +1,8 @@
-from typing import Dict, TYPE_CHECKING
+from typing import Dict
 
 from constance import config
 
-if TYPE_CHECKING:
-    from apps.notifications.models import CampaignNotification
+from apps.notifications.models import CampaignNotification
 
 
 def prepare_message_context(
@@ -19,11 +18,11 @@ def prepare_message_context(
     Returns:
         dict: Context dictionary for template rendering
     """
-    partner = notification.partner
+    recipient = notification.recipient
     campaign = notification.campaign
 
     context = {
-        "partner_name": partner.full_name,
+        "partner_name": recipient.full_name,
         "debt_amount": f"S/ {notification.total_debt_amount:,.2f}",
         "payment_link": notification.payment_link_url or "",
         "campaign_name": campaign.name,

@@ -1,15 +1,11 @@
-"""
-Notification Sender Service.
-
-This module handles sending individual notifications through different channels.
-"""
-
 import logging
 from typing import Dict, Optional
 
 from apps.campaigns import choices
+from apps.campaigns import models as campaign_models
 from apps.campaigns.utils import messages as message_utils
 from apps.notifications.providers.factory import ProviderFactory
+from apps.partners import models as partner_models
 from apps.partners import services as partner_services
 
 logger = logging.getLogger(__name__)
@@ -126,7 +122,7 @@ class NotificationSenderService:
 
         except Exception as e:
             error_msg = f"Error generating message: {str(e)}"
-            logger.error(error_msg)
+            logger.exception(error_msg)
             return {"success": False, "error": error_msg}
 
     @classmethod
@@ -207,19 +203,17 @@ class NotificationSenderService:
         Returns:
             dict: Debt detail information
         """
-        from apps.campaigns.models import CSVContact
-        from apps.partners.models import Partner
 
         recipient = notification.recipient
 
         # For Partner recipients
-        if isinstance(recipient, Partner):
+        if isinstance(recipient, partner_models.Partner):
             return partner_services.PartnerDebtService.get_single_partner_debt_detail(
                 recipient
             )
 
         # For CSVContact recipients
-        elif isinstance(recipient, CSVContact):
+        elif isinstance(recipient, campaign_models.CSVContact):
             # CSVContact uses custom amounts
             return {
                 "total_debt": recipient.amount,

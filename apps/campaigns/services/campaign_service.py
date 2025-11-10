@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
@@ -219,7 +220,6 @@ class CampaignNotificationService:
         Returns:
             List of created notification instances
         """
-        from django.contrib.contenttypes.models import ContentType
 
         from apps.notifications.models import CampaignNotification
 
@@ -283,7 +283,9 @@ class CampaignNotificationService:
         from apps.notifications.models import CampaignNotification
 
         # Get the ContentType for the campaign model
-        campaign_content_type = ContentType.objects.get_for_model(campaign)
+        campaign_content_type = ContentType.objects.db_manager(
+            "xofi-erp"
+        ).get_for_model(campaign)
 
         # Query notifications using GenericForeignKey fields
         notifications_queryset = CampaignNotification.objects.filter(

@@ -170,8 +170,6 @@ def send_scheduled_notifications() -> dict:
 
     # Update campaign statuses to SENDING
     if campaigns_to_update:
-        from apps.campaigns import models as campaign_models
-
         for campaign_id, model_type in campaigns_to_update:
             try:
                 if model_type == "campaign":
@@ -264,7 +262,7 @@ def send_notification(self, notification_id: int) -> dict:
         else:
             error_msg = result.get("error", "Unknown error")
             notification.mark_as_failed(error_msg)
-            logger.error(
+            logger.exception(
                 f"Failed to send notification {notification_id}: {error_msg}"
             )
 

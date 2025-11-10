@@ -19,7 +19,7 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 
-from apps.campaigns import filtersets, forms, models
+from apps.campaigns import choices, filtersets, forms, models
 from apps.notifications import tasks as notification_tasks
 
 logger = logging.getLogger(__name__)
@@ -332,8 +332,6 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
             # Check if campaign can be executed
             if not campaign.can_be_executed:
                 reasons = []
-                from apps.campaigns import choices
-
                 valid_statuses = [
                     choices.CampaignStatus.ACTIVE,
                     choices.CampaignStatus.SCHEDULED,
