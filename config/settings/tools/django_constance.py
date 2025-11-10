@@ -54,6 +54,10 @@ CONSTANCE_CONFIG = {
         15,
         _("Day of the month for social security payment (1-31)."),
     ),
+    "DEFAULT_TELEGRAM_CHAT_ID": (
+        "975005684",
+        _("Default Telegram chat ID for notifications."),
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -67,6 +71,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "ENABLE_VERIFICATION_EMAIL",
             "ITEMS_PER_PAGE",
             "JSON_FIELD_EXAMPLE",
+            "DEFAULT_TELEGRAM_CHAT_ID",
         ),
         "collapse": False,
     },

@@ -1,10 +1,3 @@
-"""
-CSV Validation and Processing Services.
-
-This module contains services for validating and processing CSV/Excel files
-for file-based campaigns.
-"""
-
 import csv
 import io
 import logging
@@ -22,7 +15,7 @@ class CSVValidationService:
     """Service for validating CSV/Excel files for campaigns."""
 
     REQUIRED_COLUMNS = ["full_name", "amount"]
-    OPTIONAL_COLUMNS = ["email", "phone", "document_number"]
+    OPTIONAL_COLUMNS = ["email", "phone", "telegram_id", "document_number"]
     ALL_COLUMNS = REQUIRED_COLUMNS + OPTIONAL_COLUMNS
 
     @classmethod
@@ -80,6 +73,7 @@ class CSVValidationService:
                     full_name=row_data.get("full_name", ""),
                     email=row_data.get("email"),
                     phone=row_data.get("phone"),
+                    telegram_id=row_data.get("telegram_id"),
                     document_number=row_data.get("document_number"),
                     amount=validation_result.get("amount", Decimal("0")),
                     additional_data=row_data.get("additional_data", {}),
@@ -254,6 +248,20 @@ class CSVValidationService:
             clean_phone = "".join(filter(str.isdigit, phone))
             if len(clean_phone) < 9:
                 errors.append(f"Invalid phone format: {phone} (too short)")
+                # Don't mark as invalid, just warning
+
+        # Validate telegram_id if provided
+        telegram_id = row_data.get("telegram_id")
+        if telegram_id:
+            # Telegram usernames start with @ and IDs are numeric
+            telegram_str = str(telegram_id).strip()
+            if not telegram_str:
+                errors.append("Telegram ID cannot be empty if provided")
+            elif not (telegram_str.startswith("@") or telegram_str.isdigit()):
+                errors.append(
+                    f"Invalid telegram_id format: {telegram_id} "
+                    "(must start with @ for username or be numeric for ID)"
+                )
                 # Don't mark as invalid, just warning
 
         return {

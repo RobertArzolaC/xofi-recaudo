@@ -138,7 +138,7 @@ class PartnerAdmin(admin.ModelAdmin):
         ),
         (
             "Contact Information",
-            {"fields": ("phone", "email")},
+            {"fields": ("phone", "email", "telegram_id")},
         ),
         (
             "Address Information",

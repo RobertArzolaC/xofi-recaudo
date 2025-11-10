@@ -250,6 +250,7 @@ class CampaignNotificationService:
                 campaign_id=campaign.id,
                 recipient_type=partner_content_type,
                 recipient_id=partner.id,
+                recipient_telegram_id=partner.telegram_id,
                 notification_type=notification_type,
                 channel=choices.NotificationChannel.WHATSAPP,  # Default channel
                 recipient_email=partner.email,

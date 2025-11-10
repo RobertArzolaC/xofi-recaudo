@@ -265,9 +265,17 @@
                                     <td>
                                         <div class="d-flex flex-column">
                                             <span>{{ contact.full_name }}</span>
-                                            {% if contact.email or contact.phone %}
+                                            {% if contact.email or contact.phone or contact.telegram_id %}
                                             <span class="text-muted fs-7">
-                                                {{ contact.email|default:contact.phone }}
+                                                {% if contact.email %}
+                                                    <i class="fas fa-envelope fs-8 me-1"></i>{{ contact.email }}
+                                                {% endif %}
+                                                {% if contact.phone %}
+                                                    <i class="fas fa-phone fs-8 me-1 {% if contact.email %}ms-2{% endif %}"></i>{{ contact.phone }}
+                                                {% endif %}
+                                                {% if contact.telegram_id %}
+                                                    <i class="fab fa-telegram fs-8 me-1 {% if contact.email or contact.phone %}ms-2{% endif %}"></i>{{ contact.telegram_id }}
+                                                {% endif %}
                                             </span>
                                             {% endif %}
                                         </div>

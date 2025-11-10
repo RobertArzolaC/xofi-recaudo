@@ -226,6 +226,7 @@ class GroupCampaignExecutor(BaseCampaignExecutor):
         notification_defaults = {
             "recipient_email": partner.email,
             "recipient_phone": partner.phone,
+            "recipient_telegram_id": partner.telegram_id,
             "total_debt_amount": debt_amount,
             "included_payment_link": self.campaign.use_payment_link,
             "payment_link_url": payment_link_url,

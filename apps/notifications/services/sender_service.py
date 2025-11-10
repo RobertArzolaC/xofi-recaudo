@@ -1,6 +1,8 @@
 import logging
 from typing import Dict, Optional
 
+from constance import config
+
 from apps.campaigns import choices
 from apps.campaigns import models as campaign_models
 from apps.campaigns.utils import messages as message_utils
@@ -141,9 +143,10 @@ class NotificationSenderService:
         if channel == choices.NotificationChannel.WHATSAPP:
             return notification.recipient_phone
         elif channel == choices.NotificationChannel.TELEGRAM:
-            # For Telegram, use phone or specific telegram_id
-            # For testing, use a default chat ID
-            return notification.recipient_phone or "975005684"
+            return (
+                notification.recipient_telegram_id
+                or config.DEFAULT_TELEGRAM_CHAT_ID
+            )
         elif channel == choices.NotificationChannel.EMAIL:
             return notification.recipient_email
         elif channel == choices.NotificationChannel.SMS:

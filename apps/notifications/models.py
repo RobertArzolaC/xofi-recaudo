@@ -80,6 +80,13 @@ class CampaignNotification(
         blank=True,
         help_text=_("Phone number where the notification was sent."),
     )
+    recipient_telegram_id = models.CharField(
+        _("Recipient Telegram ID"),
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=_("Telegram ID where the notification was sent."),
+    )
 
     # Message content
     message_content = models.TextField(

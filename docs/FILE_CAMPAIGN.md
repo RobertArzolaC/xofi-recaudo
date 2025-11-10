@@ -94,6 +94,7 @@ Usar **herencia de modelo base abstracto** con tres componentes principales:
 - full_name: CharField(max_length=200)
 - email: EmailField (opcional)
 - phone: CharField(max_length=20, opcional)
+- telegram_id: CharField(max_length=50, opcional)
 - document_number: CharField(max_length=20, opcional)
 - custom_amount: DecimalField(max_digits=12, decimal_places=2)
 - additional_data: JSONField (para campos extra del CSV)
@@ -106,6 +107,7 @@ Usar **herencia de modelo base abstracto** con tres componentes principales:
 - campaign + is_valid
 - document_number
 - phone
+- telegram_id
 ```
 
 #### GroupBasedCampaign (Refactorización)
@@ -428,26 +430,28 @@ class CSVContactAdmin(admin.ModelAdmin):
 ### Columnas Requeridas (orden flexible)
 
 ```csv
-nombre_completo,email,telefono,monto,documento
-Juan Pérez,juan@email.com,987654321,150.50,12345678
-María García,,965432187,200.00,87654321
-Pedro López,pedro@email.com,,100.00,
+full_name,email,phone,telegram_id,amount,document_number
+Juan Pérez,juan@email.com,987654321,@juanperez,150.50,12345678
+María García,,965432187,123456789,200.00,87654321
+Pedro López,pedro@email.com,,,100.00,
 ```
 
 ### Columnas Opcionales
 
-- `documento`: DNI, RUC, etc.
-- `direccion`: Dirección del contacto
-- `notas`: Notas adicionales
+- `email`: Email del contacto
+- `phone`: Teléfono del contacto
+- `telegram_id`: ID de Telegram (numérico) o username (con @)
+- `document_number`: DNI, RUC, etc.
 - Cualquier otra columna se guarda en `additional_data`
 
 ### Reglas de Validación
 
-1. **nombre_completo**: Requerido, máx 200 caracteres
-2. **email** o **telefono**: Al menos uno requerido
-3. **monto**: Requerido, > 0, formato decimal válido
-4. **email**: Formato válido si está presente
-5. **telefono**: Solo dígitos y símbolos permitidos (+, -, espacios)
+1. **full_name**: Requerido, máx 200 caracteres
+2. **email**, **phone** o **telegram_id**: Al menos uno requerido para el canal seleccionado
+3. **amount**: Requerido, > 0, formato decimal válido
+4. **email**: Formato válido si está presente (debe contener @)
+5. **phone**: Mínimo 9 dígitos si está presente
+6. **telegram_id**: Debe empezar con @ (username) o ser numérico (ID) si está presente
 
 ## Migración de Datos Existentes
 

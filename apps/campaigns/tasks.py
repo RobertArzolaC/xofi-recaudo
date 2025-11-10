@@ -3,6 +3,7 @@ import logging
 from celery import shared_task
 
 from apps.campaigns import choices, models
+from apps.campaigns.services import CSVValidationService
 
 logger = logging.getLogger(__name__)
 
@@ -91,8 +92,6 @@ def validate_csv_campaign(campaign_id: int) -> dict:
         return {"success": False, "error": "Campaign not found"}
 
     try:
-        from apps.campaigns.services import CSVValidationService
-
         result = CSVValidationService.validate_campaign_csv(campaign_csv)
 
         logger.info(

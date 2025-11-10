@@ -367,7 +367,7 @@ class CampaignCSVFile(
         ordering = ["-created"]
 
     def __str__(self):
-        return f"File for {self.campaign.name} ({self.get_validation_status_display()})"
+        return f"File for {self.name} ({self.get_validation_status_display()})"
 
     def save(self, *args, **kwargs):
         """Auto-populate campaign_type."""
@@ -470,6 +470,13 @@ class CSVContact(TimeStampedModel):
         blank=True,
         help_text=_("Contact's phone number."),
     )
+    telegram_id = models.CharField(
+        _("Telegram ID"),
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=_("Contact's Telegram ID or username."),
+    )
     document_number = models.CharField(
         _("Document Number"),
         max_length=20,
@@ -515,6 +522,7 @@ class CSVContact(TimeStampedModel):
             models.Index(fields=["campaign", "is_valid"]),
             models.Index(fields=["document_number"]),
             models.Index(fields=["phone"]),
+            models.Index(fields=["telegram_id"]),
         ]
 
     def __str__(self):

@@ -243,6 +243,7 @@ class FileCampaignExecutor(BaseCampaignExecutor):
         notification_defaults = {
             "recipient_email": contact.email,
             "recipient_phone": contact.phone,
+            "recipient_telegram_id": contact.telegram_id,
             "total_debt_amount": contact.amount,
             "included_payment_link": self.campaign.use_payment_link,
             "payment_link_url": payment_link_url,
