@@ -1,813 +1,713 @@
 [
-  {
-    "model": "reports.reporttype",
-    "pk": 1,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Resumen de Campañas de Cobranza",
-      "description": "Reporte consolidado de campañas con métricas de efectividad y recaudación",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_campaigns_summary",
-      "model_name": "Campaign",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 1,
-    "fields": {
-      "report_type": 1,
-      "name": "status",
-      "label": "Estado de la Campaña",
-      "field_name": "status",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Estados"],
-          ["draft", "Borrador"],
-          ["active", "Activa"],
-          ["processing", "En Proceso"],
-          ["sending", "Enviando"],
-          ["completed", "Completada"],
-          ["failed", "Fallida"],
-          ["cancelled", "Cancelada"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 2,
-    "fields": {
-      "report_type": 1,
-      "name": "execution_date_from",
-      "label": "Fecha de Ejecución Desde",
-      "field_name": "execution_date__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 3,
-    "fields": {
-      "report_type": 1,
-      "name": "execution_date_to",
-      "label": "Fecha de Ejecución Hasta",
-      "field_name": "execution_date__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 4,
-    "fields": {
-      "report_type": 1,
-      "name": "channel",
-      "label": "Canal de Notificación",
-      "field_name": "channel",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Canales"],
-          ["email", "Email"],
-          ["whatsapp", "WhatsApp"],
-          ["sms", "SMS"],
-          ["telegram", "Telegram"],
-          ["ivr", "IVR"],
-          ["push", "Notificación Push"]
-        ]
-      },
-      "is_required": false,
-      "order": 4,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 2,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Detalle de Notificaciones de Campaña",
-      "description": "Reporte detallado de todas las notificaciones enviadas en campañas con estado y respuesta",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "campaign_notifications_detail",
-      "model_name": "CampaignNotification",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 5,
-    "fields": {
-      "report_type": 2,
-      "name": "campaign_id",
-      "label": "ID de Campaña",
-      "field_name": "campaign__id",
-      "filter_type": "number",
-      "options": {
-        "placeholder": "Ingrese ID de campaña",
-        "min": "1"
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 6,
-    "fields": {
-      "report_type": 2,
-      "name": "status",
-      "label": "Estado de Notificación",
-      "field_name": "status",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Estados"],
-          ["pending", "Pendiente"],
-          ["sent", "Enviado"],
-          ["delivered", "Entregado"],
-          ["failed", "Fallido"],
-          ["bounced", "Rebotado"],
-          ["opened", "Abierto"],
-          ["clicked", "Click"]
-        ]
-      },
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 7,
-    "fields": {
-      "report_type": 2,
-      "name": "sent_date_from",
-      "label": "Fecha de Envío Desde",
-      "field_name": "sent_at__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 8,
-    "fields": {
-      "report_type": 2,
-      "name": "sent_date_to",
-      "label": "Fecha de Envío Hasta",
-      "field_name": "sent_at__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 4,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 9,
-    "fields": {
-      "report_type": 2,
-      "name": "channel",
-      "label": "Canal",
-      "field_name": "channel",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Canales"],
-          ["email", "Email"],
-          ["whatsapp", "WhatsApp"],
-          ["sms", "SMS"],
-          ["telegram", "Telegram"],
-          ["ivr", "IVR"],
-          ["push", "Notificación Push"]
-        ]
-      },
-      "is_required": false,
-      "order": 5,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 3,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Efectividad de Grupos de Cobranza",
-      "description": "Análisis de efectividad de grupos de cobranza con métricas de recuperación y contactabilidad",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_group_effectiveness",
-      "model_name": "Group",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 10,
-    "fields": {
-      "report_type": 3,
-      "name": "priority",
-      "label": "Prioridad del Grupo",
-      "field_name": "priority",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todas las Prioridades"],
-          ["1", "Alta"],
-          ["2", "Media"],
-          ["3", "Baja"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 11,
-    "fields": {
-      "report_type": 3,
-      "name": "created_from",
-      "label": "Fecha de Creación Desde",
-      "field_name": "created__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 12,
-    "fields": {
-      "report_type": 3,
-      "name": "created_to",
-      "label": "Fecha de Creación Hasta",
-      "field_name": "created__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 4,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Reporte de Recuperación de Cartera",
-      "description": "Análisis de recuperación de cartera con montos pagados y pendientes por período",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_recovery_report",
-      "model_name": "Payment",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 13,
-    "fields": {
-      "report_type": 4,
-      "name": "payment_date_from",
-      "label": "Fecha de Pago Desde",
-      "field_name": "payment_date__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": true,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 14,
-    "fields": {
-      "report_type": 4,
-      "name": "payment_date_to",
-      "label": "Fecha de Pago Hasta",
-      "field_name": "payment_date__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": true,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 15,
-    "fields": {
-      "report_type": 4,
-      "name": "payment_method",
-      "label": "Método de Pago",
-      "field_name": "payment_method",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Métodos"],
-          ["cash", "Efectivo"],
-          ["bank_transfer", "Transferencia Bancaria"],
-          ["check", "Cheque"],
-          ["credit_card", "Tarjeta de Crédito"],
-          ["debit_card", "Tarjeta de Débito"],
-          ["electronic_wallet", "Billetera Electrónica"],
-          ["other", "Otro"]
-        ]
-      },
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 5,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Antigüedad de Cartera",
-      "description": "Análisis de antigüedad de deuda con clasificación por días de mora",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_portfolio_aging",
-      "model_name": "Installment",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 16,
-    "fields": {
-      "report_type": 5,
-      "name": "status",
-      "label": "Estado de Cuota",
-      "field_name": "status",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Estados"],
-          ["pending", "Pendiente"],
-          ["partial", "Pago Parcial"],
-          ["overdue", "Vencido"],
-          ["paid", "Pagado"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 17,
-    "fields": {
-      "report_type": 5,
-      "name": "due_date_from",
-      "label": "Fecha de Vencimiento Desde",
-      "field_name": "due_date__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 18,
-    "fields": {
-      "report_type": 5,
-      "name": "due_date_to",
-      "label": "Fecha de Vencimiento Hasta",
-      "field_name": "due_date__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 6,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Reporte de Contactabilidad",
-      "description": "Análisis de contactabilidad de clientes por canal y resultado",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_contactability_report",
-      "model_name": "CampaignNotification",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 19,
-    "fields": {
-      "report_type": 6,
-      "name": "campaign_id",
-      "label": "ID de Campaña",
-      "field_name": "campaign__id",
-      "filter_type": "number",
-      "options": {
-        "placeholder": "Ingrese ID de campaña",
-        "min": "1"
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 20,
-    "fields": {
-      "report_type": 6,
-      "name": "channel",
-      "label": "Canal",
-      "field_name": "channel",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Canales"],
-          ["email", "Email"],
-          ["whatsapp", "WhatsApp"],
-          ["sms", "SMS"],
-          ["telegram", "Telegram"],
-          ["ivr", "IVR"],
-          ["push", "Notificación Push"]
-        ]
-      },
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 21,
-    "fields": {
-      "report_type": 6,
-      "name": "date_from",
-      "label": "Fecha Desde",
-      "field_name": "sent_at__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 22,
-    "fields": {
-      "report_type": 6,
-      "name": "date_to",
-      "label": "Fecha Hasta",
-      "field_name": "sent_at__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 4,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 7,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Enlaces de Pago Mágicos",
-      "description": "Reporte de enlaces de pago generados con tasa de conversión y montos",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "magic_payment_links_report",
-      "model_name": "MagicPaymentLink",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 23,
-    "fields": {
-      "report_type": 7,
-      "name": "status",
-      "label": "Estado del Enlace",
-      "field_name": "status",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Estados"],
-          ["active", "Activo"],
-          ["used", "Usado"],
-          ["expired", "Expirado"],
-          ["cancelled", "Cancelado"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 24,
-    "fields": {
-      "report_type": 7,
-      "name": "created_from",
-      "label": "Fecha de Creación Desde",
-      "field_name": "created__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 25,
-    "fields": {
-      "report_type": 7,
-      "name": "created_to",
-      "label": "Fecha de Creación Hasta",
-      "field_name": "created__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 26,
-    "fields": {
-      "report_type": 7,
-      "name": "source",
-      "label": "Fuente del Enlace",
-      "field_name": "source",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todas las Fuentes"],
-          ["manual", "Manual"],
-          ["campaign", "Campaña"],
-          ["automated", "Automatizado"]
-        ]
-      },
-      "is_required": false,
-      "order": 4,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 8,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "KPIs Mensuales de Cobranza",
-      "description": "Reporte de indicadores clave de rendimiento mensual con métricas de recaudación y morosidad",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_monthly_kpis",
-      "model_name": "Payment",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 27,
-    "fields": {
-      "report_type": 8,
-      "name": "month",
-      "label": "Mes",
-      "field_name": "payment_date__month",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Meses"],
-          ["1", "Enero"],
-          ["2", "Febrero"],
-          ["3", "Marzo"],
-          ["4", "Abril"],
-          ["5", "Mayo"],
-          ["6", "Junio"],
-          ["7", "Julio"],
-          ["8", "Agosto"],
-          ["9", "Septiembre"],
-          ["10", "Octubre"],
-          ["11", "Noviembre"],
-          ["12", "Diciembre"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 28,
-    "fields": {
-      "report_type": 8,
-      "name": "year",
-      "label": "Año",
-      "field_name": "payment_date__year",
-      "filter_type": "number",
-      "options": {
-        "placeholder": "2025",
-        "min": "2020"
-      },
-      "is_required": true,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 9,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Auditoría de Gestión de Cobranza",
-      "description": "Reporte de auditoría con todas las acciones realizadas en el sistema de cobranza",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "collection_management_audit",
-      "model_name": "Campaign",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 29,
-    "fields": {
-      "report_type": 9,
-      "name": "date_from",
-      "label": "Fecha Desde",
-      "field_name": "created__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": true,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 30,
-    "fields": {
-      "report_type": 9,
-      "name": "date_to",
-      "label": "Fecha Hasta",
-      "field_name": "created__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": true,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 31,
-    "fields": {
-      "report_type": 9,
-      "name": "created_by_email",
-      "label": "Usuario (Email)",
-      "field_name": "created_by__email__icontains",
-      "filter_type": "text",
-      "options": {
-        "placeholder": "Ingrese email del usuario"
-      },
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reporttype",
-    "pk": 10,
-    "fields": {
-      "created_by": null,
-      "modified_by": null,
-      "name": "Portafolio de Créditos en Mora",
-      "description": "Reporte de créditos con cuotas vencidas con detalle de montos y días de atraso",
-      "created": "2025-01-10T00:00:00.000Z",
-      "modified": "2025-01-10T00:00:00.000Z",
-      "code": "overdue_credits_portfolio",
-      "model_name": "Credit",
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 32,
-    "fields": {
-      "report_type": 10,
-      "name": "status",
-      "label": "Estado del Crédito",
-      "field_name": "status",
-      "filter_type": "select",
-      "options": {
-        "choices": [
-          ["", "Todos los Estados"],
-          ["pending", "Pendiente"],
-          ["approved", "Aprobado"],
-          ["active", "Activo"],
-          ["completed", "Completado"],
-          ["defaulted", "En Mora"],
-          ["cancelled", "Cancelado"],
-          ["refinanced", "Refinanciado"],
-          ["rejected", "Rechazado"]
-        ]
-      },
-      "is_required": false,
-      "order": 1,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 33,
-    "fields": {
-      "report_type": 10,
-      "name": "disbursement_date_from",
-      "label": "Fecha de Desembolso Desde",
-      "field_name": "disbursement_date__gte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 2,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 34,
-    "fields": {
-      "report_type": 10,
-      "name": "disbursement_date_to",
-      "label": "Fecha de Desembolso Hasta",
-      "field_name": "disbursement_date__lte",
-      "filter_type": "date",
-      "options": {},
-      "is_required": false,
-      "order": 3,
-      "is_active": true
-    }
-  },
-  {
-    "model": "reports.reportfilter",
-    "pk": 35,
-    "fields": {
-      "report_type": 10,
-      "name": "min_outstanding_balance",
-      "label": "Saldo Pendiente Mínimo",
-      "field_name": "outstanding_balance__gte",
-      "filter_type": "number",
-      "options": {
-        "placeholder": "0.00",
-        "step": "0.01",
-        "min": "0"
-      },
-      "is_required": false,
-      "order": 4,
-      "is_active": true
-    }
+{
+  "model": "reports.reporttype",
+  "pk": 1,
+  "fields": {
+    "created": "2025-11-11T15:08:55.094Z",
+    "modified": "2025-11-11T15:08:55.094Z",
+    "name": "Resumen de Campañas de Cobranza",
+    "description": "Reporte consolidado de todas las campañas de cobranza ejecutadas, incluyendo métricas de efectividad, costos y resultados.",
+    "code": "collection_campaigns_summary",
+    "model_name": "campaigns.Campaign",
+    "is_active": true
   }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 2,
+  "fields": {
+    "created": "2025-11-11T15:08:55.105Z",
+    "modified": "2025-11-11T15:08:55.105Z",
+    "name": "Detalle de Notificaciones de Campaña",
+    "description": "Reporte detallado de todas las notificaciones enviadas en las campañas, incluyendo estado de entrega, errores y métricas de apertura.",
+    "code": "campaign_notifications_detail",
+    "model_name": "notifications.Notification",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 3,
+  "fields": {
+    "created": "2025-11-11T15:08:55.111Z",
+    "modified": "2025-11-11T15:08:55.111Z",
+    "name": "Reporte de Recuperación de Cartera",
+    "description": "Análisis de recuperación de cartera vencida, incluyendo montos recuperados, promesas de pago cumplidas y tendencias de recuperación.",
+    "code": "collection_recovery_report",
+    "model_name": "payments.Payment",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 4,
+  "fields": {
+    "created": "2025-11-11T15:08:55.115Z",
+    "modified": "2025-11-11T15:08:55.115Z",
+    "name": "Antigüedad de Cartera de Cobranza",
+    "description": "Reporte de antigüedad de la cartera vencida, segmentada por rangos de días de mora y montos.",
+    "code": "collection_portfolio_aging",
+    "model_name": "credits.Credit",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 5,
+  "fields": {
+    "created": "2025-11-11T15:08:55.120Z",
+    "modified": "2025-11-11T15:08:55.120Z",
+    "name": "Seguimiento de Promesas de Pago",
+    "description": "Reporte de seguimiento de promesas de pago realizadas por clientes, incluyendo cumplimiento y proyecciones.",
+    "code": "payment_promises_tracking",
+    "model_name": "credits.PaymentPromise",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 6,
+  "fields": {
+    "created": "2025-11-11T15:08:55.126Z",
+    "modified": "2025-11-11T15:08:55.126Z",
+    "name": "Reporte de Enlaces de Pago Mágicos",
+    "description": "Análisis de enlaces de pago generados, incluyendo tasas de conversión, uso y efectividad.",
+    "code": "magic_payment_links_report",
+    "model_name": "payments.MagicPaymentLink",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 7,
+  "fields": {
+    "created": "2025-11-11T15:08:55.131Z",
+    "modified": "2025-11-11T15:08:55.131Z",
+    "name": "KPIs Mensuales de Cobranza",
+    "description": "Indicadores clave de rendimiento mensuales del área de cobranza, incluyendo tasas de recuperación, efectividad y costos.",
+    "code": "collection_monthly_kpis",
+    "model_name": "campaigns.Campaign",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reporttype",
+  "pk": 8,
+  "fields": {
+    "created": "2025-11-11T15:08:55.134Z",
+    "modified": "2025-11-11T15:08:55.134Z",
+    "name": "Auditoría de Gestión de Cobranza",
+    "description": "Reporte de auditoría completo de las actividades de gestión de cobranza, incluyendo acciones realizadas y resultados.",
+    "code": "collection_management_audit",
+    "model_name": "core.AuditLog",
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 1,
+  "fields": {
+    "report_type": 1,
+    "name": "fecha_inicio",
+    "label": "Fecha de Inicio",
+    "field_name": "execution_date__gte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 2,
+  "fields": {
+    "report_type": 1,
+    "name": "fecha_fin",
+    "label": "Fecha de Fin",
+    "field_name": "execution_date__lte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 3,
+  "fields": {
+    "report_type": 1,
+    "name": "estado",
+    "label": "Estado de Campaña",
+    "field_name": "status",
+    "filter_type": "multiselect",
+    "options": {
+      "choices": [
+        {
+          "value": "draft",
+          "label": "Borrador"
+        },
+        {
+          "value": "scheduled",
+          "label": "Programada"
+        },
+        {
+          "value": "in_progress",
+          "label": "En Progreso"
+        },
+        {
+          "value": "completed",
+          "label": "Completada"
+        },
+        {
+          "value": "cancelled",
+          "label": "Cancelada"
+        }
+      ]
+    },
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 4,
+  "fields": {
+    "report_type": 1,
+    "name": "canal",
+    "label": "Canal de Comunicación",
+    "field_name": "channel",
+    "filter_type": "select",
+    "options": {
+      "choices": [
+        {
+          "value": "email",
+          "label": "Correo Electrónico"
+        },
+        {
+          "value": "sms",
+          "label": "SMS"
+        },
+        {
+          "value": "telegram",
+          "label": "Telegram"
+        },
+        {
+          "value": "whatsapp",
+          "label": "WhatsApp"
+        }
+      ]
+    },
+    "is_required": false,
+    "order": 4,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 5,
+  "fields": {
+    "report_type": 2,
+    "name": "fecha_inicio",
+    "label": "Fecha de Inicio",
+    "field_name": "created__gte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 6,
+  "fields": {
+    "report_type": 2,
+    "name": "fecha_fin",
+    "label": "Fecha de Fin",
+    "field_name": "created__lte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 7,
+  "fields": {
+    "report_type": 2,
+    "name": "estado_notificacion",
+    "label": "Estado de Notificación",
+    "field_name": "status",
+    "filter_type": "multiselect",
+    "options": {
+      "choices": [
+        {
+          "value": "pending",
+          "label": "Pendiente"
+        },
+        {
+          "value": "sent",
+          "label": "Enviada"
+        },
+        {
+          "value": "delivered",
+          "label": "Entregada"
+        },
+        {
+          "value": "failed",
+          "label": "Fallida"
+        },
+        {
+          "value": "read",
+          "label": "Leída"
+        }
+      ]
+    },
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 8,
+  "fields": {
+    "report_type": 3,
+    "name": "periodo_inicio",
+    "label": "Período de Inicio",
+    "field_name": "payment_date__gte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 9,
+  "fields": {
+    "report_type": 3,
+    "name": "periodo_fin",
+    "label": "Período de Fin",
+    "field_name": "payment_date__lte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 10,
+  "fields": {
+    "report_type": 3,
+    "name": "monto_minimo",
+    "label": "Monto Mínimo Recuperado",
+    "field_name": "amount__gte",
+    "filter_type": "number",
+    "options": {
+      "min": 0,
+      "step": 0.01
+    },
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 11,
+  "fields": {
+    "report_type": 4,
+    "name": "fecha_corte",
+    "label": "Fecha de Corte",
+    "field_name": "date_snapshot",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 12,
+  "fields": {
+    "report_type": 4,
+    "name": "dias_mora_minimo",
+    "label": "Días de Mora Mínimo",
+    "field_name": "days_overdue__gte",
+    "filter_type": "number",
+    "options": {
+      "min": 0,
+      "step": 1
+    },
+    "is_required": false,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 13,
+  "fields": {
+    "report_type": 4,
+    "name": "incluir_castigados",
+    "label": "Incluir Créditos Castigados",
+    "field_name": "include_written_off",
+    "filter_type": "boolean",
+    "options": {},
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 14,
+  "fields": {
+    "report_type": 5,
+    "name": "fecha_promesa_inicio",
+    "label": "Fecha Promesa Desde",
+    "field_name": "promise_date__gte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 15,
+  "fields": {
+    "report_type": 5,
+    "name": "fecha_promesa_fin",
+    "label": "Fecha Promesa Hasta",
+    "field_name": "promise_date__lte",
+    "filter_type": "date",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 16,
+  "fields": {
+    "report_type": 5,
+    "name": "estado_cumplimiento",
+    "label": "Estado de Cumplimiento",
+    "field_name": "fulfillment_status",
+    "filter_type": "select",
+    "options": {
+      "choices": [
+        {
+          "value": "pending",
+          "label": "Pendiente"
+        },
+        {
+          "value": "fulfilled",
+          "label": "Cumplida"
+        },
+        {
+          "value": "partial",
+          "label": "Cumplida Parcial"
+        },
+        {
+          "value": "broken",
+          "label": "Incumplida"
+        }
+      ]
+    },
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 17,
+  "fields": {
+    "report_type": 6,
+    "name": "fecha_creacion_inicio",
+    "label": "Fecha Creación Desde",
+    "field_name": "created__gte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 18,
+  "fields": {
+    "report_type": 6,
+    "name": "fecha_creacion_fin",
+    "label": "Fecha Creación Hasta",
+    "field_name": "created__lte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 19,
+  "fields": {
+    "report_type": 6,
+    "name": "estado_enlace",
+    "label": "Estado del Enlace",
+    "field_name": "status",
+    "filter_type": "select",
+    "options": {
+      "choices": [
+        {
+          "value": "active",
+          "label": "Activo"
+        },
+        {
+          "value": "used",
+          "label": "Usado"
+        },
+        {
+          "value": "expired",
+          "label": "Expirado"
+        },
+        {
+          "value": "cancelled",
+          "label": "Cancelado"
+        }
+      ]
+    },
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 20,
+  "fields": {
+    "report_type": 7,
+    "name": "mes",
+    "label": "Mes",
+    "field_name": "month",
+    "filter_type": "number",
+    "options": {
+      "min": 1,
+      "max": 12,
+      "step": 1
+    },
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 21,
+  "fields": {
+    "report_type": 7,
+    "name": "anio",
+    "label": "Año",
+    "field_name": "year",
+    "filter_type": "number",
+    "options": {
+      "min": 2020,
+      "max": 2030,
+      "step": 1
+    },
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 22,
+  "fields": {
+    "report_type": 8,
+    "name": "fecha_auditoria_inicio",
+    "label": "Fecha Auditoría Desde",
+    "field_name": "timestamp__gte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 23,
+  "fields": {
+    "report_type": 8,
+    "name": "fecha_auditoria_fin",
+    "label": "Fecha Auditoría Hasta",
+    "field_name": "timestamp__lte",
+    "filter_type": "datetime",
+    "options": {},
+    "is_required": true,
+    "order": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.reportfilter",
+  "pk": 24,
+  "fields": {
+    "report_type": 8,
+    "name": "usuario",
+    "label": "Usuario",
+    "field_name": "user_id",
+    "filter_type": "text",
+    "options": {},
+    "is_required": false,
+    "order": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "reports.report",
+  "pk": 1,
+  "fields": {
+    "created": "2025-11-11T15:08:55.138Z",
+    "modified": "2025-11-11T15:08:55.138Z",
+    "title": "Resumen de Campañas Enero 2025",
+    "description": "Reporte mensual consolidado de todas las campañas ejecutadas en enero 2025",
+    "report_type": 1,
+    "format": "excel",
+    "status": "completed",
+    "filters": {
+      "fecha_inicio": "2025-01-01",
+      "fecha_fin": "2025-01-31",
+      "estado": [
+        "completed",
+        "in_progress"
+      ]
+    },
+    "file_path": "",
+    "celery_task_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "error_message": "",
+    "file_size": 2048576,
+    "record_count": 45
+  }
+},
+{
+  "model": "reports.report",
+  "pk": 2,
+  "fields": {
+    "created": "2025-11-11T15:08:55.140Z",
+    "modified": "2025-11-11T15:08:55.140Z",
+    "title": "Notificaciones Telegram - Semana 1",
+    "description": "Detalle de notificaciones enviadas vía Telegram durante la primera semana",
+    "report_type": 2,
+    "format": "csv",
+    "status": "completed",
+    "filters": {
+      "fecha_inicio": "2025-01-01T00:00:00",
+      "fecha_fin": "2025-01-07T23:59:59",
+      "estado_notificacion": [
+        "sent",
+        "delivered"
+      ]
+    },
+    "file_path": "",
+    "celery_task_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "error_message": "",
+    "file_size": 512000,
+    "record_count": 1523
+  }
+},
+{
+  "model": "reports.report",
+  "pk": 3,
+  "fields": {
+    "created": "2025-11-11T15:08:55.142Z",
+    "modified": "2025-11-11T15:08:55.142Z",
+    "title": "Recuperación Cartera Q4 2024",
+    "description": "Análisis de recuperación del cuarto trimestre 2024",
+    "report_type": 3,
+    "format": "excel",
+    "status": "completed",
+    "filters": {
+      "periodo_inicio": "2024-10-01",
+      "periodo_fin": "2024-12-31",
+      "monto_minimo": 100.0
+    },
+    "file_path": "",
+    "celery_task_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "error_message": "",
+    "file_size": 3145728,
+    "record_count": 892
+  }
+},
+{
+  "model": "reports.report",
+  "pk": 4,
+  "fields": {
+    "created": "2025-11-11T15:08:55.144Z",
+    "modified": "2025-11-11T15:08:55.144Z",
+    "title": "Antigüedad de Cartera - Corte Actual",
+    "description": "Reporte de antigüedad de cartera al día de hoy",
+    "report_type": 4,
+    "format": "excel",
+    "status": "processing",
+    "filters": {
+      "fecha_corte": "2025-11-11",
+      "dias_mora_minimo": 30,
+      "incluir_castigados": false
+    },
+    "file_path": "",
+    "celery_task_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "error_message": "",
+    "file_size": null,
+    "record_count": null
+  }
+},
+{
+  "model": "reports.report",
+  "pk": 5,
+  "fields": {
+    "created": "2025-11-11T15:08:55.145Z",
+    "modified": "2025-11-11T15:08:55.145Z",
+    "title": "Promesas de Pago - Enero 2025",
+    "description": "Seguimiento de promesas de pago del mes actual",
+    "report_type": 5,
+    "format": "csv",
+    "status": "pending",
+    "filters": {
+      "fecha_promesa_inicio": "2025-01-01",
+      "fecha_promesa_fin": "2025-01-31"
+    },
+    "file_path": "",
+    "celery_task_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "error_message": "",
+    "file_size": null,
+    "record_count": null
+  }
+}
 ]

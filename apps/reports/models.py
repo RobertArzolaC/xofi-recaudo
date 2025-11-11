@@ -2,11 +2,11 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
-from apps.core.models import BaseUserTracked, NameDescription
+from apps.core.models import NameDescription
 from apps.reports import choices
 
 
-class ReportType(NameDescription, BaseUserTracked, TimeStampedModel):
+class ReportType(NameDescription, TimeStampedModel):
     """
     Defines different types of reports available in the system.
     """
@@ -61,7 +61,7 @@ class ReportFilter(models.Model):
         return f"{self.report_type.name} - {self.label}"
 
 
-class Report(BaseUserTracked, TimeStampedModel):
+class Report(TimeStampedModel):
     """
     Represents a generated report in the system.
     """
@@ -96,10 +96,14 @@ class Report(BaseUserTracked, TimeStampedModel):
         _("Celery Task ID"), max_length=255, blank=True, null=True
     )
     started_at = models.DateTimeField(_("Started at"), null=True, blank=True)
-    completed_at = models.DateTimeField(_("Completed at"), null=True, blank=True)
+    completed_at = models.DateTimeField(
+        _("Completed at"), null=True, blank=True
+    )
     error_message = models.TextField(_("Error Message"), blank=True)
     file_size = models.BigIntegerField(_("File Size"), null=True, blank=True)
-    record_count = models.PositiveIntegerField(_("Record Count"), null=True, blank=True)
+    record_count = models.PositiveIntegerField(
+        _("Record Count"), null=True, blank=True
+    )
 
     class Meta:
         verbose_name = _("Report")
@@ -130,3 +134,25 @@ class Report(BaseUserTracked, TimeStampedModel):
         if self.started_at and self.completed_at:
             return int((self.completed_at - self.started_at).total_seconds())
         return 0
+
+    @property
+    def file_size_display(self) -> str:
+        """Returns file size in human readable format."""
+        if self.file_size:
+            if self.file_size < 1024:
+                return f"{self.file_size} B"
+            elif self.file_size < 1024 * 1024:
+                return f"{self.file_size / 1024:.2f} KB"
+            else:
+                return f"{self.file_size / (1024 * 1024):.2f} MB"
+        return "-"
+
+    @property
+    def duration_display(self) -> str:
+        """Returns duration in human readable format."""
+        duration = self.duration
+        if duration < 60:
+            return f"{duration} seconds" if duration != 1 else "1 second"
+        else:
+            minutes = duration / 60
+            return f"{minutes:.1f} minutes" if minutes != 1 else "1 minute"

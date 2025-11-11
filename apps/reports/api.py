@@ -17,9 +17,7 @@ class ReportStatusAPIView(APIView):
 
     def get(self, request, pk):
         try:
-            report = Report.objects.select_related("report_type").get(
-                pk=pk, created_by=request.user
-            )
+            report = Report.objects.select_related("report_type").get(pk=pk)
 
             data = {
                 "id": report.id,

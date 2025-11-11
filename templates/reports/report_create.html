@@ -224,24 +224,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
             switch (filter.filter_type) {
                 case 'date':
-                    inputHtml = `<input type="date" name="${filter.field_name}" class="form-control" ${required}>`;
+                    inputHtml = `<input type="date" name="${filter.name}" class="form-control" ${required}>`;
                     break;
                 case 'datetime':
-                    inputHtml = `<input type="datetime-local" name="${filter.field_name}" class="form-control" ${required}>`;
+                    inputHtml = `<input type="datetime-local" name="${filter.name}" class="form-control" ${required}>`;
                     break;
                 case 'number':
-                    inputHtml = `<input type="number" name="${filter.field_name}" class="form-control" ${required}>`;
+                    inputHtml = `<input type="number" name="${filter.name}" class="form-control" ${required}>`;
                     break;
                 case 'select':
                     const options = filter.options.choices || [];
-                    inputHtml = `<select name="${filter.field_name}" class="form-select" ${required}>
+                    inputHtml = `<select name="${filter.name}" class="form-select" ${required}>
                         <option value="">{% trans "Select..." %}</option>
                         ${options.map(opt => `<option value="${opt[0]}">${opt[1]}</option>`).join('')}
                     </select>`;
                     break;
                 case 'text':
                 default:
-                    inputHtml = `<input type="text" name="${filter.field_name}" class="form-control" ${required}>`;
+                    inputHtml = `<input type="text" name="${filter.name}" class="form-control" ${required}>`;
             }
 
             col.innerHTML = `

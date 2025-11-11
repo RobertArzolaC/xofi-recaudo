@@ -135,13 +135,7 @@
                                             </i>
                                             {% trans "Generated file" %}
                                             {% if report.file_size %}
-                                                ({% if report.file_size < 1024 %}
-                                                    {{ report.file_size }} B
-                                                {% elif report.file_size < 1048576 %}
-                                                    {{ report.file_size|div:1024|floatformat:2 }} KB
-                                                {% else %}
-                                                    {{ report.file_size|div:1048576|floatformat:2 }} MB
-                                                {% endif %})
+                                                ({{ report.file_size_display }})
                                             {% endif %}
                                         </li>
                                         {% endif %}

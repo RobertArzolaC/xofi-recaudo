@@ -21,10 +21,8 @@ class ReportListView(LoginRequiredMixin, FilterView):
     paginate_by = config.ITEMS_PER_PAGE
 
     def get_queryset(self):
-        return (
-            models.Report.objects.select_related("report_type")
-            .filter(created_by=self.request.user)
-            .order_by("-created")
+        return models.Report.objects.select_related("report_type").order_by(
+            "-created"
         )
 
     def get_context_data(self, **kwargs):
@@ -43,9 +41,7 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "report"
 
     def get_queryset(self):
-        return models.Report.objects.select_related("report_type").filter(
-            created_by=self.request.user
-        )
+        return models.Report.objects.select_related("report_type")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,7 +60,6 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("apps.reports:report-list")
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
         response = super().form_valid(form)
 
         # Start async report generation
@@ -80,7 +75,9 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Create Report"
-        context["report_types"] = models.ReportType.objects.filter(is_active=True)
+        context["report_types"] = models.ReportType.objects.filter(
+            is_active=True
+        )
         return context
 
 
@@ -93,7 +90,7 @@ class ReportDownloadView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return models.Report.objects.filter(
-            created_by=self.request.user, status=choices.ReportStatus.COMPLETED
+            status=choices.ReportStatus.COMPLETED
         )
 
     def get(self, request, *args, **kwargs):
@@ -116,10 +113,10 @@ class ReportDownloadView(LoginRequiredMixin, DetailView):
                 )
                 extension = "xlsx"
 
-            filename = (
-                f"{report.title}_{report.created.strftime('%Y%m%d_%H%M%S')}.{extension}"
+            filename = f"{report.title}_{report.created.strftime('%Y%m%d_%H%M%S')}.{extension}"
+            response["Content-Disposition"] = (
+                f'attachment; filename="{filename}"'
             )
-            response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
             return response
 
@@ -138,8 +135,8 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("apps.reports:report-list")
 
     def get_queryset(self):
-        """Only allow users to delete their own reports."""
-        return models.Report.objects.filter(created_by=self.request.user)
+        """Get all reports."""
+        return models.Report.objects.all()
 
     def delete(self, request, *args, **kwargs):
         """Override delete method to add success message and cleanup files."""

@@ -100,7 +100,6 @@ class ReportAdmin(admin.ModelAdmin):
         "report_type",
         "format",
         "status_badge",
-        "created_by",
         "record_count",
         "file_size_display",
         "created",
@@ -154,7 +153,13 @@ class ReportAdmin(admin.ModelAdmin):
     date_hierarchy = "created"
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("report_type", "created_by")
+        return (
+            super()
+            .get_queryset(request)
+            .select_related(
+                "report_type",
+            )
+        )
 
     def status_badge(self, obj):
         """Display status with color coding."""

@@ -1,6 +1,7 @@
 {% extends "layouts/dashboard.html" %}
 {% load static %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title_page %}{% trans "Report Details" %}{% endblock title_page %}
 {% block toolbar_title %}{% trans "Report" %}: {{ report.title }}{% endblock %}
@@ -137,17 +138,7 @@
                             <div class="mb-4">
                                 <label class="form-label text-muted">{% trans "File Size" %}</label>
                                 <div class="fw-bold fs-5 text-success">
-                                    {% if report.file_size %}
-                                        {% if report.file_size < 1024 %}
-                                            {{ report.file_size }} B
-                                        {% elif report.file_size < 1048576 %}
-                                            {{ report.file_size|div:1024|floatformat:2 }} KB
-                                        {% else %}
-                                            {{ report.file_size|div:1048576|floatformat:2 }} MB
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
+                                    {{ report.file_size_display }}
                                 </div>
                             </div>
                         </div>
@@ -194,11 +185,7 @@
                             <div class="mb-4">
                                 <label class="form-label text-muted">{% trans "Generation Time" %}</label>
                                 <div class="fw-bold fs-6">
-                                    {% if report.duration < 60 %}
-                                        {{ report.duration }} {% trans "seconds" %}
-                                    {% else %}
-                                        {{ report.duration|div:60|floatformat:1 }} {% trans "minutes" %}
-                                    {% endif %}
+                                    {{ report.duration_display }}
                                 </div>
                             </div>
                         </div>
