@@ -94,6 +94,35 @@ class BaseCampaign(
         help_text=_("Type of campaign (auto-populated)."),
     )
 
+    # WhatsApp-specific settings (WHAPI best practices)
+    whatsapp_personalize_messages = models.BooleanField(
+        _("Personalize WhatsApp Messages"),
+        default=True,
+        help_text=_("Personalize each WhatsApp message to avoid spam detection."),
+    )
+    whatsapp_include_stop_command = models.BooleanField(
+        _("Include STOP Command"),
+        default=True,
+        help_text=_('Include "write STOP to stop receiving messages" in WhatsApp messages.'),
+    )
+    whatsapp_avoid_unsolicited_links = models.BooleanField(
+        _("Avoid Unsolicited Links"),
+        default=True,
+        help_text=_("Avoid sending payment links in the first message to prevent spam flags."),
+    )
+    whatsapp_group_by_region = models.BooleanField(
+        _("Group By Region"),
+        default=False,
+        help_text=_("Group contacts by region to avoid messaging many international numbers simultaneously."),
+    )
+    whatsapp_target_response_rate = models.DecimalField(
+        _("Target Response Rate"),
+        max_digits=5,
+        decimal_places=2,
+        default=30.0,
+        help_text=_("Target response rate percentage (recommended: 30%)."),
+    )
+
     class Meta:
         abstract = True
         ordering = ["-created"]

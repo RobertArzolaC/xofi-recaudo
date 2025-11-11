@@ -263,6 +263,12 @@ WHATSAPP_BUSINESS_ACCOUNT_ID = config(
 )
 WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
 
+# Whapi Settings
+# https://whapi.cloud/docs
+
+WHAPI_API_URL = config("WHAPI_API_URL", default="https://api.whapi.io")
+WHAPI_API_TOKEN = config("WHAPI_API_TOKEN", default="")
+
 # Telegram Bot Settings
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
 
