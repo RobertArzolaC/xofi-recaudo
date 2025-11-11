@@ -346,3 +346,13 @@ INTENT_KEYWORDS = {
         "pago realizado",
     ],
 }
+
+
+# ==========================================
+# Whapi CONSTANTS
+# ==========================================
+
+WHAPI_MESSAGE_TYPE_TEXT = "text"
+WHAPI_MESSAGE_TYPE_IMAGE = "image"
+WHAPI_MESSAGE_TYPE_BUTTON = "button"
+WHAPI_EVENT_TYPE_MESSAGES = "messages"
