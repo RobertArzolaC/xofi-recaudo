@@ -228,7 +228,7 @@
         </div>
 
         <div class="menu-item">
-          {% if perms.payments.view_magicpaymentlink %}
+          {% if perms.payments.view_magicpaymentlink and config.ENABLE_PAYMENT_LINKS %}
             <a class="menu-link {% if "magic-link" in request.path %}active{% endif %}" href="{% url 'apps.payments:magic-link-list' %}">
               <span class="menu-icon">
                 <i class="ki-duotone ki-document fs-2 me-2">

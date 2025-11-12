@@ -45,10 +45,12 @@
                         <label class="form-label">{{ filter.form.status.label }}</label>
                         {{ filter.form.status }}
                     </div>
+                    {% if config.ENABLE_PAYMENT_LINKS %}
                     <div class="col-lg-3 mb-3">
                         <label class="form-label">{{ filter.form.use_payment_link.label }}</label>
                         {{ filter.form.use_payment_link }}
                     </div>
+                    {% endif %}
                     <div class="col-lg-2 mb-3 d-flex align-items-end">
                         <div class="d-flex flex-column gap-2 w-100">
                             <button type="submit" class="btn btn-primary btn-sm">
@@ -90,7 +92,9 @@
                             <th class="min-w-150px">{% trans "Group" %}</th>
                             <th class="min-w-150px">{% trans "Execution Date" %}</th>
                             <th class="min-w-100px">{% trans "Status" %}</th>
-                            <th class="min-w-80px">{% trans "Payment Link" %}</th>
+                            {% if config.ENABLE_PAYMENT_LINKS %}
+                                <th class="min-w-80px">{% trans "Payment Link" %}</th>
+                            {% endif %}
                             <th class="min-w-100px text-end">{% trans "Actions" %}</th>
                         </tr>
                     </thead>
@@ -150,19 +154,21 @@
                                     <span class="badge badge-danger">{{ campaign.get_status_display }}</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center">
-                                {% if campaign.use_payment_link %}
-                                    <i class="ki-duotone ki-check-circle fs-2 text-success">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                {% else %}
-                                    <i class="ki-duotone ki-cross-circle fs-2 text-muted">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                {% endif %}
-                            </td>
+                            {% if config.ENABLE_PAYMENT_LINKS %}
+                                <td class="text-center">
+                                    {% if campaign.use_payment_link %}
+                                        <i class="ki-duotone ki-check-circle fs-2 text-success">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                    {% else %}
+                                        <i class="ki-duotone ki-cross-circle fs-2 text-muted">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                             <td class="text-end">
                                 {% if perms.campaigns.view_campaign %}
                                 <a href="{% url 'apps.campaigns:campaign-detail' campaign.pk %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
