@@ -37,6 +37,6 @@ class User(AbstractUser):
         return hasattr(self, "account")
 
     class Meta:
-        managed = False
+        managed = True
         verbose_name = _("User")
         verbose_name_plural = _("Users")
