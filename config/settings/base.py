@@ -73,10 +73,10 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
     "allauth.account.middleware.AccountMiddleware",
 ]
 

@@ -4,9 +4,10 @@ class XofiErpRouter:
     the xofi-erp application.
     """
 
-    route_app_labels = {
-        "customers",
+    remote_app_labels = {
+        # Apps principales del negocio
         "users",
+        "customers",
         "compliance",
         "partners",
         "payments",
@@ -15,32 +16,51 @@ class XofiErpRouter:
         "campaigns",
         "notifications",
         "support",
-        "authtoken",
-        "admin",
         "chatbot",
+        # Apps de terceros que manejan datos del negocio
         "cities_light",
         "constance",
+        # Apps de auditoría
+        "easyaudit",
+    }
+
+    local_app_labels = {
+        # Apps que deben estar en la DB principal
+        "admin",
+        "auth",
+        "contenttypes",
+        "sessions",
+        "messages",
+        "staticfiles",
+        "authtoken",
+        "django_celery_beat",
+        "allauth",
+        "account",
+        "core",
+        "authentication",
     }
 
     def db_for_read(self, model, **hints):
-        if model._meta.app_label in self.route_app_labels:
+        if model._meta.app_label in self.remote_app_labels:
             return "xofi-erp"
         return None
 
     def db_for_write(self, model, **hints):
-        if model._meta.app_label in self.route_app_labels:
+        if model._meta.app_label in self.remote_app_labels:
             return "xofi-erp"
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
         if (
-            obj1._meta.app_label in self.route_app_labels
-            or obj2._meta.app_label in self.route_app_labels
+            obj1._meta.app_label in self.remote_app_labels
+            or obj2._meta.app_label in self.remote_app_labels
         ):
             return True
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        if app_label in self.route_app_labels:
+        if app_label in self.remote_app_labels:
             return db == "xofi-erp"
-        return db == "default"
+        elif app_label in self.local_app_labels:
+            return db == "default"
+        return None
