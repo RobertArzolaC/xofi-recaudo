@@ -230,18 +230,51 @@ document.addEventListener('DOMContentLoaded', function() {
                     inputHtml = `<input type="datetime-local" name="${filter.name}" class="form-control" ${required}>`;
                     break;
                 case 'number':
-                    inputHtml = `<input type="number" name="${filter.name}" class="form-control" ${required}>`;
+                    const min = filter.options.min !== undefined ? `min="${filter.options.min}"` : '';
+                    const max = filter.options.max !== undefined ? `max="${filter.options.max}"` : '';
+                    const step = filter.options.step !== undefined ? `step="${filter.options.step}"` : '';
+                    inputHtml = `<input type="number" name="${filter.name}" class="form-control" ${min} ${max} ${step} ${required}>`;
                     break;
                 case 'select':
-                    const options = filter.options.choices || [];
+                    const selectOptions = filter.options.choices || [];
+                    const selectOptionsHtml = selectOptions.map(opt => {
+                        const value = opt.value || opt[0];
+                        const label = opt.label || opt[1];
+                        return `<option value="${value}">${label}</option>`;
+                    }).join('');
                     inputHtml = `<select name="${filter.name}" class="form-select" ${required}>
-                        <option value="">{% trans "Select..." %}</option>
-                        ${options.map(opt => `<option value="${opt[0]}">${opt[1]}</option>`).join('')}
+                        <option value="">{% trans "Seleccionar..." %}</option>
+                        ${selectOptionsHtml}
                     </select>`;
+                    break;
+                case 'multiselect':
+                    const multiOptions = filter.options.choices || [];
+                    const multiOptionsHtml = multiOptions.map(opt => {
+                        const value = opt.value || opt[0];
+                        const label = opt.label || opt[1];
+                        return `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="${filter.name}" value="${value}" id="${filter.name}_${value}">
+                                <label class="form-check-label" for="${filter.name}_${value}">
+                                    ${label}
+                                </label>
+                            </div>`;
+                    }).join('');
+                    inputHtml = `<div class="mt-2">${multiOptionsHtml}</div>`;
+                    break;
+                case 'boolean':
+                    inputHtml = `
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" name="${filter.name}" id="${filter.name}" value="true">
+                            <label class="form-check-label" for="${filter.name}">
+                                {% trans "Sí" %}
+                            </label>
+                        </div>`;
                     break;
                 case 'text':
                 default:
-                    inputHtml = `<input type="text" name="${filter.name}" class="form-control" ${required}>`;
+                    const placeholder = filter.options.placeholder || '';
+                    inputHtml = `<input type="text" name="${filter.name}" class="form-control" placeholder="${placeholder}" ${required}>`;
             }
 
             col.innerHTML = `
@@ -260,7 +293,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const filtersData = {};
 
         filterInputs.forEach(input => {
-            if (input.value) {
+            // Handle checkboxes (multiselect)
+            if (input.type === 'checkbox' && input.name in filtersData) {
+                // If already exists, it's a multiselect - add to array
+                if (!Array.isArray(filtersData[input.name])) {
+                    filtersData[input.name] = [filtersData[input.name]];
+                }
+                if (input.checked) {
+                    filtersData[input.name].push(input.value);
+                }
+            } else if (input.type === 'checkbox') {
+                // Single checkbox (boolean)
+                if (input.checked) {
+                    filtersData[input.name] = input.value === 'true' ? true : input.value;
+                }
+            } else if (input.value) {
+                // Regular inputs and selects
                 filtersData[input.name] = input.value;
             }
         });

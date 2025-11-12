@@ -577,7 +577,7 @@
     "options": {},
     "is_required": false,
     "order": 3,
-    "is_active": true
+    "is_active": false
   }
 },
 {
