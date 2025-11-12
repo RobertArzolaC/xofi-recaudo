@@ -58,6 +58,10 @@ CONSTANCE_CONFIG = {
         "975005684",
         _("Default Telegram chat ID for notifications."),
     ),
+    "ENABLE_TELEGRAM_CHANEL": (
+        False,
+        _("Enable Telegram channel notifications."),
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -83,5 +87,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "SOCIAL_SECURITY_DUE_DAY",
         ),
         "collapse": False,
+    },
+    "3. Campaign Settings": {
+        "fields": ("ENABLE_TELEGRAM_CHANEL",),
+        "collapse": True,
     },
 }

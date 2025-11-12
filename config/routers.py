@@ -22,11 +22,11 @@ class XofiErpRouter:
         "constance",
         # Apps de auditoría
         "easyaudit",
+        "admin",
     }
 
     local_app_labels = {
         # Apps que deben estar en la DB principal
-        "admin",
         "auth",
         "contenttypes",
         "sessions",
