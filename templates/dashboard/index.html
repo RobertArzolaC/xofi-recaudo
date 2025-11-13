@@ -2,20 +2,1661 @@
 {% load static %}
 {% load i18n %}
 
-{% block title_page %}Dashboard{% endblock title_page %}
-{% block toolbar_title %}Dashboard{% endblock %}
+{% block title_page %}{% trans "Dashboard" %}{% endblock title_page %}
+{% block toolbar_title %}
+    <i class="ki-duotone ki-element-11 fs-1 text-primary me-2">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+        <span class="path4"></span>
+    </i>
+    {% trans "Dashboard" %}
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        /* Hero KPI Cards */
+        .hero-kpi-card {
+            background: linear-gradient(135deg, #00A3FF 0%, #0070C0 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .hero-kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .hero-kpi-card.gradient-success {
+            background: linear-gradient(135deg, #50CD89 0%, #47BE7D 100%);
+        }
+
+        .hero-kpi-card.gradient-primary {
+            background: linear-gradient(135deg, #00A3FF 0%, #0070C0 100%);
+        }
+
+        .hero-kpi-card.gradient-warning {
+            background: linear-gradient(135deg, #FFC700 0%, #F1BC00 100%);
+        }
+
+        .hero-kpi-card.gradient-danger {
+            background: linear-gradient(135deg, #F1416C 0%, #E4314E 100%);
+        }
+
+        .hero-kpi-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-kpi-icon {
+            font-size: 3rem;
+            opacity: 0.9;
+        }
+
+        .hero-kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-kpi-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-kpi-trend {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Enhanced KPI Cards */
+        .enhanced-kpi-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 0;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .enhanced-kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .enhanced-kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.5rem 0;
+        }
+
+        .enhanced-kpi-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .enhanced-kpi-icon.primary {
+            background: rgba(0, 163, 255, 0.1);
+            color: #00A3FF;
+        }
+
+        .enhanced-kpi-icon.danger {
+            background: rgba(241, 65, 108, 0.1);
+            color: #F1416C;
+        }
+
+        .enhanced-kpi-icon.success {
+            background: rgba(80, 205, 137, 0.1);
+            color: #50CD89;
+        }
+
+        .enhanced-kpi-icon.warning {
+            background: rgba(255, 199, 0, 0.1);
+            color: #FFC700;
+        }
+
+        .enhanced-kpi-icon.info {
+            background: rgba(114, 57, 234, 0.1);
+            color: #7239EA;
+        }
+
+        .enhanced-kpi-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .enhanced-kpi-badge.primary {
+            background: rgba(0, 163, 255, 0.1);
+            color: #00A3FF;
+        }
+
+        .enhanced-kpi-badge.danger {
+            background: rgba(241, 65, 108, 0.1);
+            color: #F1416C;
+        }
+
+        .enhanced-kpi-badge.success {
+            background: rgba(80, 205, 137, 0.1);
+            color: #50CD89;
+        }
+
+        .enhanced-kpi-badge.warning {
+            background: rgba(255, 199, 0, 0.1);
+            color: #FFC700;
+        }
+
+        .enhanced-kpi-body {
+            padding: 1rem 1.5rem;
+        }
+
+        .enhanced-kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #181C32;
+            margin-bottom: 0.5rem;
+        }
+
+        .enhanced-kpi-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #7E8299;
+            margin-bottom: 0.25rem;
+        }
+
+        .enhanced-kpi-subtitle {
+            font-size: 0.8rem;
+            color: #A1A5B7;
+        }
+
+        .enhanced-kpi-footer {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .enhanced-kpi-change {
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .enhanced-kpi-change.positive {
+            color: #50CD89;
+        }
+
+        .enhanced-kpi-change.negative {
+            color: #F1416C;
+        }
+
+        .enhanced-kpi-change.neutral {
+            color: #FFC700;
+        }
+
+        /* Navigation Cards Carousel */
+        .navigation-carousel {
+            position: relative;
+            margin-bottom: 2.5rem;
+            padding: 0 3rem;
+        }
+
+        .navigation-cards-container {
+            overflow: hidden;
+            position: relative;
+            padding: 0.5rem 0;
+            max-width: 100%;
+        }
+
+        .navigation-cards {
+            display: flex;
+            gap: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-card {
+            min-width: 200px;
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.02);
+            border: 1px solid #E4E6EF;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px 0 rgba(76, 87, 125, 0.1);
+            border-color: #00A3FF;
+        }
+
+        .nav-card.active {
+            background: linear-gradient(135deg, #00A3FF 0%, #0070C0 100%);
+            border-color: #00A3FF;
+            color: white;
+            box-shadow: 0 0 30px 0 rgba(0, 163, 255, 0.3);
+        }
+
+        .nav-card.active .nav-card-title,
+        .nav-card.active .nav-card-count {
+            color: white;
+        }
+
+        .nav-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .nav-card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #181C32;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-card-count {
+            font-size: 0.75rem;
+            color: #7E8299;
+            font-weight: 500;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: 1px solid #E4E6EF;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.1);
+        }
+
+        .carousel-nav i {
+            font-size: 1.25rem;
+        }
+
+        .carousel-nav:hover {
+            background: #00A3FF;
+            color: white;
+            border-color: #00A3FF;
+            box-shadow: 0 0 30px 0 rgba(0, 163, 255, 0.3);
+        }
+
+        .carousel-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .carousel-nav:disabled:hover {
+            background: white;
+            color: inherit;
+            border-color: #E4E6EF;
+        }
+
+        .carousel-nav-left {
+            left: 0;
+        }
+
+        .carousel-nav-right {
+            right: 0;
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            border-radius: 0.75rem;
+            border: 1px solid #E4E6EF;
+            box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.02);
+            transition: all 0.3s ease;
+            height: 100%;
+            background: white;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 0 30px 0 rgba(76, 87, 125, 0.1);
+            border-color: #00A3FF;
+        }
+
+        .chart-card-header {
+            padding: 1.75rem 1.75rem 1rem 1.75rem;
+            border-bottom: none;
+        }
+
+        .chart-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #181C32;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-card-body {
+            padding: 1rem 1.75rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-card-footer {
+            padding: 1rem 1.75rem 1.75rem 1.75rem;
+            border-top: 1px dashed #E4E6EF;
+            margin-top: 1rem;
+        }
+
+        .chart-summary-text {
+            font-size: 0.875rem;
+            color: #7E8299;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .chart-metrics {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-metric-icon {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chart-metric-icon.primary { background: #00A3FF; }
+        .chart-metric-icon.success { background: #50CD89; }
+        .chart-metric-icon.danger { background: #F1416C; }
+        .chart-metric-icon.warning { background: #FFC700; }
+        .chart-metric-icon.secondary { background: #A1A5B7; }
+        .chart-metric-icon.info { background: #7239EA; }
+
+        .chart-metric-label {
+            font-size: 0.875rem;
+            color: #7E8299;
+            font-weight: 500;
+        }
+
+        .chart-metric-badge {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #181C32;
+            margin-left: 0.25rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .navigation-carousel {
+                padding: 0 2.75rem;
+            }
+
+            .carousel-nav {
+                width: 42px;
+                height: 42px;
+            }
+
+            .carousel-nav-left {
+                left: 0;
+            }
+
+            .carousel-nav-right {
+                right: 0;
+            }
+
+            .navigation-cards {
+                gap: 1.25rem;
+            }
+
+            .nav-card {
+                min-width: 180px;
+                padding: 1.35rem 1.1rem;
+            }
+
+            .nav-card-icon {
+                font-size: 2.25rem;
+            }
+
+            .nav-card-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-kpi-card {
+                min-height: 130px;
+                padding: 1.75rem;
+            }
+
+            .hero-kpi-value {
+                font-size: 2.25rem;
+            }
+
+            .hero-kpi-icon {
+                font-size: 2.5rem;
+            }
+
+            .chart-container {
+                height: 280px;
+            }
+
+            .enhanced-kpi-value {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navigation-carousel {
+                padding: 0 2.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .carousel-nav {
+                width: 38px;
+                height: 38px;
+            }
+
+            .carousel-nav i {
+                font-size: 1.15rem;
+            }
+
+            .carousel-nav-left {
+                left: 0;
+            }
+
+            .carousel-nav-right {
+                right: 0;
+            }
+
+            .navigation-cards {
+                gap: 1rem;
+            }
+
+            .nav-card {
+                min-width: 150px;
+                padding: 1.1rem 0.75rem;
+            }
+
+            .nav-card-icon {
+                font-size: 1.85rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .nav-card-title {
+                font-size: 0.8rem;
+            }
+
+            .hero-kpi-card {
+                min-height: 120px;
+                padding: 1.5rem;
+            }
+
+            .hero-kpi-value {
+                font-size: 2rem;
+            }
+
+            .hero-kpi-label {
+                font-size: 1rem;
+            }
+
+            .hero-kpi-icon {
+                font-size: 2rem;
+            }
+
+            .hero-kpi-content {
+                gap: 1rem;
+            }
+
+            .enhanced-kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .enhanced-kpi-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.25rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+
+            .chart-card-title {
+                font-size: 0.95rem;
+            }
+
+            .chart-metric-label,
+            .chart-metric-badge {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navigation-carousel {
+                padding: 0 2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .carousel-nav {
+                width: 34px;
+                height: 34px;
+            }
+
+            .carousel-nav i {
+                font-size: 1rem;
+            }
+
+            .carousel-nav-left {
+                left: 0;
+            }
+
+            .carousel-nav-right {
+                right: 0;
+            }
+
+            .navigation-cards {
+                gap: 0.875rem;
+            }
+
+            .nav-card {
+                min-width: 130px;
+                padding: 1rem 0.5rem;
+            }
+
+            .nav-card-icon {
+                font-size: 1.5rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .nav-card-title {
+                font-size: 0.75rem;
+            }
+
+            .hero-kpi-card {
+                min-height: 100px;
+                padding: 1.25rem;
+                margin-bottom: 1rem !important;
+            }
+
+            .hero-kpi-value {
+                font-size: 1.75rem;
+            }
+
+            .hero-kpi-label {
+                font-size: 0.9rem;
+            }
+
+            .hero-kpi-icon {
+                font-size: 1.75rem;
+            }
+
+            .hero-kpi-content {
+                gap: 0.75rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-kpi-icon {
+                margin: 0 auto;
+            }
+
+            .enhanced-kpi-card {
+                margin-bottom: 1rem !important;
+            }
+
+            .enhanced-kpi-value {
+                font-size: 1.35rem;
+            }
+
+            .enhanced-kpi-label {
+                font-size: 0.85rem;
+            }
+
+            .enhanced-kpi-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .chart-container {
+                height: 220px;
+            }
+
+            .chart-card {
+                margin-bottom: 1rem !important;
+            }
+
+            .chart-card-header {
+                padding: 1rem;
+            }
+
+            .chart-card-body {
+                padding: 0.75rem;
+            }
+
+            .chart-card-footer {
+                padding: 0.75rem;
+            }
+
+            .chart-card-title {
+                font-size: 0.9rem;
+            }
+
+            .chart-metrics {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .chart-metric {
+                justify-content: space-between;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .nav-card {
+                min-width: 85px;
+                padding: 0.625rem 0.25rem;
+            }
+
+            .nav-card-icon {
+                font-size: 1.1rem;
+            }
+
+            .nav-card-title {
+                font-size: 0.65rem;
+            }
+
+            .hero-kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .hero-kpi-label {
+                font-size: 0.85rem;
+            }
+
+            .enhanced-kpi-value {
+                font-size: 1.25rem;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<main class="container-xxl">
-  <div class="row">
-    <div class="text-end mb-4">
-      <small class="text-muted">
-          {% trans "Last updated" %}: {{ last_updated|date:"Y-m-d H:i" }}
-      </small>
+<div class="container-xxl">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <p class="text-gray-600 fs-6 mb-0">{% trans "Overview of key financial and operational metrics." %}</p>
+        </div>
+        <div class="text-end">
+            <small class="text-gray-500 fw-semibold">
+                {% trans "Last updated" %}: {{ last_updated|date:"Y-m-d H:i" }}
+            </small>
+        </div>
     </div>
-  </div>
-  <div class="row g-xl-8">
 
-  </div>
-</main>
+    <!-- Navigation Cards Carousel -->
+    <div class="navigation-carousel">
+        <button class="carousel-nav carousel-nav-left" id="carouselNavLeft">
+            <i class="ki-duotone ki-left fs-3"></i>
+        </button>
+        <div class="navigation-cards-container">
+            <div class="navigation-cards">
+                <div class="nav-card active" data-section="overview">
+                    <i class="ki-duotone ki-chart-line-up nav-card-icon text-primary">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Overview" %}</h5>
+                    <p class="nav-card-count">{% trans "Key Metrics" %}</p>
+                </div>
+                <div class="nav-card" data-section="campaigns">
+                    <i class="ki-duotone ki-message-notif nav-card-icon text-success">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Campaigns" %}</h5>
+                    <p class="nav-card-count" id="campaignsNavCount">{{ active_campaigns_count|default:"0" }} {% trans "Active" %}</p>
+                </div>
+                <div class="nav-card" data-section="payments">
+                    <i class="ki-duotone ki-wallet nav-card-icon text-warning">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Payments" %}</h5>
+                    <p class="nav-card-count">{% trans "Transactions" %}</p>
+                </div>
+                <div class="nav-card" data-section="credits">
+                    <i class="ki-duotone ki-dollar nav-card-icon text-info">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Credits" %}</h5>
+                    <p class="nav-card-count">{% trans "Portfolio" %}</p>
+                </div>
+                <div class="nav-card" data-section="partners">
+                    <i class="ki-duotone ki-profile-user nav-card-icon text-secondary">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Partners" %}</h5>
+                    <p class="nav-card-count">{% trans "Analysis" %}</p>
+                </div>
+                <div class="nav-card" data-section="support">
+                    <i class="ki-duotone ki-support-24 nav-card-icon text-danger">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <h5 class="nav-card-title">{% trans "Support" %}</h5>
+                    <p class="nav-card-count" id="supportNavCount">{{ open_tickets_count|default:"0" }} {% trans "Open" %}</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-nav carousel-nav-right" id="carouselNavRight">
+            <i class="ki-duotone ki-right fs-3"></i>
+        </button>
+    </div>
+
+    <!-- SECTION: Overview (Main KPIs) -->
+    <div id="overview" class="dashboard-section active">
+        <!-- Hero KPI Cards Row -->
+        <div class="row g-5 g-md-5 g-xl-8 mb-5 mb-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="hero-kpi-card gradient-success">
+                    <div class="hero-kpi-content">
+                        <div class="hero-kpi-icon">
+                            <i class="ki-duotone ki-dollar">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </div>
+                        <div>
+                            <div class="hero-kpi-value" id="totalCollectedAmountHeader">{{ total_collected|default:"-" }}</div>
+                            <div class="hero-kpi-label">{% trans "Total Collected" %}</div>
+                            <div class="hero-kpi-trend">{% trans "Last 3 months" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="hero-kpi-card gradient-primary">
+                    <div class="hero-kpi-content">
+                        <div class="hero-kpi-icon">
+                            <i class="ki-duotone ki-chart-line-up">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </div>
+                        <div>
+                            <div class="hero-kpi-value" id="collectionRateHeader">{{ collection_rate|default:"-" }}</div>
+                            <div class="hero-kpi-label">{% trans "Collection Rate" %}</div>
+                            <div class="hero-kpi-trend">{% trans "Current period" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Secondary KPI Cards -->
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-xl-3 col-md-6">
+                <div class="enhanced-kpi-card">
+                    <div class="enhanced-kpi-header">
+                        <div class="enhanced-kpi-icon primary">
+                            <i class="ki-duotone ki-message-notif">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </div>
+                        <div class="enhanced-kpi-badge primary">ACTIVE</div>
+                    </div>
+                    <div class="enhanced-kpi-body">
+                        <div class="enhanced-kpi-value">{{ active_campaigns_count|default:"0" }}</div>
+                        <div class="enhanced-kpi-label">{% trans "Active Campaigns" %}</div>
+                        <div class="enhanced-kpi-subtitle">{% trans "Currently running" %}</div>
+                    </div>
+                    <div class="enhanced-kpi-footer">
+                        <div class="enhanced-kpi-change positive">
+                            <i class="ki-duotone ki-arrow-up fs-6"></i> {% trans "New this week" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="enhanced-kpi-card">
+                    <div class="enhanced-kpi-header">
+                        <div class="enhanced-kpi-icon success">
+                            <i class="ki-duotone ki-wallet">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </div>
+                        <div class="enhanced-kpi-badge success">COMPLETED</div>
+                    </div>
+                    <div class="enhanced-kpi-body">
+                        <div class="enhanced-kpi-value">{{ completed_payments_count|default:"0" }}</div>
+                        <div class="enhanced-kpi-label">{% trans "Completed Payments" %}</div>
+                        <div class="enhanced-kpi-subtitle">{% trans "This month" %}</div>
+                    </div>
+                    <div class="enhanced-kpi-footer">
+                        <div class="enhanced-kpi-change positive">
+                            <i class="ki-duotone ki-arrow-up fs-6"></i> {% trans "vs last month" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="enhanced-kpi-card">
+                    <div class="enhanced-kpi-header">
+                        <div class="enhanced-kpi-icon warning">
+                            <i class="ki-duotone ki-dollar">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </div>
+                        <div class="enhanced-kpi-badge warning">ACTIVE</div>
+                    </div>
+                    <div class="enhanced-kpi-body">
+                        <div class="enhanced-kpi-value">{{ active_credits_count|default:"0" }}</div>
+                        <div class="enhanced-kpi-label">{% trans "Active Credits" %}</div>
+                        <div class="enhanced-kpi-subtitle">{% trans "Current portfolio" %}</div>
+                    </div>
+                    <div class="enhanced-kpi-footer">
+                        <div class="enhanced-kpi-change neutral">
+                            <i class="ki-duotone ki-arrow-right fs-6"></i> {% trans "Within expected range" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="enhanced-kpi-card">
+                    <div class="enhanced-kpi-header">
+                        <div class="enhanced-kpi-icon danger">
+                            <i class="ki-duotone ki-support-24">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </div>
+                        <div class="enhanced-kpi-badge danger">OPEN</div>
+                    </div>
+                    <div class="enhanced-kpi-body">
+                        <div class="enhanced-kpi-value">{{ open_tickets_count|default:"0" }}</div>
+                        <div class="enhanced-kpi-label">{% trans "Open Tickets" %}</div>
+                        <div class="enhanced-kpi-subtitle">{% trans "Require attention" %}</div>
+                    </div>
+                    <div class="enhanced-kpi-footer">
+                        <div class="enhanced-kpi-change negative">
+                            <i class="ki-duotone ki-arrow-up fs-6"></i> {% trans "Since yesterday" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: Campaigns -->
+    <div id="campaigns" class="dashboard-section">
+        <h2 class="fs-2x fw-bold text-gray-900 mb-5 mb-xl-8">
+            <i class="ki-duotone ki-message-notif fs-1 text-success me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            {% trans "Campaign Report" %}
+        </h2>
+
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-chart-simple fs-3 text-primary me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            {% trans "Campaigns by Status" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="campaignsByStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Distribution of campaigns by current status" %}</p>
+                        <div class="chart-metrics">
+                            <div class="chart-metric">
+                                <i class="chart-metric-icon primary"></i>
+                                <span class="chart-metric-label">{% trans "Active" %}</span>
+                                <span class="chart-metric-badge">{{ active_campaigns_count|default:"0" }}</span>
+                            </div>
+                            <div class="chart-metric">
+                                <i class="chart-metric-icon success"></i>
+                                <span class="chart-metric-label">{% trans "Completed" %}</span>
+                                <span class="chart-metric-badge">{{ completed_campaigns_count|default:"0" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-graph-up fs-3 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                            {% trans "Campaigns by Channel" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="campaignsByChannelChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Communication channels used in campaigns" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: Payments -->
+    <div id="payments" class="dashboard-section">
+        <h2 class="fs-2x fw-bold text-gray-900 mb-5 mb-xl-8">
+            <i class="ki-duotone ki-wallet fs-1 text-warning me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            {% trans "Payment Report" %}
+        </h2>
+
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-chart-simple fs-3 text-primary me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            {% trans "Payments by Method" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="paymentsByMethodChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Distribution of payment methods used" %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-graph-up fs-3 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                            {% trans "Payment Trend (7 Days)" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="paymentsTimelineChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Daily payment activity for the last week" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: Credits -->
+    <div id="credits" class="dashboard-section">
+        <h2 class="fs-2x fw-bold text-gray-900 mb-5 mb-xl-8">
+            <i class="ki-duotone ki-dollar fs-1 text-info me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            {% trans "Credit Portfolio" %}
+        </h2>
+
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-chart-simple fs-3 text-primary me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            {% trans "Credits by Status" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="creditsByStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Distribution of credits by current status" %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-graph-up fs-3 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                            {% trans "Outstanding Amount Trend" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="creditsOutstandingTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Outstanding balance evolution over time" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: Partners -->
+    <div id="partners" class="dashboard-section">
+        <h2 class="fs-2x fw-bold text-gray-900 mb-5 mb-xl-8">
+            <i class="ki-duotone ki-profile-user fs-1 text-secondary me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+                <span class="path4"></span>
+            </i>
+            {% trans "Partner Analysis" %}
+        </h2>
+
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-chart-simple fs-3 text-primary me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            {% trans "Partners by Type" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="partnersByTypeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Distribution of partners by type" %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-graph-up fs-3 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                            {% trans "Partner Activity" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="partnersActivityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Partner engagement and activity levels" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: Support -->
+    <div id="support" class="dashboard-section">
+        <h2 class="fs-2x fw-bold text-gray-900 mb-5 mb-xl-8">
+            <i class="ki-duotone ki-support-24 fs-1 text-danger me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            {% trans "Support Tickets" %}
+        </h2>
+
+        <div class="row g-5 g-md-5 g-xl-8">
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-chart-simple fs-3 text-primary me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            {% trans "Tickets by Status" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="ticketsByStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Distribution of support tickets by status" %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card chart-card">
+                    <div class="chart-card-header">
+                        <h5 class="chart-card-title">
+                            <i class="ki-duotone ki-graph-up fs-3 text-success me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                            {% trans "Ticket Trend (7 Days)" %}
+                        </h5>
+                    </div>
+                    <div class="chart-card-body">
+                        <div class="chart-container">
+                            <canvas id="ticketsTimelineChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card-footer">
+                        <p class="chart-summary-text">{% trans "Daily ticket creation for the last week" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('Dashboard loaded, checking Chart.js...');
+    console.log('Chart.js available:', typeof Chart !== 'undefined');
+
+    // ---- Data passed from Django Context ----
+    try {
+        // Parse JSON data from Django
+        const campaignsByStatusLabels = JSON.parse('{{ campaigns_by_status_labels|escapejs }}') || [];
+        const campaignsByStatusData = JSON.parse('{{ campaigns_by_status_data|escapejs }}') || [];
+        const campaignsByChannelLabels = JSON.parse('{{ campaigns_by_channel_labels|escapejs }}') || [];
+        const campaignsByChannelData = JSON.parse('{{ campaigns_by_channel_data|escapejs }}') || [];
+
+        const paymentsByMethodLabels = JSON.parse('{{ payments_by_method_labels|escapejs }}') || [];
+        const paymentsByMethodData = JSON.parse('{{ payments_by_method_data|escapejs }}') || [];
+        const paymentsTimelineLabels = JSON.parse('{{ payments_timeline_labels|escapejs }}') || [];
+        const paymentsTimelineData = JSON.parse('{{ payments_timeline_data|escapejs }}') || [];
+
+        const creditsByStatusLabels = JSON.parse('{{ credits_by_status_labels|escapejs }}') || [];
+        const creditsByStatusData = JSON.parse('{{ credits_by_status_data|escapejs }}') || [];
+        const creditsOutstandingTrendLabels = JSON.parse('{{ credits_outstanding_trend_labels|escapejs }}') || [];
+        const creditsOutstandingTrendData = JSON.parse('{{ credits_outstanding_trend_data|escapejs }}') || [];
+
+        const partnersByTypeLabels = JSON.parse('{{ partners_by_type_labels|escapejs }}') || [];
+        const partnersByTypeData = JSON.parse('{{ partners_by_type_data|escapejs }}') || [];
+        const partnersActivityLabels = JSON.parse('{{ partners_activity_labels|escapejs }}') || [];
+        const partnersActivityData = JSON.parse('{{ partners_activity_data|escapejs }}') || [];
+
+        const ticketsByStatusLabels = JSON.parse('{{ tickets_by_status_labels|escapejs }}') || [];
+        const ticketsByStatusData = JSON.parse('{{ tickets_by_status_data|escapejs }}') || [];
+        const ticketsTimelineLabels = JSON.parse('{{ tickets_timeline_labels|escapejs }}') || [];
+        const ticketsTimelineData = JSON.parse('{{ tickets_timeline_data|escapejs }}') || [];
+
+        console.log('Data loaded successfully');
+        console.log('Campaigns by status - Labels:', campaignsByStatusLabels, 'Data:', campaignsByStatusData);
+        console.log('Payments timeline - Labels:', paymentsTimelineLabels, 'Data:', paymentsTimelineData);
+
+        // Check if we have any data
+        const hasData = campaignsByStatusLabels.length > 0 ||
+                       paymentsTimelineLabels.length > 0 ||
+                       ticketsByStatusLabels.length > 0;
+        console.log('Has any data:', hasData);
+
+        if (!hasData) {
+            console.warn('No data found in database. Charts will show sample data for testing.');
+        }
+
+        // ---- Chart.js Global Config ----
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js is not loaded!');
+            return;
+        }
+
+        Chart.defaults.font.family = 'Inter';
+        Chart.defaults.plugins.legend.position = 'bottom';
+        const chartColors = ['#00A3FF', '#50CD89', '#FFC700', '#F1416C', '#7239EA', '#A1A5B7'];
+
+        // ---- Helper Functions ----
+        function createPieChart(ctx, labels, data, placeholderTitle = 'Sin datos') {
+            if (!ctx) {
+                console.warn('Canvas context not found for pie chart');
+                return null;
+            }
+
+            // Use sample data if no real data
+            if (!labels || labels.length === 0) {
+                console.log('No data for pie chart, using placeholder');
+                labels = [placeholderTitle];
+                data = [1];
+            }
+
+            console.log('Creating pie chart with labels:', labels, 'data:', data);
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: labels.length === 1 ? ['#E4E6EF'] : chartColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createLineChart(ctx, labels, data, labelText) {
+            if (!ctx) {
+                console.warn('Canvas context not found for line chart');
+                return null;
+            }
+
+            // Use sample data if no real data
+            if (!labels || labels.length === 0) {
+                console.log('No data for line chart, using placeholder');
+                labels = ['Sin datos'];
+                data = [0];
+            }
+
+            console.log('Creating line chart with labels:', labels, 'data:', data);
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelText,
+                        data: data,
+                        borderColor: '#00A3FF',
+                        backgroundColor: 'rgba(0, 163, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBarChart(ctx, labels, datasets) {
+            if (!ctx) {
+                console.warn('Canvas context not found for bar chart');
+                return null;
+            }
+
+            // Use sample data if no real data
+            if (!labels || labels.length === 0) {
+                console.log('No data for bar chart, using placeholder');
+                labels = ['Sin datos'];
+                datasets = datasets.map(ds => ({
+                    ...ds,
+                    data: [0]
+                }));
+            }
+
+            console.log('Creating bar chart with labels:', labels);
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Carousel Navigation Functions
+        function initializeCarousel() {
+            const carousel = document.querySelector('.navigation-cards');
+            const container = document.querySelector('.navigation-cards-container');
+            const leftBtn = document.getElementById('carouselNavLeft');
+            const rightBtn = document.getElementById('carouselNavRight');
+
+            if (!carousel || !container || !leftBtn || !rightBtn) {
+                console.warn('Carousel elements not found');
+                return;
+            }
+
+            let currentScroll = 0;
+
+            function getScrollStep() {
+                // Get actual card width and gap dynamically
+                const card = carousel.querySelector('.nav-card');
+                if (!card) return 240; // fallback
+
+                const cardStyle = window.getComputedStyle(card);
+                const cardWidth = card.offsetWidth;
+                const carouselStyle = window.getComputedStyle(carousel);
+                const gap = parseFloat(carouselStyle.gap) || 24;
+
+                return cardWidth + gap;
+            }
+
+            function updateButtonStates() {
+                const containerWidth = container.offsetWidth;
+                const carouselWidth = carousel.scrollWidth;
+                const maxScroll = carouselWidth - containerWidth;
+
+                leftBtn.disabled = currentScroll <= 0;
+                rightBtn.disabled = currentScroll >= maxScroll;
+
+                // Add visual feedback
+                if (leftBtn.disabled) {
+                    leftBtn.style.opacity = '0.4';
+                } else {
+                    leftBtn.style.opacity = '1';
+                }
+
+                if (rightBtn.disabled) {
+                    rightBtn.style.opacity = '0.4';
+                } else {
+                    rightBtn.style.opacity = '1';
+                }
+            }
+
+            function scrollCarousel(direction) {
+                const containerWidth = container.offsetWidth;
+                const carouselWidth = carousel.scrollWidth;
+                const maxScroll = carouselWidth - containerWidth;
+                const scrollStep = getScrollStep();
+
+                if (direction === 'left') {
+                    currentScroll = Math.max(0, currentScroll - scrollStep);
+                } else if (direction === 'right') {
+                    currentScroll = Math.min(maxScroll, currentScroll + scrollStep);
+                }
+
+                carousel.style.transform = `translateX(-${currentScroll}px)`;
+                updateButtonStates();
+            }
+
+            leftBtn.addEventListener('click', () => {
+                console.log('Left button clicked');
+                scrollCarousel('left');
+            });
+
+            rightBtn.addEventListener('click', () => {
+                console.log('Right button clicked');
+                scrollCarousel('right');
+            });
+
+            // Initial update
+            setTimeout(() => {
+                updateButtonStates();
+                console.log('Carousel initialized');
+            }, 100);
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                currentScroll = 0;
+                carousel.style.transform = 'translateX(0px)';
+                setTimeout(updateButtonStates, 100);
+            });
+        }
+
+        // Navigation Functions
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            const navCard = document.querySelector(`[data-section="${sectionId}"]`);
+            if (navCard) {
+                navCard.classList.add('active');
+            }
+
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Initialize Navigation
+        function initializeNavigation() {
+            document.querySelectorAll('.nav-card').forEach(card => {
+                const section = card.getAttribute('data-section');
+                card.addEventListener('click', function() {
+                    showSection(section);
+                });
+            });
+
+            showSection('overview');
+        }
+
+        // ---- Chart Initialization ----
+        function initializeDashboard() {
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not loaded, retrying...');
+                setTimeout(initializeDashboard, 100);
+                return;
+            }
+
+            console.log('=== Initializing Dashboard ===');
+            initializeCarousel();
+            initializeNavigation();
+
+            console.log('Creating charts...');
+            let chartsCreated = 0;
+
+            // Campaigns
+            console.log('-- Campaigns Section --');
+            if (createPieChart(document.getElementById('campaignsByStatusChart')?.getContext('2d'), campaignsByStatusLabels, campaignsByStatusData, 'Campañas por Estado')) chartsCreated++;
+            if (createPieChart(document.getElementById('campaignsByChannelChart')?.getContext('2d'), campaignsByChannelLabels, campaignsByChannelData, 'Campañas por Canal')) chartsCreated++;
+
+            // Payments
+            console.log('-- Payments Section --');
+            if (createPieChart(document.getElementById('paymentsByMethodChart')?.getContext('2d'), paymentsByMethodLabels, paymentsByMethodData, 'Pagos por Método')) chartsCreated++;
+            if (createLineChart(document.getElementById('paymentsTimelineChart')?.getContext('2d'), paymentsTimelineLabels, paymentsTimelineData, '{% trans "Payments" %}')) chartsCreated++;
+
+            // Credits
+            console.log('-- Credits Section --');
+            if (createPieChart(document.getElementById('creditsByStatusChart')?.getContext('2d'), creditsByStatusLabels, creditsByStatusData, 'Créditos por Estado')) chartsCreated++;
+            if (createLineChart(document.getElementById('creditsOutstandingTrendChart')?.getContext('2d'), creditsOutstandingTrendLabels, creditsOutstandingTrendData, '{% trans "Outstanding Amount" %}')) chartsCreated++;
+
+            // Partners
+            console.log('-- Partners Section --');
+            if (createPieChart(document.getElementById('partnersByTypeChart')?.getContext('2d'), partnersByTypeLabels, partnersByTypeData, 'Socios por Estado')) chartsCreated++;
+            if (createBarChart(document.getElementById('partnersActivityChart')?.getContext('2d'), partnersActivityLabels, [
+                { label: '{% trans "Active Partners" %}', data: partnersActivityData, backgroundColor: '#00A3FF', borderRadius: 4 }
+            ])) chartsCreated++;
+
+            // Support
+            console.log('-- Support Section --');
+            if (createPieChart(document.getElementById('ticketsByStatusChart')?.getContext('2d'), ticketsByStatusLabels, ticketsByStatusData, 'Tickets por Estado')) chartsCreated++;
+            if (createLineChart(document.getElementById('ticketsTimelineChart')?.getContext('2d'), ticketsTimelineLabels, ticketsTimelineData, '{% trans "Tickets" %}')) chartsCreated++;
+
+            console.log(`=== Dashboard initialization complete! ${chartsCreated} charts created ===`);
+        }
+
+        initializeDashboard();
+
+    } catch (error) {
+        console.error('=== CRITICAL ERROR initializing dashboard ===');
+        console.error('Error details:', error);
+        console.error('Stack trace:', error.stack);
+    }
+});
+</script>
+{% endblock %}
