@@ -1,0 +1,29 @@
+:root {
+    /* Colores de Marca XOFI */
+    --xofi-verde-medio: #80C6AC;
+    --xofi-verde-claro: #98E7A0;
+    --xofi-fondo-claro: #F2F2F2;
+    --xofi-fondo-oscuro: #2a6f56;
+    --xofi-fondo-blanco: #FFFFFF;
+
+    /* Variables principales de Bootstrap (Reemplaza los valores existentes) */
+    --bs-primary: var(--xofi-verde-medio); /* Color principal: #80C6AC */
+    --bs-secondary: var(--xofi-verde-claro); /* Color secundario: #98E7A0 */
+    --bs-success: var(--xofi-verde-medio); /* Puedes usar el color principal para "éxito" */
+
+    /* Fondo y texto del Cuerpo (Body) */
+    --bs-text-primary: var(--xofi-verde-medio); /* Texto principal: blanco para contraste con el fondo oscuro */
+
+    --bs-primary-rgb: var(--xofi-verde-claro); /* RGB del color primario */
+    --bs-btn-hover-bg: var(--xofi-verde-claro); /* Fondo del botón al pasar el cursor */
+    --bs-primary-active: var(--xofi-verde-claro); /* Color activo del botón primario */
+    --bs-component-active-bg: var(--xofi-verde-medio); /* Fondo del botón de paginación activo */
+    --bs-link-opacity: var(--xofi-verde-claro); /* Opacidad del enlace */
+
+    /* Asegúrate de que el texto se vea bien en el fondo claro (ej. negro o gris oscuro) */
+    --bs-body-color: #333;
+    --bs-body-bg: var(--xofi-fondo-blanco); /* Fondo del cuerpo: #F2F2F2 */
+
+    /* Opcional: Para usar en degradados o estados de hover */
+    --bs-gradient: linear-gradient(180deg, var(--xofi-fondo-oscuro), var(--xofi-verde-medio));
+}
