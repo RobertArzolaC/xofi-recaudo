@@ -8,67 +8,122 @@
 {% endblock %}
 
 {% block content %}
-<div class="d-flex flex-column flex-lg-row flex-column-fluid">
-    <div class="d-flex flex-column flex-lg-row-auto bg-primary w-xl-600px positon-xl-relative">
-        <div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y">
-            <div class="d-flex flex-row-fluid flex-column text-center p-5 p-lg-10 pt-lg-20">
-                <div class="py-2 py-lg-20">
-                </div>
-                <h1 class="d-none d-lg-block fw-bold text-white fs-2qx pb-5 pb-md-10">
-                    Welcome to {{ config.PROJECT_NAME }}
+<div class="d-flex flex-column flex-lg-row min-vh-100 bg-white">
+    <!-- Sección Izquierda: 5/12 -->
+    <div class="col-lg-5 d-none d-lg-flex p-3">
+        <div class="d-flex flex-column bg-primary bg-gradient rounded-4 shadow-lg w-100 h-100 p-15 px-20 position-relative">
+            <!-- Logo Superior Izquierdo -->
+            <div class="mb-auto">
+                <a href="/">
+                    <img alt="{% trans 'Logo' %}" src="{% static 'assets/images/logos/logo.png' %}" class="max-h-50px" height="40" />
+                </a>
+            </div>
+
+            <!-- Contenido Central -->
+            <div class="d-flex flex-column my-auto">
+                <h1 class="fw-normal text-white fs-4qx pb-5 mb-5">
+                    {% blocktrans with project_name=config.PROJECT_NAME %}Welcome to <span class="fw-bold">{{ project_name }}</span>{% endblocktrans %}
                 </h1>
-                <p class="d-none d-lg-block fw-semibold fs-2 text-white">
-                    Transform your laboratory management with integrated sample tracking, automated test
-                    <br />workflows and precise result validation
+                <p class="fw-light fs-2 text-white opacity-75">
+                    {% trans "Simplify your cooperative management with integrated collection systems, automated accounting and complete member administration" %}
                 </p>
             </div>
-            <div class="d-none d-lg-block d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom min-h-100px min-h-lg-350px" style="background-image: url({% static 'assets/media/illustrations/sigma-1/17.png' %})"></div>
+
+            <!-- Carrusel Footer -->
+            <div class="mt-auto">
+                <div class="">
+                    <div id="loginCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner bg-black bg-opacity-15 rounded-3 px-15 h-auto h-lg-200px d-flex align-items-center">
+                            <div class="carousel-item active">
+                                <div class="py-5">
+                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Smart Collection Management" %}</h5>
+                                    <p class="mb-0 text-white fw-light opacity-75">
+                                        {% trans "Monitor every payment and collection in real-time with intelligent dashboards and automatic alerts. Our system allows you to track payment schedules, outstanding balances and transaction statuses with complete precision. Optimize cash flow, reduce defaults and ensure timely collection from your cooperative members." %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="py-5">
+                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Member & Accounting Control" %}</h5>
+                                    <p class="mb-0 text-white fw-light opacity-75">
+                                        {% trans "Manage complete member records with automated accounting that eliminates repetitive tasks and ensures operational consistency. From member registration to financial report generation, every step can be configured to execute automatically under your own rules. Save time, improve your team's productivity and standardize processes in a simple and scalable way." %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="py-5">
+                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Financial Reports & Analytics" %}</h5>
+                                    <p class="mb-0 text-white fw-light opacity-75">
+                                        {% trans "Generate detailed financial reports with automated validation that detects inconsistencies and applies controls based on your internal parameters. Every transaction is verified before posting, reducing errors and strengthening the credibility of your cooperative. Trust intelligent analytics that combine speed and accuracy for better financial decisions." %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-indicators position-static mt-4 mb-0">
+                            <button type="button" data-bs-target="#loginCarousel" data-bs-slide-to="0" class="active rounded-circle" aria-current="true" aria-label="{% trans 'Slide 1' %}"></button>
+                            <button type="button" data-bs-target="#loginCarousel" data-bs-slide-to="1" class="rounded-circle" aria-label="{% trans 'Slide 2' %}"></button>
+                            <button type="button" data-bs-target="#loginCarousel" data-bs-slide-to="2" class="rounded-circle" aria-label="{% trans 'Slide 3' %}"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="d-flex flex-column flex-lg-row-fluid py-10">
-        <div class="d-flex flex-center flex-column flex-column-fluid">
-            <div class="w-lg-500px p-10 p-lg-15 mx-auto">
-                <div class="text-center mb-10">
-                    <a href="/" class="py-2 py-lg-20">
-                        <img alt="Logo" src="{% static 'assets/images/logos/logo.png' %}" class="max-h-50px logo-default" height="30" />
-                    </a>
-                </div>
-                <form class="form w-100" method="POST" action="{% url "account_login" %}">
-                    {% csrf_token %}
-                    <div class="text-center mb-10">
-                        <h1 class="text-gray-900 mb-3">
-                            Sign In
-                        </h1>
-                    </div>
-                    <div class="fv-row mb-10">
-                        {{ form.login|add_label_class:"form-label fs-6 fw-bold text-gray-900" }}
-                        {{ form.login|add_class:"form-control form-control-lg" }}
-                        {% if form.login.errors %}
-                            <div class="invalid-feedback">{{ form.login.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="fv-row mb-10">
-                        <div class="d-flex flex-stack mb-2">
-                            {{ form.password|add_label_class:"form-label fw-bold text-gray-900 fs-6 mb-0" }}
-                            {% if form.password.errors %}
-                                <div class="invalid-feedback">{{ form.password.errors }}</div>
-                            {% endif %}
-                            <a href="{% url 'account_reset_password' %}" class="link-primary fs-6 fw-bold">
-                                Forgot Password ?
-                            </a>
-                        </div>
-                        {{ form.password|add_class:"form-control form-control-lg" }}
-                    </div>
-                    <div class="text-center">
-                        {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                        {% endif %}
-                        <button type="submit" class="btn btn-lg btn-primary w-100 mb-5">
-                            <span class="indicator-label">Continue</span>
-                        </button>
-                    </div>
-                </form>
+
+    <!-- Sección Derecha: 7/12-->
+    <div class="col-lg-7 d-flex flex-column justify-content-center p-10">
+        <div class="w-lg-500px px-10 mx-auto">
+            <!-- Logo para móviles -->
+            <div class="text-center mb-10 d-lg-none">
+                <a href="/">
+                    <img alt="{% trans 'Logo' %}" src="{% static 'assets/images/logos/logo.png' %}" class="max-h-50px logo-default" height="30" />
+                </a>
             </div>
+
+            <!-- Encabezado del Formulario - Alineado a la izquierda -->
+            <div class="mb-10">
+                <h1 class="text-gray-900 fw-bolder mb-3 fs-2qx">
+                    {% trans "Sign In" %}
+                </h1>
+                <p class="text-gray-500 fw-normal fs-6">
+                    {% trans "Enter your credentials to access your account" %}
+                </p>
+            </div>
+
+            <!-- Formulario -->
+            <form class="form w-100" method="POST" action="{% url "account_login" %}">
+                {% csrf_token %}
+
+                <div class="fv-row mb-10">
+                    {{ form.login|add_label_class:"form-label fs-6 fw-bold text-gray-900" }}
+                    {{ form.login|add_class:"form-control form-control-lg form-control-solid" }}
+                    {% if form.login.errors %}
+                        <div class="text-danger mt-2 fw-semibold">{{ form.login.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="fv-row mb-10">
+                    <div class="d-flex flex-stack mb-2">
+                        {{ form.password|add_label_class:"form-label fw-bold text-gray-900 fs-6 mb-0" }}
+                        <a href="{% url 'account_reset_password' %}" class="link-primary fs-6 fw-normal">
+                            {% trans "Forgot Password?" %}
+                        </a>
+                    </div>
+                    {{ form.password|add_class:"form-control form-control-lg form-control-solid" }}
+                    {% if form.password.errors %}
+                        <div class="text-danger mt-2 fw-semibold">{{ form.password.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-grid mb-10">
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        <span class="indicator-label">{% trans "Continue" %}</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
