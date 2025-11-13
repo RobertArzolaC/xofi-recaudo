@@ -543,11 +543,12 @@ class GeminiService:
                 "Gemini model not available, falling back to default extraction"
             )
             return {
-                "amount": None,
-                "date": None,
+                "id": "",
+                "amount": "1.00",
+                "date": date.today().isoformat(),
                 "confidence": 0.0,
-                "extraction_method": "fallback",
-                "raw_response": "Gemini no disponible",
+                "extraction_method": "fallback_error",
+                "notes": "Gemini no disponible",
             }
 
         # Build the receipt extraction prompt for image OCR processing
@@ -564,7 +565,7 @@ class GeminiService:
                 logger.error("Failed to prepare image for Gemini processing")
                 return {
                     "id": "",
-                    "amount": 1,
+                    "amount": "1.00",
                     "date": date.today().isoformat(),
                     "confidence": 0.0,
                     "extraction_method": "image_preparation_error",
@@ -599,7 +600,7 @@ class GeminiService:
             logger.error(f"Error parsing Gemini JSON response: {e}")
             return {
                 "id": "",
-                "amount": 1,
+                "amount": "1.00",
                 "date": date.today().isoformat(),
                 "confidence": 0.0,
                 "extraction_method": "json_parse_error",
@@ -609,7 +610,7 @@ class GeminiService:
             logger.exception(f"Error extracting receipt data with Gemini: {e}")
             return {
                 "id": "",
-                "amount": 1,
+                "amount": "1.00",
                 "date": date.today().isoformat(),
                 "confidence": 0.0,
                 "extraction_method": "ocr_processing_error",

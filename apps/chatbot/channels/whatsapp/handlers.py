@@ -187,7 +187,10 @@ class WhatsAppBotHandler:
 
             # Extract receipt data using the dedicated service
             logger.info("Extracting receipt data using extraction service...")
-            result = self.gemini_service.extract_receipt_data(image_bytes)
+            extracted_data = self.gemini_service.extract_receipt_data(
+                image_bytes
+            )
+            logger.info(f"Extracted receipt data: {extracted_data}")
 
             # Run synchronous API call in executor to avoid blocking
             loop = asyncio.get_event_loop()
@@ -197,18 +200,17 @@ class WhatsAppBotHandler:
                 conversation.partner.id,
                 image_bytes,
                 image_id,
-                result.get("amount"),
-                result.get("date"),
-                result.get("notes"),
+                extracted_data.get("amount"),
+                extracted_data.get("date"),
+                extracted_data.get("notes", ""),
             )
 
             if result and result.get("id"):
-                # Success
                 response_message = (
                     f"✅ *Boleta de pago recibida correctamente*\n\n"
                     f"📝 Número de recibo: {result.get('id')}\n"
-                    f"💰 Monto: S/ {result.get('amount'):.2f}\n"
-                    f"📅 Fecha: {result.get('date')}\n\n"
+                    f"💰 Monto: S/ {result.get('amount')}\n"
+                    f"📅 Fecha: {result.get('payment_date')}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
                 )
 
