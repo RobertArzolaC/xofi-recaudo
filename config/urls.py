@@ -34,6 +34,7 @@ urlpatterns += [
     path("compliance/", include("apps.compliance.urls")),
     path("campaigns/", include("apps.campaigns.urls")),
     path("support/", include("apps.support.urls")),
+    path("reports/", include("apps.reports.urls")),
     path("chatbot/", include("apps.chatbot.urls")),
 ]
 

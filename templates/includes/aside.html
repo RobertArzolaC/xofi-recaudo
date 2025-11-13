@@ -261,33 +261,32 @@
         {% endif %}
 
         {% if perms.campaigns.view_campaign or perms.campaigns.view_group %}
-        <div class="menu-item pt-5">
-          <div class="menu-content">
-            <span class="fw-bold text-muted text-uppercase fs-7">
-              {% trans 'Campaigns' %}
-            </span>
+          <div class="menu-item pt-5">
+            <div class="menu-content">
+              <span class="fw-bold text-muted text-uppercase fs-7">
+                {% trans 'Campaigns' %}
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div class="menu-item">
           {% if perms.campaigns.view_group %}
-            <a class="menu-link {% if "group" in request.path %}active{% endif %}" href="{% url 'apps.campaigns:group-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-profile-user fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Groups' %}
-              </span>
-            </a>
+          <div class="menu-item">
+              <a class="menu-link {% if "group" in request.path %}active{% endif %}" href="{% url 'apps.campaigns:group-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-profile-user fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Groups' %}
+                </span>
+              </a>
+            </div>
           {% endif %}
-        </div>
-        {% endif %}
 
-        <div class="menu-item">
           {% if perms.campaigns.view_campaign %}
+          <div class="menu-item">
             <a class="menu-link {% if "campaign/" in request.path and "group" not in request.path and "csv" not in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-list' %}">
               <span class="menu-icon">
                 <i class="ki-duotone ki-notification-on fs-2 me-2">
@@ -302,24 +301,54 @@
                 {% trans 'Campaigns' %}
               </span>
             </a>
+          </div>
           {% endif %}
-        </div>
 
-        <div class="menu-item">
           {% if perms.campaigns.view_campaigncsvfile %}
-            <a class="menu-link {% if "campaign-csv" in request.path or "campaigns-csv" in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-csv-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-file fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'CSV Campaigns' %}
-              </span>
-            </a>
+          <div class="menu-item">
+              <a class="menu-link {% if "campaign-csv" in request.path or "campaigns-csv" in request.path %}active{% endif %}" href="{% url 'apps.campaigns:campaign-csv-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-file fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'CSV Campaigns' %}
+                </span>
+              </a>
+            </div>
           {% endif %}
-        </div>
+        {% endif %}
+
+        {% if perms.reports.view_report %}
+          <div class="menu-item pt-5">
+            <div class="menu-content">
+              <span class="fw-bold text-muted text-uppercase fs-7">
+                {% trans 'Analytics' %}
+              </span>
+            </div>
+          </div>
+
+          {% if perms.reports.view_report %}
+          <div class="menu-item">
+              <a class="menu-link {% if "reports" in request.path %}active{% endif %}" href="{% url 'apps.reports:report-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-chart-simple fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Reports' %}
+                </span>
+              </a>
+            </div>
+          {% endif %}
+
+        {% endif %}
 
         {% if perms.team.view_area or perms.team.view_position or perms.team.view_employee %}
         <div class="menu-item pt-5">
