@@ -12,19 +12,24 @@
     <!-- Sección Izquierda: 5/12 -->
     <div class="col-lg-5 d-none d-lg-flex p-3">
         <div class="d-flex flex-column bg-primary bg-gradient rounded-4 shadow-lg w-100 h-100 p-15 px-20 position-relative">
-            <!-- Logo Superior Izquierdo -->
-            <div class="mb-auto">
+            <!-- Logo Superior Centrado -->
+            <div class="mb-auto d-flex justify-content-center">
                 <a href="/">
-                    <img alt="{% trans 'Logo' %}" src="{% static 'assets/images/logos/logo.png' %}" class="max-h-50px" height="40" />
+                    <img
+                        class="logo-default theme-light-show"
+                        src="{{ MEDIA_URL }}{{ config.COMPANY_LOGO_WHITE }}"
+                        height="80"
+                        alt="Logo"
+                    />
                 </a>
             </div>
 
             <!-- Contenido Central -->
-            <div class="d-flex flex-column my-auto">
-                <h1 class="fw-normal text-white fs-4qx pb-5 mb-5">
+            <div class="d-flex flex-column my-auto ">
+                <h1 class="fw-normal text-center text-white fs-4qx pb-5 mb-5">
                     {% blocktrans with project_name=config.PROJECT_NAME %}Welcome to <span class="fw-bold">{{ project_name }}</span>{% endblocktrans %}
                 </h1>
-                <p class="fw-light fs-2 text-white opacity-75">
+                <p class="fw-light text-center fs-2 text-white opacity-75">
                     {% trans "Simplify your cooperative management with integrated collection systems, automated accounting and complete member administration" %}
                 </p>
             </div>
@@ -36,7 +41,9 @@
                         <div class="carousel-inner bg-black bg-opacity-15 rounded-3 px-15 h-auto h-lg-200px d-flex align-items-center">
                             <div class="carousel-item active">
                                 <div class="py-5">
-                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Smart Collection Management" %}</h5>
+                                    <h5 class="fw-semibold mb-5 text-white text-center fs-4 lh-lg">
+                                        {% trans "Smart Collection Management" %}
+                                    </h5>
                                     <p class="mb-0 text-white fw-light opacity-75">
                                         {% trans "Monitor every payment and collection in real-time with intelligent dashboards and automatic alerts. Our system allows you to track payment schedules, outstanding balances and transaction statuses with complete precision. Optimize cash flow, reduce defaults and ensure timely collection from your cooperative members." %}
                                     </p>
@@ -44,7 +51,9 @@
                             </div>
                             <div class="carousel-item">
                                 <div class="py-5">
-                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Member & Accounting Control" %}</h5>
+                                    <h5 class="fw-semibold mb-5 text-white text-center fs-4 lh-lg">
+                                        {% trans "Member & Accounting Control" %}
+                                    </h5>
                                     <p class="mb-0 text-white fw-light opacity-75">
                                         {% trans "Manage complete member records with automated accounting that eliminates repetitive tasks and ensures operational consistency. From member registration to financial report generation, every step can be configured to execute automatically under your own rules. Save time, improve your team's productivity and standardize processes in a simple and scalable way." %}
                                     </p>
@@ -52,7 +61,9 @@
                             </div>
                             <div class="carousel-item">
                                 <div class="py-5">
-                                    <h5 class="fw-semibold mb-5 text-white fs-4 lh-lg">{% trans "Financial Reports & Analytics" %}</h5>
+                                    <h5 class="fw-semibold mb-5 text-white text-center fs-4 lh-lg">
+                                        {% trans "Financial Reports & Analytics" %}
+                                    </h5>
                                     <p class="mb-0 text-white fw-light opacity-75">
                                         {% trans "Generate detailed financial reports with automated validation that detects inconsistencies and applies controls based on your internal parameters. Every transaction is verified before posting, reducing errors and strengthening the credibility of your cooperative. Trust intelligent analytics that combine speed and accuracy for better financial decisions." %}
                                     </p>

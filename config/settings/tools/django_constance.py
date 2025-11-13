@@ -22,7 +22,8 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 
 CONSTANCE_CONFIG = {
     "PROJECT_NAME": ("Project Name", _("Project name.")),
-    "COMPANY_LOGO": ("default.png", _("Company logo"), "image_field"),
+    "COMPANY_LOGO_WHITE": ("default.png", _("Company logo"), "image_field"),
+    "COMPANY_LOGO_BLACK": ("default.png", _("Company logo"), "image_field"),
     "COMPANY_DOMAIN": ("https://company.com/", _("Website domain.")),
     "COMPANY_PHONE": ("+51 999 999 999", _("Company contact phone.")),
     "ENABLE_SEND_EMAIL": (True, _("Enable sending emails.")),
@@ -38,7 +39,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     "1. General Options": {
         "fields": (
             "PROJECT_NAME",
-            "COMPANY_LOGO",
+            "COMPANY_LOGO_WHITE",
+            "COMPANY_LOGO_BLACK",
             "COMPANY_DOMAIN",
             "COMPANY_PHONE",
         ),

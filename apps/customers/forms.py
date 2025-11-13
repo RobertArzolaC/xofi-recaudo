@@ -212,7 +212,7 @@ class CompanyForm(forms.ModelForm):
 
         # Handle logo field properly - use the saved instance's logo field
         if self.cleaned_data["logo"]:
-            config.COMPANY_LOGO = instance.logo.url
+            config.COMPANY_LOGO_WHITE = instance.logo.url
 
         if self.cleaned_data["domain"]:
             config.COMPANY_DOMAIN = self.cleaned_data["domain"]
