@@ -169,6 +169,9 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Debt Summary Container -->
+                                <div id="debt-summary-container" class="mt-6"></div>
                             </div>
                         </div>
                     </div>
@@ -250,23 +253,9 @@
             </div>
         `;
 
-        // Remove existing alert if any
-        const existingAlert = document.getElementById('debt-summary-alert');
-        if (existingAlert) {
-            existingAlert.remove();
-        }
-
-        // Add the summary before the form
-        const form = document.getElementById('campaign-form');
-        form.insertAdjacentHTML('beforebegin', summaryHtml);
-
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-            const alert = document.getElementById('debt-summary-alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 10000);
+        // Update the debt summary container
+        const container = document.getElementById('debt-summary-container');
+        container.innerHTML = summaryHtml;
     }
 
     // Initialize on page load if group is already selected
@@ -278,6 +267,13 @@
             if (!targetAmountField.value) {
                 updateTargetAmount(groupSelect.value);
             }
+        }
+
+        // Add event listener to group select to update on change
+        if (groupSelect) {
+            groupSelect.addEventListener('change', function() {
+                updateTargetAmount(this.value);
+            });
         }
     });
     </script>

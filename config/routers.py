@@ -17,6 +17,7 @@ class XofiErpRouter:
         "notifications",
         "support",
         "chatbot",
+        "reports",
         # Apps de terceros que manejan datos del negocio
         "cities_light",
         "constance",
