@@ -33,7 +33,10 @@ class ConversationService:
             "partner"
         ).get_or_create(
             telegram_chat_id=telegram_chat_id,
-            defaults={"telegram_username": telegram_username},
+            defaults={
+                "telegram_username": telegram_username,
+                "channel": choices.ChannelType.TELEGRAM,
+            },
         )
         if created:
             logger.info(f"Created new conversation for chat {telegram_chat_id}")
@@ -48,6 +51,29 @@ class ConversationService:
         return self.get_or_create_conversation(
             telegram_chat_id, telegram_username
         )
+
+    @transaction.atomic
+    def get_or_create_conversation_whatsapp(
+        self, whatsapp_phone: str
+    ) -> models.AgentConversation:
+        """Get or create a conversation for a WhatsApp phone number."""
+        conversation, created = models.AgentConversation.objects.select_related(
+            "partner"
+        ).get_or_create(
+            whatsapp_phone=whatsapp_phone,
+            defaults={"channel": choices.ChannelType.WHATSAPP},
+        )
+        if created:
+            logger.info(f"Created new conversation for WhatsApp {whatsapp_phone}")
+        return conversation
+
+    @sync_to_async
+    @transaction.atomic
+    def aget_or_create_conversation_whatsapp(
+        self, whatsapp_phone: str
+    ) -> models.AgentConversation:
+        """Async version: Get or create a conversation for a WhatsApp phone number."""
+        return self.get_or_create_conversation_whatsapp(whatsapp_phone)
 
     @transaction.atomic
     def save_message(
@@ -487,3 +513,84 @@ class ConversationService:
             return constants.UNKNOWN_INTENT_RESPONSE.format(
                 menu=self.formatter.format_help_message()
             )
+
+    async def aprocess_message_whatsapp(
+        self,
+        whatsapp_phone: str,
+        user_message: str,
+    ) -> str:
+        """
+        Async version: Process a user message from WhatsApp and return the agent's response.
+
+        Args:
+            whatsapp_phone: WhatsApp phone number
+            user_message: User's message text
+
+        Returns:
+            Agent's response text
+        """
+        # Get or create conversation
+        conversation = await self.aget_or_create_conversation_whatsapp(
+            whatsapp_phone
+        )
+
+        # Save user message
+        await self.asave_message(
+            conversation, choices.MessageSender.USER, user_message
+        )
+
+        # Check if authenticated
+        if not conversation.authenticated:
+            response = await self._ahandle_authentication(
+                conversation, user_message
+            )
+            return response
+
+        # Check if there's a pending action in context - priority over intent detection
+        context = conversation.context_data
+        pending_action = context.get("pending_action")
+
+        if pending_action:
+            # Route directly to the pending action handler without intent detection
+            logger.info(
+                f"Continuing pending action: {pending_action} for conversation {conversation.id}"
+            )
+
+            # Map pending actions to their corresponding intents
+            pending_action_to_intent = {
+                "create_ticket": choices.IntentType.CREATE_TICKET,
+                "credit_detail": choices.IntentType.CREDIT_DETAIL,
+            }
+
+            intent = pending_action_to_intent.get(
+                pending_action, choices.IntentType.UNKNOWN
+            )
+            response = await self._aroute_intent(
+                conversation, user_message, intent
+            )
+
+            # Save agent response
+            await self.asave_message(
+                conversation,
+                choices.MessageSender.AGENT,
+                response,
+                intent=intent,
+            )
+
+            return response
+
+        # Detect intent only if no pending action
+        intent = await sync_to_async(self.intent_detector.detect_intent)(
+            user_message
+        )
+        logger.info(f"Detected intent: {intent} for message: {user_message}")
+
+        # Route to appropriate handler
+        response = await self._aroute_intent(conversation, user_message, intent)
+
+        # Save agent response
+        await self.asave_message(
+            conversation, choices.MessageSender.AGENT, response, intent=intent
+        )
+
+        return response

@@ -34,3 +34,10 @@ class IntentType(models.TextChoices):
     HELP = "HELP", _("Help")
     GOODBYE = "GOODBYE", _("Goodbye")
     UNKNOWN = "UNKNOWN", _("Unknown")
+
+
+class ChannelType(models.TextChoices):
+    """Channel types for conversations."""
+
+    TELEGRAM = "TELEGRAM", _("Telegram")
+    WHATSAPP = "WHATSAPP", _("WhatsApp")

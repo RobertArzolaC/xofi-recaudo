@@ -32,7 +32,7 @@ class TicketListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "support/ticket/list.html"
     context_object_name = "tickets"
     permission_required = "support.view_ticket"
-    paginate_by = 5
+    paginate_by = 4
 
     def get_queryset(self) -> QuerySet[models.Ticket]:
         """Return filtered and ordered queryset."""

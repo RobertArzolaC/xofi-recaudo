@@ -8,7 +8,7 @@ from apps.core import models as core_models
 
 class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
     """
-    Model to track AI agent conversations with partners via Telegram.
+    Model to track AI agent conversations with partners via Telegram or WhatsApp.
     """
 
     partner = models.ForeignKey(
@@ -19,15 +19,28 @@ class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
         blank=True,
         help_text=_("Partner associated with this conversation"),
     )
+    channel = models.CharField(
+        max_length=20,
+        choices=choices.ChannelType.choices,
+        default=choices.ChannelType.TELEGRAM,
+        help_text=_("Communication channel (Telegram or WhatsApp)"),
+    )
     telegram_chat_id = models.CharField(
         max_length=100,
-        unique=True,
+        blank=True,
+        null=True,
         help_text=_("Telegram chat ID for this conversation"),
     )
     telegram_username = models.CharField(
         max_length=100,
         blank=True,
         help_text=_("Telegram username of the user"),
+    )
+    whatsapp_phone = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        help_text=_("WhatsApp phone number for this conversation"),
     )
     status = models.IntegerField(
         choices=choices.ConversationStatus.choices,
@@ -52,11 +65,32 @@ class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
         verbose_name = _("Agent Conversation")
         verbose_name_plural = _("Agent Conversations")
         ordering = ["-last_interaction"]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(channel="TELEGRAM", telegram_chat_id__isnull=False)
+                    | models.Q(channel="WHATSAPP", whatsapp_phone__isnull=False)
+                ),
+                name="channel_identifier_required",
+            ),
+            models.UniqueConstraint(
+                fields=["telegram_chat_id"],
+                condition=models.Q(telegram_chat_id__isnull=False),
+                name="unique_telegram_chat_id",
+            ),
+            models.UniqueConstraint(
+                fields=["whatsapp_phone"],
+                condition=models.Q(whatsapp_phone__isnull=False),
+                name="unique_whatsapp_phone",
+            ),
+        ]
 
     def __str__(self):
         if self.partner:
-            return f"Conversation with {self.partner.full_name} ({self.telegram_chat_id})"
-        return f"Conversation {self.telegram_chat_id}"
+            identifier = self.telegram_chat_id or self.whatsapp_phone
+            return f"Conversation with {self.partner.full_name} ({identifier})"
+        identifier = self.telegram_chat_id or self.whatsapp_phone
+        return f"Conversation {identifier}"
 
 
 class ConversationMessage(TimeStampedModel):

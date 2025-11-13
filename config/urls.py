@@ -35,6 +35,7 @@ urlpatterns += [
     path("campaigns/", include("apps.campaigns.urls")),
     path("support/", include("apps.support.urls")),
     path("reports/", include("apps.reports.urls")),
+    path("chatbot/", include("apps.chatbot.urls")),
 ]
 
 # API Documentation URLs

@@ -1,65 +1,88 @@
 import logging
 from typing import Dict, Optional
 
+import requests
 from django.conf import settings
-from heyoo import WhatsApp
 
 logger = logging.getLogger(__name__)
 
 
 class WhatsAppService:
-    """Service for sending WhatsApp messages via Meta's Cloud API."""
+    """Service for sending WhatsApp messages via WHAPI.cloud."""
 
     def __init__(self):
-        """Initialize WhatsApp service with credentials from settings."""
-        self.token = settings.WHATSAPP_API_TOKEN
-        self.phone_number_id = settings.WHATSAPP_PHONE_NUMBER_ID
-        self.messenger = None
+        """Initialize WhatsApp service with WHAPI credentials from settings."""
+        self.api_token = getattr(settings, "WHAPI_API_TOKEN", None)
+        self.api_url = getattr(
+            settings, "WHAPI_BASE_URL", "https://gate.whapi.cloud"
+        )
+        self.headers = None
 
-        if self.token and self.phone_number_id:
-            try:
-                self.messenger = WhatsApp(
-                    token=self.token, phone_number_id=self.phone_number_id
-                )
-            except Exception as e:
-                logger.error(f"Failed to initialize WhatsApp messenger: {e}")
+        if self.api_token:
+            self.headers = {
+                "Authorization": f"Bearer {self.api_token}",
+                "Content-Type": "application/json",
+            }
+            logger.info("WhatsApp service initialized with WHAPI")
         else:
             logger.warning(
-                "WhatsApp credentials not configured. "
-                "Please set WHATSAPP_API_TOKEN and WHATSAPP_PHONE_NUMBER_ID"
+                "WHAPI not configured. Set WHATSAPP_API_TOKEN in settings"
             )
 
     def is_configured(self) -> bool:
-        """Check if WhatsApp service is properly configured."""
-        return self.messenger is not None
+        """Check if WHAPI is properly configured."""
+        return self.api_token is not None
 
     def send_text_message(
         self, recipient_phone: str, message: str
     ) -> Dict[str, any]:
         """
-        Send a text message to a WhatsApp recipient.
+        Send a text message via WHAPI.
 
         Args:
             recipient_phone: Phone number in international format (e.g., 51987654321)
             message: Text message to send
 
         Returns:
-            dict: Response from WhatsApp API containing message ID and status
+            dict: Response from WHAPI containing message ID and status
         """
         if not self.is_configured():
-            raise ValueError("WhatsApp service is not configured")
-
-        # Clean phone number (remove spaces, dashes, plus sign)
-        clean_phone = self._clean_phone_number(recipient_phone)
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
+            }
 
         try:
-            response = self.messenger.send_message(
-                message=message, recipient_id=clean_phone
+            clean_phone = self._clean_phone_number(recipient_phone)
+
+            payload = {
+                "to": clean_phone,
+                "body": message,
+            }
+
+            response = requests.post(
+                f"{self.api_url}/messages/text",
+                json=payload,
+                headers=self.headers,
+                timeout=30,
             )
-            logger.info(f"Message sent to {clean_phone}: {response}")
-            return {"success": True, "response": response}
+
+            response.raise_for_status()
+            result = response.json()
+
+            logger.info(f"Message sent to {clean_phone} via WHAPI: {result}")
+            return {
+                "success": True,
+                "message_id": result.get("id"),
+                "response": result,
+            }
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to send message to {recipient_phone}: {e}")
+            return {"success": False, "error": str(e)}
         except Exception as e:
-            logger.error(f"Failed to send message to {clean_phone}: {e}")
+            logger.error(
+                f"Unexpected error sending message to {recipient_phone}: {e}"
+            )
             return {"success": False, "error": str(e)}
 
     def send_template_message(
@@ -70,7 +93,10 @@ class WhatsAppService:
         components: Optional[list] = None,
     ) -> Dict[str, any]:
         """
-        Send a template message to a WhatsApp recipient.
+        Send a template message via WHAPI.
+
+        Note: WHAPI supports templates but they need to be approved by WhatsApp first.
+        For chatbot purposes, we typically use regular text messages instead.
 
         Args:
             recipient_phone: Phone number in international format
@@ -79,29 +105,25 @@ class WhatsAppService:
             components: List of components for template variables
 
         Returns:
-            dict: Response from WhatsApp API
+            dict: Response from WHAPI
         """
         if not self.is_configured():
-            raise ValueError("WhatsApp service is not configured")
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
+            }
 
-        clean_phone = self._clean_phone_number(recipient_phone)
+        logger.warning(
+            "Template messages not fully implemented for WHAPI. "
+            "Using regular text message instead."
+        )
 
-        try:
-            response = self.messenger.send_template(
-                template=template_name,
-                recipient_id=clean_phone,
-                lang=language,
-                components=components or [],
-            )
-            logger.info(
-                f"Template message '{template_name}' sent to {clean_phone}: {response}"
-            )
-            return {"success": True, "response": response}
-        except Exception as e:
-            logger.error(
-                f"Failed to send template message to {clean_phone}: {e}"
-            )
-            return {"success": False, "error": str(e)}
+        # For now, fall back to regular text message
+        # In production, you would implement proper template support
+        return self.send_text_message(
+            recipient_phone,
+            f"[Template: {template_name}] Please use regular messages for chatbot.",
+        )
 
     def send_message_with_button(
         self,
@@ -111,7 +133,9 @@ class WhatsAppService:
         button_url: str,
     ) -> Dict[str, any]:
         """
-        Send a message with a URL button (for payment links).
+        Send a message with a URL button via WHAPI.
+
+        WHAPI supports interactive messages with URL buttons.
 
         Args:
             recipient_phone: Phone number in international format
@@ -120,67 +144,86 @@ class WhatsAppService:
             button_url: URL to open when button is clicked
 
         Returns:
-            dict: Response from WhatsApp API
+            dict: Response from WHAPI
         """
         if not self.is_configured():
-            raise ValueError("WhatsApp service is not configured")
-
-        clean_phone = self._clean_phone_number(recipient_phone)
-
-        try:
-            # Create button payload
-            button_payload = {
-                "type": "button",
-                "body": {"text": message},
-                "action": {
-                    "buttons": [
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "payment_link",
-                                "title": button_text,
-                            },
-                        }
-                    ]
-                },
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
             }
 
-            # Note: For URL buttons, we need to use interactive messages
-            # This requires a template with URL button or interactive message
-            # For now, we'll send the message with the URL in the text
-            full_message = f"{message}\n\n{button_text}: {button_url}"
+        try:
+            clean_phone = self._clean_phone_number(recipient_phone)
 
-            response = self.messenger.send_message(
-                message=full_message, recipient_id=clean_phone
+            # Ensure HTTPS link (WHAPI recommendation)
+            if button_url.startswith("http://"):
+                button_url = button_url.replace("http://", "https://", 1)
+                logger.warning(f"Converted HTTP link to HTTPS: {button_url}")
+
+            # WHAPI interactive message with URL button
+            payload = {
+                "to": clean_phone,
+                "body": message,
+                "footer": "",
+                "buttons": [
+                    {
+                        "type": "url",
+                        "title": button_text,
+                        "url": button_url,
+                    }
+                ],
+            }
+
+            response = requests.post(
+                f"{self.api_url}/messages/interactive",
+                json=payload,
+                headers=self.headers,
+                timeout=30,
             )
+
+            response.raise_for_status()
+            result = response.json()
+
             logger.info(
-                f"Message with button sent to {clean_phone}: {response}"
+                f"Message with button sent to {clean_phone} via WHAPI: {result}"
             )
-            return {"success": True, "response": response}
+            return {
+                "success": True,
+                "message_id": result.get("id"),
+                "response": result,
+            }
+        except requests.exceptions.RequestException as e:
+            logger.error(
+                f"Failed to send message with button to {recipient_phone}: {e}"
+            )
+            return {"success": False, "error": str(e)}
         except Exception as e:
             logger.error(
-                f"Failed to send message with button to {clean_phone}: {e}"
+                f"Unexpected error sending message with button to {recipient_phone}: {e}"
             )
             return {"success": False, "error": str(e)}
 
     def _clean_phone_number(self, phone: str) -> str:
         """
-        Clean and format phone number for WhatsApp API.
+        Clean and format phone number for WHAPI.
+
+        WHAPI expects format: <country_code><number>@s.whatsapp.net
 
         Args:
             phone: Phone number in any format
 
         Returns:
-            str: Clean phone number (digits only)
+            str: Formatted phone number for WHAPI
         """
         # Remove all non-digit characters
         clean = "".join(filter(str.isdigit, phone))
 
-        # Ensure it starts with country code
+        # Add default country code if needed
         if len(clean) == 9:  # Peruvian number without country code
             clean = f"51{clean}"
 
-        return clean
+        # WHAPI format
+        return f"{clean}@s.whatsapp.net"
 
     def get_message_status(self, message_id: str) -> Dict[str, any]:
         """
