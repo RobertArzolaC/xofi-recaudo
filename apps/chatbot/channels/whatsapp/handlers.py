@@ -6,9 +6,7 @@ import requests
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
-from apps.chatbot.services.receipt_extraction import (
-    ReceiptDataExtractionService,
-)
+from apps.chatbot.services.gemini import GeminiService
 from apps.core.services.chats.whatsapp import WhatsAppService
 
 logger = logging.getLogger(__name__)
@@ -21,7 +19,7 @@ class WhatsAppBotHandler:
         """Initialize handlers and services."""
         self.conversation_service = ConversationService()
         self.whatsapp_service = WhatsAppService()
-        self.receipt_extraction_service = ReceiptDataExtractionService()
+        self.gemini_service = GeminiService()
 
     async def handle_webhook(self, webhook_data: Dict) -> Dict[str, any]:
         """
@@ -188,31 +186,8 @@ class WhatsAppBotHandler:
 
             # Extract receipt data using the dedicated service
             logger.info("Extracting receipt data using extraction service...")
-            amount, payment_date, filename, notes = (
-                self.receipt_extraction_service.prepare_receipt_data(
-                    caption=caption,
-                    partner_id=conversation.partner.id,
-                    chat_id=sender_phone,
-                    file_unique_id=image_id,
-                    file_path=image_link,
-                )
-            )
-
-            # Validate extracted data and get confidence scores
-            validation_results = (
-                self.receipt_extraction_service.validate_extracted_data(
-                    amount, payment_date
-                )
-            )
-            confidence_scores = (
-                self.receipt_extraction_service.get_extraction_confidence(
-                    caption
-                )
-            )
-
-            logger.info(
-                f"Data validation: {validation_results}, "
-                f"Confidence: {confidence_scores['overall']:.2f}"
+            result = self.gemini_service.extract_receipt_data(
+                caption=caption, image_bytes=image_bytes
             )
 
             # Run synchronous API call in executor to avoid blocking
@@ -222,10 +197,10 @@ class WhatsAppBotHandler:
                 self.conversation_service.api_service.upload_payment_receipt,
                 conversation.partner.id,
                 image_bytes,
-                filename,
-                amount,
-                payment_date,
-                notes,
+                image_id,
+                result.get("amount"),
+                result.get("date"),
+                result.get("notes"),
             )
 
             if result and result.get("id"):
@@ -233,13 +208,13 @@ class WhatsAppBotHandler:
                 response_message = (
                     f"✅ *Boleta de pago recibida correctamente*\n\n"
                     f"📝 Número de recibo: {result.get('id')}\n"
-                    f"💰 Monto: S/ {amount:.2f}\n"
-                    f"📅 Fecha: {payment_date}\n\n"
+                    f"💰 Monto: S/ {result.get('amount'):.2f}\n"
+                    f"📅 Fecha: {result.get('date')}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
                 )
 
                 # Add contextual feedback based on data quality
-                if amount:
+                if result.get("amount"):
                     response_message += (
                         "📝 *Datos procesados del mensaje*\n"
                         "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
@@ -254,11 +229,10 @@ class WhatsAppBotHandler:
                     f"[IMAGE] {caption}" if caption else "[IMAGE]",
                     metadata={
                         "receipt_id": result.get("id"),
-                        "filename": filename,
+                        "filename": image_id,
                     },
                 )
             else:
-                # Error
                 await self._send_text_message(
                     sender_phone,
                     "❌ Hubo un error al procesar tu boleta de pago. "
