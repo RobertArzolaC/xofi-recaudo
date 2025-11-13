@@ -56,6 +56,7 @@ urlpatterns += [
 urlpatterns += [
     path("api/v1/support/", include("apps.support.routers")),
     path("api/v1/partners/", include("apps.partners.routers")),
+    path("api/v1/payments/", include("apps.payments.routers")),
 ]
 
 if settings.DEBUG:

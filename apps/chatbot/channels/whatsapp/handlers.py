@@ -56,7 +56,7 @@ class WhatsAppBotHandler:
             for message in messages:
                 message_from = message.get("from")
                 # Whapi sends messages sent by the bot itself; filter them out
-                only_number = message_from != "51902376744"
+                only_number = message_from != "51931314241"
                 # Ignore messages sent by bot (from_me = true) or only_number is False
                 if message.get("from_me", False) or only_number:
                     logger.info(
@@ -147,7 +147,10 @@ class WhatsAppBotHandler:
         sender_phone = message.get("from")
         image_data = message.get("image", {})
         caption = image_data.get("caption", "")
+        image_link = image_data.get("link")
         image_id = image_data.get("id")
+
+        image_bytes = None
 
         logger.info(f"Received image from {sender_phone}, ID: {image_id}")
 
@@ -167,7 +170,6 @@ class WhatsAppBotHandler:
                 return
 
             # Download the image using the direct link
-            image_link = image_data.get("link")
             if not image_link:
                 await self._send_text_message(
                     sender_phone,
@@ -176,7 +178,6 @@ class WhatsAppBotHandler:
                 return
 
             image_bytes = await self._download_media(image_link)
-
             if not image_bytes:
                 await self._send_text_message(
                     sender_phone,
@@ -186,9 +187,7 @@ class WhatsAppBotHandler:
 
             # Extract receipt data using the dedicated service
             logger.info("Extracting receipt data using extraction service...")
-            result = self.gemini_service.extract_receipt_data(
-                caption=caption, image_bytes=image_bytes
-            )
+            result = self.gemini_service.extract_receipt_data(image_bytes)
 
             # Run synchronous API call in executor to avoid blocking
             loop = asyncio.get_event_loop()
@@ -230,6 +229,7 @@ class WhatsAppBotHandler:
                     metadata={
                         "receipt_id": result.get("id"),
                         "filename": image_id,
+                        "image_link": image_link,
                     },
                 )
             else:

@@ -82,7 +82,7 @@ class PartnerAPIService:
         priority: int = 2,
     ) -> Dict[str, Any]:
         """Create a support ticket via API."""
-        url = f"{self.base_url}/api/v1/support/tickets/"
+        url = f"{self.base_url}/api/v1/payments/payments-receipts/"
         data = {
             "partner_document": partner_document,
             "subject": subject,
