@@ -1,0 +1,201 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Delete Report" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Delete Report" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.reports:report-detail' report.pk %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0 text-danger">
+                            <i class="ki-duotone ki-warning-2 fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            {% trans "Confirm Deletion" %}
+                        </h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger d-flex align-items-center p-5 mb-8">
+                        <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-danger">{% trans "Warning!" %}</h4>
+                            <span>{% trans "This action cannot be undone. The report file and all related data will be permanently deleted." %}</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-8">
+                        <div class="col-lg-6">
+                            <div class="card bg-light-danger">
+                                <div class="card-body">
+                                    <h5 class="card-title text-danger">{% trans "Report to Delete" %}</h5>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="symbol symbol-50px me-3">
+                                            <div class="symbol-label fs-3 fw-semibold text-danger">
+                                                <i class="ki-duotone ki-document fs-2">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">{{ report.title }}</h6>
+                                            <p class="text-muted mb-0">{{ report.report_type.name }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Format" %}</small>
+                                        <div class="fw-bold">
+                                            {% if report.format == "csv" %}
+                                                <span class="badge badge-info">CSV</span>
+                                            {% else %}
+                                                <span class="badge badge-success">Excel</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Status" %}</small>
+                                        <div>
+                                            {% if report.status == "pending" %}
+                                                <span class="badge badge-warning">{{ report.get_status_display }}</span>
+                                            {% elif report.status == "processing" %}
+                                                <span class="badge badge-info">{{ report.get_status_display }}</span>
+                                            {% elif report.status == "completed" %}
+                                                <span class="badge badge-success">{{ report.get_status_display }}</span>
+                                            {% elif report.status == "failed" %}
+                                                <span class="badge badge-danger">{{ report.get_status_display }}</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">{{ report.get_status_display }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if report.record_count %}
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Records" %}</small>
+                                        <div class="fw-bold">{{ report.record_count|intcomma }}</div>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Created" %}</small>
+                                        <div class="fw-bold">{{ report.created|date:"d/m/Y H:i" }}</div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <small class="text-muted">{% trans "Created by" %}</small>
+                                        <div class="fw-bold">{{ report.created_by.full_name|default:"Unknown" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card bg-light-warning">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning">{% trans "What will be deleted?" %}</h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Report record" %}
+                                        </li>
+                                        {% if report.file_path %}
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Generated file" %}
+                                            {% if report.file_size %}
+                                                ({{ report.file_size_display }})
+                                            {% endif %}
+                                        </li>
+                                        {% endif %}
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="ki-duotone ki-check-circle fs-5 text-success me-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            {% trans "Report metadata" %}
+                                        </li>
+                                    </ul>
+
+                                    {% if report.is_processing %}
+                                    <div class="alert alert-warning mt-4">
+                                        <strong>{% trans "Note:" %}</strong>
+                                        {% trans "This report is currently being generated. Deleting it will cancel the generation process." %}
+                                    </div>
+                                    {% endif %}
+
+                                    {% if report.is_completed %}
+                                    <div class="alert alert-info mt-4">
+                                        <i class="ki-duotone ki-information-5 fs-3 text-info me-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                        </i>
+                                        <strong>{% trans "Tip:" %}</strong>
+                                        {% trans "Make sure to download the report if you need it before deleting." %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-end gap-3">
+                            <a href="{% url 'apps.reports:report-detail' report.pk %}" class="btn btn-light">
+                                <i class="ki-duotone ki-arrow-left fs-4 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {% trans "Cancel" %}
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="ki-duotone ki-trash fs-4 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                    <span class="path5"></span>
+                                </i>
+                                {% trans "Yes, Delete Report" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

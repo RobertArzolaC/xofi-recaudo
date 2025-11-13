@@ -34,6 +34,7 @@ urlpatterns += [
     path("compliance/", include("apps.compliance.urls")),
     path("campaigns/", include("apps.campaigns.urls")),
     path("support/", include("apps.support.urls")),
+    path("reports/", include("apps.reports.urls")),
     path("chatbot/", include("apps.chatbot.urls")),
 ]
 
@@ -56,6 +57,7 @@ urlpatterns += [
 urlpatterns += [
     path("api/v1/support/", include("apps.support.routers")),
     path("api/v1/partners/", include("apps.partners.routers")),
+    path("api/v1/payments/", include("apps.payments.routers")),
 ]
 
 if settings.DEBUG:

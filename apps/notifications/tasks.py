@@ -10,6 +10,7 @@ from apps.notifications import models
 from apps.notifications.services import (
     NotificationSenderService,
     NotificationService,
+    WhatsAppRateLimiter,
 )
 
 logger = logging.getLogger(__name__)
@@ -240,11 +241,10 @@ def send_notification(self, notification_id: int) -> dict:
         return {"success": False, "error": "Notification not found"}
 
     # Check WhatsApp rate limits before sending
-    if notification.channel == notification_choices.NotificationChannel.WHATSAPP:
-        from apps.notifications.services.whatsapp_rate_limiter import (
-            WhatsAppRateLimiter,
-        )
-
+    if (
+        notification.channel
+        == notification_choices.NotificationChannel.WHATSAPP
+    ):
         rate_check = WhatsAppRateLimiter.can_send_message()
         if not rate_check.get("allowed"):
             wait_seconds = rate_check.get("wait_seconds", 60)

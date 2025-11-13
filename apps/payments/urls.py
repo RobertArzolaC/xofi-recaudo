@@ -1,18 +1,12 @@
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 
-from apps.payments import api, views, viewsets
+from apps.payments import api, views
 
 app_name = "apps.payments"
 
-# API Router
-router = DefaultRouter()
-router.register(r"receipts", viewsets.PaymentReceiptViewSet, basename="receipt")
 
 # Main URLs for payments module
 urlpatterns = [
-    # API URLs - Router
-    path("api/", include(router.urls)),
     # Payment CRUD views
     path("payments/", views.PaymentListView.as_view(), name="payment-list"),
     path(

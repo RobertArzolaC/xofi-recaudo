@@ -63,6 +63,7 @@ LOCAL_APPS = [
     "apps.notifications.apps.NotificationsConfig",
     "apps.support.apps.SupportConfig",
     "apps.chatbot.apps.ChatbotConfig",
+    "apps.reports.apps.ReportsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -73,10 +74,10 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
     "allauth.account.middleware.AccountMiddleware",
 ]
 
@@ -267,6 +268,9 @@ WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
 
 WHAPI_API_URL = config("WHAPI_API_URL", default="https://api.whapi.io")
 WHAPI_API_TOKEN = config("WHAPI_API_TOKEN", default="")
+
+# Choose WhatsApp Provider: "meta" or "whapi"
+WHATSAPP_PROVIDER = config("WHATSAPP_PROVIDER", default="whapi")
 
 # Telegram Bot Settings
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")

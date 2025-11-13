@@ -1,0 +1,346 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title_page %}{% trans "Report Details" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Report" %}: {{ report.title }}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.reports:report-list' %}" class="btn btn-sm btn-light me-3">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+    {% if report.is_completed and report.file_path %}
+    <a href="{% url 'apps.reports:report-download' report.pk %}" class="btn btn-sm btn-success">
+        <i class="ki-duotone ki-cloud-download fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Download" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Report Information -->
+        <div class="col-xl-8">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Report Information" %}</h2>
+                    </div>
+                    <div class="card-toolbar">
+                        {% if report.status == "pending" %}
+                            <span class="badge badge-light-warning">
+                                <i class="fas fa-clock"></i> {{ report.get_status_display }}
+                            </span>
+                        {% elif report.status == "processing" %}
+                            <span class="badge badge-light-info">
+                                <i class="fas fa-spinner fa-spin"></i> {{ report.get_status_display }}
+                            </span>
+                        {% elif report.status == "completed" %}
+                            <span class="badge badge-light-success">
+                                <i class="ki-duotone ki-check-circle fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {{ report.get_status_display }}
+                            </span>
+                        {% elif report.status == "failed" %}
+                            <span class="badge badge-light-danger">
+                                <i class="ki-duotone ki-cross-circle fs-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                {{ report.get_status_display }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-light-secondary">{{ report.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-6">
+                        <div class="col-lg-12">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Title" %}</label>
+                                <div class="fw-bold fs-5">{{ report.title }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if report.description %}
+                    <div class="row mb-6">
+                        <div class="col-lg-12">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Description" %}</label>
+                                <div class="p-3 bg-light rounded">{{ report.description|linebreaks }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-6">
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Report Type" %}</label>
+                                <div class="fw-bold fs-6">{{ report.report_type.name }}</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Format" %}</label>
+                                <div class="fw-bold fs-6">
+                                    {% if report.format == "csv" %}
+                                        <span class="badge badge-info">
+                                            <i class="ki-duotone ki-file fs-4">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            CSV
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-success">
+                                            <i class="ki-duotone ki-file fs-4">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            Excel
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-6">
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Record Count" %}</label>
+                                <div class="fw-bold fs-5 text-primary">
+                                    {% if report.record_count %}
+                                        {{ report.record_count|intcomma }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "File Size" %}</label>
+                                <div class="fw-bold fs-5 text-success">
+                                    {{ report.file_size_display }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator my-6"></div>
+
+                    <div class="row mb-6">
+                        <div class="col-lg-4">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Created" %}</label>
+                                <div class="fw-bold fs-7">{{ report.created|date:"d/m/Y H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Started" %}</label>
+                                <div class="fw-bold fs-7">
+                                    {% if report.started_at %}
+                                        {{ report.started_at|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Completed" %}</label>
+                                <div class="fw-bold fs-7">
+                                    {% if report.completed_at %}
+                                        {{ report.completed_at|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if report.duration %}
+                    <div class="row mb-6">
+                        <div class="col-lg-12">
+                            <div class="mb-4">
+                                <label class="form-label text-muted">{% trans "Generation Time" %}</label>
+                                <div class="fw-bold fs-6">
+                                    {{ report.duration_display }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report.error_message %}
+                    <div class="row mb-6">
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger">
+                                <strong>{% trans "Error" %}:</strong> {{ report.error_message }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Applied Filters -->
+            {% if report.filters %}
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "Applied Filters" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+                            <thead>
+                                <tr class="fw-bold text-muted">
+                                    <th>{% trans "Filter" %}</th>
+                                    <th>{% trans "Value" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in report.filters.items %}
+                                <tr>
+                                    <td class="fw-bold">{{ key|title }}</td>
+                                    <td>{{ value }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-xl-4">
+            <!-- Creator Information -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "Creator Information" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="symbol symbol-45px me-5">
+                            <div class="symbol-label fs-3 fw-semibold text-primary">
+                                {{ report.created_by.initials|default:"??" }}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-start flex-column">
+                            <span class="text-dark fw-bold fs-6">{{ report.created_by.full_name|default:"Unknown" }}</span>
+                            <span class="text-muted fw-semibold fs-7">{{ report.created_by.email|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Card (Only for Processing Reports) -->
+            {% if report.is_processing %}
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "Generation Progress" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-5">
+                        <div class="d-flex flex-stack mb-2">
+                            <span class="text-muted me-2 fs-7 fw-semibold">{% trans "Progress" %}</span>
+                            <span class="text-dark fw-bold fs-7">50%</span>
+                        </div>
+                        <div class="progress h-15px">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                        <i class="ki-duotone ki-information-5 fs-2tx text-primary me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div class="d-flex flex-stack flex-grow-1">
+                            <div class="fw-semibold">
+                                <div class="fs-6 text-gray-700">
+                                    {% trans "Your report is being generated. This page will automatically refresh when complete." %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">{% trans "Actions" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3">
+                        {% if report.is_completed and report.file_path %}
+                        <a href="{% url 'apps.reports:report-download' report.pk %}" class="btn btn-success btn-sm">
+                            <i class="ki-duotone ki-cloud-download fs-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Download Report" %}
+                        </a>
+                        {% endif %}
+                        {% if perms.reports.delete_report %}
+                        <a href="{% url 'apps.reports:report-delete' report.pk %}" class="btn btn-light-danger btn-sm">
+                            <i class="ki-duotone ki-trash fs-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                            </i>
+                            {% trans "Delete Report" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+{% if report.is_processing %}
+<script>
+// Auto-refresh page every 10 seconds while processing
+setTimeout(function() {
+    location.reload();
+}, 10000);
+</script>
+{% endif %}
+{% endblock extra_js %}

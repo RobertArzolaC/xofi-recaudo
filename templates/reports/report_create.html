@@ -1,0 +1,320 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}{% trans "Generate Report" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Generate New Report" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    <a href="{% url 'apps.reports:report-list' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Back" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <form method="post" class="form" id="report-form">
+        {% csrf_token %}
+
+        <div class="row g-5 g-xl-8">
+            <!-- Report Configuration Card -->
+            <div class="col-xl-8">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2 class="mb-0">{% trans "Report Configuration" %}</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Basic Information -->
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label required">{{ form.title.label }}</label>
+                                {{ form.title|add_class:"form-control"|attr:"placeholder:Enter a descriptive title for the report" }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger fs-7">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-lg-12 mb-4">
+                                <label class="form-label">{{ form.description.label }}</label>
+                                {{ form.description|add_class:"form-control"|attr:"rows:3"|attr:"placeholder:Optional description or notes" }}
+                                {% if form.description.errors %}
+                                    <div class="text-danger fs-7">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Report Type Selection -->
+                        <div class="row mb-6">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.report_type.label }}</label>
+                                {{ form.report_type|add_class:"form-select" }}
+                                {% if form.report_type.errors %}
+                                    <div class="text-danger fs-7">{{ form.report_type.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text text-muted fs-7" id="report-type-description">
+                                    {% trans "Select the type of report to generate" %}
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label required">{{ form.format.label }}</label>
+                                {{ form.format|add_class:"form-select" }}
+                                {% if form.format.errors %}
+                                    <div class="text-danger fs-7">{{ form.format.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text text-muted fs-7">
+                                    {% trans "Choose the export format for the report" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Filters Field -->
+                        {{ form.filters }}
+
+                        <!-- Dynamic Filters Container -->
+                        <div id="dynamic-filters-container" class="d-none">
+                            <div class="separator my-6"></div>
+                            <h3 class="mb-5">{% trans "Report Filters" %}</h3>
+                            <div id="filters-form" class="row">
+                                <!-- Filters will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end py-6 px-9">
+                        <a href="{% url 'apps.reports:report-list' %}" class="btn btn-light me-3">{% trans "Cancel" %}</a>
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            <i class="ki-duotone ki-check fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {% trans "Generate Report" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Types List -->
+            <div class="col-xl-4">
+                <div class="card card-flush mb-6 mb-xl-9">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="mb-0">{% trans "Available Reports" %}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body py-5">
+                        <div class="mb-7">
+                            <h4 class="fs-6 text-gray-800 mb-3">{% trans "Campaign Reports" %}</h4>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-success me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Campaigns Summary" %}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-success me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Notifications Detail" %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-7">
+                            <h4 class="fs-6 text-gray-800 mb-3">{% trans "Portfolio Reports" %}</h4>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-info me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Recovery Report" %}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-info me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Portfolio Aging" %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-7">
+                            <h4 class="fs-6 text-gray-800 mb-3">{% trans "Analytics" %}</h4>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-warning me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Monthly KPIs" %}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="bullet bullet-dot h-10px w-10px bg-warning me-3"></span>
+                                    <span class="fs-7 text-gray-700">{% trans "Management Audit" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reportTypeSelect = document.getElementById('id_report_type');
+    const filtersContainer = document.getElementById('dynamic-filters-container');
+    const filtersForm = document.getElementById('filters-form');
+    const filtersInput = document.getElementById('id_filters');
+
+    // Load filters when report type changes
+    reportTypeSelect.addEventListener('change', function() {
+        const reportTypeId = this.value;
+
+        if (!reportTypeId) {
+            filtersContainer.classList.add('d-none');
+            filtersForm.innerHTML = '';
+            return;
+        }
+
+        // Show loading state
+        filtersForm.innerHTML = `
+            <div class="col-12 text-center py-10">
+                <span class="spinner-border spinner-border-sm align-middle text-primary me-2"></span>
+                <span class="text-muted">{% trans "Loading filters..." %}</span>
+            </div>
+        `;
+        filtersContainer.classList.remove('d-none');
+
+        // Fetch filters from API
+        fetch(`/reports/api/report-types/${reportTypeId}/filters/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.filters && data.filters.length > 0) {
+                    renderFilters(data.filters);
+                } else {
+                    filtersContainer.classList.add('d-none');
+                    filtersForm.innerHTML = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading filters:', error);
+                filtersForm.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            {% trans "Error loading filters. Please try again." %}
+                        </div>
+                    </div>
+                `;
+            });
+    });
+
+    function renderFilters(filters) {
+        filtersForm.innerHTML = '';
+
+        filters.forEach(filter => {
+            const col = document.createElement('div');
+            col.className = 'col-lg-6 mb-4';
+
+            let inputHtml = '';
+            const required = filter.is_required ? 'required' : '';
+            const requiredLabel = filter.is_required ? '<span class="text-danger">*</span>' : '';
+
+            switch (filter.filter_type) {
+                case 'date':
+                    inputHtml = `<input type="date" name="${filter.name}" class="form-control" ${required}>`;
+                    break;
+                case 'datetime':
+                    inputHtml = `<input type="datetime-local" name="${filter.name}" class="form-control" ${required}>`;
+                    break;
+                case 'number':
+                    const min = filter.options.min !== undefined ? `min="${filter.options.min}"` : '';
+                    const max = filter.options.max !== undefined ? `max="${filter.options.max}"` : '';
+                    const step = filter.options.step !== undefined ? `step="${filter.options.step}"` : '';
+                    inputHtml = `<input type="number" name="${filter.name}" class="form-control" ${min} ${max} ${step} ${required}>`;
+                    break;
+                case 'select':
+                    const selectOptions = filter.options.choices || [];
+                    const selectOptionsHtml = selectOptions.map(opt => {
+                        const value = opt.value || opt[0];
+                        const label = opt.label || opt[1];
+                        return `<option value="${value}">${label}</option>`;
+                    }).join('');
+                    inputHtml = `<select name="${filter.name}" class="form-select" ${required}>
+                        <option value="">{% trans "Seleccionar..." %}</option>
+                        ${selectOptionsHtml}
+                    </select>`;
+                    break;
+                case 'multiselect':
+                    const multiOptions = filter.options.choices || [];
+                    const multiOptionsHtml = multiOptions.map(opt => {
+                        const value = opt.value || opt[0];
+                        const label = opt.label || opt[1];
+                        return `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="${filter.name}" value="${value}" id="${filter.name}_${value}">
+                                <label class="form-check-label" for="${filter.name}_${value}">
+                                    ${label}
+                                </label>
+                            </div>`;
+                    }).join('');
+                    inputHtml = `<div class="mt-2">${multiOptionsHtml}</div>`;
+                    break;
+                case 'boolean':
+                    inputHtml = `
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" name="${filter.name}" id="${filter.name}" value="true">
+                            <label class="form-check-label" for="${filter.name}">
+                                {% trans "Sí" %}
+                            </label>
+                        </div>`;
+                    break;
+                case 'text':
+                default:
+                    const placeholder = filter.options.placeholder || '';
+                    inputHtml = `<input type="text" name="${filter.name}" class="form-control" placeholder="${placeholder}" ${required}>`;
+            }
+
+            col.innerHTML = `
+                <label class="form-label">${filter.label} ${requiredLabel}</label>
+                ${inputHtml}
+                ${filter.options.help_text ? `<div class="form-text">${filter.options.help_text}</div>` : ''}
+            `;
+
+            filtersForm.appendChild(col);
+        });
+    }
+
+    // Collect filter values on form submit
+    document.getElementById('report-form').addEventListener('submit', function(e) {
+        const filterInputs = filtersForm.querySelectorAll('input, select, textarea');
+        const filtersData = {};
+
+        filterInputs.forEach(input => {
+            // Handle checkboxes (multiselect)
+            if (input.type === 'checkbox' && input.name in filtersData) {
+                // If already exists, it's a multiselect - add to array
+                if (!Array.isArray(filtersData[input.name])) {
+                    filtersData[input.name] = [filtersData[input.name]];
+                }
+                if (input.checked) {
+                    filtersData[input.name].push(input.value);
+                }
+            } else if (input.type === 'checkbox') {
+                // Single checkbox (boolean)
+                if (input.checked) {
+                    filtersData[input.name] = input.value === 'true' ? true : input.value;
+                }
+            } else if (input.value) {
+                // Regular inputs and selects
+                filtersData[input.name] = input.value;
+            }
+        });
+
+        filtersInput.value = JSON.stringify(filtersData);
+    });
+});
+</script>
+{% endblock extra_js %}

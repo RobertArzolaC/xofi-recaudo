@@ -158,3 +158,7 @@ CONSTANCE_BACKEND = "constance.backends.redisd.RedisBackend"
 CONSTANCE_REDIS_CONNECTION = config(  # noqa
     "REDIS_URL", default="redis://127.0.0.1:6379/"
 )
+
+# Database settings
+DATABASES["default"]["CONN_MAX_AGE"] = 60  # noqa
+DATABASES["xofi-erp"]["CONN_MAX_AGE"] = 60  # noqa
