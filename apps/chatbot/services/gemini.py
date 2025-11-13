@@ -215,10 +215,11 @@ Tu tarea es extraer información precisa de pagos a partir de la imagen del comp
 
 CONTEXTO:
 - Los usuarios envían imágenes de comprobantes de pago (vouchers, recibos, capturas de pantalla de transferencias, etc.)
-- Analiza la imagen con precisión para extraer montos y fechas
+- Analiza la imagen con precisión para extraer montos, fechas e identificadores de documentos
 - La imagen puede estar en diferentes formatos y calidades
 - Los montos están típicamente en soles peruanos (S/)
 - Las fechas pueden estar en varios formatos
+- Los identificadores pueden ser números de referencia, números de transacción, códigos de operación, etc.
 
 INSTRUCCIONES DE EXTRACCIÓN:
 
@@ -236,19 +237,30 @@ INSTRUCCIONES DE EXTRACCIÓN:
    - La fecha actual es: {current_date}
    - Si no encuentras una fecha clara, devuelve null
 
-3. CONFIANZA:
+3. IDENTIFICADOR DE DOCUMENTO:
+   - Busca identificadores únicos en la imagen como:
+     * Números de referencia o referencia de operación
+     * Números de transacción (transaction ID)
+     * Códigos de operación o código de referencia
+     * Números de seguimiento (tracking number)
+     * Números de comprobante o voucher
+     * Números de confirmación
+   - Estos identificadores suelen aparecer en campos como "Ref", "Referencia", "Código", "ID", "Transacción", "Operación", "Seguimiento"
+   - Si no encuentras un identificador claro, devuelve null
+
+4. CONFIANZA:
    - Evalúa qué tan seguro estás de la extracción (0.0 = nada seguro, 1.0 = completamente seguro)
    - Considera la claridad de la imagen y la presencia de campos identificables
 
-4. NOTAS:
+5. NOTAS:
    - Proporciona una breve explicación de cómo realizaste la extracción
    - Menciona cualquier ambigüedad, campos ilegibles o suposiciones realizadas
    - Indica si la imagen es clara o tiene mala calidad
 
 EJEMPLOS DE RESPUESTA:
-- Voucher claro con S/ 150.00 y fecha 15/01/2024 → amount: 150.0, date: "2024-01-15", confidence: 0.95
-- Captura de pantalla de transferencia con monto pero sin fecha → amount: 200.0, date: null, confidence: 0.8
-- Imagen muy borrosa o ilegible → amount: null, date: null, confidence: 0.1
+- Voucher claro con S/ 150.00, fecha 15/01/2024 e ID "REF123456" → amount: 150.0, date: "2024-01-15", document_id: "REF123456", confidence: 0.95
+- Captura de pantalla de transferencia con monto, ID pero sin fecha → amount: 200.0, date: null, document_id: "TRX789012", confidence: 0.8
+- Imagen muy borrosa o ilegible → amount: null, date: null, document_id: null, confidence: 0.1
 
 Responde únicamente con el JSON solicitado.
 """
@@ -286,6 +298,10 @@ Responde únicamente con el JSON solicitado.
                 "date": {
                     "type": "string",
                     "description": "Fecha extraída en formato YYYY-MM-DD",
+                },
+                "document_id": {
+                    "type": "string",
+                    "description": "Identificador del documento (número de referencia, código de transacción, etc.)",
                 },
                 "confidence": {
                     "type": "number",
@@ -528,9 +544,10 @@ class GeminiService:
             Dict with extracted data containing:
                 - amount (float): Extracted payment amount
                 - date (str): Extracted date in YYYY-MM-DD format
+                - document_id (str): Extracted document identifier (reference number, transaction code, etc.)
                 - confidence (float): Confidence score 0.0-1.0
                 - extraction_method (str): Method used for extraction
-                - raw_response (str): Raw AI response for debugging
+                - notes (str): Additional notes about the extraction
 
         Examples:
             # Image processing from WHAPI
@@ -543,9 +560,9 @@ class GeminiService:
                 "Gemini model not available, falling back to default extraction"
             )
             return {
-                "id": "",
                 "amount": "1.00",
                 "date": date.today().isoformat(),
+                "document_id": "",
                 "confidence": 0.0,
                 "extraction_method": "fallback_error",
                 "notes": "Gemini no disponible",
@@ -564,9 +581,9 @@ class GeminiService:
             if not image:
                 logger.error("Failed to prepare image for Gemini processing")
                 return {
-                    "id": "",
                     "amount": "1.00",
                     "date": date.today().isoformat(),
+                    "document_id": "",
                     "confidence": 0.0,
                     "extraction_method": "image_preparation_error",
                     "notes": "No se pudo procesar la imagen",
@@ -591,6 +608,7 @@ class GeminiService:
             logger.info(
                 f"Gemini extracted receipt data via OCR: "
                 f"amount={result.get('amount')}, date={result.get('date')}, "
+                f"document_id={result.get('document_id')}, "
                 f"confidence={result.get('confidence')}"
             )
 
@@ -599,9 +617,9 @@ class GeminiService:
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing Gemini JSON response: {e}")
             return {
-                "id": "",
                 "amount": "1.00",
                 "date": date.today().isoformat(),
+                "document_id": "",
                 "confidence": 0.0,
                 "extraction_method": "json_parse_error",
                 "notes": f"JSON Parse Error: {str(e)}",
@@ -609,9 +627,9 @@ class GeminiService:
         except Exception as e:
             logger.exception(f"Error extracting receipt data with Gemini: {e}")
             return {
-                "id": "",
                 "amount": "1.00",
                 "date": date.today().isoformat(),
+                "document_id": "",
                 "confidence": 0.0,
                 "extraction_method": "ocr_processing_error",
                 "notes": f"Error: {str(e)}",

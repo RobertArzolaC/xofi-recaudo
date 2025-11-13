@@ -208,7 +208,7 @@ class WhatsAppBotHandler:
             if result and result.get("id"):
                 response_message = (
                     f"✅ *Boleta de pago recibida correctamente*\n\n"
-                    f"📝 Número de recibo: {result.get('id')}\n"
+                    f"📝 Número de recibo: {extracted_data.get('document_id')}\n"
                     f"💰 Monto: S/ {result.get('amount')}\n"
                     f"📅 Fecha: {result.get('payment_date')}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
@@ -229,7 +229,7 @@ class WhatsAppBotHandler:
                     "USER",
                     f"[IMAGE] {caption}" if caption else "[IMAGE]",
                     metadata={
-                        "receipt_id": result.get("id"),
+                        "receipt_id": result.get("document_id"),
                         "filename": image_id,
                         "image_link": image_link,
                     },
