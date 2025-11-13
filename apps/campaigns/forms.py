@@ -1,3 +1,4 @@
+from constance import config
 from dal import autocomplete
 from django import forms
 from django.core.validators import FileExtensionValidator
@@ -97,6 +98,16 @@ class CampaignForm(forms.ModelForm):
                 choices.CampaignStatus.SCHEDULED.label,
             ),
         ]
+
+        # Filter channel choices based on ENABLE_TELEGRAM_CHANEL setting
+        if not config.ENABLE_TELEGRAM_CHANEL:
+            # Exclude Telegram from channel choices
+            channel_choices = [
+                (value, label)
+                for value, label in choices.NotificationChannel.choices
+                if value != choices.NotificationChannel.TELEGRAM
+            ]
+            self.fields["channel"].choices = channel_choices
 
         # If we have an instance with a group, set the target_amount to the group's total debt
         if self.instance and self.instance.pk and self.instance.group:
@@ -412,6 +423,16 @@ class CampaignCSVFileForm(forms.ModelForm):
                 choices.CampaignStatus.SCHEDULED.label,
             ),
         ]
+
+        # Filter channel choices based on ENABLE_TELEGRAM_CHANEL setting
+        if not config.ENABLE_TELEGRAM_CHANEL:
+            # Exclude Telegram from channel choices
+            channel_choices = [
+                (value, label)
+                for value, label in choices.NotificationChannel.choices
+                if value != choices.NotificationChannel.TELEGRAM
+            ]
+            self.fields["channel"].choices = channel_choices
 
         # Add file validator
         self.fields["file"].validators.append(

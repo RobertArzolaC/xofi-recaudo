@@ -12,8 +12,8 @@ from telegram.ext import (
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
-from apps.chatbot.services.receipt_extraction import (
-    ReceiptDataExtractionService,
+from apps.chatbot.services.gemini_receipt_extraction import (
+    GeminiReceiptExtractionService,
 )
 from apps.core.services.chats.telegram import TelegramService
 
@@ -27,7 +27,7 @@ class TelegramBotHandler:
         """Initialize handlers and services."""
         self.conversation_service = ConversationService()
         self.telegram_service = TelegramService()
-        self.receipt_extraction_service = ReceiptDataExtractionService()
+        self.receipt_extraction_service = GeminiReceiptExtractionService()
 
     async def start_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE

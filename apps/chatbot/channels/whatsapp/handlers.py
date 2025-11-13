@@ -6,9 +6,7 @@ import requests
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
-from apps.chatbot.services.receipt_extraction import (
-    ReceiptDataExtractionService,
-)
+from apps.chatbot.services.gemini import GeminiService
 from apps.core.services.chats.whatsapp import WhatsAppService
 
 logger = logging.getLogger(__name__)
@@ -21,7 +19,7 @@ class WhatsAppBotHandler:
         """Initialize handlers and services."""
         self.conversation_service = ConversationService()
         self.whatsapp_service = WhatsAppService()
-        self.receipt_extraction_service = ReceiptDataExtractionService()
+        self.gemini_service = GeminiService()
 
     async def handle_webhook(self, webhook_data: Dict) -> Dict[str, any]:
         """
@@ -58,7 +56,7 @@ class WhatsAppBotHandler:
             for message in messages:
                 message_from = message.get("from")
                 # Whapi sends messages sent by the bot itself; filter them out
-                only_number = message_from != "51902376744"
+                only_number = message_from != "51931314241"
                 # Ignore messages sent by bot (from_me = true) or only_number is False
                 if message.get("from_me", False) or only_number:
                     logger.info(
@@ -149,7 +147,10 @@ class WhatsAppBotHandler:
         sender_phone = message.get("from")
         image_data = message.get("image", {})
         caption = image_data.get("caption", "")
+        image_link = image_data.get("link")
         image_id = image_data.get("id")
+
+        image_bytes = None
 
         logger.info(f"Received image from {sender_phone}, ID: {image_id}")
 
@@ -169,7 +170,6 @@ class WhatsAppBotHandler:
                 return
 
             # Download the image using the direct link
-            image_link = image_data.get("link")
             if not image_link:
                 await self._send_text_message(
                     sender_phone,
@@ -178,7 +178,6 @@ class WhatsAppBotHandler:
                 return
 
             image_bytes = await self._download_media(image_link)
-
             if not image_bytes:
                 await self._send_text_message(
                     sender_phone,
@@ -188,32 +187,10 @@ class WhatsAppBotHandler:
 
             # Extract receipt data using the dedicated service
             logger.info("Extracting receipt data using extraction service...")
-            amount, payment_date, filename, notes = (
-                self.receipt_extraction_service.prepare_receipt_data(
-                    caption=caption,
-                    partner_id=conversation.partner.id,
-                    chat_id=sender_phone,
-                    file_unique_id=image_id,
-                    file_path=image_link,
-                )
+            extracted_data = self.gemini_service.extract_receipt_data(
+                image_bytes
             )
-
-            # Validate extracted data and get confidence scores
-            validation_results = (
-                self.receipt_extraction_service.validate_extracted_data(
-                    amount, payment_date
-                )
-            )
-            confidence_scores = (
-                self.receipt_extraction_service.get_extraction_confidence(
-                    caption
-                )
-            )
-
-            logger.info(
-                f"Data validation: {validation_results}, "
-                f"Confidence: {confidence_scores['overall']:.2f}"
-            )
+            logger.info(f"Extracted receipt data: {extracted_data}")
 
             # Run synchronous API call in executor to avoid blocking
             loop = asyncio.get_event_loop()
@@ -222,24 +199,23 @@ class WhatsAppBotHandler:
                 self.conversation_service.api_service.upload_payment_receipt,
                 conversation.partner.id,
                 image_bytes,
-                filename,
-                amount,
-                payment_date,
-                notes,
+                image_id,
+                extracted_data.get("amount"),
+                extracted_data.get("date"),
+                extracted_data.get("notes", ""),
             )
 
             if result and result.get("id"):
-                # Success
                 response_message = (
                     f"✅ *Boleta de pago recibida correctamente*\n\n"
-                    f"📝 Número de recibo: {result.get('id')}\n"
-                    f"💰 Monto: S/ {amount:.2f}\n"
-                    f"📅 Fecha: {payment_date}\n\n"
+                    f"📝 Número de recibo: {extracted_data.get('document_id')}\n"
+                    f"💰 Monto: S/ {result.get('amount')}\n"
+                    f"📅 Fecha: {result.get('payment_date')}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
                 )
 
                 # Add contextual feedback based on data quality
-                if amount:
+                if result.get("amount"):
                     response_message += (
                         "📝 *Datos procesados del mensaje*\n"
                         "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
@@ -253,12 +229,12 @@ class WhatsAppBotHandler:
                     "USER",
                     f"[IMAGE] {caption}" if caption else "[IMAGE]",
                     metadata={
-                        "receipt_id": result.get("id"),
-                        "filename": filename,
+                        "receipt_id": result.get("document_id"),
+                        "filename": image_id,
+                        "image_link": image_link,
                     },
                 )
             else:
-                # Error
                 await self._send_text_message(
                     sender_phone,
                     "❌ Hubo un error al procesar tu boleta de pago. "

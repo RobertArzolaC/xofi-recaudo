@@ -25,39 +25,13 @@ CONSTANCE_CONFIG = {
     "COMPANY_LOGO": ("default.png", _("Company logo"), "image_field"),
     "COMPANY_DOMAIN": ("https://company.com/", _("Website domain.")),
     "COMPANY_PHONE": ("+51 999 999 999", _("Company contact phone.")),
-    "JSON_FIELD_EXAMPLE": (
-        {"name": "test"},
-        _("Test json field"),
-        "json_field",
-    ),
     "ENABLE_SEND_EMAIL": (True, _("Enable sending emails.")),
     "ENABLE_VERIFICATION_EMAIL": (True, _("Enable email verification.")),
-    "ITEMS_PER_PAGE": (
-        4,
-        _("Number of items to display per page in list views."),
+    "ENABLE_TELEGRAM_CHANEL": (
+        False,
+        _("Enable Telegram channel notifications."),
     ),
-    "CONTRIBUTION_AMOUNT": (
-        100.00,
-        _("Monthly contribution amount"),
-        "decimal_field",
-    ),
-    "SOCIAL_SECURITY_AMOUNT": (
-        50.00,
-        _("Monthly social security amount"),
-        "decimal_field",
-    ),
-    "CONTRIBUTION_DUE_DAY": (
-        15,
-        _("Day of the month for contribution payment (1-31)."),
-    ),
-    "SOCIAL_SECURITY_DUE_DAY": (
-        15,
-        _("Day of the month for social security payment (1-31)."),
-    ),
-    "DEFAULT_TELEGRAM_CHAT_ID": (
-        "975005684",
-        _("Default Telegram chat ID for notifications."),
-    ),
+    "ENABLE_PAYMENT_LINKS": (True, _("Enable payment links in notifications.")),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -67,21 +41,19 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "COMPANY_LOGO",
             "COMPANY_DOMAIN",
             "COMPANY_PHONE",
-            "ENABLE_SEND_EMAIL",
-            "ENABLE_VERIFICATION_EMAIL",
-            "ITEMS_PER_PAGE",
-            "JSON_FIELD_EXAMPLE",
-            "DEFAULT_TELEGRAM_CHAT_ID",
         ),
         "collapse": False,
     },
-    "2. Compliance Settings": {
+    "2. General Features": {
         "fields": (
-            "CONTRIBUTION_AMOUNT",
-            "SOCIAL_SECURITY_AMOUNT",
-            "CONTRIBUTION_DUE_DAY",
-            "SOCIAL_SECURITY_DUE_DAY",
+            "ENABLE_SEND_EMAIL",
+            "ENABLE_VERIFICATION_EMAIL",
+            "ENABLE_PAYMENT_LINKS",
         ),
         "collapse": False,
+    },
+    "3. Campaign Settings": {
+        "fields": ("ENABLE_TELEGRAM_CHANEL",),
+        "collapse": True,
     },
 }

@@ -135,20 +135,22 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb-6">
-                                    <div class="col-lg-12 mb-4">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            {{ form.use_payment_link }}
-                                            <label class="form-check-label" for="{{ form.use_payment_link.id_for_label }}">
-                                                {{ form.use_payment_link.label }}
-                                            </label>
+                                {% if config.ENABLE_PAYMENT_LINKS %}
+                                    <div class="row mb-6">
+                                        <div class="col-lg-12 mb-4">
+                                            <div class="form-check form-switch form-check-custom form-check-solid">
+                                                {{ form.use_payment_link }}
+                                                <label class="form-check-label" for="{{ form.use_payment_link.id_for_label }}">
+                                                    {{ form.use_payment_link.label }}
+                                                </label>
+                                            </div>
+                                            {% if form.use_payment_link.errors %}
+                                                <div class="text-danger fs-7">{{ form.use_payment_link.errors.0 }}</div>
+                                            {% endif %}
+                                            <div class="form-text">{% trans "Include payment links in campaign notifications to allow partners to pay directly online" %}</div>
                                         </div>
-                                        {% if form.use_payment_link.errors %}
-                                            <div class="text-danger fs-7">{{ form.use_payment_link.errors.0 }}</div>
-                                        {% endif %}
-                                        <div class="form-text">{% trans "Include payment links in campaign notifications to allow partners to pay directly online" %}</div>
                                     </div>
-                                </div>
+                                {% endif %}
 
                                 <div class="separator my-6"></div>
 
