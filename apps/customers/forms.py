@@ -100,62 +100,6 @@ class AccountSettingsForm(forms.ModelForm):
 class CompanyForm(forms.ModelForm):
     """Form for creating and editing Company instances."""
 
-    # Constance fields for compliance settings
-    contribution_amount = forms.DecimalField(
-        label=_("Contribution Amount"),
-        max_digits=10,
-        decimal_places=2,
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Monthly contribution amount"),
-                "step": "0.01",
-            }
-        ),
-    )
-    social_security_amount = forms.DecimalField(
-        label=_("Social Security Amount"),
-        max_digits=10,
-        decimal_places=2,
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Monthly social security amount"),
-                "step": "0.01",
-            }
-        ),
-    )
-    contribution_due_day = forms.IntegerField(
-        label=_("Contribution Due Day"),
-        min_value=1,
-        max_value=31,
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Day of month (1-31)"),
-                "min": "1",
-                "max": "31",
-            }
-        ),
-    )
-    social_security_due_day = forms.IntegerField(
-        label=_("Social Security Due Day"),
-        min_value=1,
-        max_value=31,
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Day of month (1-31)"),
-                "min": "1",
-                "max": "31",
-            }
-        ),
-    )
-
     class Meta:
         model = models.Company
         fields = [
@@ -259,18 +203,6 @@ class CompanyForm(forms.ModelForm):
         self.fields["name"].required = True
         self.fields["email"].required = True
 
-        # Initialize Constance fields with current values
-        self.fields["contribution_amount"].initial = config.CONTRIBUTION_AMOUNT
-        self.fields[
-            "social_security_amount"
-        ].initial = config.SOCIAL_SECURITY_AMOUNT
-        self.fields[
-            "contribution_due_day"
-        ].initial = config.CONTRIBUTION_DUE_DAY
-        self.fields[
-            "social_security_due_day"
-        ].initial = config.SOCIAL_SECURITY_DUE_DAY
-
     def save(self, commit: bool = True):
         """Save form and update Constance values."""
         instance = super().save(commit)
@@ -287,24 +219,6 @@ class CompanyForm(forms.ModelForm):
 
         if self.cleaned_data["phone"]:
             config.COMPANY_PHONE = self.cleaned_data["phone"]
-
-        # Update Constance compliance fields
-        if self.cleaned_data["contribution_amount"] is not None:
-            config.CONTRIBUTION_AMOUNT = self.cleaned_data[
-                "contribution_amount"
-            ]
-        if self.cleaned_data["social_security_amount"] is not None:
-            config.SOCIAL_SECURITY_AMOUNT = self.cleaned_data[
-                "social_security_amount"
-            ]
-        if self.cleaned_data["contribution_due_day"] is not None:
-            config.CONTRIBUTION_DUE_DAY = self.cleaned_data[
-                "contribution_due_day"
-            ]
-        if self.cleaned_data["social_security_due_day"] is not None:
-            config.SOCIAL_SECURITY_DUE_DAY = self.cleaned_data[
-                "social_security_due_day"
-            ]
 
         return instance
 

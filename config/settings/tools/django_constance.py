@@ -25,24 +25,6 @@ CONSTANCE_CONFIG = {
     "COMPANY_LOGO": ("default.png", _("Company logo"), "image_field"),
     "COMPANY_DOMAIN": ("https://company.com/", _("Website domain.")),
     "COMPANY_PHONE": ("+51 999 999 999", _("Company contact phone.")),
-    "CONTRIBUTION_AMOUNT": (
-        100.00,
-        _("Monthly contribution amount"),
-        "decimal_field",
-    ),
-    "SOCIAL_SECURITY_AMOUNT": (
-        50.00,
-        _("Monthly social security amount"),
-        "decimal_field",
-    ),
-    "CONTRIBUTION_DUE_DAY": (
-        15,
-        _("Day of the month for contribution payment (1-31)."),
-    ),
-    "SOCIAL_SECURITY_DUE_DAY": (
-        15,
-        _("Day of the month for social security payment (1-31)."),
-    ),
     "ENABLE_SEND_EMAIL": (True, _("Enable sending emails.")),
     "ENABLE_VERIFICATION_EMAIL": (True, _("Enable email verification.")),
     "ENABLE_TELEGRAM_CHANEL": (
@@ -70,16 +52,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         ),
         "collapse": False,
     },
-    "3. Compliance Settings": {
-        "fields": (
-            "CONTRIBUTION_AMOUNT",
-            "SOCIAL_SECURITY_AMOUNT",
-            "CONTRIBUTION_DUE_DAY",
-            "SOCIAL_SECURITY_DUE_DAY",
-        ),
-        "collapse": False,
-    },
-    "4. Campaign Settings": {
+    "3. Campaign Settings": {
         "fields": ("ENABLE_TELEGRAM_CHANEL",),
         "collapse": True,
     },
