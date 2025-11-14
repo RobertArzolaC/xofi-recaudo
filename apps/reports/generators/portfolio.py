@@ -1,18 +1,10 @@
-"""
-Report generators for Collection Portfolio and Recovery.
-
-This module contains report generators for portfolio and recovery reports.
-"""
-
-from datetime import timedelta
-from decimal import Decimal
 from typing import Any, List
 
-from django.db.models import Q, QuerySet, Sum
+from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.credits.models import Credit, Installment
+from apps.credits.models import Installment
 from apps.payments.models import Payment
 from apps.reports.generators.base import BaseReportGenerator
 
@@ -94,9 +86,7 @@ class CollectionPortfolioAgingReportGenerator(BaseReportGenerator):
         """Get overdue installments queryset."""
         queryset = Installment.objects.select_related(
             "credit", "credit__partner", "credit__product"
-        ).filter(
-            status__in=["pending", "partial"]
-        )
+        ).filter(status__in=["PENDING", "PARTIAL"])
 
         # Apply filters
         partner_id = self.filters.get("partner_id")
@@ -134,7 +124,11 @@ class CollectionPortfolioAgingReportGenerator(BaseReportGenerator):
 
         for installment in queryset:
             # Calculate days overdue
-            days_overdue = (today - installment.due_date).days if installment.due_date < today else 0
+            days_overdue = (
+                (today - installment.due_date).days
+                if installment.due_date < today
+                else 0
+            )
 
             # Determine aging bucket
             if days_overdue <= 0:

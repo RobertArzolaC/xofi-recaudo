@@ -15,7 +15,10 @@ class ReportCreateForm(forms.ModelForm):
         fields = ["title", "description", "report_type", "format", "filters"]
         widgets = {
             "title": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": _("Enter report title")}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": _("Enter report title"),
+                }
             ),
             "description": forms.Textarea(
                 attrs={
@@ -35,7 +38,9 @@ class ReportCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Filter active report types
-        self.fields["report_type"].queryset = ReportType.objects.filter(is_active=True)
+        self.fields["report_type"].queryset = ReportType.objects.filter(
+            is_active=True, source=choices.ReportSource.XOFI_COLLECTION
+        )
 
         # Set format choices
         self.fields["format"].choices = choices.ReportFormat.choices
@@ -80,7 +85,8 @@ class ReportCreateForm(forms.ModelForm):
 
                 if not filter_value:
                     self.add_error(
-                        "filters", _(f'Filter "{required_filter.label}" is required')
+                        "filters",
+                        _(f'Filter "{required_filter.label}" is required'),
                     )
 
         return cleaned_data
@@ -102,7 +108,9 @@ class ReportFilterForm(forms.Form):
         """
         Add filter fields based on the report type configuration.
         """
-        filters = report_type.filters.filter(is_active=True).order_by("order", "name")
+        filters = report_type.filters.filter(is_active=True).order_by(
+            "order", "name"
+        )
 
         for filter_obj in filters:
             field_name = filter_obj.name
@@ -124,7 +132,10 @@ class ReportFilterForm(forms.Form):
             elif filter_obj.filter_type == choices.FilterType.DATETIME:
                 field = forms.DateTimeField(
                     widget=forms.DateTimeInput(
-                        attrs={"type": "datetime-local", "class": "form-control"}
+                        attrs={
+                            "type": "datetime-local",
+                            "class": "form-control",
+                        }
                     ),
                     **field_kwargs,
                 )
@@ -134,7 +145,9 @@ class ReportFilterForm(forms.Form):
                     widget=forms.TextInput(
                         attrs={
                             "class": "form-control",
-                            "placeholder": filter_obj.options.get("placeholder", ""),
+                            "placeholder": filter_obj.options.get(
+                                "placeholder", ""
+                            ),
                         }
                     ),
                     **field_kwargs,
@@ -172,7 +185,9 @@ class ReportFilterForm(forms.Form):
 
             elif filter_obj.filter_type == choices.FilterType.BOOLEAN:
                 field = forms.BooleanField(
-                    widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+                    widget=forms.CheckboxInput(
+                        attrs={"class": "form-check-input"}
+                    ),
                     **field_kwargs,
                 )
 

@@ -17,9 +17,10 @@ class ReportTypeAdmin(admin.ModelAdmin):
         "model_name",
         "filter_count",
         "is_active",
+        "source",
         "created",
     ]
-    list_filter = ["is_active", "created"]
+    list_filter = ["is_active", "created", "source"]
     search_fields = ["name", "code", "description"]
     readonly_fields = ["created", "modified"]
     fieldsets = (
