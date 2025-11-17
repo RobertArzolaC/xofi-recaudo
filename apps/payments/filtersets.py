@@ -134,7 +134,8 @@ class MagicPaymentLinkFilter(django_filters.FilterSet):
                 Q(name__icontains=value)
                 | Q(description__icontains=value)
                 | Q(partner__first_name__icontains=value)
-                | Q(partner__last_name__icontains=value)
+                | Q(partner__paternal_last_name__icontains=value)
+                | Q(partner__maternal_last_name__icontains=value)
                 | Q(partner__document_number__icontains=value)
                 | Q(token__icontains=value)
             )
@@ -192,7 +193,8 @@ class PaymentReceiptFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(
                 Q(partner__first_name__icontains=value)
-                | Q(partner__last_name__icontains=value)
+                | Q(partner__paternal_last_name__icontains=value)
+                | Q(partner__maternal_last_name__icontains=value)
                 | Q(partner__document_number__icontains=value)
                 | Q(notes__icontains=value)
                 | Q(validation_notes__icontains=value)

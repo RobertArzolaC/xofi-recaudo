@@ -78,7 +78,6 @@ class ContributionFilterSet(django_filters.FilterSet):
                 Q(partner__first_name__icontains=value)
                 | Q(partner__paternal_last_name__icontains=value)
                 | Q(partner__maternal_last_name__icontains=value)
-                | Q(reference_number__icontains=value)
             )
         return queryset
 
@@ -155,7 +154,6 @@ class SocialSecurityFilterSet(django_filters.FilterSet):
                 Q(partner__first_name__icontains=value)
                 | Q(partner__paternal_last_name__icontains=value)
                 | Q(partner__maternal_last_name__icontains=value)
-                | Q(reference_number__icontains=value)
             )
         return queryset
 
@@ -220,7 +218,6 @@ class PenaltyFilterSet(django_filters.FilterSet):
                 Q(partner__first_name__icontains=value)
                 | Q(partner__paternal_last_name__icontains=value)
                 | Q(partner__maternal_last_name__icontains=value)
-                | Q(reference_number__icontains=value)
                 | Q(description__icontains=value)
             )
         return queryset
