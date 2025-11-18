@@ -12,7 +12,10 @@ from django.db.models import Q, QuerySet, Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from apps.credits import choices as credit_choices
 from apps.credits.models import Credit, Installment
+from apps.notifications import choices as notification_choices
+from apps.payments import choices as payment_choices
 from apps.payments.models import Payment
 from apps.reports.generators.base import BaseReportGenerator
 
@@ -25,7 +28,7 @@ class CollectionRecoveryReportGenerator(BaseReportGenerator):
     def get_queryset(self) -> QuerySet:
         """Get filtered payments queryset."""
         queryset = Payment.objects.select_related("partner").filter(
-            status="paid"
+            status=payment_choices.PaymentStatus.PAID
         )
 
         # Apply filters
@@ -95,7 +98,10 @@ class CollectionPortfolioAgingReportGenerator(BaseReportGenerator):
         queryset = Installment.objects.select_related(
             "credit", "credit__partner", "credit__product"
         ).filter(
-            status__in=["pending", "partial"]
+            status__in=[
+                credit_choices.InstallmentStatus.PENDING,
+                credit_choices.InstallmentStatus.PARTIAL,
+            ]
         )
 
         # Apply filters
@@ -183,10 +189,14 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered campaign notifications queryset."""
-        from apps.campaigns.models import CampaignNotification
+        from apps.notifications.models import CampaignNotification
+        from apps.partners.models import Partner
+        from django.contrib.contenttypes.models import ContentType
 
+        # CampaignNotification uses GenericForeignKey for recipient
+        # We can only filter by recipient_type and recipient_id, not select_related
         queryset = CampaignNotification.objects.select_related(
-            "campaign", "partner"
+            "campaign_type", "recipient_type", "created_by"
         )
 
         # Apply filters
@@ -204,15 +214,19 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
 
         partner_id = self.filters.get("partner_id")
         if partner_id:
-            queryset = queryset.filter(partner_id=partner_id)
+            # Filter by recipient_type (Partner) and recipient_id
+            partner_content_type = ContentType.objects.get_for_model(Partner)
+            queryset = queryset.filter(
+                recipient_type=partner_content_type, recipient_id=partner_id
+            )
 
         return queryset.order_by("-created")
 
     def get_headers(self) -> List[str]:
         """Return column headers."""
         return [
-            _("Partner Document"),
-            _("Partner Name"),
+            _("Recipient Document"),
+            _("Recipient Name"),
             _("Campaign"),
             _("Notification Type"),
             _("Channel"),
@@ -230,6 +244,10 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
         """Transform queryset into report data."""
         data = []
 
+        # Cache for campaign and recipient lookups to avoid N+1 queries
+        campaign_cache = {}
+        recipient_cache = {}
+
         for notification in queryset:
             # Calculate delivery time
             delivery_time = "-"
@@ -237,10 +255,41 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
                 delta = notification.sent_at - notification.scheduled_at
                 delivery_time = int(delta.total_seconds() / 60)
 
+            # Get campaign name via GenericFK
+            campaign_key = (notification.campaign_type_id, notification.campaign_id)
+            if campaign_key not in campaign_cache:
+                try:
+                    campaign_obj = notification.campaign
+                    campaign_cache[campaign_key] = (
+                        campaign_obj.name if campaign_obj else "-"
+                    )
+                except Exception:
+                    campaign_cache[campaign_key] = "-"
+
+            # Get recipient info via GenericFK
+            recipient_key = (notification.recipient_type_id, notification.recipient_id)
+            if recipient_key not in recipient_cache:
+                try:
+                    recipient_obj = notification.recipient
+                    if recipient_obj:
+                        # Check if it's a Partner or CSVContact
+                        doc_number = getattr(
+                            recipient_obj, "document_number", "-"
+                        ) or getattr(recipient_obj, "phone", "-")
+                        full_name = getattr(recipient_obj, "full_name", "-")
+                        recipient_cache[recipient_key] = (doc_number, full_name)
+                    else:
+                        recipient_cache[recipient_key] = ("-", "-")
+                except Exception:
+                    recipient_cache[recipient_key] = ("-", "-")
+
+            campaign_name = campaign_cache[campaign_key]
+            recipient_doc, recipient_name = recipient_cache[recipient_key]
+
             row = [
-                notification.partner.document_number,
-                notification.partner.full_name,
-                notification.campaign.name,
+                recipient_doc,
+                recipient_name,
+                campaign_name,
                 notification.get_notification_type_display(),
                 notification.get_channel_display(),
                 notification.get_status_display(),

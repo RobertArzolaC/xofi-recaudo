@@ -8,13 +8,18 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, List
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import QuerySet, Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from apps.campaigns import choices as campaign_choices
 from apps.campaigns.models import Campaign
+from apps.credits import choices as credit_choices
 from apps.credits.models import Installment
+from apps.notifications import choices as notification_choices
 from apps.notifications.models import CampaignNotification
+from apps.payments import choices as payment_choices
 from apps.payments.models import MagicPaymentLink, Payment
 from apps.reports.generators.base import BaseReportGenerator
 
@@ -89,8 +94,12 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
                 created__gte=current_date, created__lt=next_month
             )
             total_campaigns = campaigns.count()
-            active_campaigns = campaigns.filter(status="active").count()
-            completed_campaigns = campaigns.filter(status="completed").count()
+            active_campaigns = campaigns.filter(
+                status=campaign_choices.CampaignStatus.ACTIVE
+            ).count()
+            completed_campaigns = campaigns.filter(
+                status=campaign_choices.CampaignStatus.COMPLETED
+            ).count()
 
             # Notification metrics
             notifications = CampaignNotification.objects.filter(
@@ -98,7 +107,7 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
             )
             total_notifications = notifications.count()
             successful_notifications = notifications.filter(
-                status="sent"
+                status=notification_choices.NotificationStatus.SENT
             ).count()
             notification_success_rate = (
                 (successful_notifications / total_notifications * 100)
@@ -110,7 +119,7 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
             payments = Payment.objects.filter(
                 payment_date__gte=current_date,
                 payment_date__lt=next_month,
-                status="paid",
+                status=payment_choices.PaymentStatus.PAID,
             )
             total_amount = payments.aggregate(Sum("amount"))[
                 "amount__sum"
@@ -127,14 +136,20 @@ class CollectionMonthlyKPIsReportGenerator(BaseReportGenerator):
                 created__gte=current_date, created__lt=next_month
             )
             links_created = links.count()
-            links_used = links.filter(status="used").count()
+            links_used = links.filter(
+                status=payment_choices.MagicLinkStatus.USED
+            ).count()
             link_conversion = (
                 (links_used / links_created * 100) if links_created > 0 else 0
             )
 
             # Overdue metrics (as of end of month)
             overdue_installments = Installment.objects.filter(
-                status__in=["pending", "partial"], due_date__lt=next_month
+                status__in=[
+                    credit_choices.InstallmentStatus.PENDING,
+                    credit_choices.InstallmentStatus.PARTIAL,
+                ],
+                due_date__lt=next_month,
             )
             overdue_count = overdue_installments.count()
             overdue_amount = overdue_installments.aggregate(
@@ -176,7 +191,7 @@ class CollectionManagementAuditReportGenerator(BaseReportGenerator):
         """Get filtered campaigns for audit trail."""
         queryset = Campaign.objects.select_related(
             "group", "created_by", "modified_by"
-        ).prefetch_related("notifications")
+        )
 
         # Apply filters
         date_from = self.filters.get("date_from")
@@ -202,7 +217,6 @@ class CollectionManagementAuditReportGenerator(BaseReportGenerator):
         return [
             _("Campaign Name"),
             _("Status"),
-            _("Channel"),
             _("Group"),
             _("Target Amount"),
             _("Execution Count"),
@@ -222,12 +236,21 @@ class CollectionManagementAuditReportGenerator(BaseReportGenerator):
         """Transform queryset into audit report data."""
         data = []
 
+        # Get ContentType for Campaign model to query notifications
+        campaign_content_type = ContentType.objects.get_for_model(Campaign)
+
         for campaign in queryset:
-            # Calculate notification metrics
-            notifications = campaign.notifications.all()
+            # Calculate notification metrics using GenericFK
+            notifications = CampaignNotification.objects.filter(
+                campaign_type=campaign_content_type, campaign_id=campaign.id
+            )
             total_notifications = notifications.count()
-            sent_count = notifications.filter(status="sent").count()
-            failed_count = notifications.filter(status="failed").count()
+            sent_count = notifications.filter(
+                status=notification_choices.NotificationStatus.SENT
+            ).count()
+            failed_count = notifications.filter(
+                status=notification_choices.NotificationStatus.FAILED
+            ).count()
             success_rate = (
                 (sent_count / total_notifications * 100)
                 if total_notifications > 0
@@ -237,7 +260,6 @@ class CollectionManagementAuditReportGenerator(BaseReportGenerator):
             row = [
                 campaign.name,
                 campaign.get_status_display(),
-                campaign.get_channel_display(),
                 campaign.group.name if campaign.group else "-",
                 float(campaign.target_amount) if campaign.target_amount else 0,
                 campaign.execution_count,

@@ -1,9 +1,12 @@
 from typing import Any, List
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns.models import Group
+from apps.campaigns import choices as campaign_choices
+from apps.campaigns.models import Campaign, Group
+from apps.notifications import choices as notification_choices
 from apps.notifications.models import CampaignNotification
 from apps.reports.generators.base import BaseReportGenerator
 
@@ -16,9 +19,7 @@ class CollectionGroupEffectivenessReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered groups queryset."""
-        queryset = Group.objects.prefetch_related(
-            "partners", "campaigns", "campaigns__notifications"
-        )
+        queryset = Group.objects.prefetch_related("partners", "campaigns")
 
         # Apply filters
         priority = self.filters.get("priority")
@@ -61,23 +62,39 @@ class CollectionGroupEffectivenessReportGenerator(BaseReportGenerator):
         """Transform queryset into report data."""
         data = []
 
+        # Get ContentType for Campaign model
+        campaign_content_type = ContentType.objects.get_for_model(Campaign)
+
         for group in queryset:
             # Calculate metrics
             partners_count = group.partners.count()
             campaigns = group.campaigns.all()
             total_campaigns = campaigns.count()
-            active_campaigns = campaigns.filter(status="active").count()
-            completed_campaigns = campaigns.filter(status="completed").count()
-
-            # Notification metrics
-            all_notifications = CampaignNotification.objects.filter(
-                campaign__group=group
-            )
-            total_notifications = all_notifications.count()
-            sent_notifications = all_notifications.filter(status="sent").count()
-            failed_notifications = all_notifications.filter(
-                status="failed"
+            active_campaigns = campaigns.filter(
+                status=campaign_choices.CampaignStatus.ACTIVE
             ).count()
+            completed_campaigns = campaigns.filter(
+                status=campaign_choices.CampaignStatus.COMPLETED
+            ).count()
+
+            # Notification metrics - need to query via campaign IDs since
+            # CampaignNotification uses GenericFK
+            campaign_ids = list(campaigns.values_list("id", flat=True))
+            if campaign_ids:
+                all_notifications = CampaignNotification.objects.filter(
+                    campaign_type=campaign_content_type, campaign_id__in=campaign_ids
+                )
+                total_notifications = all_notifications.count()
+                sent_notifications = all_notifications.filter(
+                    status=notification_choices.NotificationStatus.SENT
+                ).count()
+                failed_notifications = all_notifications.filter(
+                    status=notification_choices.NotificationStatus.FAILED
+                ).count()
+            else:
+                total_notifications = 0
+                sent_notifications = 0
+                failed_notifications = 0
 
             # Calculate success rate
             success_rate = (

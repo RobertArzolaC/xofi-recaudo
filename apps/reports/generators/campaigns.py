@@ -6,11 +6,14 @@ This module contains report generators for campaign-related reports.
 
 from typing import Any, List
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from apps.campaigns.models import Campaign
+from apps.notifications import choices as notification_choices
 from apps.notifications.models import CampaignNotification
+from apps.partners.models import Partner
 from apps.reports.generators.base import BaseReportGenerator
 
 
@@ -21,9 +24,7 @@ class CollectionCampaignsSummaryReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered campaigns queryset."""
-        queryset = Campaign.objects.select_related(
-            "group", "created_by"
-        ).prefetch_related("notifications")
+        queryset = Campaign.objects.select_related("group", "created_by")
 
         # Apply filters
         status = self.filters.get("status")
@@ -66,12 +67,21 @@ class CollectionCampaignsSummaryReportGenerator(BaseReportGenerator):
         """Transform queryset into report data."""
         data = []
 
+        # Get ContentType for Campaign model
+        campaign_content_type = ContentType.objects.get_for_model(Campaign)
+
         for campaign in queryset:
-            # Get notification summary
-            notifications = campaign.notifications.all()
+            # Get notification summary using GenericForeignKey
+            notifications = CampaignNotification.objects.filter(
+                campaign_type=campaign_content_type, campaign_id=campaign.id
+            )
             total_notifications = notifications.count()
-            sent_count = notifications.filter(status="sent").count()
-            failed_count = notifications.filter(status="failed").count()
+            sent_count = notifications.filter(
+                status=notification_choices.NotificationStatus.SENT
+            ).count()
+            failed_count = notifications.filter(
+                status=notification_choices.NotificationStatus.FAILED
+            ).count()
 
             row = [
                 campaign.name,
@@ -102,14 +112,20 @@ class CampaignNotificationsDetailReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered notifications queryset."""
+        # CampaignNotification uses GenericForeignKey for campaign and recipient
+        # We can't use select_related on GenericFK, need to handle differently
         queryset = CampaignNotification.objects.select_related(
-            "campaign", "partner", "created_by"
+            "campaign_type", "recipient_type", "created_by"
         )
 
         # Apply filters
         campaign_id = self.filters.get("campaign_id")
         if campaign_id:
-            queryset = queryset.filter(campaign_id=campaign_id)
+            # Need to also filter by campaign_type for proper GenericFK filtering
+            campaign_content_type = ContentType.objects.get_for_model(Campaign)
+            queryset = queryset.filter(
+                campaign_type=campaign_content_type, campaign_id=campaign_id
+            )
 
         status = self.filters.get("status")
         if status:
@@ -137,8 +153,8 @@ class CampaignNotificationsDetailReportGenerator(BaseReportGenerator):
         """Return column headers."""
         return [
             _("Campaign"),
-            _("Partner Document"),
-            _("Partner Name"),
+            _("Recipient Document"),
+            _("Recipient Name"),
             _("Notification Type"),
             _("Channel"),
             _("Status"),
@@ -157,11 +173,46 @@ class CampaignNotificationsDetailReportGenerator(BaseReportGenerator):
         """Transform queryset into report data."""
         data = []
 
+        # Cache for campaign and recipient lookups to avoid N+1 queries
+        campaign_cache = {}
+        recipient_cache = {}
+
         for notification in queryset:
+            # Get campaign name via GenericFK
+            campaign_key = (notification.campaign_type_id, notification.campaign_id)
+            if campaign_key not in campaign_cache:
+                try:
+                    campaign_obj = notification.campaign
+                    campaign_cache[campaign_key] = (
+                        campaign_obj.name if campaign_obj else "-"
+                    )
+                except Exception:
+                    campaign_cache[campaign_key] = "-"
+
+            # Get recipient info via GenericFK
+            recipient_key = (notification.recipient_type_id, notification.recipient_id)
+            if recipient_key not in recipient_cache:
+                try:
+                    recipient_obj = notification.recipient
+                    if recipient_obj:
+                        # Check if it's a Partner or CSVContact
+                        doc_number = getattr(
+                            recipient_obj, "document_number", "-"
+                        ) or getattr(recipient_obj, "phone", "-")
+                        full_name = getattr(recipient_obj, "full_name", "-")
+                        recipient_cache[recipient_key] = (doc_number, full_name)
+                    else:
+                        recipient_cache[recipient_key] = ("-", "-")
+                except Exception:
+                    recipient_cache[recipient_key] = ("-", "-")
+
+            campaign_name = campaign_cache[campaign_key]
+            recipient_doc, recipient_name = recipient_cache[recipient_key]
+
             row = [
-                notification.campaign.name,
-                notification.partner.document_number,
-                notification.partner.full_name,
+                campaign_name,
+                recipient_doc,
+                recipient_name,
                 notification.get_notification_type_display(),
                 notification.get_channel_display(),
                 notification.get_status_display(),

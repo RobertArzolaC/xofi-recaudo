@@ -99,7 +99,7 @@
     "name": "Auditoría de Gestión de Cobranza",
     "description": "Reporte de auditoría completo de las actividades de gestión de cobranza, incluyendo acciones realizadas y resultados.",
     "code": "collection_management_audit",
-    "model_name": "core.AuditLog",
+    "model_name": "campaigns.Campaign",
     "is_active": true
   }
 },
@@ -108,9 +108,9 @@
   "pk": 1,
   "fields": {
     "report_type": 1,
-    "name": "fecha_inicio",
+    "name": "date_from",
     "label": "Fecha de Inicio",
-    "field_name": "execution_date__gte",
+    "field_name": "created__gte",
     "filter_type": "date",
     "options": {},
     "is_required": true,
@@ -123,9 +123,9 @@
   "pk": 2,
   "fields": {
     "report_type": 1,
-    "name": "fecha_fin",
+    "name": "date_to",
     "label": "Fecha de Fin",
-    "field_name": "execution_date__lte",
+    "field_name": "created__lte",
     "filter_type": "date",
     "options": {},
     "is_required": true,
@@ -138,30 +138,46 @@
   "pk": 3,
   "fields": {
     "report_type": 1,
-    "name": "estado",
+    "name": "status",
     "label": "Estado de Campaña",
     "field_name": "status",
     "filter_type": "multiselect",
     "options": {
       "choices": [
         {
-          "value": "draft",
+          "value": "DRAFT",
           "label": "Borrador"
         },
         {
-          "value": "scheduled",
+          "value": "SCHEDULED",
           "label": "Programada"
         },
         {
-          "value": "in_progress",
-          "label": "En Progreso"
+          "value": "PROCESSING",
+          "label": "Procesando"
         },
         {
-          "value": "completed",
+          "value": "SENDING",
+          "label": "Enviando"
+        },
+        {
+          "value": "ACTIVE",
+          "label": "Activa"
+        },
+        {
+          "value": "PAUSED",
+          "label": "Pausada"
+        },
+        {
+          "value": "COMPLETED",
           "label": "Completada"
         },
         {
-          "value": "cancelled",
+          "value": "FAILED",
+          "label": "Fallida"
+        },
+        {
+          "value": "CANCELLED",
           "label": "Cancelada"
         }
       ]
@@ -176,26 +192,26 @@
   "pk": 4,
   "fields": {
     "report_type": 1,
-    "name": "canal",
+    "name": "channel",
     "label": "Canal de Comunicación",
     "field_name": "channel",
     "filter_type": "select",
     "options": {
       "choices": [
         {
-          "value": "email",
+          "value": "EMAIL",
           "label": "Correo Electrónico"
         },
         {
-          "value": "sms",
+          "value": "SMS",
           "label": "SMS"
         },
         {
-          "value": "telegram",
+          "value": "TELEGRAM",
           "label": "Telegram"
         },
         {
-          "value": "whatsapp",
+          "value": "WHATSAPP",
           "label": "WhatsApp"
         }
       ]
@@ -210,7 +226,7 @@
   "pk": 5,
   "fields": {
     "report_type": 2,
-    "name": "fecha_inicio",
+    "name": "date_from",
     "label": "Fecha de Inicio",
     "field_name": "created__gte",
     "filter_type": "datetime",
@@ -225,7 +241,7 @@
   "pk": 6,
   "fields": {
     "report_type": 2,
-    "name": "fecha_fin",
+    "name": "date_to",
     "label": "Fecha de Fin",
     "field_name": "created__lte",
     "filter_type": "datetime",
@@ -240,31 +256,27 @@
   "pk": 7,
   "fields": {
     "report_type": 2,
-    "name": "estado_notificacion",
+    "name": "status",
     "label": "Estado de Notificación",
     "field_name": "status",
     "filter_type": "multiselect",
     "options": {
       "choices": [
         {
-          "value": "pending",
+          "value": "PENDING",
           "label": "Pendiente"
         },
         {
-          "value": "sent",
+          "value": "SENT",
           "label": "Enviada"
         },
         {
-          "value": "delivered",
-          "label": "Entregada"
-        },
-        {
-          "value": "failed",
+          "value": "FAILED",
           "label": "Fallida"
         },
         {
-          "value": "read",
-          "label": "Leída"
+          "value": "CANCELLED",
+          "label": "Cancelada"
         }
       ]
     },
@@ -278,7 +290,7 @@
   "pk": 8,
   "fields": {
     "report_type": 3,
-    "name": "periodo_inicio",
+    "name": "date_from",
     "label": "Período de Inicio",
     "field_name": "payment_date__gte",
     "filter_type": "date",
@@ -293,7 +305,7 @@
   "pk": 9,
   "fields": {
     "report_type": 3,
-    "name": "periodo_fin",
+    "name": "date_to",
     "label": "Período de Fin",
     "field_name": "payment_date__lte",
     "filter_type": "date",
@@ -308,13 +320,41 @@
   "pk": 10,
   "fields": {
     "report_type": 3,
-    "name": "monto_minimo",
-    "label": "Monto Mínimo Recuperado",
-    "field_name": "amount__gte",
-    "filter_type": "number",
+    "name": "payment_method",
+    "label": "Método de Pago",
+    "field_name": "payment_method",
+    "filter_type": "select",
     "options": {
-      "min": 0,
-      "step": 0.01
+      "choices": [
+        {
+          "value": "CASH",
+          "label": "Efectivo"
+        },
+        {
+          "value": "BANK_TRANSFER",
+          "label": "Transferencia"
+        },
+        {
+          "value": "CHECK",
+          "label": "Cheque"
+        },
+        {
+          "value": "CREDIT_CARD",
+          "label": "Tarjeta Crédito"
+        },
+        {
+          "value": "DEBIT_CARD",
+          "label": "Tarjeta Débito"
+        },
+        {
+          "value": "ELECTRONIC_WALLET",
+          "label": "Billetera Electrónica"
+        },
+        {
+          "value": "CULQI_ONLINE",
+          "label": "Pago Online (Culqi)"
+        }
+      ]
     },
     "is_required": false,
     "order": 3,
@@ -326,12 +366,12 @@
   "pk": 11,
   "fields": {
     "report_type": 4,
-    "name": "fecha_corte",
-    "label": "Fecha de Corte",
-    "field_name": "date_snapshot",
-    "filter_type": "date",
+    "name": "partner_id",
+    "label": "ID del Partner",
+    "field_name": "credit__partner_id",
+    "filter_type": "number",
     "options": {},
-    "is_required": true,
+    "is_required": false,
     "order": 1,
     "is_active": true
   }
@@ -341,31 +381,13 @@
   "pk": 12,
   "fields": {
     "report_type": 4,
-    "name": "dias_mora_minimo",
-    "label": "Días de Mora Mínimo",
-    "field_name": "days_overdue__gte",
+    "name": "product_id",
+    "label": "ID del Producto",
+    "field_name": "credit__product_id",
     "filter_type": "number",
-    "options": {
-      "min": 0,
-      "step": 1
-    },
-    "is_required": false,
-    "order": 2,
-    "is_active": true
-  }
-},
-{
-  "model": "reports.reportfilter",
-  "pk": 13,
-  "fields": {
-    "report_type": 4,
-    "name": "incluir_castigados",
-    "label": "Incluir Créditos Castigados",
-    "field_name": "include_written_off",
-    "filter_type": "boolean",
     "options": {},
     "is_required": false,
-    "order": 3,
+    "order": 2,
     "is_active": true
   }
 },
@@ -374,9 +396,9 @@
   "pk": 14,
   "fields": {
     "report_type": 5,
-    "name": "fecha_promesa_inicio",
-    "label": "Fecha Promesa Desde",
-    "field_name": "promise_date__gte",
+    "name": "date_from",
+    "label": "Fecha Desde",
+    "field_name": "created__gte",
     "filter_type": "date",
     "options": {},
     "is_required": true,
@@ -389,9 +411,9 @@
   "pk": 15,
   "fields": {
     "report_type": 5,
-    "name": "fecha_promesa_fin",
-    "label": "Fecha Promesa Hasta",
-    "field_name": "promise_date__lte",
+    "name": "date_to",
+    "label": "Fecha Hasta",
+    "field_name": "created__lte",
     "filter_type": "date",
     "options": {},
     "is_required": true,
@@ -404,27 +426,27 @@
   "pk": 16,
   "fields": {
     "report_type": 5,
-    "name": "estado_cumplimiento",
-    "label": "Estado de Cumplimiento",
-    "field_name": "fulfillment_status",
+    "name": "status",
+    "label": "Estado del Enlace",
+    "field_name": "status",
     "filter_type": "select",
     "options": {
       "choices": [
         {
-          "value": "pending",
-          "label": "Pendiente"
+          "value": "ACTIVE",
+          "label": "Activo"
         },
         {
-          "value": "fulfilled",
-          "label": "Cumplida"
+          "value": "USED",
+          "label": "Usado"
         },
         {
-          "value": "partial",
-          "label": "Cumplida Parcial"
+          "value": "EXPIRED",
+          "label": "Expirado"
         },
         {
-          "value": "broken",
-          "label": "Incumplida"
+          "value": "CANCELLED",
+          "label": "Cancelado"
         }
       ]
     },
@@ -438,7 +460,7 @@
   "pk": 17,
   "fields": {
     "report_type": 6,
-    "name": "fecha_creacion_inicio",
+    "name": "date_from",
     "label": "Fecha Creación Desde",
     "field_name": "created__gte",
     "filter_type": "datetime",
@@ -453,7 +475,7 @@
   "pk": 18,
   "fields": {
     "report_type": 6,
-    "name": "fecha_creacion_fin",
+    "name": "date_to",
     "label": "Fecha Creación Hasta",
     "field_name": "created__lte",
     "filter_type": "datetime",
@@ -468,26 +490,26 @@
   "pk": 19,
   "fields": {
     "report_type": 6,
-    "name": "estado_enlace",
+    "name": "status",
     "label": "Estado del Enlace",
     "field_name": "status",
     "filter_type": "select",
     "options": {
       "choices": [
         {
-          "value": "active",
+          "value": "ACTIVE",
           "label": "Activo"
         },
         {
-          "value": "used",
+          "value": "USED",
           "label": "Usado"
         },
         {
-          "value": "expired",
+          "value": "EXPIRED",
           "label": "Expirado"
         },
         {
-          "value": "cancelled",
+          "value": "CANCELLED",
           "label": "Cancelado"
         }
       ]
@@ -502,15 +524,11 @@
   "pk": 20,
   "fields": {
     "report_type": 7,
-    "name": "mes",
-    "label": "Mes",
-    "field_name": "month",
-    "filter_type": "number",
-    "options": {
-      "min": 1,
-      "max": 12,
-      "step": 1
-    },
+    "name": "date_from",
+    "label": "Fecha Inicio",
+    "field_name": "date_from",
+    "filter_type": "date",
+    "options": {},
     "is_required": true,
     "order": 1,
     "is_active": true
@@ -521,15 +539,11 @@
   "pk": 21,
   "fields": {
     "report_type": 7,
-    "name": "anio",
-    "label": "Año",
-    "field_name": "year",
-    "filter_type": "number",
-    "options": {
-      "min": 2020,
-      "max": 2030,
-      "step": 1
-    },
+    "name": "date_to",
+    "label": "Fecha Fin",
+    "field_name": "date_to",
+    "filter_type": "date",
+    "options": {},
     "is_required": true,
     "order": 2,
     "is_active": true
@@ -540,9 +554,9 @@
   "pk": 22,
   "fields": {
     "report_type": 8,
-    "name": "fecha_auditoria_inicio",
+    "name": "date_from",
     "label": "Fecha Auditoría Desde",
-    "field_name": "timestamp__gte",
+    "field_name": "created__gte",
     "filter_type": "datetime",
     "options": {},
     "is_required": true,
@@ -555,9 +569,9 @@
   "pk": 23,
   "fields": {
     "report_type": 8,
-    "name": "fecha_auditoria_fin",
+    "name": "date_to",
     "label": "Fecha Auditoría Hasta",
-    "field_name": "timestamp__lte",
+    "field_name": "created__lte",
     "filter_type": "datetime",
     "options": {},
     "is_required": true,
@@ -570,9 +584,9 @@
   "pk": 24,
   "fields": {
     "report_type": 8,
-    "name": "usuario",
-    "label": "Usuario",
-    "field_name": "user_id",
+    "name": "created_by_id",
+    "label": "Usuario Creador",
+    "field_name": "created_by_id",
     "filter_type": "text",
     "options": {},
     "is_required": false,
@@ -595,8 +609,8 @@
       "fecha_inicio": "2025-01-01",
       "fecha_fin": "2025-01-31",
       "estado": [
-        "completed",
-        "in_progress"
+        "COMPLETED",
+        "ACTIVE"
       ]
     },
     "file_path": "",
@@ -623,8 +637,8 @@
       "fecha_inicio": "2025-01-01T00:00:00",
       "fecha_fin": "2025-01-07T23:59:59",
       "estado_notificacion": [
-        "sent",
-        "delivered"
+        "SENT",
+        "FAILED"
       ]
     },
     "file_path": "",
