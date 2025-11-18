@@ -1,20 +1,11 @@
-"""
-Report generators for Collection Portfolio and Recovery.
-
-This module contains report generators for portfolio and recovery reports.
-"""
-
-from datetime import timedelta
-from decimal import Decimal
 from typing import Any, List
 
-from django.db.models import Q, QuerySet, Sum
+from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.credits import choices as credit_choices
-from apps.credits.models import Credit, Installment
-from apps.notifications import choices as notification_choices
+from apps.credits.models import Installment
 from apps.payments import choices as payment_choices
 from apps.payments.models import Payment
 from apps.reports.generators.base import BaseReportGenerator
@@ -140,7 +131,11 @@ class CollectionPortfolioAgingReportGenerator(BaseReportGenerator):
 
         for installment in queryset:
             # Calculate days overdue
-            days_overdue = (today - installment.due_date).days if installment.due_date < today else 0
+            days_overdue = (
+                (today - installment.due_date).days
+                if installment.due_date < today
+                else 0
+            )
 
             # Determine aging bucket
             if days_overdue <= 0:
@@ -189,9 +184,10 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
 
     def get_queryset(self) -> QuerySet:
         """Get filtered campaign notifications queryset."""
+        from django.contrib.contenttypes.models import ContentType
+
         from apps.notifications.models import CampaignNotification
         from apps.partners.models import Partner
-        from django.contrib.contenttypes.models import ContentType
 
         # CampaignNotification uses GenericForeignKey for recipient
         # We can only filter by recipient_type and recipient_id, not select_related
@@ -256,7 +252,10 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
                 delivery_time = int(delta.total_seconds() / 60)
 
             # Get campaign name via GenericFK
-            campaign_key = (notification.campaign_type_id, notification.campaign_id)
+            campaign_key = (
+                notification.campaign_type_id,
+                notification.campaign_id,
+            )
             if campaign_key not in campaign_cache:
                 try:
                     campaign_obj = notification.campaign
@@ -267,7 +266,10 @@ class CollectionContactabilityReportGenerator(BaseReportGenerator):
                     campaign_cache[campaign_key] = "-"
 
             # Get recipient info via GenericFK
-            recipient_key = (notification.recipient_type_id, notification.recipient_id)
+            recipient_key = (
+                notification.recipient_type_id,
+                notification.recipient_id,
+            )
             if recipient_key not in recipient_cache:
                 try:
                     recipient_obj = notification.recipient

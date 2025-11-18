@@ -115,17 +115,6 @@ class CompanyDetailView(
             "modified_by",
         )
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        """Add Constance values to context."""
-        context = super().get_context_data(**kwargs)
-        context["compliance_settings"] = {
-            "contribution_amount": config.CONTRIBUTION_AMOUNT,
-            "social_security_amount": config.SOCIAL_SECURITY_AMOUNT,
-            "contribution_due_day": config.CONTRIBUTION_DUE_DAY,
-            "social_security_due_day": config.SOCIAL_SECURITY_DUE_DAY,
-        }
-        return context
-
 
 class CompanyUpdateView(
     LoginRequiredMixin, PermissionRequiredMixin, UpdateView

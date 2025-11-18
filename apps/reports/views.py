@@ -1,4 +1,3 @@
-from constance import config
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponse
@@ -18,7 +17,7 @@ class ReportListView(LoginRequiredMixin, FilterView):
     filterset_class = filtersets.ReportFilter
     template_name = "reports/report_list.html"
     context_object_name = "reports"
-    paginate_by = config.ITEMS_PER_PAGE
+    paginate_by = 5
 
     def get_queryset(self):
         return models.Report.objects.select_related("report_type").order_by(

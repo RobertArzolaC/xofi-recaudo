@@ -110,13 +110,28 @@ class PartnerAPIService:
         notes: str = "",
     ) -> Dict[str, Any]:
         """Upload a payment receipt via API."""
-        url = f"{self.base_url}/payments/api/receipts/"
+        url = f"{self.base_url}/api/v1/payments/payments-receipts/"
+
+        # Ensure filename has proper extension based on content
+        if not any(
+            filename.lower().endswith(ext)
+            for ext in [".jpg", ".jpeg", ".png", ".pdf"]
+        ):
+            # Try to infer extension from magic bytes
+            if receipt_file.startswith(b"\x89PNG"):
+                filename = f"{filename}.png"
+            elif receipt_file.startswith(b"\xff\xd8\xff"):
+                filename = f"{filename}.jpg"
+            elif receipt_file.startswith(b"%PDF"):
+                filename = f"{filename}.pdf"
+
+        logger.info(f"Uploading receipt with filename: {filename}")
 
         # Prepare multipart form data
         files = {"receipt_file": (filename, receipt_file)}
         data = {
-            "partner": partner_id,
-            "amount": amount,
+            "partner": str(partner_id),
+            "amount": str(amount) if amount else "",
             "payment_date": payment_date,
             "notes": notes,
         }
@@ -125,6 +140,7 @@ class PartnerAPIService:
         headers = {"Authorization": self.headers["Authorization"]}
 
         try:
+            logger.info(f"Posting to {url} with data: {data}")
             response = requests.post(
                 url, headers=headers, files=files, data=data, timeout=30
             )

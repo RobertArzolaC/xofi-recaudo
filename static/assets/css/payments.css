@@ -1,0 +1,334 @@
+/**
+ * Payment Module Styles
+ * Estilos específicos para el módulo de pagos (Magic Links)
+ * Utiliza Bootstrap 5.3.3 y clases personalizadas XOFI
+ */
+
+/* Variables CSS para pagos - Colores XOFI */
+:root {
+    --payment-primary: #80C6AC;
+    --payment-primary-dark: #2a6f56;
+    --payment-primary-light: #e8f5f0;
+    --payment-secondary: #98E7A0;
+    --payment-success: #80C6AC;
+    --payment-danger: #dc2626;
+    --payment-purple: #7c3aed;
+    --payment-border: #e2e8f0;
+    --payment-text: #0f172a;
+    --payment-text-muted: #64748b;
+    --payment-bg: #f8fafc;
+    --payment-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    --payment-shadow-hover: 0 6px 20px rgba(128, 198, 172, 0.4);
+}
+
+/* Header con Logo */
+.payment-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+}
+
+.payment-logo {
+    height: 50px;
+    max-width: 200px;
+    object-fit: contain;
+}
+
+/* Contenedor principal */
+.payment-main-container {
+    min-height: 100vh;
+    padding: 2rem 0 3rem;
+    background: #f5f8fa;
+}
+
+/* Items de deuda - Nuevo diseño de tarjetas */
+.debt-item-card {
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.debt-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.debt-item-card.border-primary {
+    border-width: 2px !important;
+}
+
+.debt-item-card .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.debt-item-card .form-check-input:checked {
+    background-color: var(--payment-primary);
+    border-color: var(--payment-primary);
+}
+
+/* Eliminado - Ahora usando clases Bootstrap */
+
+/* Iconos de tipos de deuda */
+.debt-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.debt-icon.aporte {
+    background: var(--payment-primary-light);
+    color: var(--payment-primary-dark);
+    border: 1px solid #c3e6d8;
+}
+
+.debt-icon.contribution {
+    background: #f0fdf4;
+    color: var(--payment-success);
+    border: 1px solid #dcfce7;
+}
+
+.debt-icon.social {
+    background: #faf5ff;
+    color: var(--payment-purple);
+    border: 1px solid #e9d5ff;
+}
+
+.debt-icon.penalty {
+    background: #fef2f2;
+    color: var(--payment-danger);
+    border: 1px solid #fecaca;
+}
+
+/* Detalles de deuda */
+.debt-details {
+    flex-grow: 1;
+}
+
+.debt-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--payment-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.debt-description {
+    font-weight: 600;
+    color: var(--payment-text);
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.debt-due-date {
+    font-size: 0.875rem;
+    color: var(--payment-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.debt-amount {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--payment-text);
+    text-align: right;
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
+
+/* Checkbox personalizado */
+.debt-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: var(--payment-primary);
+    border-radius: 0.25rem;
+}
+
+.debt-checkbox:focus-visible {
+    outline: 2px solid var(--payment-primary);
+    outline-offset: 2px;
+}
+
+/* Sección de resumen */
+.payment-summary {
+    background: var(--payment-bg);
+    padding: 2rem;
+    border-top: 1px solid var(--payment-border);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #475569;
+}
+
+.summary-row.total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 1rem;
+    border-top: 1px solid #cbd5e1;
+    margin-top: 1rem;
+    color: var(--payment-text);
+}
+
+/* Botón de pago principal */
+.btn-payment {
+    background: linear-gradient(135deg, var(--payment-primary) 0%, var(--payment-secondary) 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    width: 100%;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+    cursor: pointer;
+}
+
+.btn-payment:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--payment-primary-dark) 0%, #4338ca 100%);
+    box-shadow: var(--payment-shadow-hover);
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-payment:focus-visible {
+    outline: 2px solid var(--payment-primary);
+    outline-offset: 2px;
+}
+
+.btn-payment:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Botón seleccionar todas */
+.btn-select-all {
+    background: var(--payment-primary);
+    color: white;
+    border: 1px solid var(--payment-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-select-all:hover {
+    background: var(--payment-primary-dark);
+    border-color: var(--payment-primary-dark);
+}
+
+.btn-select-all:focus-visible {
+    outline: 2px solid var(--payment-primary);
+    outline-offset: 2px;
+}
+
+/* Nota informativa */
+.payment-info-note {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid #0284c7;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #0369a1;
+}
+
+/* Badge de seguridad */
+.payment-secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--payment-success);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+/* Métodos de pago */
+.payment-methods-card {
+    background: white;
+    border: 1px solid var(--payment-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.payment-method-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: #475569;
+    font-size: 0.875rem;
+}
+
+.payment-method-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.75rem;
+    color: var(--payment-primary);
+}
+
+/* Sticky sidebar en desktop */
+@media (min-width: 992px) {
+    .sticky-top {
+        position: sticky !important;
+        top: 20px;
+        z-index: 1020;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .payment-main-container {
+        padding: 2rem 0;
+    }
+
+    .sticky-top {
+        position: relative !important;
+        top: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .payment-main-container {
+        padding: 1rem 0;
+    }
+
+    .debt-item-card {
+        padding: 1rem !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .payment-main-container {
+        padding: 0;
+        background: white;
+    }
+
+    .btn,
+    .form-check-input {
+        display: none;
+    }
+}

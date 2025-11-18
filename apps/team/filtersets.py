@@ -57,7 +57,9 @@ class PositionFilterSet(django_filters.FilterSet):
     # Area filter
     area = django_filters.ModelChoiceFilter(
         queryset=models.Area.objects.all(),
-        widget=forms.Select(attrs={"class": "form-select", "data-control": "select2"}),
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
         empty_label=_("All areas"),
         label=_("Area"),
     )
@@ -93,7 +95,9 @@ class EmployeeFilterSet(django_filters.FilterSet):
     # Position filter
     position = django_filters.ModelChoiceFilter(
         queryset=models.Position.objects.all(),
-        widget=forms.Select(attrs={"class": "form-select", "data-control": "select2"}),
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
         empty_label=_("All positions"),
         label=_("Position"),
     )
@@ -109,7 +113,9 @@ class EmployeeFilterSet(django_filters.FilterSet):
     # Agency filter
     agency = django_filters.ModelChoiceFilter(
         queryset=customer_models.Agency.objects.filter(is_active=True),
-        widget=forms.Select(attrs={"class": "form-select", "data-control": "select2"}),
+        widget=forms.Select(
+            attrs={"class": "form-select", "data-control": "select2"}
+        ),
         empty_label=_("All agencies"),
         label=_("Agency"),
     )
@@ -127,8 +133,6 @@ class EmployeeFilterSet(django_filters.FilterSet):
                 | Q(maternal_last_name__icontains=value)
                 | Q(email__icontains=value)
                 | Q(phone__icontains=value)
-                | Q(user__username__icontains=value)
-                | Q(user__email__icontains=value)
             )
         return queryset
 

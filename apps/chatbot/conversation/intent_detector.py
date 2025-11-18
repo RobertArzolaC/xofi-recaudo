@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 from apps.chatbot.choices import IntentType
 from apps.chatbot.constants import INTENT_KEYWORDS
-from apps.chatbot.services.gemini import get_gemini_service
+from apps.chatbot.services.gemini import GeminiService
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ class IntentDetector:
             Detected IntentType
         """
         try:
-            gemini_service = get_gemini_service()
+            gemini_service = GeminiService()
             ai_result = gemini_service.analyze_intent_with_ai(message)
 
             intent_str = ai_result.get("intent", "UNKNOWN")

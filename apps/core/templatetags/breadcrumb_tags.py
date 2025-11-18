@@ -25,8 +25,11 @@ def breadcrumb(context):
             try:
                 url_name = resolve(current_path).url_name
                 if "list" in url_name:
-                    entity = url_name.split("_")[0]
-                    title = f"{entity.title()}s"
+                    if "-" in url_name:
+                        entity = url_name.split("-")[0]
+                    else:
+                        entity = url_name.split("_")[0]
+                    title = _(f"{entity.title()}s")
                 elif (
                     "detail" in url_name
                     or "update" in url_name

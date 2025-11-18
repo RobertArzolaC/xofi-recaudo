@@ -61,9 +61,7 @@ class ProviderFactory:
         logger.info("Providers registered successfully")
 
     @classmethod
-    def get_provider(
-        cls, channel: str, provider_name: Optional[str] = None
-    ) -> Optional[BaseProvider]:
+    def get_provider(cls, channel: str) -> Optional[BaseProvider]:
         """
         Get a provider instance for the specified channel.
 
@@ -78,22 +76,19 @@ class ProviderFactory:
             cls.register_providers()
 
         if channel == choices.NotificationChannel.WHATSAPP:
-            default_provider_name = "whapi"
-            return cls._get_whatsapp_provider(default_provider_name)
+            return cls._get_whatsapp_provider()
         elif channel == choices.NotificationChannel.TELEGRAM:
-            return cls._get_telegram_provider(provider_name)
+            return cls._get_telegram_provider()
         elif channel == choices.NotificationChannel.EMAIL:
-            return cls._get_email_provider(provider_name)
+            return cls._get_email_provider()
         elif channel == choices.NotificationChannel.SMS:
-            return cls._get_sms_provider(provider_name)
+            return cls._get_sms_provider()
         else:
             logger.error(f"Unsupported channel: {channel}")
             return None
 
     @classmethod
-    def _get_whatsapp_provider(
-        cls, provider_name: Optional[str] = None
-    ) -> Optional[BaseProvider]:
+    def _get_whatsapp_provider(cls) -> Optional[BaseProvider]:
         """
         Get WhatsApp provider.
 
@@ -103,29 +98,15 @@ class ProviderFactory:
         3. First configured provider found
         4. Default to Meta provider
 
-        Args:
-            provider_name: Optional provider name
-
         Returns:
             BaseProvider: WhatsApp provider instance
         """
-        # Check explicit provider name
-        if provider_name and provider_name in cls._WHATSAPP_PROVIDERS:
-            provider_class = cls._WHATSAPP_PROVIDERS[provider_name]
-            return provider_class()
-
         # Check settings
         configured_provider = getattr(
             settings, "WHATSAPP_PROVIDER", "meta"
         ).lower()
         if configured_provider in cls._WHATSAPP_PROVIDERS:
             provider_class = cls._WHATSAPP_PROVIDERS[configured_provider]
-            provider = provider_class()
-            if provider.is_configured():
-                return provider
-
-        # Try to find any configured provider
-        for provider_class in cls._WHATSAPP_PROVIDERS.values():
             provider = provider_class()
             if provider.is_configured():
                 logger.info(
@@ -138,14 +119,9 @@ class ProviderFactory:
         return cls._WHATSAPP_PROVIDERS.get("meta", lambda: None)()
 
     @classmethod
-    def _get_telegram_provider(
-        cls, provider_name: Optional[str] = None
-    ) -> Optional[BaseProvider]:
+    def _get_telegram_provider(cls) -> Optional[BaseProvider]:
         """
         Get Telegram provider.
-
-        Args:
-            provider_name: Optional provider name
 
         Returns:
             BaseProvider: Telegram provider instance
@@ -158,14 +134,9 @@ class ProviderFactory:
         return None
 
     @classmethod
-    def _get_email_provider(
-        cls, provider_name: Optional[str] = None
-    ) -> Optional[BaseProvider]:
+    def _get_email_provider(cls) -> Optional[BaseProvider]:
         """
         Get Email provider.
-
-        Args:
-            provider_name: Optional provider name
 
         Returns:
             BaseProvider: Email provider instance (not implemented yet)
@@ -174,14 +145,9 @@ class ProviderFactory:
         return None
 
     @classmethod
-    def _get_sms_provider(
-        cls, provider_name: Optional[str] = None
-    ) -> Optional[BaseProvider]:
+    def _get_sms_provider(cls) -> Optional[BaseProvider]:
         """
         Get SMS provider.
-
-        Args:
-            provider_name: Optional provider name
 
         Returns:
             BaseProvider: SMS provider instance (not implemented yet)

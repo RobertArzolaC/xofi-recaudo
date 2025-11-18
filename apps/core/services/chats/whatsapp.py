@@ -23,7 +23,6 @@ class WhatsAppService:
                 "Authorization": f"Bearer {self.api_token}",
                 "Content-Type": "application/json",
             }
-            logger.info("WhatsApp service initialized with WHAPI")
         else:
             logger.warning(
                 "WHAPI not configured. Set WHATSAPP_API_TOKEN in settings"

@@ -19,6 +19,12 @@ class ReportType(NameDescription, TimeStampedModel):
     )
     model_name = models.CharField(_("Model Name"), max_length=100)
     is_active = models.BooleanField(_("Is active"), default=True)
+    source = models.CharField(
+        _("Source"),
+        max_length=50,
+        choices=choices.ReportSource.choices,
+        default=choices.ReportSource.XOFI_ERP,
+    )
 
     class Meta:
         verbose_name = _("Report Type")

@@ -6,7 +6,9 @@ import requests
 from django.conf import settings
 
 from apps.notifications.providers.base import BaseProvider
-from apps.notifications.services.whatsapp_rate_limiter import WhatsAppRateLimiter
+from apps.notifications.services.whatsapp_rate_limiter import (
+    WhatsAppRateLimiter,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +147,9 @@ class WHAPIProvider(BaseProvider):
             # Ensure HTTPS link (WHAPI recommendation)
             if button_url.startswith("http://"):
                 button_url = button_url.replace("http://", "https://", 1)
-                self.logger.warning(f"Converted HTTP link to HTTPS: {button_url}")
+                self.logger.warning(
+                    f"Converted HTTP link to HTTPS: {button_url}"
+                )
 
             # Apply typing indicator for human-like behavior
             self._send_typing_indicator(clean_phone)
@@ -156,16 +160,19 @@ class WHAPIProvider(BaseProvider):
 
             # WHAPI supports interactive messages with buttons
             payload = {
+                "type": "button",
                 "to": clean_phone,
-                "body": message,
-                "footer": "",
-                "buttons": [
-                    {
-                        "type": "url",
-                        "title": button_text,
-                        "url": button_url,
-                    }
-                ],
+                "body": {"text": message},
+                "action": {
+                    "buttons": [
+                        {
+                            "id": "randomId1",
+                            "type": "quick_reply",
+                            "title": button_text,
+                            "url": button_url,
+                        }
+                    ]
+                },
             }
 
             response = requests.post(

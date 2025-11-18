@@ -64,7 +64,9 @@ class ConversationService:
             defaults={"channel": choices.ChannelType.WHATSAPP},
         )
         if created:
-            logger.info(f"Created new conversation for WhatsApp {whatsapp_phone}")
+            logger.info(
+                f"Created new conversation for WhatsApp {whatsapp_phone}"
+            )
         return conversation
 
     @sync_to_async

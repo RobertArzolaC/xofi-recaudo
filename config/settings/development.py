@@ -50,6 +50,6 @@ CELERY_BEAT_SCHEDULE = {
     },
     "send-scheduled-notifications": {
         "task": "notifications.send_scheduled_notifications",
-        "schedule": crontab(minute="*/5"),  # Cada 5 minutos
+        "schedule": crontab(minute="*/3"),  # Cada 3 minutos
     },
 }
