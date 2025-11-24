@@ -22,8 +22,20 @@
 
     /* Asegúrate de que el texto se vea bien en el fondo claro (ej. negro o gris oscuro) */
     --bs-body-color: #333;
-    --bs-body-bg: var(--xofi-fondo-blanco); /* Fondo del cuerpo: #F2F2F2 */
 
     /* Opcional: Para usar en degradados o estados de hover */
     --bs-gradient: linear-gradient(180deg, var(--xofi-fondo-oscuro), var(--xofi-verde-medio));
+}
+
+[data-bs-theme=light] {
+    --bs-body-bg: var(--xofi-fondo-blanco); /* Fondo del cuerpo: #F2F2F2 */
+}
+
+[data-bs-theme="dark"] {
+    /* Colores de Marca XOFI */
+    --xofi-card-bg: #0F1014;
+
+    /* Fondo y texto del Cuerpo (Body) */
+    --bs-body-bg: var(--xofi-card-bg);
+    --bs-text-dark: var(--bs-gray-900);
 }
