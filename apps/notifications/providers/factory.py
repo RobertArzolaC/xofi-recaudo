@@ -24,6 +24,8 @@ class ProviderFactory:
     _TELEGRAM_PROVIDERS = {}
     _EMAIL_PROVIDERS = {}
     _SMS_PROVIDERS = {}
+    _VIBER_PROVIDERS = {}
+    _RCS_PROVIDERS = {}
 
     @classmethod
     def register_providers(cls):
@@ -35,6 +37,7 @@ class ProviderFactory:
         # Register WhatsApp providers
         try:
             from apps.notifications.providers.whatsapp import (
+                BulkGateWhatsAppProvider,
                 MetaWhatsAppProvider,
                 WHAPIProvider,
             )
@@ -42,6 +45,7 @@ class ProviderFactory:
             cls._WHATSAPP_PROVIDERS = {
                 "meta": MetaWhatsAppProvider,
                 "whapi": WHAPIProvider,
+                "bulkgate": BulkGateWhatsAppProvider,
             }
         except ImportError as e:
             logger.warning(f"Failed to import WhatsApp providers: {e}")
@@ -57,6 +61,16 @@ class ProviderFactory:
             }
         except ImportError as e:
             logger.warning(f"Failed to import Telegram providers: {e}")
+
+        # Register SMS providers
+        try:
+            from apps.notifications.providers.sms import BulkGateProvider
+
+            cls._SMS_PROVIDERS = {
+                "bulkgate": BulkGateProvider,
+            }
+        except ImportError as e:
+            logger.warning(f"Failed to import SMS providers: {e}")
 
         logger.info("Providers registered successfully")
 
@@ -149,11 +163,30 @@ class ProviderFactory:
         """
         Get SMS provider.
 
+        Priority:
+        1. SMS_PROVIDER setting
+        2. First configured provider found
+        3. Default to BulkGate provider
+
         Returns:
-            BaseProvider: SMS provider instance (not implemented yet)
+            BaseProvider: SMS provider instance
         """
-        logger.warning("SMS providers not implemented yet")
-        return None
+        # Check settings
+        configured_provider = getattr(
+            settings, "SMS_PROVIDER", "bulkgate"
+        ).lower()
+        if configured_provider in cls._SMS_PROVIDERS:
+            provider_class = cls._SMS_PROVIDERS[configured_provider]
+            provider = provider_class()
+            if provider.is_configured():
+                logger.info(
+                    f"Using {provider.get_provider_name()} as SMS provider"
+                )
+                return provider
+
+        # Return default (even if not configured)
+        logger.warning("No SMS provider configured, using BulkGate as default")
+        return cls._SMS_PROVIDERS.get("bulkgate", lambda: None)()
 
     @classmethod
     def get_available_providers(cls, channel: str) -> Dict[str, Dict]:
@@ -177,6 +210,10 @@ class ProviderFactory:
                 providers_info[name] = provider.get_provider_info()
         elif channel == choices.NotificationChannel.TELEGRAM:
             for name, provider_class in cls._TELEGRAM_PROVIDERS.items():
+                provider = provider_class()
+                providers_info[name] = provider.get_provider_info()
+        elif channel == choices.NotificationChannel.SMS:
+            for name, provider_class in cls._SMS_PROVIDERS.items():
                 provider = provider_class()
                 providers_info[name] = provider.get_provider_info()
 
