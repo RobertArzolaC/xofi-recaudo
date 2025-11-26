@@ -149,6 +149,7 @@ class WhatsAppBotHandler:
         image_bytes = None
 
         logger.info(f"Received image from {sender_phone}, ID: {image_id}")
+        logger.info(f"Processing image message: {message}")
 
         try:
             # Get or create conversation
