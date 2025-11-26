@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
 
-from apps.campaigns import choices
+from apps.campaigns import choices, models
 from apps.partners import services as partner_services
 
 logger = logging.getLogger(__name__)
@@ -53,9 +53,7 @@ class CampaignExecutionService:
         """
         with transaction.atomic():
             # Use select_for_update to ensure atomic read-modify-write
-            from apps.campaigns.models import Campaign
-
-            locked_campaign = Campaign.objects.select_for_update().get(
+            locked_campaign = models.Campaign.objects.select_for_update().get(
                 pk=campaign.pk
             )
 
