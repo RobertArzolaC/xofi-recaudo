@@ -103,7 +103,7 @@ class ProviderFactory:
         """
         # Check settings
         configured_provider = getattr(
-            settings, "WHATSAPP_PROVIDER", "meta"
+            settings, "WHATSAPP_PROVIDER", "whapi"
         ).lower()
         if configured_provider in cls._WHATSAPP_PROVIDERS:
             provider_class = cls._WHATSAPP_PROVIDERS[configured_provider]
