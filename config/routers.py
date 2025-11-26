@@ -26,12 +26,12 @@ class XofiErpRouter:
         "admin",
         # Apps de autenticación relacionadas con usuarios
         "authtoken",
-        "allauth",
     }
 
     local_app_labels = {
         # Apps que deben estar en la DB principal
         "auth",
+        "allauth",
         "contenttypes",
         "sessions",
         "messages",
