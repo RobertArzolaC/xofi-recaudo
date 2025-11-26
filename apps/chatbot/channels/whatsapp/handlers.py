@@ -54,11 +54,7 @@ class WhatsAppBotHandler:
 
             # Process each message
             for message in messages:
-                message_from = message.get("from")
-                # Whapi sends messages sent by the bot itself; filter them out
-                only_number = message_from != "51931314241"
-                # Ignore messages sent by bot (from_me = true) or only_number is False
-                if message.get("from_me", False) or only_number:
+                if message.get("from_me"):
                     logger.info(
                         f"Ignoring message from bot: {message.get('id')}"
                     )
