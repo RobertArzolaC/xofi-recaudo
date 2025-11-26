@@ -43,3 +43,6 @@ spacy==3.8.7
 
 #Files
 openpyxl==3.1.5
+
+# Translations
+openpyxl 3.1.5
