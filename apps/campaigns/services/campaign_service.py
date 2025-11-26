@@ -52,10 +52,8 @@ class CampaignExecutionService:
             bool: True if execution lock was acquired, False otherwise
         """
 
-        locked_campaign = models.Campaign.objects.select_for_update().get(
-            pk=campaign.pk
-        )
         with transaction.atomic():
+            locked_campaign = models.Campaign.objects.get(pk=campaign.pk)
             if locked_campaign.is_processing:
                 logger.warning(
                     f"Campaign {locked_campaign.id} is already being processed. "
