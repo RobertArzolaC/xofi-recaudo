@@ -26,6 +26,7 @@ class XofiErpRouter:
         "admin",
         # Apps de autenticación relacionadas con usuarios
         "authtoken",
+        "allauth",
     }
 
     local_app_labels = {
@@ -36,7 +37,6 @@ class XofiErpRouter:
         "messages",
         "staticfiles",
         "django_celery_beat",
-        "allauth",
         "account",
         "core",
         "authentication",
