@@ -251,21 +251,24 @@ class WHAPIProvider(BaseProvider):
             recipient: Formatted phone number
         """
         try:
-            payload = {"to": recipient, "state": "typing"}
+            payload = {"delay": 0, "presence": "typing"}
 
             response = requests.post(
-                f"{self.api_url}/messages/presence",
-                json=payload,
+                f"{self.api_url}/presences/{recipient}",
                 headers=self.headers,
+                json=payload,
                 timeout=10,
             )
 
             if response.status_code == 200:
                 self.logger.debug(f"Typing indicator sent to {recipient}")
+            elif response.status_code == 409:
+                self.logger.debug(
+                    f"Cannot send typing indicator to {recipient}: {response.text}"
+                )
             else:
                 self.logger.warning(
                     f"Failed to send typing indicator: {response.status_code}"
                 )
         except Exception as e:
-            # Don't fail the whole message if typing indicator fails
             self.logger.warning(f"Error sending typing indicator: {e}")

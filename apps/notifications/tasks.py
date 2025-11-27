@@ -1,13 +1,11 @@
 import logging
 
 from celery import shared_task
-from django.utils import timezone
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
 from apps.campaigns import choices as campaigns_choices
 from apps.campaigns import models as campaign_models
-from apps.notifications import choices as notification_choices
-from apps.notifications import executors, models
+from apps.notifications import choices, constants, executors, models, utils
 from apps.notifications.services import (
     NotificationSenderService,
     WhatsAppRateLimiter,
@@ -104,10 +102,18 @@ def schedule_campaign_notifications_task(
     campaign_id: int, campaign_type: str = "GROUP"
 ) -> dict:
     """
-    Execute campaign and create notification records.
+    Execute campaign and create notification records, then trigger
+    notification sending and finalization.
 
     This task is scheduled by process_campaign_notifications and runs
     at the campaign's execution date to create notifications.
+
+    Flow:
+    1. Update campaign status to PROCESSING
+    2. Execute the campaign using the executor (creates notifications)
+    3. Update campaign status to SENDING
+    4. Trigger send_scheduled_notifications for this campaign
+    5. Schedule finalize_campaign_status with calculated countdown
 
     Args:
         campaign_id: ID of the campaign to execute
@@ -147,11 +153,51 @@ def schedule_campaign_notifications_task(
         )
         return {"success": False, "error": "Campaign not found"}
 
-    # Execute the campaign using the executor
+    # Execute the campaign using the executor (creates notifications)
     result = executor.execute()
 
-    # Update campaign status to COMPLETED
-    campaign.update_status(campaigns_choices.CampaignStatus.COMPLETED)
+    if not result.get("success"):
+        campaign.update_status(campaigns_choices.CampaignStatus.FAILED)
+        logger.error(
+            f"Campaign {campaign_id} execution failed: {result.get('error', 'Unknown error')}"
+        )
+        return result
+
+    # Get the number of created notifications
+    created_count = result.get("created_count", 0)
+
+    if created_count == 0:
+        # No notifications created, mark as completed
+        campaign.update_status(campaigns_choices.CampaignStatus.COMPLETED)
+        logger.info(
+            f"Campaign {campaign_id} completed with no notifications created"
+        )
+        return result
+
+    # Update campaign status to SENDING
+    campaign.update_status(campaigns_choices.CampaignStatus.SENDING)
+
+    logger.info(
+        f"Campaign {campaign_id} created {created_count} notifications, "
+        f"triggering send process"
+    )
+
+    # Trigger notification sending for this campaign
+    send_scheduled_notifications.delay(campaign_id, campaign_type)
+
+    # Calculate countdown based on notification count and channel
+    countdown = utils.calculate_countdown(created_count, campaign.channel)
+
+    logger.info(
+        f"Scheduling finalize_campaign_status for campaign {campaign_id} "
+        f"with countdown of {countdown} seconds"
+    )
+
+    # Schedule finalization task
+    finalize_campaign_status.apply_async(
+        args=[campaign_id, campaign_type, 1],
+        countdown=countdown,
+    )
 
     logger.info(
         f"Campaign {campaign_id} execution finished - Success: {result.get('success')}. "
@@ -162,31 +208,39 @@ def schedule_campaign_notifications_task(
 
 
 @shared_task(name="notifications.send_scheduled_notifications")
-def send_scheduled_notifications() -> dict:
+def send_scheduled_notifications(
+    campaign_id: int = None, campaign_type: str = None
+) -> dict:
     """
-    Send all pending notifications that are scheduled to be sent now.
+    Send pending notifications for a specific campaign or all campaigns.
 
-    This task should be run periodically (e.g., every 5-10 minutes) to check
-    for notifications that need to be sent.
+    When campaign_id and campaign_type are provided, only notifications
+    for that specific campaign are processed. Otherwise, all pending
+    notifications scheduled for now or earlier are processed.
 
-    When notifications are found, the campaign status is transitioned to SENDING
-    if it's not already in that state.
+    Args:
+        campaign_id: Optional campaign ID to filter notifications
+        campaign_type: Optional campaign type ('GROUP' or 'FILE')
 
     Returns:
-        dict: Summary of sent notifications
+        dict: Summary of queued notifications
     """
-    logger.info("Starting scheduled notifications processing")
+    if campaign_id and campaign_type:
+        logger.info(
+            f"Starting notifications processing for {campaign_type} "
+            f"campaign {campaign_id}"
+        )
+    else:
+        logger.info(
+            "Starting scheduled notifications processing (all campaigns)"
+        )
 
-    # Get all pending notifications scheduled for now or earlier
     pending_notifications = models.CampaignNotification.objects.filter(
-        status=campaigns_choices.NotificationStatus.PENDING,
-        scheduled_at__lte=timezone.now(),
+        campaign_id=campaign_id,
     ).select_related("campaign_type", "recipient_type")
 
     total_pending = pending_notifications.count()
-    logger.info(
-        f"Found {total_pending} pending notifications scheduled for now or earlier"
-    )
+    logger.info(f"Found {total_pending} pending notifications to process")
 
     if total_pending == 0:
         logger.info("No pending notifications to process")
@@ -194,85 +248,45 @@ def send_scheduled_notifications() -> dict:
             "success": True,
             "queued_count": 0,
             "failed_count": 0,
-            "cancelled_count": 0,
         }
 
-    sent_count = 0
+    queued_count = 0
     failed_count = 0
-    cancelled_count = 0
-
-    # Track campaigns that need status update to SENDING
-    campaigns_to_update = set()
 
     for notification in pending_notifications:
         try:
-            campaign = notification.campaign
             recipient_name = getattr(
                 notification.recipient, "full_name", "Unknown"
             )
-            campaign_name = getattr(campaign, "name", "Unknown")
 
-            logger.info(
-                f"Processing notification {notification.id} for recipient '{recipient_name}' "
-                f"from campaign '{campaign_name}'"
+            logger.debug(
+                f"Queuing notification {notification.id} for recipient '{recipient_name}'"
             )
 
-            # Check if campaign can send notifications
-            valid_sending_statuses = [
-                campaigns_choices.CampaignStatus.ACTIVE,
-                campaigns_choices.CampaignStatus.SENDING,
-            ]
+            # Queue notification for async sending
+            send_notification.delay(notification.id)
+            queued_count += 1
 
-            if campaign.status not in valid_sending_statuses:
-                logger.info(
-                    f"Cancelling notification {notification.id} - campaign '{campaign_name}' "
-                    f"cannot send notifications (status: {campaign.get_status_display()})"
-                )
-                notification.status = (
-                    campaigns_choices.NotificationStatus.CANCELLED
-                )
-                notification.save(update_fields=["status"])
-                cancelled_count += 1
-                continue
-
-            # Transition campaign to SENDING if it's ACTIVE
-            if campaign.status == campaigns_choices.CampaignStatus.ACTIVE:
-                campaigns_to_update.add(
-                    (campaign.id, notification.campaign_type.model)
-                )
-
-            # Send notification asynchronously
-            try:
-                send_notification.delay(notification.id)
-                sent_count += 1
-                logger.info(
-                    f"Successfully queued notification {notification.id} for sending"
-                )
-            except Exception as e:
-                logger.error(
-                    f"Failed to queue notification {notification.id}: {e}"
-                )
-                failed_count += 1
+            logger.info(
+                f"Successfully queued notification {notification.id} for sending"
+            )
 
         except Exception as e:
             logger.error(
-                f"Error processing notification {notification.id}: {e}",
+                f"Failed to queue notification {notification.id}: {e}",
                 exc_info=True,
             )
             failed_count += 1
 
     logger.info(
-        f"Scheduled notifications processing completed: "
-        f"Queued {sent_count} notifications for sending, "
-        f"Failed to queue {failed_count}, "
-        f"Cancelled {cancelled_count} (inactive campaigns)"
+        f"Notifications processing completed: "
+        f"Queued {queued_count}, Failed to queue {failed_count}"
     )
 
     return {
         "success": True,
-        "queued_count": sent_count,
+        "queued_count": queued_count,
         "failed_count": failed_count,
-        "cancelled_count": cancelled_count,
     }
 
 
@@ -304,10 +318,7 @@ def send_notification(self, notification_id: int) -> dict:
         return {"success": False, "error": "Notification not found"}
 
     # Check WhatsApp rate limits before sending
-    if (
-        notification.channel
-        == notification_choices.NotificationChannel.WHATSAPP
-    ):
+    if notification.channel == choices.NotificationChannel.WHATSAPP:
         rate_check = WhatsAppRateLimiter.can_send_message()
         if not rate_check.get("allowed"):
             wait_seconds = rate_check.get("wait_seconds", 60)
@@ -324,11 +335,6 @@ def send_notification(self, notification_id: int) -> dict:
 
     logger.info(
         f"Sending notification {notification_id} via {notification.get_channel_display()}"
-    )
-
-    # Update campaign status to SENDING
-    notification.campaign.update_status(
-        campaigns_choices.CampaignStatus.COMPLETED
     )
 
     # Send notification using the service
@@ -363,3 +369,124 @@ def send_notification(self, notification_id: int) -> dict:
 
         # Retry
         raise self.retry(exc=exc)
+
+
+@shared_task(name="notifications.finalize_campaign_status")
+def finalize_campaign_status(
+    campaign_id: int, campaign_type: str, attempt: int = 1
+) -> dict:
+    """
+    Finalize campaign status after all notifications have been processed.
+
+    This task checks the status of all notifications for a campaign and
+    updates the campaign's final status and metrics accordingly.
+
+    If there are still pending notifications and max attempts haven't been
+    reached, the task reschedules itself with a new countdown.
+
+    Args:
+        campaign_id: ID of the campaign to finalize
+        campaign_type: Type of campaign ('GROUP' or 'FILE')
+        attempt: Current attempt number (max 10)
+
+    Returns:
+        dict: Summary of finalization result
+    """
+    logger.info(
+        f"Finalizing campaign {campaign_id} status - Attempt {attempt}/{constants.MAX_FINALIZE_ATTEMPTS}"
+    )
+
+    try:
+        campaign = campaign_models.Campaign.objects.get(id=campaign_id)
+    except campaign_models.Campaign.DoesNotExist as e:
+        logger.error(f"Campaign {campaign_id} not found: {e}")
+        return {"success": False, "error": "Campaign not found"}
+
+    # Get notification counts
+    notifications = models.CampaignNotification.objects.filter(
+        campaign_id=campaign_id,
+    )
+
+    total_count = notifications.count()
+    sent_count = notifications.filter(
+        status=choices.NotificationStatus.SENT
+    ).count()
+    failed_count = notifications.filter(
+        status=choices.NotificationStatus.FAILED
+    ).count()
+    pending_count = notifications.filter(
+        status=choices.NotificationStatus.PENDING
+    ).count()
+
+    logger.info(
+        f"Campaign {campaign_id} notifications - "
+        f"Total: {total_count}, Sent: {sent_count}, "
+        f"Failed: {failed_count}, Pending: {pending_count}"
+    )
+
+    # If there are pending notifications and we haven't reached max attempts
+    if pending_count > 0 and attempt < constants.MAX_FINALIZE_ATTEMPTS:
+        countdown = utils.calculate_countdown(pending_count, campaign.channel)
+
+        logger.info(
+            f"Campaign {campaign_id} has {pending_count} pending notifications. "
+            f"Rescheduling finalization (attempt {attempt + 1}) "
+            f"with countdown of {countdown} seconds"
+        )
+
+        # Reschedule with incremented attempt
+        finalize_campaign_status.apply_async(
+            args=[campaign_id, campaign_type, attempt + 1],
+            countdown=countdown,
+        )
+
+        return {
+            "success": True,
+            "status": "rescheduled",
+            "attempt": attempt,
+            "pending_count": pending_count,
+            "next_countdown": countdown,
+        }
+
+    # Final processing - either all done or max attempts reached
+    if pending_count > 0:
+        logger.warning(
+            f"Campaign {campaign_id} reached max finalization attempts ({constants.MAX_FINALIZE_ATTEMPTS}) "
+            f"with {pending_count} notifications still pending. Marking them as CANCELLED."
+        )
+        # Mark remaining pending notifications as cancelled
+        notifications.filter(status=choices.NotificationStatus.PENDING).update(
+            status=choices.NotificationStatus.CANCELLED
+        )
+        cancelled_count = pending_count
+    else:
+        cancelled_count = 0
+
+    # Update campaign metrics
+    campaign.total_sent = sent_count
+    campaign.total_failed = failed_count + cancelled_count
+
+    # Determine final status
+    if sent_count > 0:
+        campaign.status = campaigns_choices.CampaignStatus.COMPLETED
+        final_status = "COMPLETED"
+    else:
+        campaign.status = campaigns_choices.CampaignStatus.FAILED
+        final_status = "FAILED"
+
+    campaign.save(update_fields=["status", "total_sent", "total_failed"])
+
+    logger.info(
+        f"Campaign {campaign_id} finalized after {attempt} attempts - "
+        f"Status: {final_status}, Sent: {sent_count}, "
+        f"Failed: {failed_count}, Cancelled: {cancelled_count}"
+    )
+
+    return {
+        "success": True,
+        "status": final_status,
+        "attempts": attempt,
+        "total_sent": sent_count,
+        "total_failed": failed_count,
+        "cancelled_count": cancelled_count,
+    }

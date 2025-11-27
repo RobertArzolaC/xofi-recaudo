@@ -120,10 +120,6 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=22, minute=0),
         "kwargs": {},
     },
-    "send-scheduled-notifications": {
-        "task": "notifications.send_scheduled_notifications",
-        "schedule": crontab(minute="*/10"),  # Cada 10 minutos
-    },
 }
 
 MIDDLEWARE += [  # noqa

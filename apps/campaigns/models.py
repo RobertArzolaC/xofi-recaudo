@@ -85,6 +85,18 @@ class BaseCampaign(
         help_text=_("Result message from the last execution attempt."),
     )
 
+    # Notification metrics
+    total_sent = models.PositiveIntegerField(
+        _("Total Sent"),
+        default=0,
+        help_text=_("Total number of notifications sent successfully."),
+    )
+    total_failed = models.PositiveIntegerField(
+        _("Total Failed"),
+        default=0,
+        help_text=_("Total number of notifications that failed to send."),
+    )
+
     # Campo discriminador para identificar el tipo de campaña
     campaign_type = models.CharField(
         _("Campaign Type"),

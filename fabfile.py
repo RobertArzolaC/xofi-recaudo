@@ -20,23 +20,21 @@ def deploy(c):
         print("Obteniendo los últimos cambios del repositorio...")
         conn.run("git pull origin main")
 
+        print("Activando el entorno virtual...")
+        conn.run("source venv/bin/activate")
+
         print("Actualizando dependencias...")
-        conn.run(
-            "source venv/bin/activate && pip install -r requirements/production.txt"
-        )
+        conn.run("pip install -r requirements/production.txt")
 
         print("Aplicando migraciones...")
-        conn.run("source venv/bin/activate && python manage.py migrate")
+        conn.run("python manage.py migrate --database=xofi-erp")
+        conn.run("python manage.py migrate")
 
         print("Aplicando traducciones...")
-        conn.run(
-            'source venv/bin/activate && python manage.py compilemessages -l es --ignore "venv/*"'
-        )
+        conn.run('python manage.py compilemessages -l es --ignore "venv/*"')
 
         print("Recopilando archivos estáticos...")
-        conn.run(
-            "source venv/bin/activate && python manage.py collectstatic --noinput"
-        )
+        conn.run("python manage.py collectstatic --noinput")
 
         print("Reiniciando el servidor web...")
         conn.run("sudo systemctl restart xofi-recaudo")
