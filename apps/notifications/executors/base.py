@@ -101,9 +101,6 @@ class BaseCampaignExecutor(ABC):
             self.logger.warning(f"Campaign {self.campaign.id} - {error_msg}")
             return {"success": False, "error": error_msg}
 
-        # Update campaign status
-        self.campaign.update_status(choices.CampaignStatus.SENDING)
-
         try:
             # Create notifications
             result = self.create_notifications()

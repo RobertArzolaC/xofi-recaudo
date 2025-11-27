@@ -150,6 +150,9 @@ def schedule_campaign_notifications_task(
     # Execute the campaign using the executor
     result = executor.execute()
 
+    # Update campaign status to COMPLETED
+    campaign.update_status(campaigns_choices.CampaignStatus.COMPLETED)
+
     logger.info(
         f"Campaign {campaign_id} execution finished - Success: {result.get('success')}. "
         f"Message: {result.get('message', 'N/A')}"

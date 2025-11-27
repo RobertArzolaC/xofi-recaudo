@@ -76,7 +76,7 @@ def logs(c, service="celery", lines=50):
         "gunicorn": "xofi-recaudo",
         "nginx": "nginx",
         "celery": "celery-recaudo",
-        "beat": "celerybeat-recaudo",
+        "beat": "celery-beat-recaudo",
     }
 
     if service not in valid_services:
