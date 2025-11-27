@@ -6,6 +6,7 @@ REMOTE_HOST = "144.126.219.62"
 REMOTE_USER = "root"
 REMOTE_PROJECT_PATH = "/home/xofi-recaudo/"
 GIT_REPO = "git@github.com:RobertArzolaC/xofi-recaudo.git"
+ACTIVATE_VENV = "source /home/xofi-recaudo/venv/bin/activate"
 
 
 @task
@@ -20,21 +21,24 @@ def deploy(c):
         print("Obteniendo los últimos cambios del repositorio...")
         conn.run("git pull origin main")
 
-        print("Activando el entorno virtual...")
-        conn.run("source venv/bin/activate")
-
         print("Actualizando dependencias...")
-        conn.run("pip install -r requirements/production.txt")
+        conn.run(
+            f"{ACTIVATE_VENV} && pip install -r requirements/production.txt"
+        )
 
         print("Aplicando migraciones...")
-        conn.run("python manage.py migrate --database=xofi-erp")
-        conn.run("python manage.py migrate")
+        conn.run(
+            f"{ACTIVATE_VENV} && python manage.py migrate --database=xofi-erp"
+        )
+        conn.run(f"{ACTIVATE_VENV} && python manage.py migrate")
 
         print("Aplicando traducciones...")
-        conn.run('python manage.py compilemessages -l es --ignore "venv/*"')
+        conn.run(
+            f'{ACTIVATE_VENV} && python manage.py compilemessages -l es --ignore "venv/*"'
+        )
 
         print("Recopilando archivos estáticos...")
-        conn.run("python manage.py collectstatic --noinput")
+        conn.run(f"{ACTIVATE_VENV} && python manage.py collectstatic --noinput")
 
         print("Reiniciando el servidor web...")
         conn.run("sudo systemctl restart xofi-recaudo")

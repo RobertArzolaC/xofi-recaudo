@@ -79,11 +79,6 @@ class CampaignExecutionService:
                 ]
             )
 
-            logger.info(
-                f"Campaign {locked_campaign.id} '{locked_campaign.name}' status changed: "
-                f"{original_status} → PROCESSING (execution #{locked_campaign.execution_count})"
-            )
-
             # Update the current instance to reflect changes
             campaign.is_processing = True
             campaign.last_execution_at = locked_campaign.last_execution_at
