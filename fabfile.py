@@ -55,7 +55,12 @@ def status(c):
     conn = Connection(host=REMOTE_HOST, user=REMOTE_USER)
 
     print("Verificando estado de los servicios...")
-    services = ["xofi-recaudo", "nginx", "celery-recaudo", "celerybeat-recaudo"]
+    services = [
+        "xofi-recaudo",
+        "nginx",
+        "celery-recaudo",
+        "celery-beat-recaudo",
+    ]
 
     for service in services:
         print(f"\nEstado de {service}:")
