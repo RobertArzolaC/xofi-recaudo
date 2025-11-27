@@ -3,6 +3,8 @@ import logging
 from typing import Dict, Optional
 
 import requests
+from constance import config
+from django.conf import settings
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
@@ -336,14 +338,35 @@ class WhatsAppBotHandler:
         """
         Handle /start equivalent command.
 
+        Sends welcome image (if configured) with welcome message as caption,
+        or just the welcome message if no image is set.
+
         Args:
             sender_phone: Sender's phone number
         """
         logger.info(f"Sending welcome message to {sender_phone}")
 
-        self.whatsapp_service.send_text_message(
-            sender_phone, constants.WELCOME_MESSAGE
-        )
+        welcome_message = config.CHATBOT_WELCOME_MESSAGE
+        welcome_image = config.CHATBOT_WELCOME_IMAGE
+
+        if welcome_image:
+            # Build absolute URL for the image
+            # Remove trailing slash from domain if present
+            domain = config.COMPANY_DOMAIN.rstrip("/")
+            media_url = settings.MEDIA_URL.strip("/")
+            image_url = f"{domain}/{media_url}/constance/{welcome_image}"
+
+            logger.info(f"Sending welcome image: {image_url}")
+
+            # Send image with welcome message as caption
+            self.whatsapp_service.send_image_message(
+                sender_phone, image_url, welcome_message
+            )
+        else:
+            # Send only text message if no image configured
+            self.whatsapp_service.send_text_message(
+                sender_phone, welcome_message
+            )
 
     def handle_help_command(self, sender_phone: str) -> None:
         """

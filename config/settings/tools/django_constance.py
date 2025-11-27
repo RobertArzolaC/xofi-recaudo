@@ -18,7 +18,31 @@ CONSTANCE_ADDITIONAL_FIELDS = {
             "min_value": 0.00,
         },
     ],
+    "textarea_field": [
+        "django.forms.CharField",
+        {
+            "widget": "django.forms.Textarea",
+        },
+    ],
 }
+
+# Default welcome message for chatbot
+CHATBOT_WELCOME_MESSAGE_DEFAULT = """
+🤖 *Bienvenido al Asistente Virtual de XoFi*
+
+Soy tu asistente virtual y estoy aquí para ayudarte con:
+
+📋 Consultas sobre tu cuenta y préstamos
+💰 Estado de cuenta y pagos
+🎫 Soporte técnico
+📄 Carga de comprobantes
+
+Para comenzar, necesito autenticarte.
+
+Por favor, envía tu *número de documento* y *año de nacimiento* separados por un espacio.
+
+*Ejemplo:* 12345678 1990
+"""
 
 CONSTANCE_CONFIG = {
     "PROJECT_NAME": ("Project Name", _("Project name.")),
@@ -33,6 +57,17 @@ CONSTANCE_CONFIG = {
         _("Enable Telegram channel notifications."),
     ),
     "ENABLE_PAYMENT_LINKS": (True, _("Enable payment links in notifications.")),
+    # Chatbot settings
+    "CHATBOT_WELCOME_IMAGE": (
+        "",
+        _("Chatbot welcome image. Sent before welcome message on WhatsApp."),
+        "image_field",
+    ),
+    "CHATBOT_WELCOME_MESSAGE": (
+        CHATBOT_WELCOME_MESSAGE_DEFAULT,
+        _("Chatbot welcome message displayed when user starts conversation."),
+        "textarea_field",
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -57,5 +92,12 @@ CONSTANCE_CONFIG_FIELDSETS = {
     "3. Campaign Settings": {
         "fields": ("ENABLE_TELEGRAM_CHANEL",),
         "collapse": True,
+    },
+    "4. Chatbot Settings": {
+        "fields": (
+            "CHATBOT_WELCOME_IMAGE",
+            "CHATBOT_WELCOME_MESSAGE",
+        ),
+        "collapse": False,
     },
 }

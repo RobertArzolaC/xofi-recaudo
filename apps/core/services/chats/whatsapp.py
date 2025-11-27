@@ -202,6 +202,71 @@ class WhatsAppService:
             )
             return {"success": False, "error": str(e)}
 
+    def send_image_message(
+        self,
+        recipient_phone: str,
+        image_url: str,
+        caption: Optional[str] = None,
+    ) -> Dict[str, any]:
+        """
+        Send an image message via WHAPI.
+
+        Uses WHAPI's /messages/image endpoint to send images with optional caption.
+
+        Args:
+            recipient_phone: Phone number in international format (e.g., 51987654321)
+            image_url: Absolute URL of the image to send
+            caption: Optional caption text for the image
+
+        Returns:
+            dict: Response from WHAPI containing message ID and status
+        """
+        if not self.is_configured():
+            return {
+                "success": False,
+                "error": "WHAPI provider is not configured",
+            }
+
+        try:
+            clean_phone = self._clean_phone_number(recipient_phone)
+
+            payload = {
+                "to": clean_phone,
+                "media": image_url,
+            }
+
+            if caption:
+                payload["caption"] = caption
+
+            response = requests.post(
+                f"{self.api_url}/messages/image",
+                json=payload,
+                headers=self.headers,
+                timeout=30,
+            )
+
+            response.raise_for_status()
+            result = response.json()
+
+            logger.info(
+                f"Image message sent to {clean_phone} via WHAPI: {result}"
+            )
+            return {
+                "success": True,
+                "message_id": result.get("id"),
+                "response": result,
+            }
+        except requests.exceptions.RequestException as e:
+            logger.error(
+                f"Failed to send image message to {recipient_phone}: {e}"
+            )
+            return {"success": False, "error": str(e)}
+        except Exception as e:
+            logger.error(
+                f"Unexpected error sending image message to {recipient_phone}: {e}"
+            )
+            return {"success": False, "error": str(e)}
+
     def _clean_phone_number(self, phone: str) -> str:
         """
         Clean and format phone number for WHAPI.

@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from constance import config
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -38,7 +39,7 @@ class TelegramBotHandler:
         logger.info(f"Received /start from chat {chat_id}")
 
         await update.message.reply_text(
-            constants.WELCOME_MESSAGE, parse_mode="Markdown"
+            config.CHATBOT_WELCOME_MESSAGE, parse_mode="Markdown"
         )
 
     async def help_command(

@@ -1,0 +1,123 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}{% trans "Chatbot Settings" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Chatbot Settings" %}{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center py-1">
+    {% if perms.customers.change_chatbot_settings %}
+    <a href="{% url 'apps.chatbot:chatbot-settings-edit' %}" class="btn btn-sm btn-primary">
+        <i class="ki-duotone ki-pencil fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Edit" %}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+    <div class="row g-5 g-xl-8">
+        <!-- Chatbot Welcome Image Card -->
+        <div class="col-xl-4">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Welcome Image" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    {% if welcome_image %}
+                    <div class="d-flex flex-center flex-column py-8">
+                        <img src="{{ MEDIA_URL }}constance/{{ welcome_image }}" alt="{% trans 'Welcome Image' %}" class="mw-100 mh-300px rounded" />
+                        <div class="text-muted fs-7 mt-3">{% trans "Image sent before welcome message on WhatsApp" %}</div>
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-center flex-column py-5">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                            <div class="symbol-label fs-2 fw-semibold bg-light-primary text-primary">
+                                <i class="ki-duotone ki-picture fs-3x">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </div>
+                        </div>
+                        <div class="text-muted fs-6 mt-5">{% trans "No welcome image configured" %}</div>
+                        <div class="text-muted fs-7 mt-2">{% trans "Only the welcome message will be sent" %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbot Settings Card -->
+        <div class="col-xl-8">
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Welcome Message" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="py-5">
+                        <div class="fw-bold mb-3">{% trans "Current Message" %}</div>
+                        <div class="bg-light-primary rounded p-5">
+                            <pre class="text-gray-800 mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ welcome_message }}</pre>
+                        </div>
+                        <div class="text-muted fs-7 mt-3">
+                            {% trans "This message is displayed when a user starts a conversation with the chatbot." %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channel Information Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Channel Behavior" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">
+                                        <i class="ki-duotone ki-whatsapp fs-2 me-2 text-success">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "WhatsApp" %}
+                                    </td>
+                                    <td>
+                                        {% if welcome_image %}
+                                        {% trans "Image with welcome message as caption" %}
+                                        {% else %}
+                                        {% trans "Welcome message only" %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-gray-800">
+                                        <i class="ki-duotone ki-send fs-2 me-2 text-primary">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "Telegram" %}
+                                    </td>
+                                    <td>{% trans "Welcome message only (no image)" %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -44,6 +44,10 @@ class Company(
         verbose_name = _("Company")
         verbose_name_plural = _("Companies")
         ordering = ["name"]
+        permissions = [
+            ("view_chatbot_settings", "Can view chatbot settings"),
+            ("change_chatbot_settings", "Can change chatbot settings"),
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.tax_id})"

@@ -2,14 +2,63 @@ import json
 import logging
 
 from asgiref.sync import async_to_sync
+from constance import config
+from django.contrib import messages
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import FormView, TemplateView
 
 from apps.chatbot.channels.whatsapp.handlers import WhatsAppBotHandler
+from apps.chatbot.forms import ChatbotSettingsForm
 
 logger = logging.getLogger(__name__)
+
+
+class ChatbotSettingsDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, TemplateView
+):
+    """View to display chatbot settings."""
+
+    template_name = "chatbot/settings/detail.html"
+    permission_required = "customers.view_chatbot_settings"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["welcome_image"] = config.CHATBOT_WELCOME_IMAGE
+        context["welcome_message"] = config.CHATBOT_WELCOME_MESSAGE
+        return context
+
+
+class ChatbotSettingsUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
+    """View to update chatbot settings."""
+
+    template_name = "chatbot/settings/form.html"
+    form_class = ChatbotSettingsForm
+    permission_required = "customers.change_chatbot_settings"
+    success_url = reverse_lazy("apps.chatbot:chatbot-settings-detail")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["welcome_image"] = config.CHATBOT_WELCOME_IMAGE
+        context["action"] = _("Edit")
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(
+            self.request, _("Chatbot settings updated successfully.")
+        )
+        return super().form_valid(form)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

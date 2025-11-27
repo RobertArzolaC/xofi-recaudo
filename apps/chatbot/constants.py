@@ -4,23 +4,6 @@
 # TELEGRAM BOT MESSAGES
 # ==========================================
 
-WELCOME_MESSAGE = """
-🤖 *Bienvenido al Asistente Virtual de XoFi*
-
-Soy tu asistente virtual y estoy aquí para ayudarte con:
-
-📋 Consultas sobre tu cuenta y préstamos
-💰 Estado de cuenta y pagos
-🎫 Soporte técnico
-📄 Carga de comprobantes
-
-Para comenzar, necesito autenticarte.
-
-Por favor, envía tu *número de documento* y *año de nacimiento* separados por un espacio.
-
-*Ejemplo:* 12345678 1990
-"""
-
 HELP_MESSAGE = """
 🤖 *Comandos Disponibles*
 
