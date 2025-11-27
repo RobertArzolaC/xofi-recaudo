@@ -201,7 +201,7 @@ class FileCampaignExecutor(BaseCampaignExecutor):
                 if magic_link:
                     payment_link_path = magic_link.get_public_url()
                     payment_link_url = (
-                        f"http://{config.COMPANY_DOMAIN}{payment_link_path}"
+                        f"https://{config.COMPANY_DOMAIN}{payment_link_path}"
                     )
                     self.logger.debug(
                         f"Generated payment link for contact {contact.full_name}: {payment_link_url}"
