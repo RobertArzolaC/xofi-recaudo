@@ -4,6 +4,7 @@ from typing import Dict, Optional
 from apps.campaigns import choices
 from apps.campaigns import models as campaign_models
 from apps.campaigns.utils import messages as message_utils
+from apps.notifications import models
 from apps.notifications.providers.factory import ProviderFactory
 from apps.partners import models as partner_models
 from apps.partners import services as partner_services
@@ -160,27 +161,21 @@ class NotificationSenderService:
         Returns:
             str: Generated message content
         """
-        # Try to get message template
-        from apps.notifications.models import MessageTemplate
-
         try:
-            template = MessageTemplate.objects.get(
+            template = models.MessageTemplate.objects.get(
                 template_type=notification.notification_type,
                 channel=notification.channel,
                 is_active=True,
             )
-        except MessageTemplate.DoesNotExist:
+        except models.MessageTemplate.DoesNotExist:
             template = None
 
-        # Get debt details for the recipient
         debt_detail = cls._get_debt_detail(notification)
 
-        # Prepare context
         context = message_utils.prepare_message_context(
             notification, debt_detail
         )
 
-        # Render message
         if template:
             message = template.render_message(context)
         else:
@@ -204,15 +199,11 @@ class NotificationSenderService:
 
         recipient = notification.recipient
 
-        # For Partner recipients
         if isinstance(recipient, partner_models.Partner):
             return partner_services.PartnerDebtService.get_single_partner_debt_detail(
                 recipient
             )
-
-        # For CSVContact recipients
         elif isinstance(recipient, campaign_models.CSVContact):
-            # CSVContact uses custom amounts
             return {
                 "total_debt": recipient.amount,
                 "credit_debt": 0,
@@ -225,7 +216,6 @@ class NotificationSenderService:
                 "overdue_penalties": [],
             }
 
-        # Default empty debt
         return {
             "total_debt": notification.total_debt_amount or 0,
             "credit_debt": 0,

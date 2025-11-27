@@ -94,8 +94,8 @@ class CampaignForm(forms.ModelForm):
                 choices.CampaignStatus.DRAFT.label,
             ),
             (
-                choices.CampaignStatus.SCHEDULED,
-                choices.CampaignStatus.SCHEDULED.label,
+                choices.CampaignStatus.ACTIVE,
+                choices.CampaignStatus.ACTIVE.label,
             ),
         ]
 

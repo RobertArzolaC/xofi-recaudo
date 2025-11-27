@@ -1,9 +1,3 @@
-"""
-Base campaign executor.
-
-This module defines the abstract base class for all campaign executors.
-"""
-
 import logging
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
@@ -106,6 +100,9 @@ class BaseCampaignExecutor(ABC):
             error_msg = "Campaign is already being processed"
             self.logger.warning(f"Campaign {self.campaign.id} - {error_msg}")
             return {"success": False, "error": error_msg}
+
+        # Update campaign status
+        self.campaign.update_status(choices.CampaignStatus.SENDING)
 
         try:
             # Create notifications

@@ -288,6 +288,7 @@ class CSVCampaignNotificationService:
         Returns:
             dict: Summary of created notifications
         """
-        from apps.notifications.services import NotificationService
+        from apps.notifications.executors import FileCampaignExecutor
 
-        return NotificationService.execute_campaign(campaign_csv)
+        executor = FileCampaignExecutor(campaign_csv)
+        return executor.execute()

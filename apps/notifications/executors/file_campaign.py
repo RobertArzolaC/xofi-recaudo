@@ -60,8 +60,8 @@ class FileCampaignExecutor(BaseCampaignExecutor):
             return False, "Campaign has no execution date"
 
         valid_statuses = [
-            campaign_choices.CampaignStatus.ACTIVE,
             campaign_choices.CampaignStatus.SCHEDULED,
+            campaign_choices.CampaignStatus.PROCESSING,
         ]
         if self.campaign.status not in valid_statuses:
             return (

@@ -358,16 +358,22 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
                     status=400,
                 )
 
-            # Queue the campaign execution task
+            # Schedule the campaign execution task
             task = notification_tasks.process_campaign_notifications.delay(
                 campaign.id, campaign.campaign_type
             )
             message = _(
-                "Campaign '{campaign_name}' has been queued for execution."
-            ).format(campaign_name=campaign.name)
+                "Campaign '{campaign_name}' has been scheduled for execution at {execution_date}."
+            ).format(
+                campaign_name=campaign.name,
+                execution_date=campaign.execution_date.strftime(
+                    "%Y-%m-%d %H:%M"
+                ),
+            )
 
             logger.info(
-                f"Campaign {campaign.id} '{campaign.name}' queued for execution by user {request.user.username}. "
+                f"Campaign {campaign.id} '{campaign.name}' scheduled for execution at "
+                f"{campaign.execution_date} by user {request.user.username}. "
                 f"Current status: {campaign.get_status_display()}"
             )
 
@@ -378,6 +384,7 @@ class CampaignExecuteView(LoginRequiredMixin, PermissionRequiredMixin, View):
                     "task_id": task.id,
                     "campaign_id": campaign.id,
                     "current_status": campaign.get_status_display(),
+                    "execution_date": str(campaign.execution_date),
                 }
             )
 
@@ -623,16 +630,22 @@ class CampaignCSVFileExecuteView(
                     status=400,
                 )
 
-            # Queue the campaign execution task
+            # Schedule the campaign execution task
             task = notification_tasks.process_campaign_notifications.delay(
                 campaign.id, campaign.campaign_type
             )
             message = _(
-                "CSV Campaign '{campaign_name}' has been queued for execution."
-            ).format(campaign_name=campaign.name)
+                "CSV Campaign '{campaign_name}' has been scheduled for execution at {execution_date}."
+            ).format(
+                campaign_name=campaign.name,
+                execution_date=campaign.execution_date.strftime(
+                    "%Y-%m-%d %H:%M"
+                ),
+            )
 
             logger.info(
-                f"CSV Campaign {campaign.id} '{campaign.name}' queued for execution by user {request.user.username}. "
+                f"CSV Campaign {campaign.id} '{campaign.name}' scheduled for execution at "
+                f"{campaign.execution_date} by user {request.user.username}. "
                 f"Current status: {campaign.get_status_display()}"
             )
 
@@ -643,6 +656,7 @@ class CampaignCSVFileExecuteView(
                     "task_id": task.id,
                     "campaign_id": campaign.id,
                     "current_status": campaign.get_status_display(),
+                    "execution_date": str(campaign.execution_date),
                 }
             )
 

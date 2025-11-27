@@ -2,14 +2,14 @@ import logging
 
 from celery import shared_task
 from django.utils import timezone
+from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
-from apps.campaigns import choices as notifications_choices
+from apps.campaigns import choices as campaigns_choices
 from apps.campaigns import models as campaign_models
 from apps.notifications import choices as notification_choices
-from apps.notifications import models
+from apps.notifications import executors, models
 from apps.notifications.services import (
     NotificationSenderService,
-    NotificationService,
     WhatsAppRateLimiter,
 )
 
@@ -21,24 +21,25 @@ def process_campaign_notifications(
     campaign_id: int, campaign_type: str = "GROUP"
 ) -> dict:
     """
-    Process and schedule notifications for a campaign.
+    Schedule notifications for a campaign based on its execution date.
 
-    This task creates notification records for campaigns (both group and file-based).
+    This task creates a scheduled task in Celery Beat to send notifications
+    at the campaign's execution date.
 
     Args:
         campaign_id: ID of the campaign to process
         campaign_type: Type of campaign ('GROUP' or 'FILE')
 
     Returns:
-        dict: Summary of created notifications
+        dict: Summary of scheduling result
     """
     logger.info(
-        f"Starting to process {campaign_type} campaign notifications for campaign {campaign_id}"
+        f"Starting to schedule {campaign_type} campaign notifications for campaign {campaign_id}"
     )
 
     try:
         # Get the appropriate campaign model
-        if campaign_type == "FILE":
+        if campaign_type == campaigns_choices.CampaignType.FILE:
             campaign = campaign_models.CampaignCSVFile.objects.get(
                 id=campaign_id
             )
@@ -51,17 +52,106 @@ def process_campaign_notifications(
             f"Campaign found: '{campaign.name}' "
             f"(Type: {campaign_type}, Status: {campaign.get_status_display()})"
         )
-    except Exception:
+    except Exception as e:
         logger.error(
-            f"{campaign_type.capitalize()} campaign {campaign_id} not found"
+            f"{campaign_type.capitalize()} campaign {campaign_id} not found: {e}"
         )
         return {"success": False, "error": "Campaign not found"}
 
-    # Execute campaign using the notification service
-    result = NotificationService.execute_campaign(campaign)
+    # Validate execution date
+    if not campaign.execution_date:
+        logger.error(f"Campaign {campaign_id} has no execution date configured")
+        return {"success": False, "error": "No execution date configured"}
+
+    # Create a ClockedSchedule for the campaign's execution date
+    clocked, _ = ClockedSchedule.objects.get_or_create(
+        clocked_time=campaign.execution_date
+    )
+
+    # Create or update the periodic task
+    task_name = f"campaign_{campaign_type.lower()}_{campaign_id}_notifications"
+
+    # Remove any existing task with the same name
+    PeriodicTask.objects.filter(name=task_name).delete()
+
+    # Create new periodic task
+    periodic_task = PeriodicTask.objects.create(
+        clocked=clocked,
+        name=task_name,
+        task="notifications.schedule_campaign_notifications_task",
+        args=f'[{campaign_id}, "{campaign_type}"]',
+        one_off=True,
+        enabled=True,
+    )
+
+    # Update campaign status to SCHEDULED
+    campaign.update_status(campaigns_choices.CampaignStatus.SCHEDULED)
 
     logger.info(
-        f"Campaign {campaign_id} processing finished - Success: {result.get('success')}. "
+        f"Scheduled campaign {campaign_id} notifications to be sent at {campaign.execution_date}"
+    )
+
+    return {
+        "success": True,
+        "message": f"Campaign notifications scheduled for {campaign.execution_date}",
+        "scheduled_task_id": periodic_task.id,
+        "execution_date": str(campaign.execution_date),
+    }
+
+
+@shared_task(name="notifications.schedule_campaign_notifications_task")
+def schedule_campaign_notifications_task(
+    campaign_id: int, campaign_type: str = "GROUP"
+) -> dict:
+    """
+    Execute campaign and create notification records.
+
+    This task is scheduled by process_campaign_notifications and runs
+    at the campaign's execution date to create notifications.
+
+    Args:
+        campaign_id: ID of the campaign to execute
+        campaign_type: Type of campaign ('GROUP' or 'FILE')
+
+    Returns:
+        dict: Summary of created notifications
+    """
+
+    logger.info(
+        f"Executing scheduled notifications for {campaign_type} campaign {campaign_id}"
+    )
+
+    try:
+        # Get the appropriate campaign model
+        if campaign_type == campaigns_choices.CampaignType.FILE:
+            campaign = campaign_models.CampaignCSVFile.objects.get(
+                id=campaign_id
+            )
+            executor = executors.FileCampaignExecutor(campaign)
+        else:
+            campaign = campaign_models.Campaign.objects.select_related(
+                "group"
+            ).get(id=campaign_id)
+            executor = executors.GroupCampaignExecutor(campaign)
+
+        # Update campaign status to PROCESSING
+        campaign.update_status(campaigns_choices.CampaignStatus.PROCESSING)
+
+        logger.info(
+            f"Campaign found: '{campaign.name}' "
+            f"(Type: {campaign_type}, Status: {campaign.get_status_display()})"
+        )
+    except Exception as e:
+        logger.error(
+            f"{campaign_type.capitalize()} campaign {campaign_id} not found: {e}"
+        )
+        return {"success": False, "error": "Campaign not found"}
+
+    # Execute the campaign using the executor
+    result = executor.execute()
+
+    logger.info(
+        f"Campaign {campaign_id} execution finished - Success: {result.get('success')}. "
         f"Message: {result.get('message', 'N/A')}"
     )
 
@@ -83,13 +173,11 @@ def send_scheduled_notifications() -> dict:
         dict: Summary of sent notifications
     """
     logger.info("Starting scheduled notifications processing")
-    now = timezone.now()
-    logger.info(f"Current time: {now}")
 
     # Get all pending notifications scheduled for now or earlier
     pending_notifications = models.CampaignNotification.objects.filter(
-        status=notifications_choices.NotificationStatus.PENDING,
-        scheduled_at__lte=now,
+        status=campaigns_choices.NotificationStatus.PENDING,
+        scheduled_at__lte=timezone.now(),
     ).select_related("campaign_type", "recipient_type")
 
     total_pending = pending_notifications.count()
@@ -128,8 +216,8 @@ def send_scheduled_notifications() -> dict:
 
             # Check if campaign can send notifications
             valid_sending_statuses = [
-                notifications_choices.CampaignStatus.ACTIVE,
-                notifications_choices.CampaignStatus.SENDING,
+                campaigns_choices.CampaignStatus.ACTIVE,
+                campaigns_choices.CampaignStatus.SENDING,
             ]
 
             if campaign.status not in valid_sending_statuses:
@@ -138,14 +226,14 @@ def send_scheduled_notifications() -> dict:
                     f"cannot send notifications (status: {campaign.get_status_display()})"
                 )
                 notification.status = (
-                    notifications_choices.NotificationStatus.CANCELLED
+                    campaigns_choices.NotificationStatus.CANCELLED
                 )
                 notification.save(update_fields=["status"])
                 cancelled_count += 1
                 continue
 
             # Transition campaign to SENDING if it's ACTIVE
-            if campaign.status == notifications_choices.CampaignStatus.ACTIVE:
+            if campaign.status == campaigns_choices.CampaignStatus.ACTIVE:
                 campaigns_to_update.add(
                     (campaign.id, notification.campaign_type.model)
                 )
@@ -169,34 +257,6 @@ def send_scheduled_notifications() -> dict:
                 exc_info=True,
             )
             failed_count += 1
-
-    # Update campaign statuses to SENDING
-    if campaigns_to_update:
-        for campaign_id, model_type in campaigns_to_update:
-            try:
-                if model_type == "campaign":
-                    campaign_models.Campaign.objects.filter(
-                        id=campaign_id,
-                        status=notifications_choices.CampaignStatus.ACTIVE,
-                    ).update(
-                        status=notifications_choices.CampaignStatus.SENDING
-                    )
-                elif model_type == "campaigncsvfile":
-                    campaign_models.CampaignCSVFile.objects.filter(
-                        id=campaign_id,
-                        status=notifications_choices.CampaignStatus.ACTIVE,
-                    ).update(
-                        status=notifications_choices.CampaignStatus.SENDING
-                    )
-            except Exception as e:
-                logger.error(
-                    f"Error updating campaign {campaign_id} status: {e}",
-                    exc_info=True,
-                )
-
-        logger.info(
-            f"Processed {len(campaigns_to_update)} campaign status transitions"
-        )
 
     logger.info(
         f"Scheduled notifications processing completed: "
@@ -261,6 +321,11 @@ def send_notification(self, notification_id: int) -> dict:
 
     logger.info(
         f"Sending notification {notification_id} via {notification.get_channel_display()}"
+    )
+
+    # Update campaign status to SENDING
+    notification.campaign.update_status(
+        campaigns_choices.CampaignStatus.COMPLETED
     )
 
     # Send notification using the service
