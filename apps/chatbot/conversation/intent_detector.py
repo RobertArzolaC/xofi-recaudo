@@ -2,6 +2,8 @@ import logging
 import re
 from typing import Dict, Optional
 
+import spacy
+
 from apps.chatbot.choices import IntentType
 from apps.chatbot.constants import INTENT_KEYWORDS
 from apps.chatbot.services.gemini import GeminiService
@@ -30,8 +32,6 @@ class IntentDetector:
     def __init__(self):
         """Initialize spaCy model."""
         try:
-            import spacy
-
             try:
                 self.nlp = spacy.load("es_core_news_sm")
             except OSError:

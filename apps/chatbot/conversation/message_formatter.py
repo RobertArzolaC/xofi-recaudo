@@ -20,7 +20,6 @@ class MessageFormatter:
     def format_account_statement(summary_data: Dict) -> str:
         """Format account statement summary."""
         summary = summary_data.get("summary", {})
-        print("summary", summary)
         return constants.ACCOUNT_STATEMENT_TEMPLATE.format(
             total_credits=summary.get("total_credits", 0),
             active_credits_count=summary.get("active_credits_count", 0),
