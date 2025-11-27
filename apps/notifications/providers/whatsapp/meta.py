@@ -1,9 +1,3 @@
-"""
-Meta WhatsApp Business API Provider.
-
-This module provides WhatsApp messaging via Meta's official Cloud API.
-"""
-
 import logging
 from typing import Dict, Optional
 
@@ -26,7 +20,9 @@ class MetaWhatsAppProvider(BaseProvider):
         """Initialize Meta WhatsApp provider."""
         super().__init__()
         self.token = getattr(settings, "WHATSAPP_API_TOKEN", None)
-        self.phone_number_id = getattr(settings, "WHATSAPP_PHONE_NUMBER_ID", None)
+        self.phone_number_id = getattr(
+            settings, "WHATSAPP_PHONE_NUMBER_ID", None
+        )
         self.messenger = None
 
         if WhatsApp is None:
@@ -77,7 +73,9 @@ class MetaWhatsAppProvider(BaseProvider):
             response = self.messenger.send_message(
                 message=message, recipient_id=clean_phone
             )
-            self.logger.info(f"Message sent to {clean_phone} via Meta API: {response}")
+            self.logger.info(
+                f"Message sent to {clean_phone} via Meta API: {response}"
+            )
             return {"success": True, "response": response}
         except Exception as e:
             return self.handle_error(recipient, e)

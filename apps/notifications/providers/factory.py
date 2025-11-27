@@ -5,6 +5,8 @@ from django.conf import settings
 
 from apps.campaigns import choices
 from apps.notifications.providers.base import BaseProvider
+from apps.notifications.providers.telegram import TelegramBotProvider
+from apps.notifications.providers.whatsapp import WHAPIProvider
 
 logger = logging.getLogger(__name__)
 
@@ -32,26 +34,15 @@ class ProviderFactory:
 
         This method is called once to populate the provider registry.
         """
-        # Register WhatsApp providers
         try:
-            from apps.notifications.providers.whatsapp import (
-                MetaWhatsAppProvider,
-                WHAPIProvider,
-            )
-
             cls._WHATSAPP_PROVIDERS = {
-                "meta": MetaWhatsAppProvider,
+                "meta": "MetaWhatsAppProvider",
                 "whapi": WHAPIProvider,
             }
         except ImportError as e:
             logger.warning(f"Failed to import WhatsApp providers: {e}")
 
-        # Register Telegram providers
         try:
-            from apps.notifications.providers.telegram import (
-                TelegramBotProvider,
-            )
-
             cls._TELEGRAM_PROVIDERS = {
                 "telegram_bot": TelegramBotProvider,
             }
