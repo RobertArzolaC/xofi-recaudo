@@ -122,6 +122,16 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+CELERY_TASK_DEFAULT_QUEUE = "recaudo"
+CELERY_TASK_QUEUES = {
+    "recaudo": {
+        "exchange": "recaudo",
+        "routing_key": "recaudo",
+    },
+}
+CELERY_TASK_DEFAULT_EXCHANGE = "recaudo"
+CELERY_TASK_DEFAULT_ROUTING_KEY = "recaudo"
+
 MIDDLEWARE += [  # noqa
     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
