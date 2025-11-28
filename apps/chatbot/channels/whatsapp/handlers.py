@@ -119,6 +119,46 @@ class WhatsAppBotHandler:
         logger.info(f"Received text from {sender_phone}: {user_message}")
 
         try:
+            # Get or create conversation to check auth status
+            conversation = await self.conversation_service.aget_or_create_conversation_whatsapp(
+                sender_phone
+            )
+
+            # Check if user needs authentication
+            if not conversation.authenticated:
+                # Use special handler that returns image info
+                (
+                    response,
+                    image_url,
+                ) = await self.conversation_service._ahandle_authentication_whatsapp(
+                    conversation, user_message
+                )
+
+                # Save user message
+                await self.conversation_service.asave_message(
+                    conversation, "USER", user_message
+                )
+
+                # Send response with image if available (only for welcome, not auth attempts)
+                auth_data = (
+                    self.conversation_service.intent_detector.extract_auth_data(
+                        user_message
+                    )
+                )
+                if image_url and not auth_data:
+                    # Send image with welcome message as caption
+                    await self._send_image_message(
+                        sender_phone, image_url, response
+                    )
+                else:
+                    await self._send_text_message(sender_phone, response)
+
+                # Save agent response
+                await self.conversation_service.asave_message(
+                    conversation, "AGENT", response
+                )
+                return
+
             # Process message through conversation service (async)
             response = (
                 await self.conversation_service.aprocess_message_whatsapp(
@@ -309,6 +349,42 @@ class WhatsAppBotHandler:
 
         except Exception as e:
             logger.error(f"Error sending text message: {e}", exc_info=True)
+
+    async def _send_image_message(
+        self, recipient_phone: str, image_url: str, caption: str
+    ) -> None:
+        """
+        Send an image message via WhatsApp.
+
+        Args:
+            recipient_phone: Recipient's phone number
+            image_url: URL of the image to send
+            caption: Caption text for the image
+        """
+        try:
+            # Run sync WhatsApp send in executor
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                None,
+                self.whatsapp_service.send_image_message,
+                recipient_phone,
+                image_url,
+                caption,
+            )
+
+            if result.get("success"):
+                logger.info(f"Image message sent to {recipient_phone}")
+            else:
+                logger.error(
+                    f"Failed to send image message to {recipient_phone}: {result.get('error')}"
+                )
+                # Fallback to text message if image fails
+                await self._send_text_message(recipient_phone, caption)
+
+        except Exception as e:
+            logger.error(f"Error sending image message: {e}", exc_info=True)
+            # Fallback to text message
+            await self._send_text_message(recipient_phone, caption)
 
     async def _download_media(self, media_url: str) -> Optional[bytes]:
         """

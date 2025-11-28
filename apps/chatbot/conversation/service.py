@@ -312,6 +312,73 @@ class ConversationService:
         """Async version: Handle authentication flow."""
         return self._handle_authentication(conversation, message)
 
+    def _handle_authentication_whatsapp(
+        self, conversation: models.AgentConversation, message: str
+    ) -> tuple:
+        """
+        Handle authentication flow for WhatsApp with image support.
+
+        Returns:
+            tuple: (response_message, image_url or None)
+        """
+        from constance import config
+        from django.conf import settings
+
+        # Check if message contains auth data
+        auth_data = self.intent_detector.extract_auth_data(message)
+
+        if not auth_data:
+            # Return welcome message with optional image
+            welcome_message = self.formatter.format_authentication_prompt()
+            welcome_image = self.formatter.get_welcome_image()
+
+            image_url = None
+            if welcome_image:
+                domain = config.COMPANY_DOMAIN.rstrip("/")
+                media_url = settings.MEDIA_URL.strip("/")
+                image_url = f"{domain}/{media_url}/constance/{welcome_image}"
+
+            return welcome_message, image_url
+
+        # Attempt authentication
+        partner = self.auth_service.authenticate(
+            auth_data["document_number"], auth_data["birth_year"]
+        )
+
+        if partner:
+            conversation.partner = partner
+            conversation.authenticated = True
+            conversation.status = choices.ConversationStatus.AUTHENTICATED
+            conversation.save()
+
+            logger.info(
+                f"Partner {partner.id} authenticated in conversation {conversation.id}"
+            )
+
+            return (
+                self.formatter.format_success_message(
+                    constants.AUTHENTICATION_SUCCESS_TEMPLATE.format(
+                        name=partner.full_name,
+                        menu=self.formatter.format_help_message(),
+                    )
+                ),
+                None,
+            )
+        else:
+            return (
+                self.formatter.format_error_message(
+                    constants.AUTHENTICATION_ERROR
+                ),
+                None,
+            )
+
+    @sync_to_async
+    def _ahandle_authentication_whatsapp(
+        self, conversation: models.AgentConversation, message: str
+    ) -> tuple:
+        """Async version: Handle authentication flow for WhatsApp with image support."""
+        return self._handle_authentication_whatsapp(conversation, message)
+
     def _route_intent(
         self, conversation: models.AgentConversation, message: str, intent: str
     ) -> str:

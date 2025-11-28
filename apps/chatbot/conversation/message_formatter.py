@@ -1,10 +1,12 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
+
+from constance import config
 
 from apps.chatbot import constants
 
 
 class MessageFormatter:
-    """Helper class to format messages for Telegram."""
+    """Helper class to format messages for Telegram and WhatsApp."""
 
     @staticmethod
     def format_partner_info(partner_data: Dict) -> str:
@@ -73,8 +75,17 @@ class MessageFormatter:
 
     @staticmethod
     def format_authentication_prompt() -> str:
-        """Format authentication request message."""
-        return constants.AUTHENTICATION_PROMPT
+        """Format authentication request message using constance configuration."""
+        return config.CHATBOT_WELCOME_MESSAGE
+
+    @staticmethod
+    def get_welcome_image() -> Optional[str]:
+        """Get welcome image filename from constance configuration.
+
+        Returns:
+            str or None: Image filename if configured, None otherwise.
+        """
+        return config.CHATBOT_WELCOME_IMAGE or None
 
     @staticmethod
     def format_error_message(error: str) -> str:
