@@ -77,21 +77,22 @@
                             <div class="debt-list">
                                 {% for debt in debts %}
                                 <div class="debt-item-card mb-3 p-4 border border-gray-300 rounded-3 bg-hover-light-primary cursor-pointer"
-                                     data-amount="{{ debt.amount }}"
-                                     data-debt-id="{{ debt.object.id }}"
-                                     data-debt-type="{{ debt.type }}"
-                                     onclick="toggleDebt(this, event)">
+                                    data-amount="{{ debt.amount }}"
+                                    data-debt-id="{{ debt.object.id }}"
+                                    data-debt-type="{{ debt.type }}"
+                                    onclick="toggleDebt(this, event)"
+                                >
                                     <div class="d-flex align-items-start">
                                         <div class="form-check form-check-custom form-check-solid me-4 mt-1">
                                             <input class="form-check-input debt-checkbox"
-                                                   type="checkbox"
-                                                   name="selected_debts"
-                                                   value="{{ debt.object.id }}"
-                                                   data-type="{{ debt.type }}"
-                                                   data-amount="{{ debt.amount }}"
-                                                   checked
-                                                   id="debt_{{ forloop.counter }}">
-
+                                                type="checkbox"
+                                                name="selected_debts"
+                                                value="{{ debt.object.id }}"
+                                                data-type="{{ debt.type }}"
+                                                data-amount="{{ debt.amount }}"
+                                                checked
+                                                id="debt_{{ forloop.counter }}"
+                                            >
                                         </div>
 
                                         <div class="flex-grow-1">
@@ -106,9 +107,9 @@
                                                             <span class="path1"></span>
                                                             <span class="path2"></span>
                                                         </i>
-                                                        {% trans "Vence:" %} {{ debt.due_date|date:"d/m/Y" }}
-                                                        {% if debt.due_date < today %}
-                                                        <span class="badge badge-light-danger ms-2">{% trans "Vencida" %}</span>
+                                                        {% trans "Vence:" %} {{ debt.due_date }}
+                                                        {% if debt.is_overdue %}
+                                                            <span class="badge badge-light-danger ms-2">{% trans "Vencida" %}</span>
                                                         {% endif %}
                                                     </p>
                                                 </div>

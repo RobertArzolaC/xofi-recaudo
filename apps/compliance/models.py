@@ -102,7 +102,7 @@ class BaseCompliancePayment(
     def get_month_display(self) -> str:
         """Get month name from month number."""
 
-        return core_choices.Month(self.period_month).label
+        return core_choices.MonthChoices(self.period_month).label
 
 
 class Contribution(BaseCompliancePayment):

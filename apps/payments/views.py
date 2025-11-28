@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Any, Dict
 
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
@@ -602,46 +604,59 @@ class MagicPaymentLinkPublicView(TemplateView):
                     debt_obj = Installment.objects.select_related("credit").get(
                         id=debt_id
                     )
+                    due_date = debt_meta.get("due_date")
+                    description = f"Crédito #{debt_obj.credit.id} - Cuota #{debt_obj.installment_number}"
                     debt_info = {
-                        "type": "Aporte",
-                        "description": f"Aporte #{debt_meta.get('number')}",
+                        "type": "Cuota",
+                        "description": description,
                         "amount": debt_meta.get("amount"),
-                        "due_date": debt_meta.get("due_date"),
+                        "due_date": due_date,
                         "object": debt_obj,
+                        "is_overdue": self._is_overdue(due_date),
                     }
                 elif debt_type == "contribution":
                     debt_obj = Contribution.objects.get(id=debt_id)
+                    due_date = debt_meta.get("due_date")
                     debt_info = {
-                        "type": "Aportación",
-                        "description": debt_obj.name,
+                        "type": "Aporte",
+                        "description": f"Aporte - {debt_obj.period_display}",
                         "amount": debt_meta.get("amount"),
-                        "due_date": debt_meta.get("due_date"),
+                        "due_date": due_date,
                         "object": debt_obj,
+                        "is_overdue": self._is_overdue(due_date),
                     }
                 elif debt_type == "socialsecurity":
                     debt_obj = SocialSecurity.objects.get(id=debt_id)
+                    due_date = debt_meta.get("due_date")
                     debt_info = {
-                        "type": "Seguridad Social",
-                        "description": debt_obj.name,
+                        "type": "Previsión Social",
+                        "description": f"Previsión Social - {debt_obj.period_display}",
                         "amount": debt_meta.get("amount"),
-                        "due_date": debt_meta.get("due_date"),
+                        "due_date": due_date,
                         "object": debt_obj,
+                        "is_overdue": self._is_overdue(due_date),
                     }
                 elif debt_type == "penalty":
                     debt_obj = Penalty.objects.get(id=debt_id)
+                    due_date = debt_meta.get("due_date")
                     debt_info = {
-                        "type": "Penalidad",
-                        "description": debt_obj.name,
+                        "type": "Multa",
+                        "description": f"Multa - {debt_obj.description}",
                         "amount": debt_meta.get("amount"),
-                        "due_date": debt_meta.get("due_date"),
+                        "due_date": due_date,
                         "object": debt_obj,
+                        "is_overdue": self._is_overdue(due_date),
                     }
                 else:
                     continue
 
                 debts_data.append(debt_info)
 
-            except Exception:
+            except Exception as e:
+                logger.error(
+                    f"Error retrieving debt object for type {debt_type} "
+                    f"and ID {debt_id}: {e}"
+                )
                 # If debt object not found, use metadata only
                 debt_info = {
                     "type": debt_type.capitalize(),
@@ -655,3 +670,10 @@ class MagicPaymentLinkPublicView(TemplateView):
                 debts_data.append(debt_info)
 
         return debts_data
+
+    def _is_overdue(self, due_date):
+        """Check if a given due date is overdue compared to today."""
+
+        today = timezone.now().date()
+        due_date = datetime.strptime(due_date, "%Y-%m-%d").date()
+        return due_date < today
