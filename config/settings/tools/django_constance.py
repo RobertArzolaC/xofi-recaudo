@@ -26,24 +26,6 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     ],
 }
 
-# Default welcome message for chatbot
-CHATBOT_WELCOME_MESSAGE_DEFAULT = """
-🤖 *Bienvenido al Asistente Virtual de XoFi*
-
-Soy tu asistente virtual y estoy aquí para ayudarte con:
-
-📋 Consultas sobre tu cuenta y préstamos
-💰 Estado de cuenta y pagos
-🎫 Soporte técnico
-📄 Carga de comprobantes
-
-Para comenzar, necesito autenticarte.
-
-Por favor, envía tu *número de documento* y *año de nacimiento* separados por un espacio.
-
-*Ejemplo:* 12345678 1990
-"""
-
 CONSTANCE_CONFIG = {
     "PROJECT_NAME": ("Project Name", _("Project name.")),
     "COMPANY_LOGO_WHITE": ("default.png", _("Company logo"), "image_field"),
@@ -64,7 +46,7 @@ CONSTANCE_CONFIG = {
         "image_field",
     ),
     "CHATBOT_WELCOME_MESSAGE": (
-        CHATBOT_WELCOME_MESSAGE_DEFAULT,
+        "🤖 *Bienvenido al Asistente Virtual*",
         _("Chatbot welcome message displayed when user starts conversation."),
         "textarea_field",
     ),

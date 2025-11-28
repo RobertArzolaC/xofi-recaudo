@@ -321,24 +321,12 @@ class ConversationService:
         Returns:
             tuple: (response_message, image_url or None)
         """
-        from constance import config
-        from django.conf import settings
 
         # Check if message contains auth data
         auth_data = self.intent_detector.extract_auth_data(message)
 
         if not auth_data:
-            # Return welcome message with optional image
-            welcome_message = self.formatter.format_authentication_prompt()
-            welcome_image = self.formatter.get_welcome_image()
-
-            image_url = None
-            if welcome_image:
-                domain = config.COMPANY_DOMAIN.rstrip("/")
-                media_url = settings.MEDIA_URL.strip("/")
-                image_url = f"{domain}/{media_url}/constance/{welcome_image}"
-
-            return welcome_message, image_url
+            return self.formatter.format_authentication_prompt(), None
 
         # Attempt authentication
         partner = self.auth_service.authenticate(
@@ -416,7 +404,8 @@ class ConversationService:
             else "usuario"
         )
         return constants.GREETING_TEMPLATE.format(
-            name=partner_name, menu=self.formatter.format_help_message()
+            name=partner_name,
+            menu=self.formatter.format_help_message(),
         )
 
     def _handle_help(

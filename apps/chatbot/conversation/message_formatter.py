@@ -71,12 +71,12 @@ class MessageFormatter:
     @staticmethod
     def format_help_message() -> str:
         """Format help message with available options."""
-        return constants.MENU_MESSAGE
+        return f"{config.CHATBOT_WELCOME_MESSAGE}\n{constants.MENU_MESSAGE}"
 
     @staticmethod
     def format_authentication_prompt() -> str:
         """Format authentication request message using constance configuration."""
-        return config.CHATBOT_WELCOME_MESSAGE
+        return constants.AUTHENTICATION_PROMPT
 
     @staticmethod
     def get_welcome_image() -> Optional[str]:
