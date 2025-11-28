@@ -350,7 +350,8 @@ INTENT_KEYWORDS = {
 # Whapi CONSTANTS
 # ==========================================
 
-WHAPI_MESSAGE_TYPE_TEXT = "text"
-WHAPI_MESSAGE_TYPE_IMAGE = "image"
-WHAPI_MESSAGE_TYPE_BUTTON = "button"
-WHAPI_EVENT_TYPE_MESSAGES = "messages"
+MESSAGE_TYPE_TEXT = "text"
+MESSAGE_TYPE_IMAGE = "image"
+MESSAGE_TYPE_BUTTON = "button"
+MESSAGE_TYPE_INTERACTIVE = "interactive"
+EVENT_TYPE_MESSAGES = "messages"

@@ -46,7 +46,7 @@ class WhatsAppBotHandler:
             event = webhook_data.get("event", {})
             event_type = event.get("type", "")
 
-            if event_type != constants.WHAPI_EVENT_TYPE_MESSAGES:
+            if event_type != constants.EVENT_TYPE_MESSAGES:
                 logger.warning(f"Unsupported event type: {event_type}")
                 return {"status": "unsupported_event"}
 
@@ -87,11 +87,11 @@ class WhatsAppBotHandler:
             )
 
             # Handle different message types
-            if message_type == "text":
+            if message_type == constants.MESSAGE_TYPE_TEXT:
                 await self._handle_text_message(message)
-            elif message_type == "image":
+            elif message_type == constants.MESSAGE_TYPE_IMAGE:
                 await self._handle_image_message(message)
-            elif message_type == "interactive":
+            elif message_type == constants.MESSAGE_TYPE_INTERACTIVE:
                 await self._handle_interactive_message(message)
             else:
                 logger.warning(f"Unsupported message type: {message_type}")
@@ -160,14 +160,20 @@ class WhatsAppBotHandler:
                 return
 
             # Process message through conversation service (async)
-            response = (
-                await self.conversation_service.aprocess_message_whatsapp(
-                    sender_phone, user_message
-                )
+            (
+                response,
+                image_url,
+            ) = await self.conversation_service.aprocess_message_whatsapp(
+                sender_phone, user_message
             )
 
-            # Send response
-            await self._send_text_message(sender_phone, response)
+            # Send response with image if available (for greeting intent)
+            if image_url:
+                await self._send_image_message(
+                    sender_phone, image_url, response
+                )
+            else:
+                await self._send_text_message(sender_phone, response)
 
         except Exception as e:
             logger.error(f"Error processing text message: {e}", exc_info=True)

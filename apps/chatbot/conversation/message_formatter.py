@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional
 
 from constance import config
+from django.conf import settings
 
 from apps.chatbot import constants
 
@@ -86,6 +87,24 @@ class MessageFormatter:
             str or None: Image filename if configured, None otherwise.
         """
         return config.CHATBOT_WELCOME_IMAGE or None
+
+    @staticmethod
+    def get_welcome_image_url() -> Optional[str]:
+        """Get welcome image absolute URL from constance configuration.
+
+        Constructs the full URL using COMPANY_DOMAIN and MEDIA_URL settings.
+
+        Returns:
+            str or None: Absolute URL for the welcome image if configured, None otherwise.
+        """
+        welcome_image = config.CHATBOT_WELCOME_IMAGE
+        if not welcome_image:
+            return None
+
+        # Build absolute URL for the image
+        domain = config.COMPANY_DOMAIN.rstrip("/")
+        media_url = settings.MEDIA_URL.strip("/")
+        return f"{domain}/{media_url}/constance/{welcome_image}"
 
     @staticmethod
     def format_error_message(error: str) -> str:

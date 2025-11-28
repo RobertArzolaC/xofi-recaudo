@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 from asgiref.sync import sync_to_async
 from django.db import transaction
@@ -394,6 +394,37 @@ class ConversationService:
         """Async version: Route message to appropriate handler based on intent."""
         return self._route_intent(conversation, message, intent)
 
+    def _route_intent_whatsapp(
+        self, conversation: models.AgentConversation, message: str, intent: str
+    ) -> Tuple[str, Optional[str]]:
+        """Route message to appropriate handler for WhatsApp with image support.
+
+        For GREETING intent, returns response with welcome image URL.
+        For other intents, returns response with None as image URL.
+
+        Args:
+            conversation: The conversation instance.
+            message: The user's message.
+            intent: The detected intent.
+
+        Returns:
+            Tuple of (response_text, image_url or None).
+        """
+        # For greeting, use special handler with image support
+        if intent == choices.IntentType.GREETING:
+            return self._handle_greeting_whatsapp(conversation, message)
+
+        # For other intents, use regular handler and wrap in tuple
+        response = self._route_intent(conversation, message, intent)
+        return response, None
+
+    @sync_to_async
+    def _aroute_intent_whatsapp(
+        self, conversation: models.AgentConversation, message: str, intent: str
+    ) -> Tuple[str, Optional[str]]:
+        """Async version: Route message for WhatsApp with image support."""
+        return self._route_intent_whatsapp(conversation, message, intent)
+
     def _handle_greeting(
         self, conversation: models.AgentConversation, message: str
     ) -> str:
@@ -407,6 +438,30 @@ class ConversationService:
             name=partner_name,
             menu=self.formatter.format_help_message(),
         )
+
+    def _handle_greeting_whatsapp(
+        self, conversation: models.AgentConversation, message: str
+    ) -> Tuple[str, Optional[str]]:
+        """Handle greeting messages for WhatsApp with welcome image support.
+
+        Args:
+            conversation: The conversation instance.
+            message: The user's message.
+
+        Returns:
+            Tuple of (response_text, image_url or None).
+        """
+        partner_name = (
+            conversation.partner.first_name
+            if conversation.partner
+            else "usuario"
+        )
+        response = constants.GREETING_TEMPLATE.format(
+            name=partner_name,
+            menu=self.formatter.format_help_message(),
+        )
+        image_url = self.formatter.get_welcome_image_url()
+        return response, image_url
 
     def _handle_help(
         self, conversation: models.AgentConversation, message: str
@@ -576,7 +631,7 @@ class ConversationService:
         self,
         whatsapp_phone: str,
         user_message: str,
-    ) -> str:
+    ) -> Tuple[str, Optional[str]]:
         """
         Async version: Process a user message from WhatsApp and return the agent's response.
 
@@ -585,7 +640,8 @@ class ConversationService:
             user_message: User's message text
 
         Returns:
-            Agent's response text
+            Tuple of (response_text, image_url or None). Image URL is only
+            returned for greeting intents.
         """
         # Get or create conversation
         conversation = await self.aget_or_create_conversation_whatsapp(
@@ -602,7 +658,7 @@ class ConversationService:
             response = await self._ahandle_authentication(
                 conversation, user_message
             )
-            return response
+            return response, None
 
         # Check if there's a pending action in context - priority over intent detection
         context = conversation.context_data
@@ -623,7 +679,7 @@ class ConversationService:
             intent = pending_action_to_intent.get(
                 pending_action, choices.IntentType.UNKNOWN
             )
-            response = await self._aroute_intent(
+            response, image_url = await self._aroute_intent_whatsapp(
                 conversation, user_message, intent
             )
 
@@ -635,7 +691,7 @@ class ConversationService:
                 intent=intent,
             )
 
-            return response
+            return response, image_url
 
         # Detect intent only if no pending action
         intent = await sync_to_async(self.intent_detector.detect_intent)(
@@ -643,12 +699,14 @@ class ConversationService:
         )
         logger.info(f"Detected intent: {intent} for message: {user_message}")
 
-        # Route to appropriate handler
-        response = await self._aroute_intent(conversation, user_message, intent)
+        # Route to appropriate handler with WhatsApp image support
+        response, image_url = await self._aroute_intent_whatsapp(
+            conversation, user_message, intent
+        )
 
         # Save agent response
         await self.asave_message(
             conversation, choices.MessageSender.AGENT, response, intent=intent
         )
 
-        return response
+        return response, image_url
