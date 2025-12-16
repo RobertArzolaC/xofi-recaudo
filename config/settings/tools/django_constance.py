@@ -50,6 +50,8 @@ CONSTANCE_CONFIG = {
         _("Chatbot welcome message displayed when user starts conversation."),
         "textarea_field",
     ),
+    # UI Settings
+    "ENABLE_WELCOME_MESSAGE": (True, _("Enable welcome message on homepage.")),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -68,6 +70,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "ENABLE_SEND_EMAIL",
             "ENABLE_VERIFICATION_EMAIL",
             "ENABLE_PAYMENT_LINKS",
+            "ENABLE_WELCOME_MESSAGE",
         ),
         "collapse": False,
     },

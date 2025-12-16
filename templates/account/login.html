@@ -26,9 +26,11 @@
 
             <!-- Contenido Central -->
             <div class="d-flex flex-column my-auto ">
-                <h1 class="fw-normal text-center text-white fs-4qx pb-5 mb-5">
-                    {% blocktrans with project_name=config.PROJECT_NAME %}Welcome to <span class="fw-bold">{{ project_name }}</span>{% endblocktrans %}
-                </h1>
+                {% if ENABLE_WELCOME_MESSAGE %}
+                    <h1 class="fw-normal text-center text-white fs-4qx pb-5 mb-5">
+                        {% blocktrans with project_name=config.PROJECT_NAME %}Welcome to <span class="fw-bold">{{ project_name }}</span>{% endblocktrans %}
+                    </h1>
+                {% endif %}
                 <p class="fw-light text-center fs-2 text-white opacity-75">
                     {% trans "Simplify your cooperative management with integrated collection systems, automated accounting and complete member administration" %}
                 </p>
