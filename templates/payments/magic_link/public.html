@@ -194,13 +194,6 @@
 
                         <!-- Payment Methods -->
                         <div class="d-flex flex-wrap gap-3 mb-6">
-                            <div class="badge badge-light-primary p-3 d-flex align-items-center">
-                                <i class="ki-duotone ki-credit-cart fs-2x text-primary me-2">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-7">{% trans "Tarjetas" %}</span>
-                            </div>
                             <div class="badge badge-light-success p-3 d-flex align-items-center">
                                 <i class="ki-duotone ki-wallet fs-2x text-success me-2">
                                     <span class="path1"></span>
@@ -208,7 +201,7 @@
                                     <span class="path3"></span>
                                     <span class="path4"></span>
                                 </i>
-                                <span class="fs-7">{% trans "Yape" %}</span>
+                                <span class="fs-7">{% trans "Billeteras" %}</span>
                             </div>
                             <div class="badge badge-light-info p-3 d-flex align-items-center">
                                 <i class="ki-duotone ki-bank fs-2x text-info me-2">
@@ -239,7 +232,7 @@
                                 <div class="fw-semibold">
                                     <h6 class="text-gray-900 fw-bold mb-2">{% trans "Transacción Segura" %}</h6>
                                     <div class="fs-7 text-gray-700">
-                                        {% trans "Tu pago está protegido con encriptación de nivel bancario. El proceso puede tomar hasta 48 horas." %}
+                                        {% trans "Tu pago está protegido con encriptación de nivel bancario." %}
                                     </div>
                                 </div>
                             </div>
@@ -428,12 +421,12 @@
             lang: 'es',
             installments: false,
             paymentMethods: {
-                tarjeta: true,
+                tarjeta: false,
                 yape: true,
                 billetera: true,
                 bancaMovil: true,
                 agente: true,
-                cuotealo: true
+                cuotealo: false
             },
             style: {
                 logo: '',
@@ -529,6 +522,5 @@
             payButton.disabled = selectedDebts.length === 0;
         }
     }
-
 </script>
 {% endblock %}
