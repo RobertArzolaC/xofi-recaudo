@@ -2,67 +2,64 @@ import asyncio
 import logging
 from typing import Dict, Optional
 
-import requests
 from constance import config
 from django.conf import settings
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
 from apps.chatbot.services.gemini import GeminiService
-from apps.core.services.chats.whatsapp import WhatsAppService
+from apps.core.services.chats.whatsapp_official import WhatsAppOfficialService
 
 logger = logging.getLogger(__name__)
 
 
 class WhatsAppBotHandler:
-    """Handler for WhatsApp bot messages and media."""
+    """Handler for WhatsApp messages via Meta's official Business Cloud API."""
 
     def __init__(self):
-        """Initialize handlers and services."""
         self.conversation_service = ConversationService()
-        self.whatsapp_service = WhatsAppService()
+        self.whatsapp_service = WhatsAppOfficialService()
         self.gemini_service = GeminiService()
 
-    async def handle_webhook(self, webhook_data: Dict) -> Dict[str, any]:
+    async def handle_webhook(self, webhook_data: Dict) -> Dict:
         """
-        Handle incoming WhatsApp webhook from WHAPI.
+        Handle incoming webhook from Meta WhatsApp Business Cloud API.
 
-        WHAPI webhook structure:
+        Meta payload structure:
         {
-            "messages": [...],
-            "event": {"type": "messages", "event": "post"},
-            "channel_id": "..."
+            "object": "whatsapp_business_account",
+            "entry": [{
+                "id": "WABA_ID",
+                "changes": [{
+                    "value": {
+                        "messaging_product": "whatsapp",
+                        "messages": [{ "from": "51999...", "type": "text", "text": {"body": "..."} }],
+                        "statuses": [{ "id": "wamid.xxx", "status": "delivered" }]
+                    },
+                    "field": "messages"
+                }]
+            }]
         }
-
-        Args:
-            webhook_data: Webhook payload from WHAPI
-
-        Returns:
-            dict: Response data
         """
         try:
-            # Extract messages from WHAPI structure
-            messages = webhook_data.get("messages", [])
-            event = webhook_data.get("event", {})
-            event_type = event.get("type", "")
+            if webhook_data.get("object") != "whatsapp_business_account":
+                logger.warning(f"Unexpected webhook object: {webhook_data.get('object')}")
+                return {"status": "ignored"}
 
-            if event_type != constants.EVENT_TYPE_MESSAGES:
-                logger.warning(f"Unsupported event type: {event_type}")
-                return {"status": "unsupported_event"}
+            for entry in webhook_data.get("entry", []):
+                for change in entry.get("changes", []):
+                    if change.get("field") != "messages":
+                        continue
 
-            if not messages:
-                logger.warning("No messages in webhook data")
-                return {"status": "no_messages"}
+                    value = change.get("value", {})
 
-            # Process each message
-            for message in messages:
-                if message.get("from_me"):
-                    logger.info(
-                        f"Ignoring message from bot: {message.get('id')}"
-                    )
-                    continue
+                    # Handle incoming messages
+                    for message in value.get("messages", []):
+                        await self._process_message(message)
 
-                await self._process_message(message)
+                    # Handle status updates (delivered, read, failed)
+                    for status in value.get("statuses", []):
+                        self._process_status(status)
 
             return {"status": "success"}
 
@@ -71,31 +68,27 @@ class WhatsAppBotHandler:
             return {"status": "error", "error": str(e)}
 
     async def _process_message(self, message: Dict) -> None:
-        """
-        Process a single WhatsApp message.
-
-        Args:
-            message: Message data from webhook
-        """
+        """Process a single incoming WhatsApp message."""
         try:
-            # Extract message info
             sender_phone = message.get("from")
             message_type = message.get("type")
+            message_id = message.get("id")
 
-            logger.info(
-                f"Processing message from {sender_phone}, type: {message_type}"
-            )
+            logger.info(f"Processing {message_type} message from {sender_phone} (id={message_id})")
 
-            # Handle different message types
-            if message_type == constants.MESSAGE_TYPE_TEXT:
+            # Mark as read
+            if message_id:
+                loop = asyncio.get_event_loop()
+                await loop.run_in_executor(None, self.whatsapp_service.mark_as_read, message_id)
+
+            if message_type == "text":
                 await self._handle_text_message(message)
-            elif message_type == constants.MESSAGE_TYPE_IMAGE:
+            elif message_type == "image":
                 await self._handle_image_message(message)
-            elif message_type == constants.MESSAGE_TYPE_INTERACTIVE:
+            elif message_type == "interactive":
                 await self._handle_interactive_message(message)
             else:
                 logger.warning(f"Unsupported message type: {message_type}")
-                # Send unsupported message notification
                 await self._send_text_message(
                     sender_phone,
                     "Lo siento, ese tipo de mensaje no es soportado. "
@@ -105,28 +98,25 @@ class WhatsAppBotHandler:
         except Exception as e:
             logger.error(f"Error processing message: {e}", exc_info=True)
 
+    def _process_status(self, status: Dict) -> None:
+        """Log delivery/read status updates from Meta."""
+        message_id = status.get("id")
+        status_value = status.get("status")
+        logger.info(f"Status update — message {message_id}: {status_value}")
+
     async def _handle_text_message(self, message: Dict) -> None:
-        """
-        Handle text messages.
-
-        Args:
-            message: Text message data
-        """
+        """Handle a text message."""
         sender_phone = message.get("from")
-        text_data = message.get("text", {})
-        user_message = text_data.get("body", "")
+        user_message = message.get("text", {}).get("body", "")
 
-        logger.info(f"Received text from {sender_phone}: {user_message}")
+        logger.info(f"Text from {sender_phone}: {user_message}")
 
         try:
-            # Get or create conversation to check auth status
             conversation = await self.conversation_service.aget_or_create_conversation_whatsapp(
                 sender_phone
             )
 
-            # Check if user needs authentication
             if not conversation.authenticated:
-                # Use special handler that returns image info
                 (
                     response,
                     image_url,
@@ -134,78 +124,57 @@ class WhatsAppBotHandler:
                     conversation, user_message
                 )
 
-                # Save user message
-                await self.conversation_service.asave_message(
-                    conversation, "USER", user_message
-                )
+                await self.conversation_service.asave_message(conversation, "USER", user_message)
 
-                # Send response with image if available (only for welcome, not auth attempts)
-                auth_data = (
-                    self.conversation_service.intent_detector.extract_auth_data(
-                        user_message
-                    )
-                )
+                auth_data = self.conversation_service.intent_detector.extract_auth_data(user_message)
                 if image_url and not auth_data:
-                    # Send image with welcome message as caption
-                    await self._send_image_message(
-                        sender_phone, image_url, response
-                    )
+                    await self._send_image_message(sender_phone, image_url, response)
                 else:
                     await self._send_text_message(sender_phone, response)
 
-                # Save agent response
-                await self.conversation_service.asave_message(
-                    conversation, "AGENT", response
-                )
+                await self.conversation_service.asave_message(conversation, "AGENT", response)
                 return
 
-            # Process message through conversation service (async)
-            (
-                response,
-                image_url,
-            ) = await self.conversation_service.aprocess_message_whatsapp(
+            response, image_url = await self.conversation_service.aprocess_message_whatsapp(
                 sender_phone, user_message
             )
 
-            # Send response with image if available (for greeting intent)
             if image_url:
-                await self._send_image_message(
-                    sender_phone, image_url, response
-                )
+                await self._send_image_message(sender_phone, image_url, response)
             else:
                 await self._send_text_message(sender_phone, response)
 
         except Exception as e:
             logger.error(f"Error processing text message: {e}", exc_info=True)
-            await self._send_text_message(
-                sender_phone, constants.ERROR_PROCESSING_MESSAGE
-            )
+            await self._send_text_message(sender_phone, constants.ERROR_PROCESSING_MESSAGE)
 
     async def _handle_image_message(self, message: Dict) -> None:
         """
         Handle image messages (payment receipts).
 
-        Args:
-            message: Image message data
+        Meta image payload:
+        {
+            "type": "image",
+            "image": {
+                "id": "MEDIA_ID",
+                "mime_type": "image/jpeg",
+                "sha256": "...",
+                "caption": "optional caption"
+            }
+        }
         """
         sender_phone = message.get("from")
         image_data = message.get("image", {})
         caption = image_data.get("caption", "")
-        image_link = image_data.get("link")
-        image_id = image_data.get("id")
+        media_id = image_data.get("id")
 
-        image_bytes = None
-
-        logger.info(f"Received image from {sender_phone}, ID: {image_id}")
-        logger.info(f"Processing image message: {message}")
+        logger.info(f"Image from {sender_phone}, media_id={media_id}")
 
         try:
-            # Get or create conversation
             conversation = await self.conversation_service.aget_or_create_conversation_whatsapp(
                 sender_phone
             )
 
-            # Check if user is authenticated
             if not conversation.authenticated or not conversation.partner:
                 await self._send_text_message(
                     sender_phone,
@@ -214,15 +183,8 @@ class WhatsAppBotHandler:
                 )
                 return
 
-            # Download the image using the direct link
-            if not image_link:
-                await self._send_text_message(
-                    sender_phone,
-                    "❌ No se encontró el enlace de la imagen. Por favor, intenta nuevamente.",
-                )
-                return
-
-            image_bytes = await self._download_media(image_link)
+            # Download image via Meta media endpoint
+            image_bytes = await self._download_meta_media(media_id)
             if not image_bytes:
                 await self._send_text_message(
                     sender_phone,
@@ -230,21 +192,16 @@ class WhatsAppBotHandler:
                 )
                 return
 
-            # Extract receipt data using the dedicated service
-            logger.info("Extracting receipt data using extraction service...")
-            extracted_data = self.gemini_service.extract_receipt_data(
-                image_bytes
-            )
+            extracted_data = self.gemini_service.extract_receipt_data(image_bytes)
             logger.info(f"Extracted receipt data: {extracted_data}")
 
-            # Run synchronous API call in executor to avoid blocking
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None,
                 self.conversation_service.api_service.upload_payment_receipt,
                 conversation.partner.id,
                 image_bytes,
-                image_id,
+                media_id,
                 extracted_data.get("amount"),
                 extracted_data.get("date"),
                 extracted_data.get("notes", ""),
@@ -257,27 +214,15 @@ class WhatsAppBotHandler:
                     f"💰 Monto: S/ {result.get('amount')}\n"
                     f"📅 Fecha: {result.get('payment_date')}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
+                    f"📝 *Datos procesados del mensaje*\n"
+                    f"Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
                 )
-
-                # Add contextual feedback based on data quality
-                if result.get("amount"):
-                    response_message += (
-                        "📝 *Datos procesados del mensaje*\n"
-                        "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
-                    )
-
                 await self._send_text_message(sender_phone, response_message)
-
-                # Save message to conversation
                 await self.conversation_service.asave_message(
                     conversation,
                     "USER",
                     f"[IMAGE] {caption}" if caption else "[IMAGE]",
-                    metadata={
-                        "receipt_id": result.get("document_id"),
-                        "filename": image_id,
-                        "image_link": image_link,
-                    },
+                    metadata={"receipt_id": result.get("document_id"), "media_id": media_id},
                 )
             else:
                 await self._send_text_message(
@@ -288,87 +233,52 @@ class WhatsAppBotHandler:
 
         except Exception as e:
             logger.error(f"Error processing image: {e}", exc_info=True)
-            await self._send_text_message(
-                sender_phone, constants.ERROR_PROCESSING_MESSAGE
-            )
+            await self._send_text_message(sender_phone, constants.ERROR_PROCESSING_MESSAGE)
 
     async def _handle_interactive_message(self, message: Dict) -> None:
-        """
-        Handle interactive messages (button clicks).
-
-        Args:
-            message: Interactive message data
-        """
+        """Handle interactive messages (button replies, list replies)."""
         sender_phone = message.get("from")
+        interactive = message.get("interactive", {})
+        interactive_type = interactive.get("type")
 
-        logger.info(f"Received interactive message from {sender_phone}")
+        logger.info(f"Interactive ({interactive_type}) from {sender_phone}")
 
-        # For now, just acknowledge
-        await self._send_text_message(
-            sender_phone,
-            "Mensaje interactivo recibido. Por favor usa comandos de texto.",
-        )
+        # Extract the reply text and treat as a regular text message
+        reply_text = ""
+        if interactive_type == "button_reply":
+            reply_text = interactive.get("button_reply", {}).get("title", "")
+        elif interactive_type == "list_reply":
+            reply_text = interactive.get("list_reply", {}).get("title", "")
 
-    async def _handle_status_update(self, status: Dict) -> Dict[str, str]:
-        """
-        Handle message status updates.
-
-        Args:
-            status: Status update data
-
-        Returns:
-            dict: Processing result
-        """
-        message_id = status.get("id")
-        status_value = status.get("status")
-
-        logger.info(f"Message {message_id} status: {status_value}")
-
-        return {"status": "status_update_received"}
-
-    async def _send_text_message(
-        self, recipient_phone: str, message: str
-    ) -> None:
-        """
-        Send a text message via WhatsApp.
-
-        Args:
-            recipient_phone: Recipient's phone number
-            message: Message text to send
-        """
-        try:
-            # Run sync WhatsApp send in executor
-            loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(
-                None,
-                self.whatsapp_service.send_text_message,
-                recipient_phone,
-                message,
+        if reply_text:
+            # Reuse text handler logic by building a synthetic text message
+            synthetic = {"from": sender_phone, "type": "text", "text": {"body": reply_text}}
+            await self._handle_text_message(synthetic)
+        else:
+            await self._send_text_message(
+                sender_phone,
+                "Mensaje interactivo recibido. Por favor usa comandos de texto.",
             )
 
+    async def _send_text_message(self, recipient_phone: str, message: str) -> None:
+        """Send a text message via Meta WhatsApp Cloud API."""
+        try:
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                None, self.whatsapp_service.send_text_message, recipient_phone, message
+            )
             if result.get("success"):
                 logger.info(f"Message sent to {recipient_phone}")
             else:
-                logger.error(
-                    f"Failed to send message to {recipient_phone}: {result.get('error')}"
-                )
-
+                logger.error(f"Failed to send to {recipient_phone}: {result.get('error')}")
         except Exception as e:
             logger.error(f"Error sending text message: {e}", exc_info=True)
 
     async def _send_image_message(
         self, recipient_phone: str, image_url: str, caption: str
     ) -> None:
-        """
-        Send an image message via WhatsApp.
-
-        Args:
-            recipient_phone: Recipient's phone number
-            image_url: URL of the image to send
-            caption: Caption text for the image
-        """
+        """Send an image message via Meta WhatsApp Cloud API."""
         try:
-            # Run sync WhatsApp send in executor
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None,
@@ -377,98 +287,78 @@ class WhatsAppBotHandler:
                 image_url,
                 caption,
             )
-
             if result.get("success"):
-                logger.info(f"Image message sent to {recipient_phone}")
+                logger.info(f"Image sent to {recipient_phone}")
             else:
-                logger.error(
-                    f"Failed to send image message to {recipient_phone}: {result.get('error')}"
-                )
-                # Fallback to text message if image fails
+                logger.error(f"Failed to send image to {recipient_phone}: {result.get('error')}")
                 await self._send_text_message(recipient_phone, caption)
-
         except Exception as e:
-            logger.error(f"Error sending image message: {e}", exc_info=True)
-            # Fallback to text message
+            logger.error(f"Error sending image: {e}", exc_info=True)
             await self._send_text_message(recipient_phone, caption)
 
-    async def _download_media(self, media_url: str) -> Optional[bytes]:
+    async def _download_meta_media(self, media_id: str) -> Optional[bytes]:
         """
-        Download media file from the provided URL.
+        Download media from Meta using the media ID.
 
-        Args:
-            media_url: Direct URL to the media file
-
-        Returns:
-            bytes: Media file content, or None if failed
+        Meta requires two steps:
+        1. GET /v19.0/{media_id} → returns a temporary download URL
+        2. GET {url} with Bearer token → returns the file bytes
         """
         try:
-            # Download media directly from the URL provided by WHAPI
-            response = requests.get(media_url)
-            response.raise_for_status()
+            access_token = getattr(settings, "WHATSAPP_API_TOKEN", None)
+            api_version = getattr(settings, "WHATSAPP_API_VERSION", "v21.0")
+            if not access_token:
+                logger.error("WHATSAPP_API_TOKEN not set, cannot download media")
+                return None
 
-            return response.content
+            headers = {"Authorization": f"Bearer {access_token}"}
+
+            import requests as _requests
+
+            # Step 1: resolve media URL
+            meta_response = _requests.get(
+                f"https://graph.facebook.com/{api_version}/{media_id}",
+                headers=headers,
+                timeout=15,
+            )
+            meta_response.raise_for_status()
+            media_url = meta_response.json().get("url")
+
+            if not media_url:
+                logger.error(f"No URL returned for media_id {media_id}")
+                return None
+
+            # Step 2: download the file
+            file_response = _requests.get(media_url, headers=headers, timeout=30)
+            file_response.raise_for_status()
+            return file_response.content
 
         except Exception as e:
-            logger.error(
-                f"Error downloading media from URL {media_url}: {e}",
-                exc_info=True,
-            )
+            logger.error(f"Error downloading Meta media {media_id}: {e}", exc_info=True)
             return None
 
+    # ------------------------------------------------------------------ #
+    # Sync helpers (used by management commands or Celery tasks)           #
+    # ------------------------------------------------------------------ #
+
     def handle_start_command(self, sender_phone: str) -> None:
-        """
-        Handle /start equivalent command.
-
-        Sends welcome image (if configured) with welcome message as caption,
-        or just the welcome message if no image is set.
-
-        Args:
-            sender_phone: Sender's phone number
-        """
-        logger.info(f"Sending welcome message to {sender_phone}")
-
+        """Send the welcome message (and image if configured)."""
         welcome_message = config.CHATBOT_WELCOME_MESSAGE
         welcome_image = config.CHATBOT_WELCOME_IMAGE
 
         if welcome_image:
-            # Build absolute URL for the image
-            # Remove trailing slash from domain if present
             domain = config.COMPANY_DOMAIN.rstrip("/")
             media_url = settings.MEDIA_URL.strip("/")
             image_url = f"{domain}/{media_url}/constance/{welcome_image}"
-
-            logger.info(f"Sending welcome image: {image_url}")
-
-            # Send image with welcome message as caption
-            self.whatsapp_service.send_image_message(
-                sender_phone, image_url, welcome_message
-            )
+            self.whatsapp_service.send_image_message(sender_phone, image_url, welcome_message)
         else:
-            # Send only text message if no image configured
-            self.whatsapp_service.send_text_message(
-                sender_phone, welcome_message
-            )
+            self.whatsapp_service.send_text_message(sender_phone, welcome_message)
 
     def handle_help_command(self, sender_phone: str) -> None:
-        """
-        Handle /help equivalent command.
-
-        Args:
-            sender_phone: Sender's phone number
-        """
-        logger.info(f"Sending help message to {sender_phone}")
-
-        self.whatsapp_service.send_text_message(
-            sender_phone, constants.HELP_MESSAGE
-        )
+        """Send the help message."""
+        self.whatsapp_service.send_text_message(sender_phone, constants.HELP_MESSAGE)
 
     def handle_menu_command(self, sender_phone: str) -> None:
-        """
-        Handle /menu equivalent command.
-
-        Args:
-            sender_phone: Sender's phone number
-        """
+        """Send the menu message."""
         response = self.conversation_service.formatter.format_help_message()
         self.whatsapp_service.send_text_message(sender_phone, response)

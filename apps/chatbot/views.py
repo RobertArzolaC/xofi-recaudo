@@ -1,14 +1,17 @@
+import hashlib
+import hmac
 import json
 import logging
 
 from asgiref.sync import async_to_sync
 from constance import config
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
 )
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -64,43 +67,62 @@ class ChatbotSettingsUpdateView(
 @method_decorator(csrf_exempt, name="dispatch")
 class WhatsAppWebhookView(View):
     """
-    View to handle WhatsApp webhook callbacks.
+    Webhook endpoint for Meta WhatsApp Business Cloud API.
 
-    This view handles both webhook verification (GET) and incoming messages (POST).
+    GET  → webhook verification (hub.challenge)
+    POST → incoming messages, validated via HMAC-SHA256 signature
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.handler = WhatsAppBotHandler()
 
+    # ------------------------------------------------------------------ #
+    # GET — Meta webhook verification                                      #
+    # ------------------------------------------------------------------ #
     def get(self, request, *args, **kwargs):
         """
-        Handle GET requests (webhook health check).
-
-        WHAPI doesn't require webhook verification like Meta,
-        so this just returns a simple OK response.
+        Meta sends a GET with three query params when you register the webhook:
+          hub.mode         = "subscribe"
+          hub.verify_token = <the token you set in Meta dashboard>
+          hub.challenge    = <random string Meta wants echoed back>
         """
-        logger.info("Webhook health check request received")
-        return JsonResponse({"status": "ok", "service": "whatsapp_chatbot"})
+        mode = request.GET.get("hub.mode")
+        token = request.GET.get("hub.verify_token")
+        challenge = request.GET.get("hub.challenge")
 
+        verify_token = getattr(settings, "WHATSAPP_VERIFY_TOKEN", "")
+
+        if mode == "subscribe" and token == verify_token:
+            logger.info("WhatsApp webhook verified successfully")
+            return HttpResponse(challenge, content_type="text/plain", status=200)
+
+        logger.warning(
+            f"Webhook verification failed — mode={mode}, token_match={token == verify_token}"
+        )
+        return HttpResponse("Forbidden", status=403)
+
+    # ------------------------------------------------------------------ #
+    # POST — incoming events                                               #
+    # ------------------------------------------------------------------ #
     def post(self, request, *args, **kwargs):
         """
-        Handle incoming WhatsApp messages.
-
-        WhatsApp sends POST requests with message data in JSON format.
+        Meta signs every POST with X-Hub-Signature-256: sha256=<hex>.
+        We verify the signature before processing anything.
         """
+        # 1. Validate signature
+        if not self._verify_signature(request):
+            logger.warning("WhatsApp webhook signature mismatch — request rejected")
+            return HttpResponse("Forbidden", status=403)
+
         try:
-            # Parse webhook data
             body = json.loads(request.body)
             logger.info(f"Received webhook: {json.dumps(body, indent=2)}")
 
-            # Process webhook asynchronously
-            # Use async_to_sync to handle async handler in sync view
             result = async_to_sync(self.handler.handle_webhook)(body)
+            logger.info(f"Webhook result: {result}")
 
-            logger.info(f"Webhook processing result: {result}")
-
-            # WhatsApp expects a 200 OK response
+            # Meta expects 200 quickly; errors are logged but we still return 200
             return JsonResponse({"status": "success"}, status=200)
 
         except json.JSONDecodeError as e:
@@ -108,7 +130,30 @@ class WhatsAppWebhookView(View):
             return JsonResponse({"error": "Invalid JSON"}, status=400)
         except Exception as e:
             logger.error(f"Error processing webhook: {e}", exc_info=True)
-            # Still return 200 to avoid WhatsApp retries
-            return JsonResponse(
-                {"status": "error", "error": str(e)}, status=200
-            )
+            return JsonResponse({"status": "error"}, status=200)
+
+    # ------------------------------------------------------------------ #
+    # Signature validation                                                 #
+    # ------------------------------------------------------------------ #
+    def _verify_signature(self, request) -> bool:
+        """
+        Verify X-Hub-Signature-256 header using WHATSAPP_APP_SECRET.
+        Returns True if valid or if APP_SECRET is not configured (dev mode).
+        """
+        app_secret = getattr(settings, "WHATSAPP_APP_SECRET", "")
+        if not app_secret:
+            logger.warning("WHATSAPP_APP_SECRET not set — skipping signature verification")
+            return True
+
+        signature_header = request.headers.get("X-Hub-Signature-256", "")
+        if not signature_header.startswith("sha256="):
+            return False
+
+        expected_signature = signature_header[len("sha256="):]
+        computed = hmac.new(
+            key=app_secret.encode("utf-8"),
+            msg=request.body,
+            digestmod=hashlib.sha256,
+        ).hexdigest()
+
+        return hmac.compare_digest(computed, expected_signature)
