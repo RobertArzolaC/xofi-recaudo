@@ -1,0 +1,526 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title_page %}{% trans "Chatbot Dashboard" %}{% endblock title_page %}
+
+{% block toolbar_title %}
+    <i class="ki-duotone ki-message-text-2 fs-1 text-primary me-2">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+    </i>
+    {% trans "Chatbot Dashboard" %}
+{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center gap-2 py-1">
+    <a href="{% url 'apps.chatbot:chatbot-settings-detail' %}" class="btn btn-sm btn-light-primary">
+        <i class="ki-duotone ki-setting-2 fs-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        {% trans "Settings" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .kpi-card {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    .kpi-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+    .kpi-icon-wrap.primary  { background: rgba(0,163,255,0.12); color: #00A3FF; }
+    .kpi-icon-wrap.success  { background: rgba(80,205,137,0.12); color: #50CD89; }
+    .kpi-icon-wrap.warning  { background: rgba(255,199,0,0.12);  color: #FFC700; }
+    .kpi-icon-wrap.danger   { background: rgba(241,65,108,0.12); color: #F1416C; }
+    .kpi-icon-wrap.info     { background: rgba(114,57,234,0.12); color: #7239EA; }
+    .kpi-icon-wrap.dark     { background: rgba(24,28,50,0.08);   color: #181C32; }
+
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #181C32;
+        line-height: 1;
+    }
+    .kpi-label {
+        font-size: 0.9rem;
+        color: #7E8299;
+        margin-top: 0.35rem;
+    }
+
+    .channel-badge-wa {
+        background: rgba(37,211,102,0.12);
+        color: #25D366;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .channel-badge-tg {
+        background: rgba(0,136,204,0.12);
+        color: #0088CC;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+    }
+    .status-dot.active      { background: #50CD89; }
+    .status-dot.pending     { background: #FFC700; }
+    .status-dot.closed      { background: #7E8299; }
+    .status-dot.blocked     { background: #F1416C; }
+    .status-dot.authenticated { background: #00A3FF; }
+
+    .chart-card {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    }
+
+    .auth-badge {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+    }
+    .auth-badge.yes { background: rgba(80,205,137,0.15); color: #50CD89; }
+    .auth-badge.no  { background: rgba(241,65,108,0.15); color: #F1416C; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl">
+
+    <!-- ── KPI Cards ──────────────────────────────────────────── -->
+    <div class="row g-4 mb-6">
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap primary">
+                        <i class="ki-duotone ki-message-text-2">
+                            <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.total_conversations|intcomma }}</div>
+                <div class="kpi-label">{% trans "Total Conversations" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap success">
+                        <i class="ki-duotone ki-electricity">
+                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.active_conversations|intcomma }}</div>
+                <div class="kpi-label">{% trans "Active Now" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap info">
+                        <i class="ki-duotone ki-shield-tick">
+                            <span class="path1"></span><span class="path2"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.auth_rate }}%</div>
+                <div class="kpi-label">{% trans "Auth Rate" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap warning">
+                        <i class="ki-duotone ki-send">
+                            <span class="path1"></span><span class="path2"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.messages_this_month|intcomma }}</div>
+                <div class="kpi-label">{% trans "Messages / Month" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap dark" style="background:rgba(37,211,102,0.12);color:#25D366;">
+                        <i class="ki-duotone ki-whatsapp">
+                            <span class="path1"></span><span class="path2"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.whatsapp_count|intcomma }}</div>
+                <div class="kpi-label">{% trans "WhatsApp Users" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="card kpi-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap dark" style="background:rgba(0,136,204,0.12);color:#0088CC;">
+                        <i class="ki-duotone ki-send">
+                            <span class="path1"></span><span class="path2"></span>
+                        </i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ kpis.telegram_count|intcomma }}</div>
+                <div class="kpi-label">{% trans "Telegram Users" %}</div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ── End KPI Cards ──────────────────────────────────────── -->
+
+
+    <!-- ── Charts Row 1 ──────────────────────────────────────── -->
+    <div class="row g-5 mb-6">
+
+        <!-- Messages Timeline (line chart) -->
+        <div class="col-xl-8">
+            <div class="card chart-card">
+                <div class="card-header border-0 pt-6">
+                    <div class="card-title">
+                        <h3 class="card-label fw-bold">{% trans "Messages (last 14 days)" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <canvas id="timelineChart" height="110"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversations by Channel (donut) -->
+        <div class="col-xl-4">
+            <div class="card chart-card">
+                <div class="card-header border-0 pt-6">
+                    <div class="card-title">
+                        <h3 class="card-label fw-bold">{% trans "Channel Distribution" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-0 d-flex justify-content-center">
+                    <canvas id="channelChart" height="200" style="max-width:260px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ── End Charts Row 1 ───────────────────────────────────── -->
+
+
+    <!-- ── Charts Row 2 ──────────────────────────────────────── -->
+    <div class="row g-5 mb-6">
+
+        <!-- Messages by Intent (horizontal bar) -->
+        <div class="col-xl-6">
+            <div class="card chart-card">
+                <div class="card-header border-0 pt-6">
+                    <div class="card-title">
+                        <h3 class="card-label fw-bold">{% trans "Messages by Intent" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <canvas id="intentChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversations by Status (donut) -->
+        <div class="col-xl-6">
+            <div class="card chart-card">
+                <div class="card-header border-0 pt-6">
+                    <div class="card-title">
+                        <h3 class="card-label fw-bold">{% trans "Conversations by Status" %}</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-0 d-flex justify-content-center">
+                    <canvas id="statusChart" height="220" style="max-width:300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ── End Charts Row 2 ───────────────────────────────────── -->
+
+
+    <!-- ── Recent Conversations Table ────────────────────────── -->
+    <div class="row g-5">
+        <div class="col-12">
+            <div class="card chart-card">
+                <div class="card-header border-0 pt-6">
+                    <div class="card-title">
+                        <h3 class="card-label fw-bold">{% trans "Recent Conversations" %}</h3>
+                        <span class="text-muted fw-semibold fs-7 ms-2">{% trans "Last 10 interactions" %}</span>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-4">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th>{% trans "Contact" %}</th>
+                                    <th>{% trans "Channel" %}</th>
+                                    <th>{% trans "Partner" %}</th>
+                                    <th>{% trans "Status" %}</th>
+                                    <th class="text-center">{% trans "Auth" %}</th>
+                                    <th class="text-center">{% trans "Messages" %}</th>
+                                    <th>{% trans "Last Interaction" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for conv in recent_conversations %}
+                                <tr>
+                                    <td class="text-gray-800 fw-bold">{{ conv.identifier }}</td>
+                                    <td>
+                                        {% if conv.channel == "WHATSAPP" %}
+                                        <span class="channel-badge-wa">
+                                            <i class="ki-duotone ki-whatsapp fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>
+                                            WhatsApp
+                                        </span>
+                                        {% else %}
+                                        <span class="channel-badge-tg">
+                                            <i class="ki-duotone ki-send fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>
+                                            Telegram
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ conv.partner_name }}</td>
+                                    <td>
+                                        {% if conv.status == 3 %}
+                                            <span class="status-dot active"></span>
+                                        {% elif conv.status == 1 %}
+                                            <span class="status-dot pending"></span>
+                                        {% elif conv.status == 4 %}
+                                            <span class="status-dot closed"></span>
+                                        {% elif conv.status == 5 %}
+                                            <span class="status-dot blocked"></span>
+                                        {% else %}
+                                            <span class="status-dot authenticated"></span>
+                                        {% endif %}
+                                        {{ conv.status_label }}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if conv.authenticated %}
+                                        <span class="auth-badge yes"><i class="ki-duotone ki-check fs-8"></i></span>
+                                        {% else %}
+                                        <span class="auth-badge no"><i class="ki-duotone ki-cross fs-8"></i></span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-light-primary">{{ conv.message_count }}</span>
+                                    </td>
+                                    <td class="text-muted">
+                                        {{ conv.last_interaction|date:"d/m/Y H:i" }}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-10">
+                                        <i class="ki-duotone ki-message-text-2 fs-3x text-muted mb-3 d-block">
+                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                                        </i>
+                                        {% trans "No conversations yet" %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── End Recent Conversations ──────────────────────────── -->
+
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    "use strict";
+
+    // ── Palettes ──────────────────────────────────────────────
+    const PALETTE = [
+        "#00A3FF", "#50CD89", "#FFC700", "#F1416C",
+        "#7239EA", "#25D366", "#0088CC", "#FF6B35",
+    ];
+
+    // ── Helper: get chart font color from theme ───────────────
+    const textColor = () => getComputedStyle(document.body)
+        .getPropertyValue("--bs-gray-700").trim() || "#5E6278";
+
+    // ── 1. Timeline chart (line) ──────────────────────────────
+    const timelineLabels = {{ timeline_chart.labels|safe }};
+    const timelineData   = {{ timeline_chart.data|safe }};
+
+    new Chart(document.getElementById("timelineChart"), {
+        type: "line",
+        data: {
+            labels: timelineLabels,
+            datasets: [{
+                label: "{% trans 'User Messages' %}",
+                data: timelineData,
+                borderColor: "#00A3FF",
+                backgroundColor: "rgba(0,163,255,0.08)",
+                borderWidth: 2.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.4,
+                fill: true,
+            }],
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { mode: "index", intersect: false },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, color: textColor() },
+                    grid: { color: "rgba(0,0,0,0.05)" },
+                },
+                x: {
+                    ticks: { color: textColor() },
+                    grid: { display: false },
+                },
+            },
+        },
+    });
+
+    // ── 2. Channel donut ──────────────────────────────────────
+    const channelLabels = {{ channel_chart.labels|safe }};
+    const channelData   = {{ channel_chart.data|safe }};
+
+    new Chart(document.getElementById("channelChart"), {
+        type: "doughnut",
+        data: {
+            labels: channelLabels,
+            datasets: [{
+                data: channelData,
+                backgroundColor: ["#25D366", "#0088CC", "#FFC700", "#F1416C"],
+                borderWidth: 0,
+                hoverOffset: 8,
+            }],
+        },
+        options: {
+            responsive: true,
+            cutout: "68%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: { color: textColor(), padding: 16, font: { size: 12 } },
+                },
+            },
+        },
+    });
+
+    // ── 3. Intent bar chart (horizontal) ─────────────────────
+    const intentLabels = {{ intent_chart.labels|safe }};
+    const intentData   = {{ intent_chart.data|safe }};
+
+    new Chart(document.getElementById("intentChart"), {
+        type: "bar",
+        data: {
+            labels: intentLabels,
+            datasets: [{
+                label: "{% trans 'Messages' %}",
+                data: intentData,
+                backgroundColor: PALETTE.slice(0, intentData.length),
+                borderRadius: 6,
+                borderSkipped: false,
+            }],
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, color: textColor() },
+                    grid: { color: "rgba(0,0,0,0.05)" },
+                },
+                y: {
+                    ticks: { color: textColor() },
+                    grid: { display: false },
+                },
+            },
+        },
+    });
+
+    // ── 4. Status donut ───────────────────────────────────────
+    const statusLabels = {{ status_chart.labels|safe }};
+    const statusData   = {{ status_chart.data|safe }};
+
+    new Chart(document.getElementById("statusChart"), {
+        type: "doughnut",
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusData,
+                backgroundColor: ["#FFC700", "#00A3FF", "#50CD89", "#7E8299", "#F1416C"],
+                borderWidth: 0,
+                hoverOffset: 8,
+            }],
+        },
+        options: {
+            responsive: true,
+            cutout: "68%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: { color: textColor(), padding: 14, font: { size: 12 } },
+                },
+            },
+        },
+    });
+
+}());
+</script>
+{% endblock %}

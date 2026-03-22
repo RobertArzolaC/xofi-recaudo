@@ -21,8 +21,25 @@ from django.views.generic import FormView, TemplateView
 
 from apps.chatbot.channels.whatsapp.handlers import WhatsAppBotHandler
 from apps.chatbot.forms import ChatbotSettingsForm
+from apps.chatbot import services as chatbot_services
 
 logger = logging.getLogger(__name__)
+
+
+class ChatbotDashboardView(LoginRequiredMixin, TemplateView):
+    """Dashboard with chatbot analytics and conversation metrics."""
+
+    template_name = "chatbot/dashboard/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["kpis"] = chatbot_services.get_chatbot_kpis()
+        context["channel_chart"] = chatbot_services.get_conversations_by_channel_data()
+        context["status_chart"] = chatbot_services.get_conversations_by_status_data()
+        context["intent_chart"] = chatbot_services.get_messages_by_intent_data()
+        context["timeline_chart"] = chatbot_services.get_messages_timeline_data()
+        context["recent_conversations"] = chatbot_services.get_recent_conversations()
+        return context
 
 
 class ChatbotSettingsDetailView(

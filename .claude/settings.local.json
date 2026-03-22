@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sqlite3 /d/xofi/xofi-erp/xofi-erp/db.sqlite3 .tables)",
+      "Bash(python:*)",
+      "Bash(find D:/xofi/xofi-erp/xofi-recaudo/templates -name *dashboard* -o -name *chatbot*)"
+    ]
+  }
+}
