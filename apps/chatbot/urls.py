@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.chatbot.views import (
+    ChatbotDashboardView,
     ChatbotSettingsDetailView,
     ChatbotSettingsUpdateView,
     WhatsAppWebhookView,
@@ -13,6 +14,11 @@ urlpatterns = [
         "webhook/whatsapp/",
         WhatsAppWebhookView.as_view(),
         name="whatsapp-webhook",
+    ),
+    path(
+        "dashboard/",
+        ChatbotDashboardView.as_view(),
+        name="chatbot-dashboard",
     ),
     path(
         "settings/",
