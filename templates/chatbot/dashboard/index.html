@@ -284,28 +284,32 @@
 
         <!-- Messages Timeline (line chart) -->
         <div class="col-xl-8">
-            <div class="card chart-card">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Messages (last 14 days)" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <canvas id="timelineChart" height="110"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:260px;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Conversations by Channel (donut) -->
         <div class="col-xl-4">
-            <div class="card chart-card">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Channel Distribution" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0 d-flex justify-content-center">
-                    <canvas id="channelChart" height="200" style="max-width:260px;"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:260px;">
+                        <canvas id="channelChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -318,29 +322,33 @@
     <div class="row g-5 mb-6">
 
         <!-- Messages by Intent (horizontal bar) -->
-        <div class="col-xl-6">
-            <div class="card chart-card">
+        <div class="col-xl-7">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Messages by Intent" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <canvas id="intentChart" height="220"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:320px;">
+                        <canvas id="intentChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Conversations by Status (donut) -->
-        <div class="col-xl-6">
-            <div class="card chart-card">
+        <div class="col-xl-5">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Conversations by Status" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0 d-flex justify-content-center">
-                    <canvas id="statusChart" height="220" style="max-width:300px;"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:320px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -569,6 +577,7 @@
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
                 tooltip: { mode: "index", intersect: false },
@@ -604,11 +613,12 @@
         },
         options: {
             responsive: true,
-            cutout: "68%",
+            maintainAspectRatio: false,
+            cutout: "65%",
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: textColor(), padding: 16, font: { size: 12 } },
+                    labels: { color: textColor(), padding: 16, font: { size: 12 }, boxWidth: 12 },
                 },
             },
         },
@@ -625,16 +635,18 @@
             datasets: [{
                 label: "{% trans 'Messages' %}",
                 data: intentData,
-                backgroundColor: PALETTE.slice(0, intentData.length),
-                borderRadius: 6,
+                backgroundColor: intentData.map((_, i) => PALETTE[i % PALETTE.length]),
+                borderRadius: 5,
                 borderSkipped: false,
             }],
         },
         options: {
             indexAxis: "y",
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
+                tooltip: { mode: "index", intersect: false },
             },
             scales: {
                 x: {
@@ -643,7 +655,7 @@
                     grid: { color: "rgba(0,0,0,0.05)" },
                 },
                 y: {
-                    ticks: { color: textColor() },
+                    ticks: { color: textColor(), font: { size: 11 } },
                     grid: { display: false },
                 },
             },
@@ -667,11 +679,12 @@
         },
         options: {
             responsive: true,
-            cutout: "68%",
+            maintainAspectRatio: false,
+            cutout: "65%",
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: textColor(), padding: 14, font: { size: 12 } },
+                    labels: { color: textColor(), padding: 14, font: { size: 12 }, boxWidth: 12 },
                 },
             },
         },
