@@ -8,7 +8,8 @@
       "Bash(python manage.py makemigrations chatbot --name=\"add_delivery_status_and_templates\")",
       "Bash(python manage.py migrate chatbot)",
       "Bash(python -c \"from apps.chatbot.channels.whatsapp.handlers import WhatsAppBotHandler; from apps.chatbot.conversation.service import ConversationService; from apps.chatbot.services.dashboard import get_delivery_stats, get_templates, get_template_stats; print\\(''OK''\\)\")",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(python manage.py shell -c \":*)"
     ]
   }
 }
