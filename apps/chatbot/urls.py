@@ -5,6 +5,8 @@ from apps.chatbot.views import (
     ChatbotSettingsDetailView,
     ChatbotSettingsUpdateView,
     WhatsAppWebhookView,
+    TemplateCreateView,
+    TemplateApproveView,
 )
 
 app_name = "apps.chatbot"
@@ -29,5 +31,15 @@ urlpatterns = [
         "settings/edit/",
         ChatbotSettingsUpdateView.as_view(),
         name="chatbot-settings-edit",
+    ),
+    path(
+        "templates/create/",
+        TemplateCreateView.as_view(),
+        name="template-create",
+    ),
+    path(
+        "templates/<int:pk>/approve/",
+        TemplateApproveView.as_view(),
+        name="template-approve",
     ),
 ]

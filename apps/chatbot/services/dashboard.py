@@ -248,7 +248,8 @@ def get_templates():
     try:
         templates = list(
             WhatsAppTemplate.objects.values(
-                "id", "name", "category", "language", "status", "times_used", "created"
+                "id", "name", "category", "language", "status",
+                "body", "meta_template_id", "times_used", "created"
             ).order_by("-created")[:20]
         )
         return templates
