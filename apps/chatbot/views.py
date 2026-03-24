@@ -39,6 +39,9 @@ class ChatbotDashboardView(LoginRequiredMixin, TemplateView):
         context["intent_chart"] = chatbot_services.get_messages_by_intent_data()
         context["timeline_chart"] = chatbot_services.get_messages_timeline_data()
         context["recent_conversations"] = chatbot_services.get_recent_conversations()
+        context["delivery_stats"] = chatbot_services.get_delivery_stats()
+        context["templates"] = chatbot_services.get_templates()
+        context["template_stats"] = chatbot_services.get_template_stats()
         return context
 
 

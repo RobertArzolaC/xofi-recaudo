@@ -24,20 +24,20 @@ class XofiErpRouter:
         # Apps de auditoría
         "easyaudit",
         "admin",
-        # Apps de autenticación relacionadas con usuarios
+        # Apps de autenticación - viven en xofi-erp
         "authtoken",
+        "auth",
+        "allauth",
+        "account",
     }
 
     local_app_labels = {
-        # Apps que deben estar en la DB principal
-        "auth",
-        "allauth",
+        # Apps propias de xofi-recaudo
         "contenttypes",
         "sessions",
         "messages",
         "staticfiles",
         "django_celery_beat",
-        "account",
         "core",
         "authentication",
     }

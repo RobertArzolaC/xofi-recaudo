@@ -212,6 +212,73 @@
     <!-- ── End KPI Cards ──────────────────────────────────────── -->
 
 
+    <!-- ── Delivery Stats ────────────────────────────────────── -->
+    <div class="row g-4 mb-2">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="ki-duotone ki-send fs-3 text-success"><span class="path1"></span><span class="path2"></span></i>
+                <h4 class="fw-bold mb-0">{% trans "WhatsApp Message Delivery" %}</h4>
+                <span class="badge badge-light-success ms-2 fs-8">{% trans "Live Stats" %}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mb-8">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #00A3FF;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap primary">
+                        <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.total_sent|intcomma }}</div>
+                <div class="kpi-label">{% trans "Messages Sent" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #50CD89;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap success">
+                        <i class="ki-duotone ki-double-check"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.delivered|intcomma }}</div>
+                <div class="kpi-label">{% trans "Delivered" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #7239EA;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap info">
+                        <i class="ki-duotone ki-eye"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.read|intcomma }}</div>
+                <div class="kpi-label">
+                    {% trans "Read" %}
+                    <span class="badge badge-light-info ms-1 fs-9">{{ delivery_stats.read_rate }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #F1416C;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap danger">
+                        <i class="ki-duotone ki-cross-circle"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.failed|intcomma }}</div>
+                <div class="kpi-label">{% trans "Failed" %}</div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ── End Delivery Stats ─────────────────────────────────── -->
+
+
     <!-- ── Charts Row 1 ──────────────────────────────────────── -->
     <div class="row g-5 mb-6">
 
@@ -370,6 +437,95 @@
         </div>
     </div>
     <!-- ── End Recent Conversations ──────────────────────────── -->
+
+
+    <!-- ── WhatsApp Templates ────────────────────────────────── -->
+    <div class="row g-4 mt-4 mb-2">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ki-duotone ki-document fs-3 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                    <h4 class="fw-bold mb-0">{% trans "Message Templates" %}</h4>
+                </div>
+                <div class="d-flex gap-3">
+                    <span class="badge badge-light-success py-2 px-3">
+                        <i class="ki-duotone ki-check fs-7 me-1"></i>
+                        {{ template_stats.approved }} {% trans "Approved" %}
+                    </span>
+                    <span class="badge badge-light-warning py-2 px-3">
+                        <i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>
+                        {{ template_stats.pending }} {% trans "Pending" %}
+                    </span>
+                    <span class="badge badge-light-danger py-2 px-3">
+                        <i class="ki-duotone ki-cross fs-7 me-1"></i>
+                        {{ template_stats.rejected }} {% trans "Rejected" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-5 mb-6">
+        <div class="col-12">
+            <div class="card chart-card">
+                <div class="card-body pt-6">
+                    {% if templates %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-4">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th>{% trans "Template Name" %}</th>
+                                    <th>{% trans "Category" %}</th>
+                                    <th>{% trans "Language" %}</th>
+                                    <th>{% trans "Status" %}</th>
+                                    <th class="text-center">{% trans "Times Used" %}</th>
+                                    <th>{% trans "Created" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for tpl in templates %}
+                                <tr>
+                                    <td class="text-gray-800 fw-bold">{{ tpl.name }}</td>
+                                    <td>
+                                        <span class="badge badge-light-primary">{{ tpl.category }}</span>
+                                    </td>
+                                    <td>{{ tpl.language|upper }}</td>
+                                    <td>
+                                        {% if tpl.status == "APPROVED" %}
+                                            <span class="badge badge-light-success">
+                                                <i class="ki-duotone ki-check fs-8 me-1"></i>{% trans "Approved" %}
+                                            </span>
+                                        {% elif tpl.status == "PENDING" %}
+                                            <span class="badge badge-light-warning">
+                                                <i class="ki-duotone ki-time fs-8 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Pending" %}
+                                            </span>
+                                        {% elif tpl.status == "REJECTED" %}
+                                            <span class="badge badge-light-danger">
+                                                <i class="ki-duotone ki-cross fs-8 me-1"></i>{% trans "Rejected" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary">{% trans "Paused" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-light-info">{{ tpl.times_used }}</span>
+                                    </td>
+                                    <td class="text-muted">{{ tpl.created|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-10 text-muted">
+                        <i class="ki-duotone ki-document fs-3x mb-3 d-block"><span class="path1"></span><span class="path2"></span></i>
+                        {% trans "No templates registered yet" %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── End WhatsApp Templates ─────────────────────────────── -->
 
 </div>
 {% endblock content %}

@@ -85,6 +85,8 @@ class ConversationService:
         message: str,
         intent: str = "",
         metadata: Optional[Dict] = None,
+        whatsapp_message_id: Optional[str] = None,
+        delivery_status: Optional[str] = None,
     ) -> models.ConversationMessage:
         """Save a message to the conversation."""
         return models.ConversationMessage.objects.create(
@@ -93,6 +95,8 @@ class ConversationService:
             message=message,
             intent=intent,
             metadata=metadata or {},
+            whatsapp_message_id=whatsapp_message_id,
+            delivery_status=delivery_status,
         )
 
     @sync_to_async
@@ -104,10 +108,14 @@ class ConversationService:
         message: str,
         intent: str = "",
         metadata: Optional[Dict] = None,
+        whatsapp_message_id: Optional[str] = None,
+        delivery_status: Optional[str] = None,
     ) -> models.ConversationMessage:
         """Async version: Save a message to the conversation."""
         return self.save_message(
-            conversation, sender, message, intent, metadata
+            conversation, sender, message, intent, metadata,
+            whatsapp_message_id=whatsapp_message_id,
+            delivery_status=delivery_status,
         )
 
     def process_message(
