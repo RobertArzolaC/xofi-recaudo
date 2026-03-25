@@ -221,7 +221,7 @@ class WhatsAppWebhookView(View):
             logger.warning(
                 "WhatsApp webhook signature mismatch — request rejected"
             )
-            # return HttpResponse("Forbidden", status=403)
+            return HttpResponse("Forbidden", status=403)
 
         try:
             body = json.loads(request.body)
