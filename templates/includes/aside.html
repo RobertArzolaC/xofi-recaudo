@@ -413,113 +413,124 @@
         </div>
         {% endif %}
 
-        {% if perms.customers.view_company or perms.customers.view_agency or perms.auth.view_group or perms.auth.view_user or perms.customers.view_chatbot_settings %}
-        <div class="menu-item pt-5">
-          <div class="menu-content">
-            <span class="fw-bold text-muted text-uppercase fs-7">
-              {% trans 'Settings' %}
-            </span>
+        {% if perms.customers.view_chatbot_settings %}
+          <div class="menu-item pt-5">
+            <div class="menu-content">
+              <span class="fw-bold text-muted text-uppercase fs-7">
+                {% trans 'Agent' %}
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="menu-item">
-          {% if perms.customers.view_company %}
-            <a class="menu-link {% if "company" in request.path %}active{% endif %}" href="{% url 'apps.customers:company-detail' 1 %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-office-bag fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Company' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
 
-        <div class="menu-item">
-            <a class="menu-link {% if "chatbot/dashboard" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-dashboard' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-chart-line-up fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Chatbot Dashboard' %}
-              </span>
-            </a>
-        </div>
+          <div class="menu-item">
+              <a class="menu-link {% if "chatbot/dashboard" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-dashboard' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-chart-line-up fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Dashboard' %}
+                </span>
+              </a>
+          </div>
 
-        <div class="menu-item">
-          {% if perms.customers.view_chatbot_settings %}
-            <a class="menu-link {% if "chatbot/settings" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-settings-detail' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-message-text-2 fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                  <span class="path3"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Chatbot' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
+          <div class="menu-item">
+            {% if perms.customers.view_chatbot_settings %}
+              <a class="menu-link {% if "chatbot/settings" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-settings-detail' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-message-text-2 fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Settings' %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
 
-        <div class="menu-item">
-          {% if perms.customers.view_agency %}
-            <a class="menu-link {% if "agenc" in request.path %}active{% endif %}" href="{% url 'apps.customers:agency-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-home-2 fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                  <span class="path3"></span>
-                  <span class="path4"></span>
-                </i>
+        {% if perms.customers.view_company or perms.customers.view_agency or perms.auth.view_group or perms.auth.view_user or perms.customers.view_chatbot_settings %}
+          <div class="menu-item pt-5">
+            <div class="menu-content">
+              <span class="fw-bold text-muted text-uppercase fs-7">
+                {% trans 'Settings' %}
               </span>
-              <span class="menu-title">
-                {% trans 'Agencies' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
+            </div>
+          </div>
 
-        <div class="menu-item">
-          {% if perms.auth.view_user %}
-            <a class="menu-link {% if "user" in request.path and "/users/users/" in request.path %}active{% endif %}" href="{% url 'apps.users:user-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-people fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                  <span class="path3"></span>
-                  <span class="path4"></span>
-                  <span class="path5"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Users' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
+          <div class="menu-item">
+            {% if perms.customers.view_company %}
+              <a class="menu-link {% if "company" in request.path %}active{% endif %}" href="{% url 'apps.customers:company-detail' 1 %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-office-bag fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Company' %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
 
-        <div class="menu-item">
-          {% if perms.auth.view_group %}
-            <a class="menu-link {% if "role" in request.path %}active{% endif %}" href="{% url 'apps.users:role-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-security-user fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Roles' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
+          <div class="menu-item">
+            {% if perms.customers.view_agency %}
+              <a class="menu-link {% if "agenc" in request.path %}active{% endif %}" href="{% url 'apps.customers:agency-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-home-2 fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Agencies' %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="menu-item">
+            {% if perms.auth.view_user %}
+              <a class="menu-link {% if "user" in request.path and "/users/users/" in request.path %}active{% endif %}" href="{% url 'apps.users:user-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-people fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Users' %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="menu-item">
+            {% if perms.auth.view_group %}
+              <a class="menu-link {% if "role" in request.path %}active{% endif %}" href="{% url 'apps.users:role-list' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-security-user fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Roles' %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
         {% endif %}
 
         <div class="menu-item">
@@ -528,7 +539,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>

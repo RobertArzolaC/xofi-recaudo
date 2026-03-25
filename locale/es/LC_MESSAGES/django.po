@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-24 11:42-0500\n"
+"POT-Creation-Date: 2026-03-25 09:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgid "Last Name"
 msgstr "Apellido"
 
 #: apps/authentication/forms.py:29 apps/campaigns/choices.py:49
-#: apps/campaigns/models.py:490 apps/core/models.py:37
+#: apps/campaigns/models.py:514 apps/core/models.py:37
 #: apps/customers/forms.py:63 apps/notifications/choices.py:26
 #: apps/partners/forms.py:151 apps/partners/forms.py:341
 #: apps/partners/forms.py:618 apps/users/forms.py:90 apps/users/forms.py:158
@@ -101,7 +101,8 @@ msgstr "Enviando"
 msgid "Active"
 msgstr "Activo"
 
-#: apps/campaigns/choices.py:13
+#: apps/campaigns/choices.py:13 apps/chatbot/choices.py:61
+#: templates/chatbot/dashboard/index.html:476
 msgid "Paused"
 msgstr "Pausado"
 
@@ -113,9 +114,11 @@ msgid "Completed"
 msgstr "Completado"
 
 #: apps/campaigns/choices.py:15 apps/campaigns/choices.py:39
-#: apps/campaigns/choices.py:58 apps/core/choices.py:10
-#: apps/credits/choices.py:85 apps/notifications/choices.py:16
-#: apps/reports/choices.py:13 apps/reports/generators/analytics.py:211
+#: apps/campaigns/choices.py:58 apps/chatbot/choices.py:52
+#: apps/core/choices.py:10 apps/credits/choices.py:85
+#: apps/notifications/choices.py:16 apps/reports/choices.py:13
+#: apps/reports/generators/analytics.py:211
+#: templates/chatbot/dashboard/index.html:274
 msgid "Failed"
 msgstr "Fallido"
 
@@ -162,18 +165,18 @@ msgstr "Notificación Programada"
 msgid "Pending"
 msgstr "Pendiente"
 
-#: apps/campaigns/choices.py:38 apps/notifications/choices.py:15
-#: apps/reports/generators/analytics.py:210
+#: apps/campaigns/choices.py:38 apps/chatbot/choices.py:49
+#: apps/notifications/choices.py:15 apps/reports/generators/analytics.py:210
 msgid "Sent"
 msgstr "Enviado"
 
 #: apps/campaigns/choices.py:46 apps/chatbot/choices.py:42
-#: apps/notifications/choices.py:23
+#: apps/notifications/choices.py:23 templates/chatbot/settings/detail.html:111
 msgid "Telegram"
 msgstr "Telegram"
 
 #: apps/campaigns/choices.py:47 apps/chatbot/choices.py:43
-#: apps/notifications/choices.py:24
+#: apps/notifications/choices.py:24 templates/chatbot/settings/detail.html:95
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
@@ -266,6 +269,7 @@ msgstr "Todos los estados"
 #: templates/campaigns/campaign/list.html:94
 #: templates/campaigns/campaign_csv/detail.html:259
 #: templates/campaigns/campaign_csv/list.html:92
+#: templates/chatbot/dashboard/index.html:378
 #: templates/compliance/contribution/detail.html:126
 #: templates/compliance/contribution/list.html:82
 #: templates/compliance/penalty/detail.html:132
@@ -366,6 +370,7 @@ msgstr "Todas las agencias"
 #: apps/reports/generators/portfolio.py:212
 #: templates/campaigns/campaign/detail.html:114
 #: templates/campaigns/campaign_csv/detail.html:130
+#: templates/chatbot/dashboard/index.html:376
 msgid "Channel"
 msgstr "Canal"
 
@@ -374,7 +379,7 @@ msgid "All priorities"
 msgstr "Todas las prioridades"
 
 #: apps/campaigns/filtersets.py:115 apps/campaigns/forms.py:186
-#: apps/campaigns/models.py:172 apps/reports/generators/groups.py:46
+#: apps/campaigns/models.py:196 apps/reports/generators/groups.py:46
 #: apps/support/filtersets.py:41 apps/support/models.py:47
 #: templates/campaigns/group/list.html:90 templates/support/ticket/list.html:80
 msgid "Priority"
@@ -457,8 +462,8 @@ msgstr "Nombre"
 msgid "Description"
 msgstr "Descripción"
 
-#: apps/campaigns/forms.py:77 apps/campaigns/models.py:179
-#: apps/campaigns/models.py:238 apps/reports/generators/analytics.py:206
+#: apps/campaigns/forms.py:77 apps/campaigns/models.py:203
+#: apps/campaigns/models.py:262 apps/reports/generators/analytics.py:206
 #: apps/reports/generators/campaigns.py:53
 #: templates/campaigns/campaign/detail.html:86
 #: templates/campaigns/campaign/list.html:92
@@ -498,11 +503,11 @@ msgstr "Descripción del grupo."
 msgid "Select partners..."
 msgstr "Seleccionar socios..."
 
-#: apps/campaigns/forms.py:185 apps/campaigns/models.py:167
+#: apps/campaigns/forms.py:185 apps/campaigns/models.py:191
 #: apps/partners/apps.py:8 apps/partners/models.py:158
 #: templates/campaigns/group/detail.html:78
 #: templates/campaigns/group/list.html:91 templates/dashboard/index.html:804
-#: templates/includes/aside.html:38 templates/partners/partner/list.html:5
+#: templates/includes/aside.html:39 templates/partners/partner/list.html:5
 msgid "Partners"
 msgstr "Socios"
 
@@ -616,48 +621,72 @@ msgstr "Resultado de la última ejecución"
 msgid "Result message from the last execution attempt."
 msgstr "Mensaje de resultado del último intento de ejecución."
 
-#: apps/campaigns/models.py:90 apps/notifications/models.py:29
+#: apps/campaigns/models.py:90
+#, fuzzy
+#| msgid "Total Repayment"
+msgid "Total Sent"
+msgstr "Total a Pagar"
+
+#: apps/campaigns/models.py:92
+#, fuzzy
+#| msgid "Total documents in file"
+msgid "Total number of notifications sent successfully."
+msgstr "Total de documentos en el archivo"
+
+#: apps/campaigns/models.py:95
+#, fuzzy
+#| msgid "Total Paid"
+msgid "Total Failed"
+msgstr "Total Pagado"
+
+#: apps/campaigns/models.py:97
+#, fuzzy
+#| msgid "Error message if the notification failed to send."
+msgid "Total number of notifications that failed to send."
+msgstr "Mensaje de error si la notificación no se pudo enviar."
+
+#: apps/campaigns/models.py:102 apps/notifications/models.py:29
 #: templates/campaigns/campaign_csv/detail.html:86
 msgid "Campaign Type"
 msgstr "Tipo de campaña"
 
-#: apps/campaigns/models.py:94
+#: apps/campaigns/models.py:106
 msgid "Type of campaign (auto-populated)."
 msgstr "Tipo de campaña (autocompletado)."
 
-#: apps/campaigns/models.py:99
+#: apps/campaigns/models.py:111
 msgid "Personalize WhatsApp Messages"
 msgstr "Personalizar mensajes de WhatsApp"
 
-#: apps/campaigns/models.py:101
+#: apps/campaigns/models.py:114
 msgid "Personalize each WhatsApp message to avoid spam detection."
 msgstr "Personaliza cada mensaje de WhatsApp para evitar la detección de spam."
 
-#: apps/campaigns/models.py:104
+#: apps/campaigns/models.py:118
 msgid "Include STOP Command"
 msgstr "Incluir comando STOP"
 
-#: apps/campaigns/models.py:106
+#: apps/campaigns/models.py:121
 msgid "Include \"write STOP to stop receiving messages\" in WhatsApp messages."
 msgstr ""
 "Incluir \"escriba STOP para dejar de recibir mensajes\" en los mensajes de "
 "WhatsApp."
 
-#: apps/campaigns/models.py:109
+#: apps/campaigns/models.py:125
 msgid "Avoid Unsolicited Links"
 msgstr "Evitar enlaces no solicitados"
 
-#: apps/campaigns/models.py:111
+#: apps/campaigns/models.py:128
 msgid "Avoid sending payment links in the first message to prevent spam flags."
 msgstr ""
 "Evitar enviar enlaces de pago en el primer mensaje para prevenir marcas de "
 "spam."
 
-#: apps/campaigns/models.py:114
+#: apps/campaigns/models.py:132
 msgid "Group By Region"
 msgstr "Agrupar por región"
 
-#: apps/campaigns/models.py:116
+#: apps/campaigns/models.py:135
 msgid ""
 "Group contacts by region to avoid messaging many international numbers "
 "simultaneously."
@@ -665,154 +694,154 @@ msgstr ""
 "Agrupar contactos por región para evitar enviar mensajes a muchos números "
 "internacionales simultáneamente."
 
-#: apps/campaigns/models.py:119
+#: apps/campaigns/models.py:139
 msgid "Target Response Rate"
 msgstr "Tasa de respuesta objetivo"
 
-#: apps/campaigns/models.py:123
+#: apps/campaigns/models.py:143
 msgid "Target response rate percentage (recommended: 30%)."
 msgstr "Porcentaje de tasa de respuesta objetivo (recomendado: 30%)."
 
-#: apps/campaigns/models.py:169
+#: apps/campaigns/models.py:193
 msgid "Partners included in this group."
 msgstr "Socios incluidos en este grupo."
 
-#: apps/campaigns/models.py:175
+#: apps/campaigns/models.py:199
 msgid "Priority level of the group."
 msgstr "Nivel de prioridad del grupo."
 
-#: apps/campaigns/models.py:180 templates/campaigns/group/list.html:5
-#: templates/includes/aside.html:282
+#: apps/campaigns/models.py:204 templates/campaigns/group/list.html:5
+#: templates/includes/aside.html:283
 msgid "Groups"
 msgstr "Grupos"
 
-#: apps/campaigns/models.py:241
+#: apps/campaigns/models.py:265
 msgid "Group associated with this campaign."
 msgstr "Grupo asociado con esta campaña."
 
-#: apps/campaigns/models.py:245 apps/campaigns/models.py:480
+#: apps/campaigns/models.py:269 apps/campaigns/models.py:504
 #: apps/notifications/admin.py:136 apps/reports/generators/campaigns.py:139
 #: apps/reports/generators/portfolio.py:210
 msgid "Campaign"
 msgstr "Campaña"
 
-#: apps/campaigns/models.py:246 templates/campaigns/campaign/list.html:5
-#: templates/dashboard/index.html:776 templates/includes/aside.html:267
-#: templates/includes/aside.html:301
+#: apps/campaigns/models.py:270 templates/campaigns/campaign/list.html:5
+#: templates/dashboard/index.html:776 templates/includes/aside.html:268
+#: templates/includes/aside.html:302
 msgid "Campaigns"
 msgstr "Campañas"
 
-#: apps/campaigns/models.py:350 apps/reports/models.py:99
+#: apps/campaigns/models.py:374 apps/reports/models.py:99
 #: templates/partners/modals/document_detail_modal.html:67
 msgid "File"
 msgstr "Archivo"
 
-#: apps/campaigns/models.py:354
+#: apps/campaigns/models.py:378
 msgid "Uploaded CSV or Excel file with contacts and amounts."
 msgstr ""
 
-#: apps/campaigns/models.py:358 apps/payments/models.py:293
+#: apps/campaigns/models.py:382 apps/payments/models.py:293
 msgid "Validation Status"
 msgstr "Estado de Validación"
 
-#: apps/campaigns/models.py:362
+#: apps/campaigns/models.py:386
 #, fuzzy
 #| msgid "Status of the payment link."
 msgid "Status of contacts validation."
 msgstr "Estado del enlace de pago."
 
-#: apps/campaigns/models.py:365
+#: apps/campaigns/models.py:389
 #, fuzzy
 #| msgid "Validation Notes"
 msgid "Validation Result"
 msgstr "Notas de Validación"
 
-#: apps/campaigns/models.py:368
+#: apps/campaigns/models.py:392
 msgid "Detailed validation results and errors."
 msgstr ""
 
-#: apps/campaigns/models.py:371 apps/payments/models.py:313
+#: apps/campaigns/models.py:395 apps/payments/models.py:313
 #: templates/payments/receipt/detail.html:140
 msgid "Validated At"
 msgstr "Validado en"
 
-#: apps/campaigns/models.py:374
+#: apps/campaigns/models.py:398
 #, fuzzy
 #| msgid "Date and time when the notification was actually sent."
 msgid "Date and time when validation was completed."
 msgstr "Fecha y hora en que se envió realmente la notificación."
 
-#: apps/campaigns/models.py:378
+#: apps/campaigns/models.py:402
 #: templates/campaigns/campaign_csv/detail.html:177
 #, fuzzy
 #| msgid "Total Amount"
 msgid "Total Contacts"
 msgstr "Monto Total"
 
-#: apps/campaigns/models.py:380
+#: apps/campaigns/models.py:404
 #, fuzzy
 #| msgid "Total documents in file"
 msgid "Total number of contacts in the CSV file."
 msgstr "Total de documentos en el archivo"
 
-#: apps/campaigns/models.py:383
+#: apps/campaigns/models.py:407
 #: templates/campaigns/campaign_csv/detail.html:194
 #, fuzzy
 #| msgid "Validation Status"
 msgid "Valid Contacts"
 msgstr "Estado de Validación"
 
-#: apps/campaigns/models.py:385
+#: apps/campaigns/models.py:409
 msgid "Number of valid contacts after validation."
 msgstr ""
 
-#: apps/campaigns/models.py:388
+#: apps/campaigns/models.py:412
 #: templates/campaigns/campaign_csv/detail.html:211
 #, fuzzy
 #| msgid "Invalid action"
 msgid "Invalid Contacts"
 msgstr "Acción no válida"
 
-#: apps/campaigns/models.py:390
+#: apps/campaigns/models.py:414
 msgid "Number of invalid contacts after validation."
 msgstr ""
 
-#: apps/campaigns/models.py:394
+#: apps/campaigns/models.py:418
 #, fuzzy
 #| msgid "Campaign Details"
 msgid "Campaign CSV/Excel File"
 msgstr "Detalles de la Campaña"
 
-#: apps/campaigns/models.py:395
+#: apps/campaigns/models.py:419
 #, fuzzy
 #| msgid "Campaign Details"
 msgid "Campaign CSV/Excel Files"
 msgstr "Detalles de la Campaña"
 
-#: apps/campaigns/models.py:481
+#: apps/campaigns/models.py:505
 #, fuzzy
 #| msgid "Credit this installment belongs to."
 msgid "CSV campaign this contact belongs to."
 msgstr "Crédito al que pertenece esta cuota."
 
-#: apps/campaigns/models.py:485 templates/customers/account/form.html:72
+#: apps/campaigns/models.py:509 templates/customers/account/form.html:72
 #: templates/customers/account/list.html:71
 msgid "Full Name"
 msgstr "Nombre Completo"
 
-#: apps/campaigns/models.py:487
+#: apps/campaigns/models.py:511
 #, fuzzy
 #| msgid "Contact phone"
 msgid "Contact's full name."
 msgstr "Teléfono de contacto"
 
-#: apps/campaigns/models.py:493
+#: apps/campaigns/models.py:517
 #, fuzzy
 #| msgid "Work email address."
 msgid "Contact's email address."
 msgstr "Dirección de correo electrónico laboral."
 
-#: apps/campaigns/models.py:496 apps/core/models.py:36
+#: apps/campaigns/models.py:520 apps/core/models.py:36
 #: apps/partners/forms.py:150 apps/partners/forms.py:340
 #: apps/partners/forms.py:619 templates/customers/agency/detail.html:83
 #: templates/partners/applicant/detail.html:105
@@ -825,34 +854,34 @@ msgstr "Dirección de correo electrónico laboral."
 msgid "Phone"
 msgstr "Teléfono"
 
-#: apps/campaigns/models.py:500
+#: apps/campaigns/models.py:524
 #, fuzzy
 #| msgid "Work phone number."
 msgid "Contact's phone number."
 msgstr "Número de teléfono laboral."
 
-#: apps/campaigns/models.py:503 apps/core/models.py:106
+#: apps/campaigns/models.py:527 apps/core/models.py:106
 #, fuzzy
 #| msgid "Telegram"
 msgid "Telegram ID"
 msgstr "Telegram"
 
-#: apps/campaigns/models.py:507
+#: apps/campaigns/models.py:531
 msgid "Contact's Telegram ID or username."
 msgstr ""
 
-#: apps/campaigns/models.py:510 apps/partners/forms.py:147
+#: apps/campaigns/models.py:534 apps/partners/forms.py:147
 #: apps/partners/forms.py:337 apps/partners/forms.py:616 apps/team/forms.py:195
 #: templates/partners/applicant/detail.html:69
 #: templates/partners/partner/detail.html:61
 msgid "Document Number"
 msgstr "Número de documento"
 
-#: apps/campaigns/models.py:514
+#: apps/campaigns/models.py:538
 msgid "Contact's document number (DNI, RUC, etc.)."
 msgstr ""
 
-#: apps/campaigns/models.py:517 apps/compliance/forms.py:74
+#: apps/campaigns/models.py:541 apps/compliance/forms.py:74
 #: apps/compliance/forms.py:197 apps/compliance/forms.py:324
 #: apps/compliance/models.py:28 apps/payments/forms.py:185
 #: apps/payments/forms.py:260 apps/payments/models.py:41
@@ -875,57 +904,57 @@ msgstr ""
 msgid "Amount"
 msgstr "Monto"
 
-#: apps/campaigns/models.py:520
+#: apps/campaigns/models.py:544
 msgid "Amount to collect from this contact."
 msgstr ""
 
-#: apps/campaigns/models.py:524
+#: apps/campaigns/models.py:548
 #, fuzzy
 #| msgid "Additional notes"
 msgid "Additional Data"
 msgstr "Notas adicionales"
 
-#: apps/campaigns/models.py:527
+#: apps/campaigns/models.py:551
 msgid "Additional fields from CSV (key-value pairs)."
 msgstr ""
 
-#: apps/campaigns/models.py:531
+#: apps/campaigns/models.py:555
 msgid "Is Valid"
 msgstr ""
 
-#: apps/campaigns/models.py:533
+#: apps/campaigns/models.py:557
 #, fuzzy
 #| msgid "Whether this product type is active."
 msgid "Whether this contact passed validation."
 msgstr "Designa si este tipo de producto está activo."
 
-#: apps/campaigns/models.py:536
+#: apps/campaigns/models.py:560
 #, fuzzy
 #| msgid "Validation Error"
 msgid "Validation Errors"
 msgstr "Error de Validación"
 
-#: apps/campaigns/models.py:539
+#: apps/campaigns/models.py:563
 msgid "List of validation errors for this contact."
 msgstr ""
 
-#: apps/campaigns/models.py:542
+#: apps/campaigns/models.py:566
 #, fuzzy
 #| msgid "Account Number"
 msgid "Row Number"
 msgstr "Número de Cuenta"
 
-#: apps/campaigns/models.py:543
+#: apps/campaigns/models.py:567
 msgid "Row number in the original CSV file."
 msgstr ""
 
-#: apps/campaigns/models.py:547
+#: apps/campaigns/models.py:571
 #, fuzzy
 #| msgid "Contact"
 msgid "CSV Contact"
 msgstr "Contacto"
 
-#: apps/campaigns/models.py:548
+#: apps/campaigns/models.py:572
 #, fuzzy
 #| msgid "Contact"
 msgid "CSV Contacts"
@@ -967,11 +996,11 @@ msgstr "Agregar socios en masa"
 msgid "An error occurred while processing the file."
 msgstr "Ocurrió un error al procesar el archivo."
 
-#: apps/campaigns/views.py:345 apps/campaigns/views.py:604
+#: apps/campaigns/views.py:345 apps/campaigns/views.py:611
 msgid "Campaign is already being processed"
 msgstr "Campaña ya está en proceso"
 
-#: apps/campaigns/views.py:348 apps/campaigns/views.py:607
+#: apps/campaigns/views.py:348 apps/campaigns/views.py:614
 msgid "Campaign has no execution date configured"
 msgstr "La campaña no tiene fecha de ejecución configurada"
 
@@ -980,23 +1009,26 @@ msgid "Campaign has no group assigned"
 msgstr "La campaña no tiene grupo asignado"
 
 #: apps/campaigns/views.py:366
-#, python-brace-format
-msgid "Campaign '{campaign_name}' has been queued for execution."
+#, fuzzy, python-brace-format
+#| msgid "Campaign '{campaign_name}' has been queued for execution."
+msgid ""
+"Campaign '{campaign_name}' has been scheduled for execution at "
+"{execution_date}."
 msgstr "La campaña '{campaign_name}' ha sido puesta en cola para su ejecución."
 
-#: apps/campaigns/views.py:519 templates/campaigns/campaign_csv/form.html:209
+#: apps/campaigns/views.py:526 templates/campaigns/campaign_csv/form.html:209
 #, fuzzy
 #| msgid "Create Campaign"
 msgid "Create CSV Campaign"
 msgstr "Crear Campaña"
 
-#: apps/campaigns/views.py:549
+#: apps/campaigns/views.py:556
 #, fuzzy
 #| msgid "Edit Campaign"
 msgid "Edit CSV Campaign"
 msgstr "Editar Campaña"
 
-#: apps/campaigns/views.py:572
+#: apps/campaigns/views.py:579
 #: templates/campaigns/campaign_csv/confirm_delete.html:25
 #: templates/campaigns/campaign_csv/confirm_delete.html:83
 #, fuzzy
@@ -1004,22 +1036,24 @@ msgstr "Editar Campaña"
 msgid "Delete CSV Campaign"
 msgstr "Eliminar Campaña"
 
-#: apps/campaigns/views.py:610
+#: apps/campaigns/views.py:617
 #, fuzzy
 #| msgid "Campaign has no group assigned"
 msgid "Campaign has no file uploaded"
 msgstr "La campaña no tiene grupo asignado"
 
-#: apps/campaigns/views.py:615
+#: apps/campaigns/views.py:622
 #, fuzzy
 #| msgid "Campaign has no execution date configured"
 msgid "Campaign file has not been validated yet"
 msgstr "La campaña no tiene fecha de ejecución configurada"
 
-#: apps/campaigns/views.py:631
+#: apps/campaigns/views.py:638
 #, fuzzy, python-brace-format
 #| msgid "Campaign '{campaign_name}' has been queued for execution."
-msgid "CSV Campaign '{campaign_name}' has been queued for execution."
+msgid ""
+"CSV Campaign '{campaign_name}' has been scheduled for execution at "
+"{execution_date}."
 msgstr "La campaña '{campaign_name}' ha sido puesta en cola para su ejecución."
 
 #: apps/chatbot/admin.py:46 apps/notifications/admin.py:182
@@ -1066,12 +1100,12 @@ msgid "Blocked"
 msgstr "Bloqueado"
 
 #: apps/chatbot/choices.py:18 apps/core/models.py:102
-#: apps/customers/models.py:55 apps/users/models.py:41
+#: apps/customers/models.py:59 apps/users/models.py:41
 #: templates/users/user/list.html:85 templates/users/user/list.html:130
 msgid "User"
 msgstr "Usuario"
 
-#: apps/chatbot/choices.py:19
+#: apps/chatbot/choices.py:19 templates/includes/aside.html:420
 msgid "Agent"
 msgstr "Agente"
 
@@ -1122,6 +1156,70 @@ msgstr "Despedida"
 #: apps/chatbot/choices.py:36
 msgid "Unknown"
 msgstr "Desconocido"
+
+#: apps/chatbot/choices.py:50 templates/chatbot/dashboard/index.html:247
+#: templates/chatbot/dashboard/index.html:749
+msgid "Delivered"
+msgstr "Entregado"
+
+#: apps/chatbot/choices.py:51 templates/chatbot/dashboard/index.html:260
+msgid "Read"
+msgstr ""
+
+#: apps/chatbot/choices.py:58 templates/chatbot/dashboard/index.html:468
+#, fuzzy
+#| msgid "Under Review"
+msgid "Pending Review"
+msgstr "En Revisión"
+
+#: apps/chatbot/choices.py:59 apps/core/choices.py:12 apps/credits/choices.py:9
+#: apps/credits/choices.py:26 apps/credits/choices.py:64
+#: apps/credits/choices.py:73 apps/credits/choices.py:82
+#: apps/partners/choices.py:8 apps/payments/choices.py:47
+#: templates/chatbot/dashboard/index.html:464
+#: templates/credits/credit/list.html:131
+msgid "Approved"
+msgstr "Aprobado"
+
+#: apps/chatbot/choices.py:60 apps/credits/choices.py:10
+#: apps/credits/choices.py:27 apps/credits/choices.py:65
+#: apps/credits/choices.py:74 apps/partners/choices.py:9
+#: apps/partners/choices.py:84 apps/payments/choices.py:48
+#: templates/chatbot/dashboard/index.html:472
+msgid "Rejected"
+msgstr "Rechazado"
+
+#: apps/chatbot/forms.py:10 templates/chatbot/settings/detail.html:30
+#: templates/chatbot/settings/detail.html:36
+#: templates/chatbot/settings/form.html:18
+msgid "Welcome Image"
+msgstr ""
+
+#: apps/chatbot/forms.py:18
+#, fuzzy
+#| msgid ""
+#| "Set the company logo. Only *.png, *.jpg and *.jpeg image files are "
+#| "accepted"
+msgid ""
+"Image sent before the welcome message on WhatsApp. Only *.png, *.jpg and "
+"*.jpeg files are accepted."
+msgstr ""
+"Establezca el logo de la empresa. Solo se aceptan archivos de imagen *.png, "
+"*.jpg y *.jpeg"
+
+#: apps/chatbot/forms.py:24 templates/chatbot/settings/detail.html:62
+#, fuzzy
+#| msgid "Error Message"
+msgid "Welcome Message"
+msgstr "Mensaje de error"
+
+#: apps/chatbot/forms.py:30
+msgid "Enter the welcome message for the chatbot"
+msgstr ""
+
+#: apps/chatbot/forms.py:34
+msgid "Message displayed when a user starts a conversation with the chatbot."
+msgstr ""
 
 #: apps/chatbot/models.py:20
 msgid "Partner associated with this conversation"
@@ -1189,13 +1287,96 @@ msgid "Additional metadata (API responses, file info, etc.)"
 msgstr ""
 "Metadatos adicionales (respuestas de API, información de archivos, etc.)"
 
-#: apps/chatbot/models.py:128
+#: apps/chatbot/models.py:131
+msgid "Delivery status for outbound WhatsApp messages"
+msgstr ""
+
+#: apps/chatbot/models.py:137
+msgid "WhatsApp message ID for delivery tracking"
+msgstr ""
+
+#: apps/chatbot/models.py:141
 msgid "Conversation Message"
 msgstr "Mensaje de la Conversación"
 
-#: apps/chatbot/models.py:129
+#: apps/chatbot/models.py:142
 msgid "Conversation Messages"
 msgstr "Conversaciones de Mensajes"
+
+#: apps/chatbot/models.py:156
+msgid "Template name (as registered in Meta)"
+msgstr ""
+
+#: apps/chatbot/models.py:160
+msgid "Template category (MARKETING, UTILITY, AUTHENTICATION)"
+msgstr ""
+
+#: apps/chatbot/models.py:165
+msgid "Template language code"
+msgstr ""
+
+#: apps/chatbot/models.py:171
+#, fuzzy
+#| msgid "Approval Date"
+msgid "Meta approval status"
+msgstr "Fecha de Aprobación"
+
+#: apps/chatbot/models.py:174
+#, fuzzy
+#| msgid "Template Type"
+msgid "Template body text"
+msgstr "Tipo de Plantilla"
+
+#: apps/chatbot/models.py:180
+msgid "Template ID assigned by Meta"
+msgstr ""
+
+#: apps/chatbot/models.py:184
+#, fuzzy
+#| msgid "Number of times this campaign has been executed."
+msgid "Number of times this template has been sent"
+msgstr "Número de veces que se ha ejecutado esta campaña."
+
+#: apps/chatbot/models.py:188
+#, fuzzy
+#| msgid "WhatsApp Template Name"
+msgid "WhatsApp Template"
+msgstr "Nombre de la Plantilla de WhatsApp"
+
+#: apps/chatbot/models.py:189
+#, fuzzy
+#| msgid "WhatsApp Template Name"
+msgid "WhatsApp Templates"
+msgstr "Nombre de la Plantilla de WhatsApp"
+
+#: apps/chatbot/views.py:78 templates/campaigns/campaign/detail.html:23
+#: templates/campaigns/campaign_csv/detail.html:23
+#: templates/campaigns/group/detail.html:23
+#: templates/chatbot/settings/detail.html:16
+#: templates/compliance/contribution/detail.html:23
+#: templates/compliance/penalty/detail.html:23
+#: templates/compliance/social_security/detail.html:23
+#: templates/credits/credit/detail.html:33
+#: templates/credits/product/detail.html:23
+#: templates/credits/product_type/detail.html:23
+#: templates/customers/account/list.html:246
+#: templates/customers/agency/detail.html:23
+#: templates/customers/company/detail.html:16
+#: templates/partners/applicant/detail.html:23
+#: templates/payments/detail.html:23 templates/payments/receipt/detail.html:24
+#: templates/payments/receipt/list.html:155
+#: templates/support/ticket/detail.html:23 templates/team/area/detail.html:23
+#: templates/team/employee/detail.html:23
+#: templates/team/position/detail.html:23 templates/users/role/detail.html:32
+#: templates/users/user/detail.html:39
+msgid "Edit"
+msgstr "Editar"
+
+#: apps/chatbot/views.py:84
+#, fuzzy
+#| msgid "Settings updated successfully"
+msgid "Chatbot settings updated successfully."
+msgstr "Configuración actualizada con éxito"
 
 #: apps/compliance/admin.py:37 apps/compliance/admin.py:156
 #: templates/payments/detail.html:208 templates/payments/form.html:126
@@ -1235,7 +1416,7 @@ msgstr "Atrasado"
 msgid "Penalty Information"
 msgstr "Información de la Penalización"
 
-#: apps/compliance/apps.py:8 templates/includes/aside.html:119
+#: apps/compliance/apps.py:8 templates/includes/aside.html:120
 msgid "Compliance"
 msgstr "Cumplimiento"
 
@@ -1424,6 +1605,7 @@ msgstr "Seleccionar socio"
 #: apps/payments/filtersets.py:34 apps/payments/filtersets.py:114
 #: apps/payments/filtersets.py:169 apps/payments/forms.py:59
 #: apps/payments/forms.py:172 apps/support/models.py:19
+#: templates/chatbot/dashboard/index.html:377
 #: templates/compliance/contribution/detail.html:106
 #: templates/compliance/contribution/list.html:78
 #: templates/compliance/penalty/detail.html:108
@@ -1519,7 +1701,7 @@ msgstr "Aporte"
 
 #: apps/compliance/models.py:122 templates/campaigns/campaign/form.html:247
 #: templates/compliance/contribution/list.html:5
-#: templates/includes/aside.html:134
+#: templates/includes/aside.html:135
 msgid "Contributions"
 msgstr "Aportes"
 
@@ -1536,7 +1718,7 @@ msgstr "Mes del período de previsión social."
 #: apps/payments/services.py:478 apps/payments/services.py:481
 #: templates/campaigns/campaign/form.html:248
 #: templates/compliance/social_security/list.html:5
-#: templates/includes/aside.html:151
+#: templates/includes/aside.html:152
 #: templates/payments/magic_link/detail.html:218
 msgid "Social Security"
 msgstr "Previsión Social"
@@ -1565,7 +1747,7 @@ msgid "Penalty"
 msgstr "Multa"
 
 #: apps/compliance/models.py:172 templates/campaigns/campaign/form.html:249
-#: templates/compliance/penalty/list.html:5 templates/includes/aside.html:168
+#: templates/compliance/penalty/list.html:5 templates/includes/aside.html:169
 msgid "Penalties"
 msgstr "Multas"
 
@@ -1621,13 +1803,6 @@ msgstr "Validando"
 #: apps/core/choices.py:11
 msgid "Canceled"
 msgstr "Cancelado"
-
-#: apps/core/choices.py:12 apps/credits/choices.py:9 apps/credits/choices.py:26
-#: apps/credits/choices.py:64 apps/credits/choices.py:73
-#: apps/credits/choices.py:82 apps/partners/choices.py:8
-#: apps/payments/choices.py:47 templates/credits/credit/list.html:131
-msgid "Approved"
-msgstr "Aprobado"
 
 #: apps/core/choices.py:31
 msgid "National Identity Document"
@@ -1714,7 +1889,7 @@ msgstr "Género"
 msgid "Birth date"
 msgstr "Fecha de nacimiento"
 
-#: apps/core/models.py:93 apps/customers/models.py:102
+#: apps/core/models.py:93 apps/customers/models.py:106
 #: apps/partners/filtersets.py:47 apps/partners/filtersets.py:104
 #: apps/partners/forms.py:157 apps/partners/forms.py:347
 #: apps/team/filtersets.py:120 apps/team/forms.py:199
@@ -1783,6 +1958,7 @@ msgstr "Historiales de estado"
 
 #: apps/core/templatetags/breadcrumb_tags.py:14
 #: templates/dashboard/index.html:6 templates/dashboard/index.html:14
+#: templates/includes/aside.html:434
 msgid "Dashboard"
 msgstr "Tablero"
 
@@ -1855,6 +2031,7 @@ msgid "Payment Schedule"
 msgstr "Calendario de Pagos"
 
 #: apps/credits/admin.py:403
+#, python-brace-format
 msgid "Successfully submitted {} applications for review."
 msgstr "Envío exitoso de {} solicitudes para revisión."
 
@@ -1863,6 +2040,7 @@ msgid "Submit selected applications"
 msgstr "Enviar solicitudes seleccionadas"
 
 #: apps/credits/admin.py:419
+#, python-brace-format
 msgid "Successfully started review for {} applications."
 msgstr "Revisión iniciada con éxito para {} solicitudes."
 
@@ -1871,6 +2049,8 @@ msgid "Start review for selected applications"
 msgstr "Iniciar revisión para solicitudes seleccionadas"
 
 #: apps/credits/admin.py:442
+#, fuzzy, python-brace-format
+#| msgid "Successfully approved {} applications."
 msgid "Successfully approved {} applications."
 msgstr "Solicitudes aprobadas con éxito."
 
@@ -1879,6 +2059,8 @@ msgid "Approve selected applications"
 msgstr "Aprobar solicitudes seleccionadas"
 
 #: apps/credits/admin.py:464
+#, fuzzy, python-brace-format
+#| msgid "Successfully rejected {} applications."
 msgid "Successfully rejected {} applications."
 msgstr "Solicitudes rechazadas con éxito."
 
@@ -1900,17 +2082,10 @@ msgstr "Referencia y Documentos"
 
 #: apps/credits/apps.py:8 apps/credits/models.py:279
 #: templates/credits/credit/list.html:5 templates/credits/credit/list.html:6
-#: templates/dashboard/index.html:794 templates/includes/aside.html:49
-#: templates/includes/aside.html:66
+#: templates/dashboard/index.html:794 templates/includes/aside.html:50
+#: templates/includes/aside.html:67
 msgid "Credits"
 msgstr "Créditos"
-
-#: apps/credits/choices.py:10 apps/credits/choices.py:27
-#: apps/credits/choices.py:65 apps/credits/choices.py:74
-#: apps/partners/choices.py:9 apps/partners/choices.py:84
-#: apps/payments/choices.py:48
-msgid "Rejected"
-msgstr "Rechazado"
 
 #: apps/credits/choices.py:13
 msgid "Defaulted"
@@ -3361,7 +3536,7 @@ msgstr "Provincia"
 msgid "District"
 msgstr "Distrito"
 
-#: apps/customers/forms.py:186 templates/account/login.html:90
+#: apps/customers/forms.py:186 templates/account/login.html:92
 #: templates/account/password_reset.html:58
 #: templates/customers/company/form.html:20
 msgid "Logo"
@@ -3407,7 +3582,7 @@ msgstr "Descripción de la agencia"
 msgid "Unique agency code"
 msgstr "Código único de la agencia"
 
-#: apps/customers/forms.py:319 apps/customers/models.py:92
+#: apps/customers/forms.py:319 apps/customers/models.py:96
 #: apps/reports/models.py:15 templates/customers/agency/detail.html:59
 #: templates/customers/agency/list.html:89
 msgid "Code"
@@ -3430,7 +3605,7 @@ msgid "Dominio de la empresa (opcional)"
 msgstr "Dominio de la empresa (opcional)"
 
 #: apps/customers/models.py:44 templates/customers/company/form.html:8
-#: templates/includes/aside.html:433
+#: templates/includes/aside.html:476
 msgid "Company"
 msgstr "Empresa"
 
@@ -3438,23 +3613,23 @@ msgstr "Empresa"
 msgid "Companies"
 msgstr "Empresas"
 
-#: apps/customers/models.py:61 apps/customers/views.py:40
+#: apps/customers/models.py:65 apps/customers/views.py:40
 #: apps/customers/views.py:65 apps/customers/views.py:88
 msgid "Account"
 msgstr "Cuenta"
 
-#: apps/customers/models.py:62 apps/customers/views.py:41
+#: apps/customers/models.py:66 apps/customers/views.py:41
 #: templates/customers/account/form.html:133 templates/includes/navbar.html:130
 #: templates/users/profile.html:158
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: apps/customers/models.py:95
+#: apps/customers/models.py:99
 msgid "Unique code for the agency"
 msgstr "Código único de la agencia"
 
-#: apps/customers/models.py:103 templates/customers/agency/list.html:5
-#: templates/includes/aside.html:451
+#: apps/customers/models.py:107 templates/customers/agency/list.html:5
+#: templates/includes/aside.html:494
 msgid "Agencies"
 msgstr "Agencias"
 
@@ -3739,7 +3914,7 @@ msgstr "Texto para mostrar en el botón/enlace de pago."
 msgid "Message Template"
 msgstr "Plantilla de Mensaje"
 
-#: apps/notifications/models.py:291
+#: apps/notifications/models.py:291 templates/chatbot/dashboard/index.html:457
 msgid "Message Templates"
 msgstr "Plantillas de Mensajes"
 
@@ -4336,7 +4511,7 @@ msgstr "Pago asignado automáticamente."
 
 #: apps/payments/apps.py:8 apps/payments/models.py:82
 #: templates/dashboard/index.html:785 templates/dashboard/index.html:1632
-#: templates/includes/aside.html:205 templates/includes/aside.html:224
+#: templates/includes/aside.html:206 templates/includes/aside.html:225
 #: templates/payments/list.html:5
 msgid "Payments"
 msgstr "Pagos"
@@ -4431,6 +4606,7 @@ msgid "Payment date is required."
 msgstr "Se requiere fecha de pago."
 
 #: apps/payments/forms.py:153
+#, python-brace-format
 msgid "Amount to allocate ({}) exceeds unallocated amount ({})."
 msgstr "El monto a asignar ({}) excede el monto no asignado ({})."
 
@@ -4524,7 +4700,7 @@ msgstr "Incluir deudas por vencer"
 msgid "Además de las vencidas, incluir deudas próximas a vencer"
 msgstr "Además de las vencidas, incluir deudas próximas a vencer"
 
-#: apps/payments/forms.py:473 apps/payments/views.py:470
+#: apps/payments/forms.py:473 apps/payments/views.py:472
 #, python-format
 msgid "No se encontró un socio con el DNI %(document)s"
 msgstr "No se encontró un socio con el DNI %(document)s"
@@ -4681,7 +4857,7 @@ msgstr "Nota opcional sobre el recibo."
 msgid "Payment Receipt"
 msgstr "Recibo de Pago"
 
-#: apps/payments/models.py:326 templates/includes/aside.html:256
+#: apps/payments/models.py:326 templates/includes/aside.html:257
 #: templates/payments/receipt/list.html:7
 #: templates/payments/receipt/list.html:8
 #: templates/payments/receipt/list.html:81
@@ -4789,77 +4965,82 @@ msgstr "Notas sobre la validación"
 msgid "Validation notes are required when rejecting a receipt."
 msgstr "Las notas de validación son obligatorias al rechazar un recibo."
 
-#: apps/payments/views.py:121
+#: apps/payments/views.py:123
+#, python-brace-format
 msgid ""
 "Payment #{} has been created successfully with {} allocation(s) totaling ${}."
 msgstr ""
 "El pago #{} se ha creado con éxito con {} asignación(es) por un total de ${}."
 
-#: apps/payments/views.py:131
+#: apps/payments/views.py:133
+#, python-brace-format
 msgid "Payment #{} has been created successfully."
 msgstr "El pago #{} se ha creado con éxito."
 
-#: apps/payments/views.py:141 apps/payments/views.py:142
+#: apps/payments/views.py:143 apps/payments/views.py:144
 msgid "Create Payment"
 msgstr "Crear Pago"
 
-#: apps/payments/views.py:192
+#: apps/payments/views.py:194
+#, python-brace-format
 msgid ""
 "Payment #{} has been updated successfully with {} allocation(s) totaling ${}."
 msgstr ""
 "El pago #{} se ha actualizado con éxito con {} asignación(es) por un total "
 "de ${}."
 
-#: apps/payments/views.py:204
+#: apps/payments/views.py:206
+#, python-brace-format
 msgid "Payment #{} has been updated successfully."
 msgstr "El pago #{} se ha actualizado con éxito."
 
-#: apps/payments/views.py:214
+#: apps/payments/views.py:216
 msgid "Edit Payment"
 msgstr "Editar Pago"
 
-#: apps/payments/views.py:215
+#: apps/payments/views.py:217
 msgid "Update Payment"
 msgstr "Actualizar Pago"
 
-#: apps/payments/views.py:238
+#: apps/payments/views.py:240
+#, python-brace-format
 msgid "Payment #{} has been deleted successfully."
 msgstr "El pago #{} se ha eliminado con éxito."
 
-#: apps/payments/views.py:313
+#: apps/payments/views.py:315
 msgid "Payment receipt has been created successfully."
 msgstr "Recibo de pago creado con éxito."
 
-#: apps/payments/views.py:321
+#: apps/payments/views.py:323
 msgid "New Payment Receipt"
 msgstr "Nuevo Recibo de Pago"
 
-#: apps/payments/views.py:322
+#: apps/payments/views.py:324
 msgid "Save Receipt"
 msgstr "Guardar Recibo"
 
-#: apps/payments/views.py:352
+#: apps/payments/views.py:354
 msgid "Payment receipt has been updated successfully."
 msgstr "El recibo de pago se ha actualizado con éxito."
 
-#: apps/payments/views.py:360
+#: apps/payments/views.py:362
 msgid "Edit Payment Receipt"
 msgstr "Editar Recibo de Pago"
 
-#: apps/payments/views.py:361
+#: apps/payments/views.py:363
 msgid "Update Receipt"
 msgstr "Actualizar Recibo"
 
-#: apps/payments/views.py:384
+#: apps/payments/views.py:386
 msgid "Payment receipt has been deleted successfully."
 msgstr "El recibo de pago se ha eliminado con éxito."
 
-#: apps/payments/views.py:436
+#: apps/payments/views.py:438
 #, python-format
 msgid "El socio con DNI %(document)s no tiene deudas pendientes."
 msgstr "El socio con DNI %(document)s no tiene deudas pendientes."
 
-#: apps/payments/views.py:455
+#: apps/payments/views.py:457
 #, python-format
 msgid ""
 "Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
@@ -4868,16 +5049,16 @@ msgstr ""
 "Magic Link creado exitosamente para %(partner)s. Total: PEN %(amount)s - "
 "%(count)d deuda(s)"
 
-#: apps/payments/views.py:477
+#: apps/payments/views.py:479
 #, python-format
 msgid "Error al crear el Magic Link: %(error)s"
 msgstr "Error al crear el Magic Link: %(error)s"
 
-#: apps/payments/views.py:557
+#: apps/payments/views.py:559
 msgid "Link de pago no encontrado"
 msgstr "Link de pago no encontrado"
 
-#: apps/payments/views.py:569 templates/payments/magic_link/expired.html:157
+#: apps/payments/views.py:571 templates/payments/magic_link/expired.html:157
 msgid "Link Expirado"
 msgstr "Link Expirado"
 
@@ -4903,7 +5084,7 @@ msgid "File Size"
 msgstr "Tamaño del Archivo"
 
 #: apps/reports/apps.py:12 apps/reports/models.py:116
-#: templates/includes/aside.html:345 templates/reports/report_list.html:5
+#: templates/includes/aside.html:346 templates/reports/report_list.html:5
 msgid "Reports"
 msgstr "Reportes"
 
@@ -5403,7 +5584,7 @@ msgid "Report"
 msgstr "Reporte"
 
 #: apps/support/apps.py:8 templates/dashboard/index.html:812
-#: templates/includes/aside.html:179
+#: templates/includes/aside.html:180
 msgid "Support"
 msgstr "Soporte"
 
@@ -5473,7 +5654,7 @@ msgid "Ticket"
 msgstr "Ticket"
 
 #: apps/support/models.py:58 templates/dashboard/index.html:1649
-#: templates/includes/aside.html:194
+#: templates/includes/aside.html:195
 msgid "Tickets"
 msgstr "Tickets"
 
@@ -5660,7 +5841,7 @@ msgid "This email is already registered for another employee."
 msgstr "Este correo electrónico ya está registrado para otro empleado."
 
 #: apps/team/models.py:17 apps/team/views.py:45
-#: templates/includes/aside.html:372 templates/team/area/list.html:5
+#: templates/includes/aside.html:373 templates/team/area/list.html:5
 msgid "Areas"
 msgstr "Áreas"
 
@@ -5669,7 +5850,7 @@ msgid "Area this position belongs to."
 msgstr "Área a la que pertenece esta posición."
 
 #: apps/team/models.py:40 apps/team/views.py:169
-#: templates/includes/aside.html:389 templates/team/position/list.html:5
+#: templates/includes/aside.html:390 templates/team/position/list.html:5
 msgid "Positions"
 msgstr "Posiciones"
 
@@ -5686,7 +5867,7 @@ msgid "Employee"
 msgstr "Empleado"
 
 #: apps/team/models.py:70 apps/team/views.py:305
-#: templates/includes/aside.html:408 templates/team/area/detail.html:111
+#: templates/includes/aside.html:409 templates/team/area/detail.html:111
 #: templates/team/employee/list.html:5 templates/team/position/list.html:88
 msgid "Employees"
 msgstr "Empleados"
@@ -5949,7 +6130,7 @@ msgid "Confirm password"
 msgstr "Confirmar contraseña"
 
 #: apps/users/forms.py:58 apps/users/forms.py:126 apps/users/forms.py:180
-#: templates/includes/aside.html:486 templates/users/role/list.html:5
+#: templates/includes/aside.html:529 templates/users/role/list.html:5
 #: templates/users/user/list.html:87
 msgid "Roles"
 msgstr "Roles"
@@ -5991,7 +6172,7 @@ msgstr "Es socio"
 msgid "Designates whether the user is a partner."
 msgstr "Designa si el usuario es un socio."
 
-#: apps/users/models.py:42 templates/includes/aside.html:470
+#: apps/users/models.py:42 templates/includes/aside.html:513
 #: templates/users/user/list.html:6
 msgid "Users"
 msgstr "Usuarios"
@@ -6004,7 +6185,8 @@ msgstr "Perfil"
 msgid "Settings updated successfully"
 msgstr "Configuración actualizada con éxito"
 
-#: apps/users/views.py:48 templates/includes/aside.html:419
+#: apps/users/views.py:48 templates/chatbot/dashboard/index.html:24
+#: templates/includes/aside.html:450 templates/includes/aside.html:461
 msgid "Settings"
 msgstr "Configuración"
 
@@ -6029,42 +6211,54 @@ msgstr "API de Xofi Collections"
 msgid "API documentation for Xofi Collections"
 msgstr "Documentación de la API para Xofi Collections"
 
-#: config/settings/tools/django_constance.py:24
+#: config/settings/tools/django_constance.py:30
 msgid "Project name."
 msgstr "Nombre del proyecto."
 
-#: config/settings/tools/django_constance.py:25
-#: config/settings/tools/django_constance.py:26
+#: config/settings/tools/django_constance.py:31
+#: config/settings/tools/django_constance.py:32
 msgid "Company logo"
 msgstr "Logo de la empresa"
 
-#: config/settings/tools/django_constance.py:27
+#: config/settings/tools/django_constance.py:33
 msgid "Website domain."
 msgstr "Dominio del sitio web."
 
-#: config/settings/tools/django_constance.py:28
+#: config/settings/tools/django_constance.py:34
 msgid "Company contact phone."
 msgstr "Teléfono de contacto de la empresa."
 
-#: config/settings/tools/django_constance.py:29
+#: config/settings/tools/django_constance.py:35
 msgid "Enable sending emails."
 msgstr "Habilitar el envío de correos electrónicos."
 
-#: config/settings/tools/django_constance.py:30
+#: config/settings/tools/django_constance.py:36
 msgid "Enable email verification."
 msgstr "Habilitar la verificación de correo electrónico."
 
-#: config/settings/tools/django_constance.py:33
+#: config/settings/tools/django_constance.py:39
 #, fuzzy
 #| msgid "Enable email verification."
 msgid "Enable Telegram channel notifications."
 msgstr "Habilitar la verificación de correo electrónico."
 
-#: config/settings/tools/django_constance.py:35
+#: config/settings/tools/django_constance.py:41
 #, fuzzy
 #| msgid "Include payment link in campaign notifications."
 msgid "Enable payment links in notifications."
 msgstr "Incluir enlace de pago en las notificaciones de la campaña."
+
+#: config/settings/tools/django_constance.py:45
+msgid "Chatbot welcome image. Sent before welcome message on WhatsApp."
+msgstr ""
+
+#: config/settings/tools/django_constance.py:50
+msgid "Chatbot welcome message displayed when user starts conversation."
+msgstr ""
+
+#: config/settings/tools/django_constance.py:54
+msgid "Enable welcome message on homepage."
+msgstr ""
 
 #: templates/account/account_inactive.html:7
 #: templates/account/account_inactive.html:17
@@ -6072,7 +6266,7 @@ msgid "Account Inactive"
 msgstr "Cuenta Inactiva"
 
 #: templates/account/account_inactive.html:25 templates/account/login.html:7
-#: templates/account/login.html:97
+#: templates/account/login.html:99
 #: templates/account/password_reset_from_key_done.html:25
 msgid "Sign In"
 msgstr "Iniciar Sesión"
@@ -6143,12 +6337,12 @@ msgstr ""
 "Por favor <a href=\"%(email_url)s\">emita una nueva solicitud de "
 "confirmación de correo electrónico</a>."
 
-#: templates/account/login.html:30 templates/account/password_reset.html:30
+#: templates/account/login.html:31 templates/account/password_reset.html:30
 #, python-format
 msgid "Welcome to <span class=\"fw-bold\">%(project_name)s</span>"
 msgstr "Bienvenido a <span class=\"fw-bold\">%(project_name)s</span>"
 
-#: templates/account/login.html:33 templates/account/password_reset.html:33
+#: templates/account/login.html:35 templates/account/password_reset.html:33
 msgid ""
 "Simplify your cooperative management with integrated collection systems, "
 "automated accounting and complete member administration"
@@ -6156,11 +6350,11 @@ msgstr ""
 "Simplifique la gestión de su cooperativa con sistemas de cobranza "
 "integrados, contabilidad automatizada y administración completa de socios."
 
-#: templates/account/login.html:45
+#: templates/account/login.html:47
 msgid "Smart Collection Management"
 msgstr "Gestión Inteligente de Cobros"
 
-#: templates/account/login.html:48
+#: templates/account/login.html:50
 msgid ""
 "Monitor every payment and collection in real-time with intelligent "
 "dashboards and automatic alerts. Our system allows you to track payment "
@@ -6174,11 +6368,11 @@ msgstr ""
 "precisión. Optimice el flujo de efectivo, reduzca los incumplimientos y "
 "asegure una cobranza oportuna de los socios de su cooperativa."
 
-#: templates/account/login.html:55
+#: templates/account/login.html:57
 msgid "Member & Accounting Control"
 msgstr "Control de Socios y Miembros"
 
-#: templates/account/login.html:58
+#: templates/account/login.html:60
 msgid ""
 "Manage complete member records with automated accounting that eliminates "
 "repetitive tasks and ensures operational consistency. From member "
@@ -6193,11 +6387,11 @@ msgstr ""
 "Ahorre tiempo, mejore la productividad de su equipo y estandarice los "
 "procesos de manera simple y escalable."
 
-#: templates/account/login.html:65
+#: templates/account/login.html:67
 msgid "Financial Reports & Analytics"
 msgstr "Informes Financieros y Análisis"
 
-#: templates/account/login.html:68
+#: templates/account/login.html:70
 msgid ""
 "Generate detailed financial reports with automated validation that detects "
 "inconsistencies and applies controls based on your internal parameters. "
@@ -6212,27 +6406,27 @@ msgstr ""
 "análisis inteligentes que combinan velocidad y precisión para mejores "
 "decisiones financieras."
 
-#: templates/account/login.html:74
+#: templates/account/login.html:76
 msgid "Slide 1"
 msgstr "Diapositiva 1"
 
-#: templates/account/login.html:75
+#: templates/account/login.html:77
 msgid "Slide 2"
 msgstr "Diapositiva 2"
 
-#: templates/account/login.html:76
+#: templates/account/login.html:78
 msgid "Slide 3"
 msgstr "Diapositiva 3"
 
-#: templates/account/login.html:100
+#: templates/account/login.html:102
 msgid "Enter your credentials to access your account"
 msgstr "Ingrese sus credenciales para acceder a su cuenta"
 
-#: templates/account/login.html:120 templates/account/password_reset.html:65
+#: templates/account/login.html:122 templates/account/password_reset.html:65
 msgid "Forgot Password?"
 msgstr "¿Olvidó su contraseña?"
 
-#: templates/account/login.html:134
+#: templates/account/login.html:136
 msgid "Continue"
 msgstr "Continuar"
 
@@ -6408,6 +6602,9 @@ msgstr "Estado"
 #: templates/campaigns/group/bulk_add_partners.html:57
 #: templates/campaigns/group/confirm_delete.html:71
 #: templates/campaigns/group/form.html:77
+#: templates/chatbot/dashboard/index.html:671
+#: templates/chatbot/settings/form.html:38
+#: templates/chatbot/settings/form.html:99
 #: templates/compliance/contribution/confirm_delete.html:91
 #: templates/compliance/contribution/form.html:134
 #: templates/compliance/penalty/confirm_delete.html:94
@@ -6460,28 +6657,6 @@ msgstr "Cancelar"
 msgid "Campaign Details"
 msgstr "Detalles de la Campaña"
 
-#: templates/campaigns/campaign/detail.html:23
-#: templates/campaigns/campaign_csv/detail.html:23
-#: templates/campaigns/group/detail.html:23
-#: templates/compliance/contribution/detail.html:23
-#: templates/compliance/penalty/detail.html:23
-#: templates/compliance/social_security/detail.html:23
-#: templates/credits/credit/detail.html:33
-#: templates/credits/product/detail.html:23
-#: templates/credits/product_type/detail.html:23
-#: templates/customers/account/list.html:246
-#: templates/customers/agency/detail.html:23
-#: templates/customers/company/detail.html:16
-#: templates/partners/applicant/detail.html:23
-#: templates/payments/detail.html:23 templates/payments/receipt/detail.html:24
-#: templates/payments/receipt/list.html:155
-#: templates/support/ticket/detail.html:23 templates/team/area/detail.html:23
-#: templates/team/employee/detail.html:23
-#: templates/team/position/detail.html:23 templates/users/role/detail.html:32
-#: templates/users/user/detail.html:39
-msgid "Edit"
-msgstr "Editar"
-
 #: templates/campaigns/campaign/detail.html:31
 #: templates/campaigns/campaign_csv/detail.html:31
 msgid "Execute Campaign"
@@ -6511,7 +6686,7 @@ msgstr "No programado"
 #: templates/campaigns/campaign/list.html:96
 #: templates/campaigns/campaign_csv/detail.html:230
 #: templates/campaigns/campaign_csv/list.html:93
-#: templates/includes/aside.html:240
+#: templates/includes/aside.html:241
 #: templates/payments/magic_link/detail.html:139
 msgid "Payment Link"
 msgstr "Enlace de Pago"
@@ -6535,6 +6710,7 @@ msgstr "Socios del Grupo"
 #: templates/campaigns/campaign_csv/list.html:94
 #: templates/campaigns/group/detail.html:100
 #: templates/campaigns/group/list.html:93
+#: templates/chatbot/dashboard/index.html:502
 #: templates/compliance/contribution/list.html:83
 #: templates/compliance/penalty/list.html:83
 #: templates/compliance/social_security/list.html:83
@@ -6599,6 +6775,7 @@ msgstr "Actualizar Página"
 #: templates/campaigns/campaign_csv/detail.html:356
 #: templates/campaigns/campaign_csv/detail.html:377
 #: templates/campaigns/campaign_csv/detail.html:393
+#: templates/chatbot/dashboard/index.html:760
 #: templates/partners/modals/document_detail_modal.html:140
 msgid "Close"
 msgstr "Cerrar"
@@ -6910,7 +7087,7 @@ msgid "Update CSV Campaign"
 msgstr "Actualizar Campaña CSV"
 
 #: templates/campaigns/campaign_csv/list.html:5
-#: templates/includes/aside.html:317
+#: templates/includes/aside.html:318
 msgid "CSV Campaigns"
 msgstr "Campañas CSV"
 
@@ -7104,6 +7281,442 @@ msgstr "No se encontraron grupos."
 msgid "Start by creating your first group"
 msgstr "Comience creando su primer grupo."
 
+#: templates/chatbot/dashboard/index.html:6
+#: templates/chatbot/dashboard/index.html:14
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Chatbot Dashboard"
+msgstr "Tablero"
+
+#: templates/chatbot/dashboard/index.html:137
+#, fuzzy
+#| msgid "Agent Conversations"
+msgid "Total Conversations"
+msgstr "Conversaciones del Agente"
+
+#: templates/chatbot/dashboard/index.html:151
+#, fuzzy
+#| msgid "Active"
+msgid "Active Now"
+msgstr "Activo"
+
+#: templates/chatbot/dashboard/index.html:165
+#, fuzzy
+#| msgid "Authenticated"
+msgid "Auth Rate"
+msgstr "Autenticado"
+
+#: templates/chatbot/dashboard/index.html:179
+#, fuzzy
+#| msgid "Message content"
+msgid "Messages / Month"
+msgstr "Contenido del mensaje"
+
+#: templates/chatbot/dashboard/index.html:193
+#, fuzzy
+#| msgid "WhatsApp"
+msgid "WhatsApp Users"
+msgstr "WhatsApp"
+
+#: templates/chatbot/dashboard/index.html:207
+#, fuzzy
+#| msgid "Telegram"
+msgid "Telegram Users"
+msgstr "Telegram"
+
+#: templates/chatbot/dashboard/index.html:220
+msgid "WhatsApp Message Delivery"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:221
+#, fuzzy
+#| msgid "Active Status"
+msgid "Live Stats"
+msgstr "Estado Activo"
+
+#: templates/chatbot/dashboard/index.html:235
+#, fuzzy
+#| msgid "Message content"
+msgid "Messages Sent"
+msgstr "Contenido del mensaje"
+
+#: templates/chatbot/dashboard/index.html:290
+#, fuzzy
+#| msgid "Message Templates"
+msgid "Messages (last 14 days)"
+msgstr "Plantillas de Mensajes"
+
+#: templates/chatbot/dashboard/index.html:306
+#, fuzzy
+#| msgid "Contribution"
+msgid "Channel Distribution"
+msgstr "Aporte"
+
+#: templates/chatbot/dashboard/index.html:329
+#, fuzzy
+#| msgid "Message content"
+msgid "Messages by Intent"
+msgstr "Contenido del mensaje"
+
+#: templates/chatbot/dashboard/index.html:345
+#, fuzzy
+#| msgid "Campaigns by Status"
+msgid "Conversations by Status"
+msgstr "Campañas por Estado"
+
+#: templates/chatbot/dashboard/index.html:366
+#, fuzzy
+#| msgid "Agent Conversations"
+msgid "Recent Conversations"
+msgstr "Conversaciones del Agente"
+
+#: templates/chatbot/dashboard/index.html:367
+#, fuzzy
+#| msgid "Last interaction timestamp"
+msgid "Last 10 interactions"
+msgstr "Marca de tiempo de la última interacción"
+
+#: templates/chatbot/dashboard/index.html:375
+#: templates/customers/agency/list.html:90
+#: templates/partners/applicant/list.html:95
+#: templates/partners/partner/list.html:95
+#: templates/partners/prospect/list.html:77 templates/team/area/detail.html:198
+#: templates/team/employee/list.html:98 templates/team/position/detail.html:112
+msgid "Contact"
+msgstr "Contacto"
+
+#: templates/chatbot/dashboard/index.html:379
+msgid "Auth"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:380
+#: templates/chatbot/dashboard/index.html:868
+#, fuzzy
+#| msgid "Message Body"
+msgid "Messages"
+msgstr "Cuerpo del Mensaje"
+
+#: templates/chatbot/dashboard/index.html:381
+#, fuzzy
+#| msgid "Last Execution At"
+msgid "Last Interaction"
+msgstr "Última ejecución en"
+
+#: templates/chatbot/dashboard/index.html:436
+#, fuzzy
+#| msgid "No comments yet"
+msgid "No conversations yet"
+msgstr "No hay comentarios aún"
+
+#: templates/chatbot/dashboard/index.html:458
+msgid "WhatsApp Business API — Meta approval status"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:481
+#, fuzzy
+#| msgid "Message Template"
+msgid "New Template"
+msgstr "Plantilla de Mensaje"
+
+#: templates/chatbot/dashboard/index.html:496
+#: templates/chatbot/dashboard/index.html:624
+#, fuzzy
+#| msgid "Template Type"
+msgid "Template Name"
+msgstr "Tipo de Plantilla"
+
+#: templates/chatbot/dashboard/index.html:497
+#: templates/chatbot/dashboard/index.html:630
+#: templates/chatbot/dashboard/index.html:712
+#: templates/partners/modals/document_detail_modal.html:62
+msgid "Category"
+msgstr "Categoría"
+
+#: templates/chatbot/dashboard/index.html:498
+msgid "Lang"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:499
+#, fuzzy
+#| msgid "New Status"
+msgid "Meta Status"
+msgstr "Nuevo Estado"
+
+#: templates/chatbot/dashboard/index.html:500
+#: templates/chatbot/dashboard/index.html:720
+#, fuzzy
+#| msgid "Timestamps"
+msgid "Times Used"
+msgstr "Marcas de tiempo"
+
+#: templates/chatbot/dashboard/index.html:501
+#: templates/compliance/contribution/detail.html:142
+#: templates/compliance/penalty/detail.html:148
+#: templates/compliance/social_security/detail.html:144
+#: templates/credits/credit/detail.html:114
+#: templates/credits/product/detail.html:161
+#: templates/credits/product_type/detail.html:70
+#: templates/credits/product_type/detail.html:151
+#: templates/credits/product_type/list.html:93
+#: templates/customers/agency/detail.html:157
+#: templates/customers/company/detail.html:142
+#: templates/partners/applicant/detail.html:189
+#: templates/partners/modals/document_detail_modal.html:108
+#: templates/partners/partner/detail.html:181
+#: templates/partners/prospect/list.html:81
+#: templates/payments/magic_link/detail.html:87
+#: templates/payments/magic_link/list.html:97
+#: templates/payments/receipt/confirm_delete.html:79
+#: templates/payments/receipt/detail.html:158
+#: templates/payments/receipt/list.html:95
+#: templates/reports/report_delete.html:106
+#: templates/reports/report_detail.html:152
+#: templates/reports/report_list.html:94
+#: templates/support/ticket/confirm_delete.html:60
+#: templates/support/ticket/detail.html:258
+#: templates/support/ticket/list.html:83 templates/team/area/list.html:83
+msgid "Created"
+msgstr "Creado"
+
+#: templates/chatbot/dashboard/index.html:559
+msgid "Sync approval status from Meta"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:562
+msgid "Sync Meta"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:579
+#: templates/customers/account/form.html:123
+#: templates/payments/receipt/list.html:147 templates/users/profile.html:147
+msgid "View"
+msgstr "Ver"
+
+#: templates/chatbot/dashboard/index.html:591
+#, fuzzy
+#| msgid "There are no prospects registered yet."
+msgid "No templates registered yet"
+msgstr "No hay prospectos registrados aún."
+
+#: templates/chatbot/dashboard/index.html:612
+#, fuzzy
+#| msgid "Message Template"
+msgid "Create Message Template"
+msgstr "Plantilla de Mensaje"
+
+#: templates/chatbot/dashboard/index.html:613
+#, fuzzy
+#| msgid "Successfully submitted {} applications for review."
+msgid "Will be submitted to Meta for review"
+msgstr "Envío exitoso de {} solicitudes para revisión."
+
+#: templates/chatbot/dashboard/index.html:627
+msgid "Lowercase, no spaces (use underscores)"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:638
+#: templates/chatbot/dashboard/index.html:716
+msgid "Language"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:646
+#: templates/chatbot/dashboard/index.html:729
+#, fuzzy
+#| msgid "Template Type"
+msgid "Template Body"
+msgstr "Tipo de Plantilla"
+
+#: templates/chatbot/dashboard/index.html:648
+msgid ""
+"Hola {{1}}, tu pago de {{2}} vence el {{3}}. Responde este mensaje para más "
+"info."
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:649
+msgid "Use {{1}}, {{2}}... for dynamic variables"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:657
+#, fuzzy
+#| msgid "Hide Preview"
+msgid "Live Preview"
+msgstr "Ocultar Vista Previa"
+
+#: templates/chatbot/dashboard/index.html:663
+#: templates/chatbot/dashboard/index.html:932
+msgid "Preview will appear here..."
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:674
+msgid "Submit to Meta for Review"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:708
+#, fuzzy
+#| msgid "Approval Date"
+msgid "Meta Approval Status"
+msgstr "Fecha de Aprobación"
+
+#: templates/chatbot/dashboard/index.html:740
+#, fuzzy
+#| msgid "Contacts Preview"
+msgid "WhatsApp Preview"
+msgstr "Vista Previa de Contactos"
+
+#: templates/chatbot/dashboard/index.html:799
+#, fuzzy
+#| msgid "Error Message"
+msgid "User Messages"
+msgstr "Mensaje de error"
+
+#: templates/chatbot/dashboard/index.html:947
+msgid "Template name and body are required."
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:954
+msgid "Submitting to Meta..."
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:975
+msgid "Submitted! Awaiting Meta review..."
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:980
+#, fuzzy
+#| msgid "Error loading filters. Please try again."
+msgid "Network error. Please try again."
+msgstr "Error al cargar los filtros. Por favor, inténtalo de nuevo."
+
+#: templates/chatbot/dashboard/index.html:991
+#, fuzzy
+#| msgid "Executing..."
+msgid "Syncing..."
+msgstr "Ejecutando..."
+
+#: templates/chatbot/dashboard/index.html:1003
+#, fuzzy
+#| msgid "Approved"
+msgid "Approved!"
+msgstr "Aprobado"
+
+#: templates/chatbot/dashboard/index.html:1049
+#: templates/chatbot/dashboard/index.html:1055
+#, fuzzy
+#| msgid "Conversation Message"
+msgid "Send Test Message"
+msgstr "Mensaje de la Conversación"
+
+#: templates/chatbot/dashboard/index.html:1053
+msgid "Only approved templates can be sent"
+msgstr ""
+
+#: templates/chatbot/dashboard/index.html:1067
+#, fuzzy
+#| msgid "Sending"
+msgid "Sending..."
+msgstr "Enviando"
+
+#: templates/chatbot/dashboard/index.html:1070
+#, fuzzy
+#| msgid "Message content"
+msgid "Message Sent!"
+msgstr "Contenido del mensaje"
+
+#: templates/chatbot/settings/detail.html:5
+#: templates/chatbot/settings/detail.html:6
+#: templates/chatbot/settings/form.html:6
+#: templates/chatbot/settings/form.html:71
+#, fuzzy
+#| msgid "Status & Settings"
+msgid "Chatbot Settings"
+msgstr "Configuración"
+
+#: templates/chatbot/settings/detail.html:37
+msgid "Image sent before welcome message on WhatsApp"
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:49
+msgid "No welcome image configured"
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:50
+msgid "Only the welcome message will be sent"
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:67
+#, fuzzy
+#| msgid "Error Message"
+msgid "Current Message"
+msgstr "Mensaje de error"
+
+#: templates/chatbot/settings/detail.html:72
+msgid ""
+"This message is displayed when a user starts a conversation with the chatbot."
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:82
+#, fuzzy
+#| msgid "Change avatar"
+msgid "Channel Behavior"
+msgstr "Cambiar avatar"
+
+#: templates/chatbot/settings/detail.html:99
+msgid "Image with welcome message as caption"
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:101
+msgid "Welcome message only"
+msgstr ""
+
+#: templates/chatbot/settings/detail.html:113
+msgid "Welcome message only (no image)"
+msgstr ""
+
+#: templates/chatbot/settings/form.html:7
+#, fuzzy
+#| msgid "Status & Settings"
+msgid "Edit Chatbot Settings"
+msgstr "Configuración"
+
+#: templates/chatbot/settings/form.html:28
+#, fuzzy
+#| msgid "Change logo"
+msgid "Change image"
+msgstr "Cambiar logo"
+
+#: templates/chatbot/settings/form.html:46
+#, fuzzy
+#| msgid "Remove logo"
+msgid "Remove image"
+msgstr "Eliminar logo"
+
+#: templates/chatbot/settings/form.html:55
+#, fuzzy
+#| msgid ""
+#| "Set the company logo. Only *.png, *.jpg and *.jpeg image files are "
+#| "accepted"
+msgid ""
+"Set the welcome image for WhatsApp. Only *.png, *.jpg and *.jpeg image files "
+"are accepted"
+msgstr ""
+"Establezca el logo de la empresa. Solo se aceptan archivos de imagen *.png, "
+"*.jpg y *.jpeg"
+
+#: templates/chatbot/settings/form.html:89
+msgid "Use *text* for bold formatting in WhatsApp and Telegram."
+msgstr ""
+
+#: templates/chatbot/settings/form.html:102
+#: templates/compliance/contribution/form.html:140
+#: templates/compliance/penalty/form.html:147
+#: templates/compliance/social_security/form.html:144
+#: templates/customers/account/form.html:166
+#: templates/customers/company/form.html:239
+#: templates/partners/modals/document_edit_modal.html:129
+#: templates/partners/prospect/form.html:195 templates/users/settings.html:131
+msgid "Save Changes"
+msgstr "Guardar Cambios"
+
 #: templates/compliance/contribution/confirm_delete.html:14
 #: templates/compliance/penalty/confirm_delete.html:14
 #: templates/compliance/social_security/confirm_delete.html:14
@@ -7235,34 +7848,6 @@ msgstr "Información de la Contribución"
 msgid "Period"
 msgstr "Período:"
 
-#: templates/compliance/contribution/detail.html:142
-#: templates/compliance/penalty/detail.html:148
-#: templates/compliance/social_security/detail.html:144
-#: templates/credits/credit/detail.html:114
-#: templates/credits/product/detail.html:161
-#: templates/credits/product_type/detail.html:70
-#: templates/credits/product_type/detail.html:151
-#: templates/credits/product_type/list.html:93
-#: templates/customers/agency/detail.html:157
-#: templates/customers/company/detail.html:142
-#: templates/partners/applicant/detail.html:189
-#: templates/partners/modals/document_detail_modal.html:108
-#: templates/partners/partner/detail.html:181
-#: templates/partners/prospect/list.html:81
-#: templates/payments/magic_link/detail.html:87
-#: templates/payments/magic_link/list.html:97
-#: templates/payments/receipt/confirm_delete.html:79
-#: templates/payments/receipt/detail.html:158
-#: templates/payments/receipt/list.html:95
-#: templates/reports/report_delete.html:106
-#: templates/reports/report_detail.html:152
-#: templates/reports/report_list.html:94
-#: templates/support/ticket/confirm_delete.html:60
-#: templates/support/ticket/detail.html:258
-#: templates/support/ticket/list.html:83 templates/team/area/list.html:83
-msgid "Created"
-msgstr "Creado"
-
 #: templates/compliance/contribution/detail.html:146
 #: templates/compliance/penalty/detail.html:152
 #: templates/compliance/social_security/detail.html:148
@@ -7279,16 +7864,6 @@ msgstr "Información de la Contribución"
 #: templates/compliance/social_security/form.html:124
 msgid "Validation Error"
 msgstr "Error de Validación"
-
-#: templates/compliance/contribution/form.html:140
-#: templates/compliance/penalty/form.html:147
-#: templates/compliance/social_security/form.html:144
-#: templates/customers/account/form.html:166
-#: templates/customers/company/form.html:239
-#: templates/partners/modals/document_edit_modal.html:129
-#: templates/partners/prospect/form.html:195 templates/users/settings.html:131
-msgid "Save Changes"
-msgstr "Guardar Cambios"
 
 #: templates/compliance/contribution/list.html:6
 #: templates/compliance/contribution/list.html:68
@@ -7938,11 +8513,6 @@ msgstr "Gestión de Permisos"
 msgid "Module"
 msgstr "Módulo"
 
-#: templates/customers/account/form.html:123
-#: templates/payments/receipt/list.html:147 templates/users/profile.html:147
-msgid "View"
-msgstr "Ver"
-
 #: templates/customers/account/form.html:126
 #: templates/customers/account/list.html:229
 #: templates/payments/receipt/detail.html:36
@@ -8135,14 +8705,6 @@ msgstr "Lista de Agencias"
 #: templates/customers/agency/list.html:79
 msgid "agencies"
 msgstr "agencias"
-
-#: templates/customers/agency/list.html:90
-#: templates/partners/applicant/list.html:95
-#: templates/partners/partner/list.html:95
-#: templates/partners/prospect/list.html:77 templates/team/area/detail.html:198
-#: templates/team/employee/list.html:98 templates/team/position/detail.html:112
-msgid "Contact"
-msgstr "Contacto"
 
 #: templates/customers/agency/list.html:172
 msgid "No agencies found"
@@ -8406,27 +8968,27 @@ msgstr "Página no encontrada"
 msgid "System Error"
 msgstr "Error del sistema"
 
-#: templates/includes/aside.html:20
+#: templates/includes/aside.html:21
 msgid "Clients"
 msgstr "Clientes"
 
-#: templates/includes/aside.html:77
+#: templates/includes/aside.html:78
 msgid "My Payments"
 msgstr "Mis Pagos"
 
-#: templates/includes/aside.html:91
+#: templates/includes/aside.html:92
 msgid "Make Payment"
 msgstr "Realizar Pago"
 
-#: templates/includes/aside.html:109
+#: templates/includes/aside.html:110
 msgid "Payment History"
 msgstr "Historial de Pagos"
 
-#: templates/includes/aside.html:328 templates/reports/report_create.html:144
+#: templates/includes/aside.html:329 templates/reports/report_create.html:144
 msgid "Analytics"
 msgstr "Analíticas"
 
-#: templates/includes/aside.html:357
+#: templates/includes/aside.html:358
 msgid "Team Management"
 msgstr "Gestión de Permisos"
 
@@ -8557,10 +9119,6 @@ msgstr "Número de documento"
 #: templates/partners/modals/document_edit_modal.html:31
 msgid "Document Information"
 msgstr "Información del Documento"
-
-#: templates/partners/modals/document_detail_modal.html:62
-msgid "Category"
-msgstr "Categoría"
 
 #: templates/partners/modals/document_detail_modal.html:75
 #: templates/payments/receipt/detail.html:100
@@ -9132,27 +9690,27 @@ msgid "Deudas Disponibles"
 msgstr "Deudas Disponibles"
 
 #: templates/payments/magic_link/public.html:69
-#: templates/payments/magic_link/public.html:384
+#: templates/payments/magic_link/public.html:378
 msgid "Seleccionar todas"
 msgstr "Seleccionar todas"
 
-#: templates/payments/magic_link/public.html:109
+#: templates/payments/magic_link/public.html:110
 msgid "Vence:"
 msgstr "Vence:"
 
-#: templates/payments/magic_link/public.html:111
+#: templates/payments/magic_link/public.html:112
 #, fuzzy
 #| msgid "Vence:"
 msgid "Vencida"
 msgstr "Vence:"
 
-#: templates/payments/magic_link/public.html:137
+#: templates/payments/magic_link/public.html:138
 #, fuzzy
 #| msgid "Nota importante:"
 msgid "Nota importante"
 msgstr "Nota importante:"
 
-#: templates/payments/magic_link/public.html:138
+#: templates/payments/magic_link/public.html:139
 msgid ""
 "Las deudas vencidas se pagan primero. Puede seleccionar las deudas que desea "
 "pagar."
@@ -9160,105 +9718,95 @@ msgstr ""
 "Las deudas vencidas se pagan primero. Puede seleccionar las deudas que desea "
 "pagar."
 
-#: templates/payments/magic_link/public.html:158
+#: templates/payments/magic_link/public.html:159
 msgid "Resumen de Pago"
 msgstr "Resumen de Pago"
 
-#: templates/payments/magic_link/public.html:169
+#: templates/payments/magic_link/public.html:170
 msgid "Subtotal"
 msgstr "Subtotal"
 
-#: templates/payments/magic_link/public.html:177
+#: templates/payments/magic_link/public.html:178
 #, fuzzy
 #| msgid "Total a Pagar:"
 msgid "Total a Pagar"
 msgstr "Total a Pagar:"
 
-#: templates/payments/magic_link/public.html:187
-#: templates/payments/magic_link/public.html:527
+#: templates/payments/magic_link/public.html:188
+#: templates/payments/magic_link/public.html:521
 msgid "Pagar"
 msgstr ""
 
-#: templates/payments/magic_link/public.html:191
-#, fuzzy
-#| msgid "Métodos de Pago Aceptados"
+#: templates/payments/magic_link/public.html:192
 msgid "Métodos de Pago"
-msgstr "Métodos de Pago Aceptados"
+msgstr "Métodos de Pago"
 
-#: templates/payments/magic_link/public.html:201
-msgid "Tarjetas"
-msgstr ""
+#: templates/payments/magic_link/public.html:204
+msgid "Billeteras"
+msgstr "Billeteras"
 
-#: templates/payments/magic_link/public.html:210
-msgid "Yape"
-msgstr ""
-
-#: templates/payments/magic_link/public.html:217
+#: templates/payments/magic_link/public.html:211
 msgid "Banca"
-msgstr ""
+msgstr "Banca"
 
-#: templates/payments/magic_link/public.html:227
-#, fuzzy
-#| msgid "Agent"
+#: templates/payments/magic_link/public.html:221
 msgid "Agentes"
-msgstr "Agente"
+msgstr "Agentes"
 
-#: templates/payments/magic_link/public.html:239
+#: templates/payments/magic_link/public.html:233
 #, fuzzy
 #| msgid "Transacción 100%% segura y encriptada"
 msgid "Transacción Segura"
 msgstr "Transacción 100%% segura y encriptada"
 
-#: templates/payments/magic_link/public.html:241
-msgid ""
-"Tu pago está protegido con encriptación de nivel bancario. El proceso puede "
-"tomar hasta 48 horas."
+#: templates/payments/magic_link/public.html:235
+msgid "Tu pago está protegido con encriptación de nivel bancario."
 msgstr ""
 
-#: templates/payments/magic_link/public.html:381
+#: templates/payments/magic_link/public.html:375
 msgid "Deseleccionar todas"
 msgstr "Deseleccionar todas"
 
-#: templates/payments/magic_link/public.html:406
+#: templates/payments/magic_link/public.html:400
 msgid "Selección requerida"
 msgstr "Selección requerida"
 
-#: templates/payments/magic_link/public.html:407
+#: templates/payments/magic_link/public.html:401
 msgid "Por favor selecciona al menos una deuda para pagar"
 msgstr "Por favor selecciona al menos una deuda para pagar"
 
-#: templates/payments/magic_link/public.html:417
+#: templates/payments/magic_link/public.html:411
 msgid "Pago de Deudas"
 msgstr "Pago de Deudas"
 
-#: templates/payments/magic_link/public.html:421
+#: templates/payments/magic_link/public.html:415
 msgid "Pago de"
 msgstr "Pago de"
 
-#: templates/payments/magic_link/public.html:421
+#: templates/payments/magic_link/public.html:415
 msgid "deuda(s) pendiente(s)"
 msgstr "deuda(s) pendiente(s)"
 
-#: templates/payments/magic_link/public.html:449
+#: templates/payments/magic_link/public.html:443
 msgid "Procesando..."
 msgstr "Procesando..."
 
-#: templates/payments/magic_link/public.html:459
-#: templates/payments/magic_link/public.html:520
+#: templates/payments/magic_link/public.html:453
+#: templates/payments/magic_link/public.html:514
 msgid "Error de Pago"
 msgstr "Error de Pago"
 
-#: templates/payments/magic_link/public.html:460
+#: templates/payments/magic_link/public.html:454
 msgid ""
 "No se pudo inicializar el sistema de pagos. Por favor, intente nuevamente."
 msgstr ""
 "No se pudo inicializar el sistema de pagos. Por favor, intente nuevamente."
 
-#: templates/payments/magic_link/public.html:499
+#: templates/payments/magic_link/public.html:493
 msgid "¡Pago Procesado!"
 msgstr "¡Pago Procesado!"
 
-#: templates/payments/magic_link/public.html:500
+#: templates/payments/magic_link/public.html:494
 msgid ""
 "Su pago ha sido procesado exitosamente. Recibirá una confirmación por correo "
 "electrónico."
@@ -9266,7 +9814,7 @@ msgstr ""
 "Su pago ha sido procesado exitosamente. Recibirá una confirmación por correo "
 "electrónico."
 
-#: templates/payments/magic_link/public.html:513
+#: templates/payments/magic_link/public.html:507
 msgid "Ocurrió un error durante el procesamiento del pago"
 msgstr "Ocurrió un error durante el procesamiento del pago."
 
@@ -10329,6 +10877,9 @@ msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 msgid "Save Roles"
 msgstr "Guardar Roles"
 
+#~ msgid "Agent Assistant"
+#~ msgstr "Asistente de Agente"
+
 #~ msgid "Phone Call"
 #~ msgstr "Llamada telefónica"
 
@@ -10794,9 +11345,6 @@ msgstr "Guardar Roles"
 
 #~ msgid "Most Used Panels"
 #~ msgstr "Paneles Más Usados"
-
-#~ msgid "Delivered"
-#~ msgstr "Entregado"
 
 #~ msgid "PDF"
 #~ msgstr "PDF"
