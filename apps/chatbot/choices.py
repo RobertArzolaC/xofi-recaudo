@@ -41,3 +41,21 @@ class ChannelType(models.TextChoices):
 
     TELEGRAM = "TELEGRAM", _("Telegram")
     WHATSAPP = "WHATSAPP", _("WhatsApp")
+
+
+class MessageDeliveryStatus(models.TextChoices):
+    """Delivery status for outbound WhatsApp messages."""
+
+    SENT = "SENT", _("Sent")
+    DELIVERED = "DELIVERED", _("Delivered")
+    READ = "READ", _("Read")
+    FAILED = "FAILED", _("Failed")
+
+
+class TemplateStatus(models.TextChoices):
+    """Approval status for WhatsApp message templates."""
+
+    PENDING = "PENDING", _("Pending Review")
+    APPROVED = "APPROVED", _("Approved")
+    REJECTED = "REJECTED", _("Rejected")
+    PAUSED = "PAUSED", _("Paused")

@@ -123,6 +123,19 @@ class ConversationMessage(TimeStampedModel):
         blank=True,
         help_text=_("Additional metadata (API responses, file info, etc.)"),
     )
+    delivery_status = models.CharField(
+        max_length=20,
+        choices=choices.MessageDeliveryStatus.choices,
+        blank=True,
+        null=True,
+        help_text=_("Delivery status for outbound WhatsApp messages"),
+    )
+    whatsapp_message_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_("WhatsApp message ID for delivery tracking"),
+    )
 
     class Meta:
         verbose_name = _("Conversation Message")
@@ -131,3 +144,50 @@ class ConversationMessage(TimeStampedModel):
 
     def __str__(self):
         return f"{self.sender} - {self.message[:50]}"
+
+
+class WhatsAppTemplate(TimeStampedModel):
+    """
+    Model to track WhatsApp Message Templates and their Meta approval status.
+    """
+
+    name = models.CharField(
+        max_length=100,
+        help_text=_("Template name (as registered in Meta)"),
+    )
+    category = models.CharField(
+        max_length=50,
+        help_text=_("Template category (MARKETING, UTILITY, AUTHENTICATION)"),
+    )
+    language = models.CharField(
+        max_length=10,
+        default="es",
+        help_text=_("Template language code"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=choices.TemplateStatus.choices,
+        default=choices.TemplateStatus.PENDING,
+        help_text=_("Meta approval status"),
+    )
+    body = models.TextField(
+        help_text=_("Template body text"),
+    )
+    meta_template_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_("Template ID assigned by Meta"),
+    )
+    times_used = models.PositiveIntegerField(
+        default=0,
+        help_text=_("Number of times this template has been sent"),
+    )
+
+    class Meta:
+        verbose_name = _("WhatsApp Template")
+        verbose_name_plural = _("WhatsApp Templates")
+        ordering = ["-created"]
+
+    def __str__(self):
+        return f"{self.name} ({self.status})"

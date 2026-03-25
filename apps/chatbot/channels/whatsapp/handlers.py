@@ -99,10 +99,36 @@ class WhatsAppBotHandler:
             logger.error(f"Error processing message: {e}", exc_info=True)
 
     def _process_status(self, status: Dict) -> None:
-        """Log delivery/read status updates from Meta."""
+        """Update delivery status on ConversationMessage from Meta webhook."""
         message_id = status.get("id")
-        status_value = status.get("status")
+        status_value = status.get("status", "").upper()
+
         logger.info(f"Status update — message {message_id}: {status_value}")
+
+        if not message_id or not status_value:
+            return
+
+        from apps.chatbot.models import ConversationMessage
+        from apps.chatbot.choices import MessageDeliveryStatus
+
+        status_map = {
+            "SENT": MessageDeliveryStatus.SENT,
+            "DELIVERED": MessageDeliveryStatus.DELIVERED,
+            "READ": MessageDeliveryStatus.READ,
+            "FAILED": MessageDeliveryStatus.FAILED,
+        }
+        delivery_status = status_map.get(status_value)
+        if not delivery_status:
+            return
+
+        updated = ConversationMessage.objects.filter(
+            whatsapp_message_id=message_id
+        ).update(delivery_status=delivery_status)
+
+        if updated:
+            logger.info(f"Updated delivery status to {delivery_status} for message {message_id}")
+        else:
+            logger.warning(f"No ConversationMessage found for whatsapp_message_id={message_id}")
 
     async def _handle_text_message(self, message: Dict) -> None:
         """Handle a text message."""
@@ -126,23 +152,49 @@ class WhatsAppBotHandler:
 
                 await self.conversation_service.asave_message(conversation, "USER", user_message)
 
+                from apps.chatbot.choices import MessageDeliveryStatus
                 auth_data = self.conversation_service.intent_detector.extract_auth_data(user_message)
                 if image_url and not auth_data:
-                    await self._send_image_message(sender_phone, image_url, response)
+                    wamid = await self._send_image_message(sender_phone, image_url, response)
                 else:
-                    await self._send_text_message(sender_phone, response)
+                    wamid = await self._send_text_message(sender_phone, response)
 
-                await self.conversation_service.asave_message(conversation, "AGENT", response)
+                await self.conversation_service.asave_message(
+                    conversation, "AGENT", response,
+                    whatsapp_message_id=wamid,
+                    delivery_status=MessageDeliveryStatus.SENT if wamid else None,
+                )
                 return
 
             response, image_url = await self.conversation_service.aprocess_message_whatsapp(
                 sender_phone, user_message
             )
 
+            from apps.chatbot.choices import MessageDeliveryStatus
             if image_url:
-                await self._send_image_message(sender_phone, image_url, response)
+                wamid = await self._send_image_message(sender_phone, image_url, response)
             else:
-                await self._send_text_message(sender_phone, response)
+                wamid = await self._send_text_message(sender_phone, response)
+
+            # Update the last AGENT message with the wamid (saved inside aprocess_message_whatsapp)
+            if wamid:
+                from apps.chatbot.models import ConversationMessage
+                ConversationMessage.objects.filter(
+                    conversation=conversation,
+                    sender="AGENT",
+                    whatsapp_message_id__isnull=True,
+                ).order_by("-created").first()
+                await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: ConversationMessage.objects.filter(
+                        conversation=conversation,
+                        sender="AGENT",
+                        whatsapp_message_id__isnull=True,
+                    ).order_by("-created").update(
+                        whatsapp_message_id=wamid,
+                        delivery_status=MessageDeliveryStatus.SENT,
+                    )
+                )
 
         except Exception as e:
             logger.error(f"Error processing text message: {e}", exc_info=True)
@@ -217,12 +269,20 @@ class WhatsAppBotHandler:
                     f"📝 *Datos procesados del mensaje*\n"
                     f"Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
                 )
-                await self._send_text_message(sender_phone, response_message)
+                wamid = await self._send_text_message(sender_phone, response_message)
                 await self.conversation_service.asave_message(
                     conversation,
                     "USER",
                     f"[IMAGE] {caption}" if caption else "[IMAGE]",
                     metadata={"receipt_id": result.get("document_id"), "media_id": media_id},
+                )
+                from apps.chatbot.choices import MessageDeliveryStatus
+                await self.conversation_service.asave_message(
+                    conversation,
+                    "AGENT",
+                    response_message,
+                    whatsapp_message_id=wamid,
+                    delivery_status=MessageDeliveryStatus.SENT if wamid else None,
                 )
             else:
                 await self._send_text_message(
@@ -260,24 +320,28 @@ class WhatsAppBotHandler:
                 "Mensaje interactivo recibido. Por favor usa comandos de texto.",
             )
 
-    async def _send_text_message(self, recipient_phone: str, message: str) -> None:
-        """Send a text message via Meta WhatsApp Cloud API."""
+    async def _send_text_message(self, recipient_phone: str, message: str) -> Optional[str]:
+        """Send a text message via Meta WhatsApp Cloud API. Returns wamid or None."""
         try:
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None, self.whatsapp_service.send_text_message, recipient_phone, message
             )
             if result.get("success"):
-                logger.info(f"Message sent to {recipient_phone}")
+                wamid = result.get("message_id")
+                logger.info(f"Message sent to {recipient_phone} (id={wamid})")
+                return wamid
             else:
                 logger.error(f"Failed to send to {recipient_phone}: {result.get('error')}")
+                return None
         except Exception as e:
             logger.error(f"Error sending text message: {e}", exc_info=True)
+            return None
 
     async def _send_image_message(
         self, recipient_phone: str, image_url: str, caption: str
-    ) -> None:
-        """Send an image message via Meta WhatsApp Cloud API."""
+    ) -> Optional[str]:
+        """Send an image message via Meta WhatsApp Cloud API. Returns wamid or None."""
         try:
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
@@ -288,13 +352,17 @@ class WhatsAppBotHandler:
                 caption,
             )
             if result.get("success"):
-                logger.info(f"Image sent to {recipient_phone}")
+                wamid = result.get("message_id")
+                logger.info(f"Image sent to {recipient_phone} (id={wamid})")
+                return wamid
             else:
                 logger.error(f"Failed to send image to {recipient_phone}: {result.get('error')}")
                 await self._send_text_message(recipient_phone, caption)
+                return None
         except Exception as e:
             logger.error(f"Error sending image: {e}", exc_info=True)
             await self._send_text_message(recipient_phone, caption)
+            return None
 
     async def _download_meta_media(self, media_id: str) -> Optional[bytes]:
         """

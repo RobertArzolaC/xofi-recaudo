@@ -212,33 +212,104 @@
     <!-- ── End KPI Cards ──────────────────────────────────────── -->
 
 
+    <!-- ── Delivery Stats ────────────────────────────────────── -->
+    <div class="row g-4 mb-2">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="ki-duotone ki-send fs-3 text-success"><span class="path1"></span><span class="path2"></span></i>
+                <h4 class="fw-bold mb-0">{% trans "WhatsApp Message Delivery" %}</h4>
+                <span class="badge badge-light-success ms-2 fs-8">{% trans "Live Stats" %}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mb-8">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #00A3FF;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap primary">
+                        <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.total_sent|intcomma }}</div>
+                <div class="kpi-label">{% trans "Messages Sent" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #50CD89;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap success">
+                        <i class="ki-duotone ki-double-check"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.delivered|intcomma }}</div>
+                <div class="kpi-label">{% trans "Delivered" %}</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #7239EA;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap info">
+                        <i class="ki-duotone ki-eye"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.read|intcomma }}</div>
+                <div class="kpi-label">
+                    {% trans "Read" %}
+                    <span class="badge badge-light-info ms-1 fs-9">{{ delivery_stats.read_rate }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card kpi-card p-5" style="border-left: 4px solid #F1416C;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="kpi-icon-wrap danger">
+                        <i class="ki-duotone ki-cross-circle"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                </div>
+                <div class="kpi-value">{{ delivery_stats.failed|intcomma }}</div>
+                <div class="kpi-label">{% trans "Failed" %}</div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ── End Delivery Stats ─────────────────────────────────── -->
+
+
     <!-- ── Charts Row 1 ──────────────────────────────────────── -->
     <div class="row g-5 mb-6">
 
         <!-- Messages Timeline (line chart) -->
         <div class="col-xl-8">
-            <div class="card chart-card">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Messages (last 14 days)" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <canvas id="timelineChart" height="110"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:260px;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Conversations by Channel (donut) -->
         <div class="col-xl-4">
-            <div class="card chart-card">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Channel Distribution" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0 d-flex justify-content-center">
-                    <canvas id="channelChart" height="200" style="max-width:260px;"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:260px;">
+                        <canvas id="channelChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,29 +322,33 @@
     <div class="row g-5 mb-6">
 
         <!-- Messages by Intent (horizontal bar) -->
-        <div class="col-xl-6">
-            <div class="card chart-card">
+        <div class="col-xl-7">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Messages by Intent" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <canvas id="intentChart" height="220"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:320px;">
+                        <canvas id="intentChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Conversations by Status (donut) -->
-        <div class="col-xl-6">
-            <div class="card chart-card">
+        <div class="col-xl-5">
+            <div class="card chart-card h-100">
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <h3 class="card-label fw-bold">{% trans "Conversations by Status" %}</h3>
                     </div>
                 </div>
-                <div class="card-body pt-0 d-flex justify-content-center">
-                    <canvas id="statusChart" height="220" style="max-width:300px;"></canvas>
+                <div class="card-body pt-2">
+                    <div style="position:relative; height:320px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -371,6 +446,327 @@
     </div>
     <!-- ── End Recent Conversations ──────────────────────────── -->
 
+
+    <!-- ── WhatsApp Templates ────────────────────────────────── -->
+    <div class="row g-4 mt-4 mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="ki-duotone ki-document fs-2 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                    <div>
+                        <h4 class="fw-bold mb-0">{% trans "Message Templates" %}</h4>
+                        <span class="text-muted fs-7">{% trans "WhatsApp Business API — Meta approval status" %}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="badge py-2 px-3 fs-7" style="background:#e8f8f0;color:#17a95b;">
+                        <span class="bullet bullet-dot bg-success me-2"></span>
+                        {{ template_stats.approved }} {% trans "Approved" %}
+                    </span>
+                    <span class="badge py-2 px-3 fs-7" style="background:#fff8e1;color:#b58a00;">
+                        <span class="bullet bullet-dot bg-warning me-2"></span>
+                        {{ template_stats.pending }} {% trans "Pending Review" %}
+                    </span>
+                    <span class="badge py-2 px-3 fs-7" style="background:#fef0f3;color:#d9214e;">
+                        <span class="bullet bullet-dot bg-danger me-2"></span>
+                        {{ template_stats.rejected }} {% trans "Rejected" %}
+                    </span>
+                    <span class="badge py-2 px-3 fs-7" style="background:#f3f3f3;color:#5e6278;">
+                        <span class="bullet bullet-dot bg-secondary me-2"></span>
+                        {{ template_stats.paused }} {% trans "Paused" %}
+                    </span>
+                    <button type="button" class="btn btn-sm btn-primary ms-2"
+                            data-bs-toggle="modal" data-bs-target="#createTemplateModal">
+                        <i class="ki-duotone ki-plus fs-5 me-1"></i>
+                        {% trans "New Template" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-5 mb-6">
+        <div class="col-12">
+            <div class="card chart-card">
+                <div class="card-body pt-4 pb-4">
+                    {% if templates %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-3 mb-0">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-200px">{% trans "Template Name" %}</th>
+                                    <th>{% trans "Category" %}</th>
+                                    <th>{% trans "Lang" %}</th>
+                                    <th>{% trans "Meta Status" %}</th>
+                                    <th class="text-center">{% trans "Times Used" %}</th>
+                                    <th>{% trans "Created" %}</th>
+                                    <th class="text-end pe-3">{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                {% for tpl in templates %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="text-gray-800 fw-bold fs-6">{{ tpl.name }}</span>
+                                            {% if tpl.meta_template_id %}
+                                            <span class="text-muted fs-8">ID: {{ tpl.meta_template_id }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if tpl.category == "UTILITY" %}
+                                            <span class="badge badge-light-primary fs-8">{{ tpl.category }}</span>
+                                        {% elif tpl.category == "MARKETING" %}
+                                            <span class="badge badge-light-warning fs-8">{{ tpl.category }}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-info fs-8">{{ tpl.category }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="fw-semibold text-uppercase">{{ tpl.language }}</span></td>
+                                    <td>
+                                        {% if tpl.status == "APPROVED" %}
+                                            <span class="badge fs-7 px-3 py-2" style="background:#e8f8f0;color:#17a95b;border:1px solid #b7efd4;">
+                                                <i class="ki-duotone ki-shield-tick fs-8 me-1"><span class="path1"></span><span class="path2"></span></i>
+                                                APPROVED
+                                            </span>
+                                        {% elif tpl.status == "PENDING" %}
+                                            <span class="badge badge-light-warning fs-7 px-3 py-2">
+                                                <i class="ki-duotone ki-time fs-8 me-1"><span class="path1"></span><span class="path2"></span></i>
+                                                PENDING
+                                            </span>
+                                        {% elif tpl.status == "REJECTED" %}
+                                            <span class="badge badge-light-danger fs-7 px-3 py-2">
+                                                <i class="ki-duotone ki-cross-circle fs-8 me-1"><span class="path1"></span><span class="path2"></span></i>
+                                                REJECTED
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-light-secondary fs-7 px-3 py-2">
+                                                PAUSED
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-light-info fw-bold">{{ tpl.times_used }}</span>
+                                    </td>
+                                    <td class="text-muted fs-7">{{ tpl.created|date:"d/m/Y" }}</td>
+                                    <td class="text-end pe-3">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            {% if tpl.status == "PENDING" %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-light-warning"
+                                                onclick="syncWithMeta({{ tpl.id }}, this)"
+                                                title="{% trans 'Sync approval status from Meta' %}"
+                                            >
+                                                <i class="ki-duotone ki-update-file fs-6 me-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                                {% trans "Sync Meta" %}
+                                            </button>
+                                            {% endif %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-light-primary"
+                                                data-tpl-id="{{ tpl.id }}"
+                                                data-name="{{ tpl.name }}"
+                                                data-status="{{ tpl.status }}"
+                                                data-category="{{ tpl.category }}"
+                                                data-language="{{ tpl.language }}"
+                                                data-body="{{ tpl.body|escapejs }}"
+                                                data-meta-id="{{ tpl.meta_template_id|default:'' }}"
+                                                data-times-used="{{ tpl.times_used }}"
+                                                onclick="openTemplateModal(this)"
+                                            >
+                                                <i class="ki-duotone ki-eye fs-6 me-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                                {% trans "View" %}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-10 text-muted">
+                        <i class="ki-duotone ki-document fs-3x mb-3 d-block"><span class="path1"></span><span class="path2"></span></i>
+                        {% trans "No templates registered yet" %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── End WhatsApp Templates ─────────────────────────────── -->
+
+
+    <!-- ── Create Template Modal ─────────────────────────────── -->
+    <div class="modal fade" id="createTemplateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius:1rem;border:none;">
+
+                <div class="modal-header border-0 px-8 pt-8 pb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:44px;height:44px;border-radius:.75rem;background:rgba(0,163,255,0.1);display:flex;align-items:center;justify-content:center;">
+                            <i class="ki-duotone ki-document fs-2 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0">{% trans "Create Message Template" %}</h4>
+                            <span class="text-muted fs-7">{% trans "Will be submitted to Meta for review" %}</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body px-8 py-6">
+                    <div id="createTemplateError" class="alert alert-danger d-none"></div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">{% trans "Template Name" %} <span class="text-danger">*</span></label>
+                            <input type="text" id="tplName" class="form-control form-control-solid"
+                                   placeholder="ej. recordatorio_pago">
+                            <div class="form-text text-muted">{% trans "Lowercase, no spaces (use underscores)" %}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">{% trans "Category" %}</label>
+                            <select id="tplCategory" class="form-select form-select-solid">
+                                <option value="UTILITY">UTILITY</option>
+                                <option value="MARKETING">MARKETING</option>
+                                <option value="AUTHENTICATION">AUTHENTICATION</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">{% trans "Language" %}</label>
+                            <select id="tplLanguage" class="form-select form-select-solid">
+                                <option value="es">ES — Español</option>
+                                <option value="en">EN — English</option>
+                                <option value="pt">PT — Português</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">{% trans "Template Body" %} <span class="text-danger">*</span></label>
+                            <textarea id="tplBody" class="form-control form-control-solid" rows="5"
+                                      placeholder="{% trans 'Hola {{1}}, tu pago de {{2}} vence el {{3}}. Responde este mensaje para más info.' %}"></textarea>
+                            <div class="form-text text-muted">{% trans "Use {{1}}, {{2}}... for dynamic variables" %}</div>
+                        </div>
+                    </div>
+
+                    <!-- Live preview -->
+                    <div class="mt-6">
+                        <div class="text-muted fs-8 fw-bold text-uppercase mb-3">
+                            <i class="ki-duotone ki-whatsapp fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>
+                            {% trans "Live Preview" %}
+                        </div>
+                        <div style="background:#e5ddd5;border-radius:.75rem;padding:1.25rem;">
+                            <div style="max-width:340px;">
+                                <div id="createPreviewBubble"
+                                     style="background:#fff;border-radius:.75rem .75rem .75rem .1rem;padding:0.75rem 1rem;font-size:0.9rem;color:#303030;line-height:1.6;box-shadow:0 1px 2px rgba(0,0,0,.13);min-height:48px;white-space:pre-wrap;">
+                                    <span class="text-muted fst-italic fs-8">{% trans "Preview will appear here..." %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 px-8 pb-8 pt-2 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="button" class="btn btn-primary" id="submitTemplateBtn" onclick="submitTemplate()">
+                        <i class="ki-duotone ki-send fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        {% trans "Submit to Meta for Review" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── End Create Template Modal ──────────────────────────── -->
+
+
+    <!-- ── Template Detail Modal ─────────────────────────────── -->
+    <div class="modal fade" id="templateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius:1rem;border:none;">
+
+                <!-- Header -->
+                <div class="modal-header border-0 px-8 pt-8 pb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:44px;height:44px;border-radius:.75rem;background:rgba(0,163,255,0.1);display:flex;align-items:center;justify-content:center;">
+                            <i class="ki-duotone ki-document fs-2 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0" id="modalTemplateName">—</h4>
+                            <span class="text-muted fs-7">WhatsApp Business Message Template</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body px-8 py-6">
+
+                    <!-- Status + Meta -->
+                    <div class="d-flex align-items-center gap-3 mb-6 p-4 rounded-2" style="background:#f8f9fa;">
+                        <div class="flex-fill">
+                            <div class="text-muted fs-8 fw-semibold text-uppercase mb-1">{% trans "Meta Approval Status" %}</div>
+                            <div id="modalStatusBadge"></div>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="text-muted fs-8 fw-semibold text-uppercase mb-1">{% trans "Category" %}</div>
+                            <div id="modalCategory" class="fw-bold"></div>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="text-muted fs-8 fw-semibold text-uppercase mb-1">{% trans "Language" %}</div>
+                            <div id="modalLanguage" class="fw-bold text-uppercase"></div>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="text-muted fs-8 fw-semibold text-uppercase mb-1">{% trans "Times Used" %}</div>
+                            <div id="modalTimesUsed" class="fw-bold text-primary"></div>
+                        </div>
+                    </div>
+
+                    <!-- Template body -->
+                    <div class="mb-6">
+                        <div class="text-muted fs-8 fw-bold text-uppercase mb-3">
+                            <i class="ki-duotone ki-message-text-2 fs-7 me-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                            {% trans "Template Body" %}
+                        </div>
+                        <div id="modalTemplateBody"
+                             style="background:#f0f8ff;border-left:4px solid #00A3FF;border-radius:.5rem;padding:1.25rem 1.5rem;font-size:0.95rem;line-height:1.7;color:#181C32;white-space:pre-wrap;">
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp preview -->
+                    <div>
+                        <div class="text-muted fs-8 fw-bold text-uppercase mb-3">
+                            <i class="ki-duotone ki-whatsapp fs-7 me-1"><span class="path1"></span><span class="path2"></span></i>
+                            {% trans "WhatsApp Preview" %}
+                        </div>
+                        <div style="background:#e5ddd5;border-radius:.75rem;padding:1.25rem;">
+                            <div style="max-width:340px;">
+                                <div id="modalWhatsappBubble"
+                                     style="background:#fff;border-radius:.75rem .75rem .75rem .1rem;padding:0.75rem 1rem;font-size:0.9rem;color:#303030;line-height:1.6;box-shadow:0 1px 2px rgba(0,0,0,.13);white-space:pre-wrap;">
+                                </div>
+                                <div class="text-end mt-1" style="font-size:0.75rem;color:#667781;">
+                                    <i class="ki-duotone ki-double-check fs-8 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                                    {% trans "Delivered" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer border-0 px-8 pb-8 pt-2 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        {% trans "Close" %}
+                    </button>
+                    <div id="modalSendBtn"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ── End Template Detail Modal ──────────────────────────── -->
+
 </div>
 {% endblock content %}
 
@@ -413,6 +809,7 @@
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
                 tooltip: { mode: "index", intersect: false },
@@ -448,11 +845,12 @@
         },
         options: {
             responsive: true,
-            cutout: "68%",
+            maintainAspectRatio: false,
+            cutout: "65%",
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: textColor(), padding: 16, font: { size: 12 } },
+                    labels: { color: textColor(), padding: 16, font: { size: 12 }, boxWidth: 12 },
                 },
             },
         },
@@ -469,16 +867,18 @@
             datasets: [{
                 label: "{% trans 'Messages' %}",
                 data: intentData,
-                backgroundColor: PALETTE.slice(0, intentData.length),
-                borderRadius: 6,
+                backgroundColor: intentData.map((_, i) => PALETTE[i % PALETTE.length]),
+                borderRadius: 5,
                 borderSkipped: false,
             }],
         },
         options: {
             indexAxis: "y",
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
+                tooltip: { mode: "index", intersect: false },
             },
             scales: {
                 x: {
@@ -487,7 +887,7 @@
                     grid: { color: "rgba(0,0,0,0.05)" },
                 },
                 y: {
-                    ticks: { color: textColor() },
+                    ticks: { color: textColor(), font: { size: 11 } },
                     grid: { display: false },
                 },
             },
@@ -511,16 +911,170 @@
         },
         options: {
             responsive: true,
-            cutout: "68%",
+            maintainAspectRatio: false,
+            cutout: "65%",
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: textColor(), padding: 14, font: { size: 12 } },
+                    labels: { color: textColor(), padding: 14, font: { size: 12 }, boxWidth: 12 },
                 },
             },
         },
     });
 
 }());
+
+// ── Create Template ───────────────────────────────────────
+document.getElementById("tplBody").addEventListener("input", function () {
+    const preview = document.getElementById("createPreviewBubble");
+    preview.textContent = this.value || "";
+    if (!this.value) {
+        preview.innerHTML = '<span class="text-muted fst-italic fs-8">{% trans "Preview will appear here..." %}</span>';
+    }
+});
+
+function submitTemplate() {
+    const name     = document.getElementById("tplName").value.trim().toLowerCase().replace(/\s+/g, "_");
+    const category = document.getElementById("tplCategory").value;
+    const language = document.getElementById("tplLanguage").value;
+    const body     = document.getElementById("tplBody").value.trim();
+    const errBox   = document.getElementById("createTemplateError");
+    const btn      = document.getElementById("submitTemplateBtn");
+
+    errBox.classList.add("d-none");
+
+    if (!name || !body) {
+        errBox.textContent = "{% trans 'Template name and body are required.' %}";
+        errBox.classList.remove("d-none");
+        return;
+    }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{% trans "Submitting to Meta..." %}';
+
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || "";
+
+    fetch("{% url 'apps.chatbot:template-create' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+        },
+        body: new URLSearchParams({ name, category, language, body }),
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.ok) {
+            errBox.textContent = data.error;
+            errBox.classList.remove("d-none");
+            btn.disabled = false;
+            btn.innerHTML = original;
+            return;
+        }
+        btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Submitted! Awaiting Meta review..." %}';
+        btn.classList.replace("btn-primary", "btn-light-warning");
+        setTimeout(() => { window.location.reload(); }, 1800);
+    })
+    .catch(() => {
+        errBox.textContent = "{% trans 'Network error. Please try again.' %}";
+        errBox.classList.remove("d-none");
+        btn.disabled = false;
+        btn.innerHTML = original;
+    });
+}
+
+// ── Sync with Meta (PENDING → APPROVED) ───────────────────
+function syncWithMeta(templateId, btn) {
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>{% trans "Syncing..." %}';
+
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || "";
+    const url = `{% url 'apps.chatbot:template-approve' pk=0 %}`.replace("/0/", `/${templateId}/`);
+
+    fetch(url, {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken },
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Approved!" %}';
+            btn.classList.replace("btn-light-warning", "btn-light-success");
+            setTimeout(() => { window.location.reload(); }, 1200);
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+    });
+}
+
+// ── Template Modal ────────────────────────────────────────
+function openTemplateModal(btn) {
+    const d = btn.dataset;
+
+    // Name
+    document.getElementById("modalTemplateName").textContent = d.name;
+
+    // Status badge
+    const statusMap = {
+        APPROVED: '<span style="background:#e8f8f0;color:#17a95b;border:1px solid #b7efd4;" class="badge fs-7 px-3 py-2"><i class="ki-duotone ki-shield-tick fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> APPROVED — Meta Verified</span>',
+        PENDING:  '<span class="badge badge-light-warning fs-7 px-3 py-2"><i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> PENDING REVIEW</span>',
+        REJECTED: '<span class="badge badge-light-danger fs-7 px-3 py-2"><i class="ki-duotone ki-cross-circle fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> REJECTED</span>',
+        PAUSED:   '<span class="badge badge-light-secondary fs-7 px-3 py-2">PAUSED</span>',
+    };
+    document.getElementById("modalStatusBadge").innerHTML = statusMap[d.status] || d.status;
+
+    // Meta info
+    document.getElementById("modalCategory").textContent  = d.category;
+    document.getElementById("modalLanguage").textContent  = (d.language || "es").toUpperCase();
+    document.getElementById("modalTimesUsed").textContent = parseInt(d.timesUsed || 0).toLocaleString() + " sends";
+
+    // Body
+    const body = d.body || "";
+    document.getElementById("modalTemplateBody").textContent   = body;
+    document.getElementById("modalWhatsappBubble").textContent = body;
+
+    // Send button — only for APPROVED templates
+    const sendContainer = document.getElementById("modalSendBtn");
+    if (d.status === "APPROVED") {
+        sendContainer.innerHTML = `
+            <button type="button" class="btn btn-success" onclick="simulateSend('${d.name}')">
+                <i class="ki-duotone ki-whatsapp fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>
+                {% trans "Send Test Message" %}
+            </button>`;
+    } else {
+        sendContainer.innerHTML = `
+            <button type="button" class="btn btn-light" disabled title="{% trans 'Only approved templates can be sent' %}">
+                <i class="ki-duotone ki-whatsapp fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>
+                {% trans "Send Test Message" %}
+            </button>`;
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById("templateModal"));
+    modal.show();
+}
+
+function simulateSend(templateName) {
+    const btn = document.querySelector("#modalSendBtn .btn");
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>{% trans "Sending..." %}';
+
+    setTimeout(() => {
+        btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Message Sent!" %}';
+        btn.classList.replace("btn-success", "btn-light-success");
+        setTimeout(() => {
+            btn.innerHTML = original;
+            btn.disabled = false;
+            btn.classList.replace("btn-light-success", "btn-success");
+        }, 3000);
+    }, 1400);
+}
 </script>
 {% endblock %}

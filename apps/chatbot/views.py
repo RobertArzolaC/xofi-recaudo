@@ -22,6 +22,8 @@ from django.views.generic import FormView, TemplateView
 from apps.chatbot.channels.whatsapp.handlers import WhatsAppBotHandler
 from apps.chatbot.forms import ChatbotSettingsForm
 from apps.chatbot import services as chatbot_services
+from apps.chatbot.models import WhatsAppTemplate
+from apps.chatbot.choices import TemplateStatus
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,9 @@ class ChatbotDashboardView(LoginRequiredMixin, TemplateView):
         context["intent_chart"] = chatbot_services.get_messages_by_intent_data()
         context["timeline_chart"] = chatbot_services.get_messages_timeline_data()
         context["recent_conversations"] = chatbot_services.get_recent_conversations()
+        context["delivery_stats"] = chatbot_services.get_delivery_stats()
+        context["templates"] = chatbot_services.get_templates()
+        context["template_stats"] = chatbot_services.get_template_stats()
         return context
 
 
@@ -79,6 +84,59 @@ class ChatbotSettingsUpdateView(
             self.request, _("Chatbot settings updated successfully.")
         )
         return super().form_valid(form)
+
+
+class TemplateCreateView(LoginRequiredMixin, View):
+    """Create a new WhatsApp template (submitted to Meta for review)."""
+
+    def post(self, request, *args, **kwargs):
+        name     = request.POST.get("name", "").strip().lower().replace(" ", "_")
+        category = request.POST.get("category", "UTILITY")
+        language = request.POST.get("language", "es")
+        body     = request.POST.get("body", "").strip()
+
+        if not name or not body:
+            return JsonResponse({"ok": False, "error": "Name and body are required."}, status=400)
+
+        if WhatsAppTemplate.objects.filter(name=name).exists():
+            return JsonResponse({"ok": False, "error": "A template with that name already exists."}, status=400)
+
+        tpl = WhatsAppTemplate.objects.create(
+            name=name,
+            category=category,
+            language=language,
+            body=body,
+            status=TemplateStatus.PENDING,
+        )
+        return JsonResponse({
+            "ok": True,
+            "id": tpl.id,
+            "name": tpl.name,
+            "status": tpl.status,
+            "created": tpl.created.strftime("%d/%m/%Y"),
+        })
+
+
+class TemplateApproveView(LoginRequiredMixin, View):
+    """Simulate Meta approval sync — marks a PENDING template as APPROVED."""
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            tpl = WhatsAppTemplate.objects.get(pk=pk)
+        except WhatsAppTemplate.DoesNotExist:
+            return JsonResponse({"ok": False, "error": "Template not found."}, status=404)
+
+        import secrets
+        tpl.status = TemplateStatus.APPROVED
+        tpl.meta_template_id = tpl.meta_template_id or f"MT-{secrets.token_hex(4).upper()}"
+        tpl.save(update_fields=["status", "meta_template_id"])
+
+        return JsonResponse({
+            "ok": True,
+            "id": tpl.id,
+            "status": tpl.status,
+            "meta_template_id": tpl.meta_template_id,
+        })
 
 
 @method_decorator(csrf_exempt, name="dispatch")

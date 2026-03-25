@@ -5,7 +5,7 @@ Servicios para calcular métricas y estadísticas del chatbot
 import json
 from datetime import timedelta
 
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 
@@ -64,16 +64,12 @@ def get_chatbot_kpis():
         new_conversations_30d = 0
 
     try:
-        whatsapp_count = AgentConversation.objects.filter(
-            channel="WHATSAPP"
-        ).count()
+        whatsapp_count = AgentConversation.objects.filter(channel="WHATSAPP").count()
     except Exception:
         whatsapp_count = 0
 
     try:
-        telegram_count = AgentConversation.objects.filter(
-            channel="TELEGRAM"
-        ).count()
+        telegram_count = AgentConversation.objects.filter(channel="TELEGRAM").count()
     except Exception:
         telegram_count = 0
 
@@ -90,9 +86,7 @@ def get_chatbot_kpis():
 
 
 def get_conversations_by_channel_data():
-    """
-    Distribución de conversaciones por canal (WhatsApp vs Telegram).
-    """
+    """Distribución de conversaciones por canal (WhatsApp vs Telegram)."""
     try:
         from apps.chatbot.models import AgentConversation
 
@@ -101,22 +95,15 @@ def get_conversations_by_channel_data():
             .annotate(count=Count("id"))
             .order_by("-count")
         )
-
-        labels = []
-        values = []
-        for item in data:
-            labels.append(item["channel"].title())
-            values.append(item["count"])
-
+        labels = [item["channel"].title() for item in data]
+        values = [item["count"] for item in data]
         return {"labels": json.dumps(labels), "data": json.dumps(values)}
     except Exception:
         return {"labels": json.dumps([]), "data": json.dumps([])}
 
 
 def get_conversations_by_status_data():
-    """
-    Distribución de conversaciones por estado.
-    """
+    """Distribución de conversaciones por estado."""
     try:
         from apps.chatbot.models import AgentConversation
         from apps.chatbot.choices import ConversationStatus
@@ -126,7 +113,6 @@ def get_conversations_by_status_data():
             .annotate(count=Count("id"))
             .order_by("-count")
         )
-
         labels = []
         values = []
         for item in data:
@@ -136,16 +122,13 @@ def get_conversations_by_status_data():
                 label = f"Status {item['status']}"
             labels.append(label)
             values.append(item["count"])
-
         return {"labels": json.dumps(labels), "data": json.dumps(values)}
     except Exception:
         return {"labels": json.dumps([]), "data": json.dumps([])}
 
 
 def get_messages_by_intent_data():
-    """
-    Distribución de mensajes de usuarios por intent detectado.
-    """
+    """Distribución de mensajes de usuarios por intent detectado."""
     try:
         from apps.chatbot.models import ConversationMessage
         from apps.chatbot.choices import IntentType, MessageSender
@@ -160,7 +143,6 @@ def get_messages_by_intent_data():
             .annotate(count=Count("id"))
             .order_by("-count")
         )
-
         labels = []
         values = []
         for item in data:
@@ -170,16 +152,13 @@ def get_messages_by_intent_data():
                 label = item["intent"].replace("_", " ").title()
             labels.append(label)
             values.append(item["count"])
-
         return {"labels": json.dumps(labels), "data": json.dumps(values)}
     except Exception:
         return {"labels": json.dumps([]), "data": json.dumps([])}
 
 
 def get_messages_timeline_data(days=14):
-    """
-    Mensajes enviados por día en los últimos N días.
-    """
+    """Mensajes enviados por día en los últimos N días."""
     try:
         from apps.chatbot.models import ConversationMessage
         from apps.chatbot.choices import MessageSender
@@ -206,7 +185,6 @@ def get_messages_timeline_data(days=14):
         sorted_dates = sorted(date_counts.items())
         labels = [d.strftime("%d/%m") for d, _ in sorted_dates]
         values = [c for _, c in sorted_dates]
-
         return {"labels": json.dumps(labels), "data": json.dumps(values)}
     except Exception:
         today = timezone.now().date()
@@ -217,10 +195,94 @@ def get_messages_timeline_data(days=14):
         return {"labels": json.dumps(labels), "data": json.dumps([0] * days)}
 
 
+def get_delivery_stats():
+    """
+    Estadísticas de entrega de mensajes WhatsApp (enviados, entregados, leídos, fallidos).
+    Requerido para justificación del permiso whatsapp_business_management ante Meta.
+    """
+    from apps.chatbot.models import ConversationMessage
+    from apps.chatbot.choices import MessageDeliveryStatus, MessageSender
+
+    outbound = ConversationMessage.objects.filter(sender=MessageSender.AGENT)
+
+    try:
+        total_sent = outbound.count()
+    except Exception:
+        total_sent = 0
+
+    try:
+        delivered = outbound.filter(delivery_status=MessageDeliveryStatus.DELIVERED).count()
+    except Exception:
+        delivered = 0
+
+    try:
+        read = outbound.filter(delivery_status=MessageDeliveryStatus.READ).count()
+    except Exception:
+        read = 0
+
+    try:
+        failed = outbound.filter(delivery_status=MessageDeliveryStatus.FAILED).count()
+    except Exception:
+        failed = 0
+
+    try:
+        read_rate = round((read / total_sent) * 100, 1) if total_sent > 0 else 0
+    except Exception:
+        read_rate = 0
+
+    return {
+        "total_sent": total_sent,
+        "delivered": delivered,
+        "read": read,
+        "failed": failed,
+        "read_rate": read_rate,
+    }
+
+
+def get_templates():
+    """
+    Lista de plantillas WhatsApp con su estado de aprobación Meta.
+    """
+    from apps.chatbot.models import WhatsAppTemplate
+
+    try:
+        templates = list(
+            WhatsAppTemplate.objects.values(
+                "id", "name", "category", "language", "status",
+                "body", "meta_template_id", "times_used", "created"
+            ).order_by("-created")[:20]
+        )
+        return templates
+    except Exception:
+        return []
+
+
+def get_template_stats():
+    """
+    Resumen de plantillas por estado (aprobadas, pendientes, rechazadas).
+    """
+    from apps.chatbot.models import WhatsAppTemplate
+    from apps.chatbot.choices import TemplateStatus
+
+    try:
+        approved = WhatsAppTemplate.objects.filter(status=TemplateStatus.APPROVED).count()
+        pending = WhatsAppTemplate.objects.filter(status=TemplateStatus.PENDING).count()
+        rejected = WhatsAppTemplate.objects.filter(status=TemplateStatus.REJECTED).count()
+        paused = WhatsAppTemplate.objects.filter(status=TemplateStatus.PAUSED).count()
+    except Exception:
+        approved = pending = rejected = paused = 0
+
+    return {
+        "approved": approved,
+        "pending": pending,
+        "rejected": rejected,
+        "paused": paused,
+        "total": approved + pending + rejected + paused,
+    }
+
+
 def get_recent_conversations(limit=10):
-    """
-    Últimas N conversaciones con datos para la tabla del dashboard.
-    """
+    """Últimas N conversaciones con datos para la tabla del dashboard."""
     try:
         from apps.chatbot.models import AgentConversation
         from apps.chatbot.choices import ConversationStatus
