@@ -351,12 +351,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             logger.warning("Missing X-Hub-Signature-256 header")
             return False
 
-        expected_signature = self._extract_signature_value(signature_header)
-        if not expected_signature:
-            logger.warning(
-                "Invalid signature format: expected 'sha256=...' prefix"
-            )
-            return False
+        expected_signature = signature_header[7:]
 
         computed_signature = hmac.new(
             key=self.app_secret.encode("utf-8"),
@@ -368,59 +363,10 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
 
         if not is_valid:
             logger.warning(
-                "WhatsApp Cloud API webhook signature validation failed "
-                "(expected=%s..., computed=%s..., payload_bytes=%d, secret_len=%d)",
-                expected_signature[:8],
-                computed_signature[:8],
-                len(payload),
-                len(self.app_secret),
+                "WhatsApp Cloud API webhook signature validation failed"
             )
 
         return is_valid
-
-    @staticmethod
-    def _normalize_app_secret(secret: str) -> str:
-        """
-        Normalize App Secret values coming from env providers.
-
-        In production, secrets can arrive quoted ("abc" or 'abc')
-        or with BOM/whitespace. We remove only wrapper artifacts,
-        keeping the core secret unchanged.
-        """
-        if not secret:
-            return ""
-
-        normalized = secret.strip().lstrip("\ufeff")
-
-        if len(normalized) >= 2 and (
-            (normalized[0] == '"' and normalized[-1] == '"')
-            or (normalized[0] == "'" and normalized[-1] == "'")
-        ):
-            normalized = normalized[1:-1].strip()
-
-        return normalized
-
-    @staticmethod
-    def _extract_signature_value(signature_header: str) -> str:
-        """
-        Extract sha256 hex digest from X-Hub-Signature-256.
-
-        Accepts variants like:
-        - sha256=<hex>
-        - SHA256=<hex>
-        - sha256="<hex>"
-        - sha256=<hex>,<extra>
-        """
-        if not signature_header:
-            return ""
-
-        raw_value = signature_header.strip().split(",", 1)[0].strip()
-        lower_value = raw_value.lower()
-        if not lower_value.startswith("sha256="):
-            return ""
-
-        signature = raw_value[7:].strip().strip('"').strip("'")
-        return signature
 
     def mark_message_as_read(self, message_id: str) -> dict[str, Any]:
         """
