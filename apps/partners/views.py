@@ -126,7 +126,17 @@ class PartnerListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     template_name = "partners/partner/list.html"
     context_object_name = "partners"
     permission_required = "partners.view_partner"
-    paginate_by = paginate_by = 5
+    paginate_by = 5
+
+    def get_paginate_by(self, queryset) -> int:
+        """Allow overriding paginate_by via query param."""
+        try:
+            per_page = int(self.request.GET.get("items_per_page", self.paginate_by))
+            if per_page in (5, 10, 25, 50):
+                return per_page
+        except (ValueError, TypeError):
+            pass
+        return self.paginate_by
 
     def get_queryset(self) -> QuerySet[models.Partner]:
         """Return filtered and ordered queryset."""
