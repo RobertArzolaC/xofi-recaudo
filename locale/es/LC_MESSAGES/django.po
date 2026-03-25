@@ -1193,7 +1193,7 @@ msgstr "Rechazado"
 #: templates/chatbot/settings/detail.html:36
 #: templates/chatbot/settings/form.html:18
 msgid "Welcome Image"
-msgstr ""
+msgstr "Imagen de bienvenida"
 
 #: apps/chatbot/forms.py:18
 #, fuzzy
@@ -1204,22 +1204,20 @@ msgid ""
 "Image sent before the welcome message on WhatsApp. Only *.png, *.jpg and "
 "*.jpeg files are accepted."
 msgstr ""
-"Establezca el logo de la empresa. Solo se aceptan archivos de imagen *.png, "
-"*.jpg y *.jpeg"
+"Imagen enviada antes del mensaje de bienvenida en WhatsApp. Solo se aceptan archivos *.png, "
+"*.jpg y *.jpeg."
 
 #: apps/chatbot/forms.py:24 templates/chatbot/settings/detail.html:62
-#, fuzzy
-#| msgid "Error Message"
 msgid "Welcome Message"
-msgstr "Mensaje de error"
+msgstr "Mensaje de bienvenida"
 
 #: apps/chatbot/forms.py:30
 msgid "Enter the welcome message for the chatbot"
-msgstr ""
+msgstr "Ingrese el mensaje de bienvenida para el chatbot"
 
 #: apps/chatbot/forms.py:34
 msgid "Message displayed when a user starts a conversation with the chatbot."
-msgstr ""
+msgstr "Mensaje mostrado cuando un usuario inicia una conversación con el chatbot."
 
 #: apps/chatbot/models.py:20
 msgid "Partner associated with this conversation"
@@ -6250,15 +6248,15 @@ msgstr "Incluir enlace de pago en las notificaciones de la campaña."
 
 #: config/settings/tools/django_constance.py:45
 msgid "Chatbot welcome image. Sent before welcome message on WhatsApp."
-msgstr ""
+msgstr "Imagen de bienvenida del chatbot. Enviada antes del mensaje de bienvenida en WhatsApp."
 
 #: config/settings/tools/django_constance.py:50
 msgid "Chatbot welcome message displayed when user starts conversation."
-msgstr ""
+msgstr "Mensaje de bienvenida del chatbot que se muestra cuando el usuario inicia la conversación."
 
 #: config/settings/tools/django_constance.py:54
 msgid "Enable welcome message on homepage."
-msgstr ""
+msgstr "Habilitar mensaje de bienvenida en la página de inicio."
 
 #: templates/account/account_inactive.html:7
 #: templates/account/account_inactive.html:17
@@ -7588,107 +7586,86 @@ msgid "Network error. Please try again."
 msgstr "Error al cargar los filtros. Por favor, inténtalo de nuevo."
 
 #: templates/chatbot/dashboard/index.html:991
-#, fuzzy
-#| msgid "Executing..."
 msgid "Syncing..."
-msgstr "Ejecutando..."
+msgstr "Sincronizando..."
 
 #: templates/chatbot/dashboard/index.html:1003
-#, fuzzy
-#| msgid "Approved"
 msgid "Approved!"
-msgstr "Aprobado"
+msgstr "¡Aprobado!"
 
 #: templates/chatbot/dashboard/index.html:1049
 #: templates/chatbot/dashboard/index.html:1055
-#, fuzzy
-#| msgid "Conversation Message"
 msgid "Send Test Message"
-msgstr "Mensaje de la Conversación"
+msgstr "Enviar Mensaje de Prueba"
 
 #: templates/chatbot/dashboard/index.html:1053
 msgid "Only approved templates can be sent"
-msgstr ""
+msgstr "Solo se pueden enviar plantillas aprobadas"
 
 #: templates/chatbot/dashboard/index.html:1067
-#, fuzzy
-#| msgid "Sending"
 msgid "Sending..."
-msgstr "Enviando"
+msgstr "Enviando..."
 
 #: templates/chatbot/dashboard/index.html:1070
-#, fuzzy
-#| msgid "Message content"
 msgid "Message Sent!"
-msgstr "Contenido del mensaje"
+msgstr "¡Mensaje Enviado!"
 
 #: templates/chatbot/settings/detail.html:5
 #: templates/chatbot/settings/detail.html:6
 #: templates/chatbot/settings/form.html:6
 #: templates/chatbot/settings/form.html:71
-#, fuzzy
-#| msgid "Status & Settings"
 msgid "Chatbot Settings"
-msgstr "Configuración"
+msgstr "Configuración del Chatbot"
 
 #: templates/chatbot/settings/detail.html:37
 msgid "Image sent before welcome message on WhatsApp"
-msgstr ""
+msgstr "Imagen enviada antes del mensaje de bienvenida en WhatsApp"
 
 #: templates/chatbot/settings/detail.html:49
 msgid "No welcome image configured"
-msgstr ""
+msgstr "No hay imagen de bienvenida configurada"
 
 #: templates/chatbot/settings/detail.html:50
 msgid "Only the welcome message will be sent"
-msgstr ""
+msgstr "Solo se enviará el mensaje de bienvenida"
 
 #: templates/chatbot/settings/detail.html:67
-#, fuzzy
-#| msgid "Error Message"
 msgid "Current Message"
-msgstr "Mensaje de error"
+msgstr "Mensaje Actual"
 
 #: templates/chatbot/settings/detail.html:72
 msgid ""
 "This message is displayed when a user starts a conversation with the chatbot."
 msgstr ""
+"Este mensaje se muestra cuando un usuario inicia una conversación con el chatbot."
 
 #: templates/chatbot/settings/detail.html:82
-#, fuzzy
-#| msgid "Change avatar"
 msgid "Channel Behavior"
-msgstr "Cambiar avatar"
+msgstr "Comportamiento del Canal"
 
 #: templates/chatbot/settings/detail.html:99
 msgid "Image with welcome message as caption"
-msgstr ""
+msgstr "Imagen con mensaje de bienvenida como subtítulo"
 
 #: templates/chatbot/settings/detail.html:101
 msgid "Welcome message only"
-msgstr ""
+msgstr "Solo mensaje de bienvenida"
 
 #: templates/chatbot/settings/detail.html:113
 msgid "Welcome message only (no image)"
-msgstr ""
+msgstr "Solo mensaje de bienvenida (sin imagen)"
 
 #: templates/chatbot/settings/form.html:7
-#, fuzzy
-#| msgid "Status & Settings"
 msgid "Edit Chatbot Settings"
-msgstr "Configuración"
+msgstr "Editar Configuración del Chatbot"
 
 #: templates/chatbot/settings/form.html:28
-#, fuzzy
-#| msgid "Change logo"
 msgid "Change image"
-msgstr "Cambiar logo"
+msgstr "Cambiar imagen"
 
 #: templates/chatbot/settings/form.html:46
-#, fuzzy
-#| msgid "Remove logo"
 msgid "Remove image"
-msgstr "Eliminar logo"
+msgstr "Eliminar imagen"
 
 #: templates/chatbot/settings/form.html:55
 #, fuzzy
