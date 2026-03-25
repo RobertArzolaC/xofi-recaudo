@@ -12,7 +12,8 @@
       "Bash(python manage.py shell -c \":*)",
       "Bash(python3 manage.py check)",
       "Bash(source .venv/bin/activate)",
-      "Bash(source venv/bin/activate)"
+      "Bash(source venv/bin/activate)",
+      "Bash(grep -v \":0$\")"
     ]
   }
 }

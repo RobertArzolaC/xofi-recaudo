@@ -69,14 +69,6 @@ class ConversationService:
             )
         return conversation
 
-    @sync_to_async
-    @transaction.atomic
-    def aget_or_create_conversation_whatsapp(
-        self, whatsapp_phone: str
-    ) -> models.AgentConversation:
-        """Async version: Get or create a conversation for a WhatsApp phone number."""
-        return self.get_or_create_conversation_whatsapp(whatsapp_phone)
-
     @transaction.atomic
     def save_message(
         self,
@@ -368,13 +360,6 @@ class ConversationService:
                 None,
             )
 
-    @sync_to_async
-    def _ahandle_authentication_whatsapp(
-        self, conversation: models.AgentConversation, message: str
-    ) -> tuple:
-        """Async version: Handle authentication flow for WhatsApp with image support."""
-        return self._handle_authentication_whatsapp(conversation, message)
-
     def _route_intent(
         self, conversation: models.AgentConversation, message: str, intent: str
     ) -> str:
@@ -425,13 +410,6 @@ class ConversationService:
         # For other intents, use regular handler and wrap in tuple
         response = self._route_intent(conversation, message, intent)
         return response, None
-
-    @sync_to_async
-    def _aroute_intent_whatsapp(
-        self, conversation: models.AgentConversation, message: str, intent: str
-    ) -> Tuple[str, Optional[str]]:
-        """Async version: Route message for WhatsApp with image support."""
-        return self._route_intent_whatsapp(conversation, message, intent)
 
     def _handle_greeting(
         self, conversation: models.AgentConversation, message: str
@@ -688,90 +666,6 @@ class ConversationService:
         )
 
         self.save_message(
-            conversation, choices.MessageSender.AGENT, response, intent=intent
-        )
-
-        return response, image_url
-
-    async def aprocess_message_whatsapp(
-        self,
-        whatsapp_phone: str,
-        user_message: str,
-    ) -> Tuple[str, Optional[str]]:
-        """
-        Async version: Process a user message from WhatsApp and return the agent's response.
-
-        Args:
-            whatsapp_phone: WhatsApp phone number
-            user_message: User's message text
-
-        Returns:
-            Tuple of (response_text, image_url or None). Image URL is only
-            returned for greeting intents.
-        """
-        # Get or create conversation
-        conversation = await self.aget_or_create_conversation_whatsapp(
-            whatsapp_phone
-        )
-
-        # Save user message
-        await self.asave_message(
-            conversation, choices.MessageSender.USER, user_message
-        )
-
-        # Check if authenticated
-        if not conversation.authenticated:
-            response = await self._ahandle_authentication(
-                conversation, user_message
-            )
-            return response, None
-
-        # Check if there's a pending action in context - priority over intent detection
-        context = conversation.context_data
-        pending_action = context.get("pending_action")
-
-        if pending_action:
-            # Route directly to the pending action handler without intent detection
-            logger.info(
-                f"Continuing pending action: {pending_action} for conversation {conversation.id}"
-            )
-
-            # Map pending actions to their corresponding intents
-            pending_action_to_intent = {
-                "create_ticket": choices.IntentType.CREATE_TICKET,
-                "credit_detail": choices.IntentType.CREDIT_DETAIL,
-            }
-
-            intent = pending_action_to_intent.get(
-                pending_action, choices.IntentType.UNKNOWN
-            )
-            response, image_url = await self._aroute_intent_whatsapp(
-                conversation, user_message, intent
-            )
-
-            # Save agent response
-            await self.asave_message(
-                conversation,
-                choices.MessageSender.AGENT,
-                response,
-                intent=intent,
-            )
-
-            return response, image_url
-
-        # Detect intent only if no pending action
-        intent = await sync_to_async(self.intent_detector.detect_intent)(
-            user_message
-        )
-        logger.info(f"Detected intent: {intent} for message: {user_message}")
-
-        # Route to appropriate handler with WhatsApp image support
-        response, image_url = await self._aroute_intent_whatsapp(
-            conversation, user_message, intent
-        )
-
-        # Save agent response
-        await self.asave_message(
             conversation, choices.MessageSender.AGENT, response, intent=intent
         )
 
