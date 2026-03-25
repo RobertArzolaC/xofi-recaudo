@@ -635,6 +635,64 @@ class ConversationService:
                 menu=self.formatter.format_help_message()
             )
 
+    def process_message_whatsapp(
+        self,
+        whatsapp_phone: str,
+        user_message: str,
+    ) -> Tuple[str, Optional[str]]:
+        """
+        Process a user message from WhatsApp and return the agent's response.
+
+        Args:
+            whatsapp_phone: WhatsApp phone number
+            user_message: User's message text
+
+        Returns:
+            Tuple of (response_text, image_url or None).
+        """
+        conversation = self.get_or_create_conversation_whatsapp(whatsapp_phone)
+
+        self.save_message(conversation, choices.MessageSender.USER, user_message)
+
+        if not conversation.authenticated:
+            response = self._handle_authentication(conversation, user_message)
+            return response, None
+
+        context = conversation.context_data
+        pending_action = context.get("pending_action")
+
+        if pending_action:
+            logger.info(
+                f"Continuing pending action: {pending_action} for conversation {conversation.id}"
+            )
+            pending_action_to_intent = {
+                "create_ticket": choices.IntentType.CREATE_TICKET,
+                "credit_detail": choices.IntentType.CREDIT_DETAIL,
+            }
+            intent = pending_action_to_intent.get(
+                pending_action, choices.IntentType.UNKNOWN
+            )
+            response, image_url = self._route_intent_whatsapp(
+                conversation, user_message, intent
+            )
+            self.save_message(
+                conversation, choices.MessageSender.AGENT, response, intent=intent
+            )
+            return response, image_url
+
+        intent = self.intent_detector.detect_intent(user_message)
+        logger.info(f"Detected intent: {intent} for message: {user_message}")
+
+        response, image_url = self._route_intent_whatsapp(
+            conversation, user_message, intent
+        )
+
+        self.save_message(
+            conversation, choices.MessageSender.AGENT, response, intent=intent
+        )
+
+        return response, image_url
+
     async def aprocess_message_whatsapp(
         self,
         whatsapp_phone: str,
