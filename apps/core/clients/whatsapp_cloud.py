@@ -67,9 +67,9 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         self.verify_token = verify_token or config(
             "WHATSAPP_CLOUD_VERIFY_TOKEN", default=""
         )
-        self.app_secret = app_secret or config(
-            "WHATSAPP_CLOUD_APP_SECRET", default=""
-        )
+        self.app_secret = (
+            app_secret or config("WHATSAPP_CLOUD_APP_SECRET", default="")
+        ).strip()
         api_version = api_version or config(
             "WHATSAPP_CLOUD_API_VERSION", default=DEFAULT_API_VERSION
         )
@@ -357,7 +357,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             )
             return False
 
-        expected_signature = signature_header[7:]  # Strip 'sha256=' prefix
+        expected_signature = signature_header[7:].strip()
 
         computed_signature = hmac.new(
             key=self.app_secret.encode("utf-8"),
@@ -369,7 +369,10 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
 
         if not is_valid:
             logger.warning(
-                "WhatsApp Cloud API webhook signature validation failed"
+                "WhatsApp Cloud API webhook signature validation failed "
+                "(expected=%s..., computed=%s...)",
+                expected_signature[:8],
+                computed_signature[:8],
             )
 
         return is_valid
