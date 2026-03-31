@@ -61,6 +61,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         self.phone_number_id = phone_number_id or config(
             "WHATSAPP_CLOUD_PHONE_NUMBER_ID", default=""
         )
+        self.waba_id = config("WHATSAPP_CLOUD_WABA_ID", default="")
         access_token = access_token or config(
             "WHATSAPP_CLOUD_ACCESS_TOKEN", default=""
         )
@@ -587,6 +588,75 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         except Exception as exc:
             logger.error("Health check failed: %s", exc)
             return False
+
+    def get_template(self, template_id: str) -> dict[str, Any]:
+        """
+        Fetch a single template's current status from Meta.
+
+        Calls: GET /{template_id}?fields=name,status,category,language
+
+        Args:
+            template_id: Meta template ID (returned when the template was created).
+
+        Returns:
+            dict: Template data with at least 'id', 'name', 'status'.
+
+        Raises:
+            APIClientError: If the API request fails.
+        """
+        if not template_id:
+            raise APIValidationError("template_id is required")
+
+        try:
+            response = self._make_request(
+                method="GET",
+                endpoint=f"/{template_id}",
+                params={"fields": "name,status,category,language"},
+            )
+            return response
+        except APIClientError:
+            raise
+        except Exception as exc:
+            logger.error("Unexpected error fetching template %s: %s", template_id, exc)
+            raise APIClientError(f"Failed to fetch template: {exc}") from exc
+
+    def delete_template(self, name: str, waba_id: str | None = None) -> bool:
+        """
+        Delete a WhatsApp Business Message Template by name.
+
+        Calls: DELETE /{waba_id}/message_templates?name={name}
+
+        Args:
+            name: Template name to delete.
+            waba_id: WhatsApp Business Account ID. Falls back to self.waba_id.
+
+        Returns:
+            bool: True if deleted successfully.
+        """
+        target_waba = waba_id or self.waba_id
+        if not target_waba:
+            raise APIValidationError("waba_id is required")
+        if not name:
+            raise APIValidationError("Template name is required")
+
+        try:
+            self._make_request(
+                method="DELETE",
+                endpoint=f"/{target_waba}/message_templates",
+                params={"name": name},
+            )
+            logger.info("Template '%s' deleted from Meta", name)
+            return True
+        except APIClientError:
+            raise
+        except Exception as exc:
+            logger.error("Unexpected error deleting template '%s': %s", name, exc)
+            raise APIClientError(f"Failed to delete template: {exc}") from exc
+
+    @staticmethod
+    def _normalize_app_secret(secret: str) -> str:
+        """Strip whitespace from the app secret to avoid HMAC mismatches."""
+        return secret.strip() if secret else ""
 
     @staticmethod
     def _normalize_phone(phone: str) -> str:

@@ -254,26 +254,26 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-# WhatsApp Business API Settings
+# WhatsApp Cloud API Settings (Meta / graph.facebook.com)
 # https://developers.facebook.com/docs/whatsapp/cloud-api
+# All variable names match .env.example (WHATSAPP_CLOUD_* prefix).
+# Internal aliases keep legacy code (notifications providers, etc.) working
+# without changes: they still read settings.WHATSAPP_API_TOKEN, etc.
 
-WHATSAPP_API_TOKEN = config("WHATSAPP_API_TOKEN", default="")
-WHATSAPP_PHONE_NUMBER_ID = config("WHATSAPP_PHONE_NUMBER_ID", default="")
-WHATSAPP_BUSINESS_ACCOUNT_ID = config(
-    "WHATSAPP_BUSINESS_ACCOUNT_ID", default=""
-)
-WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
-WHATSAPP_VERIFY_TOKEN = config("WHATSAPP_VERIFY_TOKEN", default="")
-WHATSAPP_APP_SECRET = config("WHATSAPP_APP_SECRET", default="")
+WHATSAPP_API_TOKEN = config("WHATSAPP_CLOUD_ACCESS_TOKEN", default="")
+WHATSAPP_PHONE_NUMBER_ID = config("WHATSAPP_CLOUD_PHONE_NUMBER_ID", default="")
+WHATSAPP_BUSINESS_ACCOUNT_ID = config("WHATSAPP_CLOUD_WABA_ID", default="")
+WHATSAPP_API_VERSION = config("WHATSAPP_CLOUD_API_VERSION", default="v21.0")
+WHATSAPP_VERIFY_TOKEN = config("WHATSAPP_CLOUD_VERIFY_TOKEN", default="")
+WHATSAPP_APP_SECRET = config("WHATSAPP_CLOUD_APP_SECRET", default="")
 
-# Whapi Settings
+# Whapi Settings (alternative provider — configure only if using Whapi)
 # https://whapi.cloud/docs
-
 WHAPI_API_URL = config("WHAPI_API_URL", default="https://api.whapi.io")
 WHAPI_API_TOKEN = config("WHAPI_API_TOKEN", default="")
 
-# Choose WhatsApp Provider: "meta" or "whapi"
-WHATSAPP_PROVIDER = config("WHATSAPP_PROVIDER", default="whapi")
+# Choose WhatsApp provider: "meta" (Cloud API) or "whapi"
+WHATSAPP_PROVIDER = config("WHATSAPP_PROVIDER", default="meta")
 
 # Telegram Bot Settings
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")

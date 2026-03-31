@@ -3,11 +3,9 @@ import logging
 
 from constance import config
 from django.contrib import messages
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-)
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -18,9 +16,10 @@ from django.views.generic import FormView, TemplateView
 from apps.chatbot import services as chatbot_services
 from apps.chatbot.choices import TemplateStatus
 from apps.chatbot.forms import ChatbotSettingsForm
-from apps.chatbot.models import WhatsAppTemplate
+from apps.chatbot.models import AgentConversation, ConversationMessage, WhatsAppTemplate
 from apps.chatbot.tasks import process_whatsapp_webhook
 from apps.core.clients.whatsapp_cloud import WhatsAppCloudAPIClient
+from apps.core.clients.exceptions import APIClientError
 
 logger = logging.getLogger(__name__)
 
@@ -52,13 +51,10 @@ class ChatbotDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ChatbotSettingsDetailView(
-    LoginRequiredMixin, PermissionRequiredMixin, TemplateView
-):
+class ChatbotSettingsDetailView(LoginRequiredMixin, TemplateView):
     """View to display chatbot settings."""
 
     template_name = "chatbot/settings/detail.html"
-    permission_required = "customers.view_chatbot_settings"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,14 +63,11 @@ class ChatbotSettingsDetailView(
         return context
 
 
-class ChatbotSettingsUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, FormView
-):
+class ChatbotSettingsUpdateView(LoginRequiredMixin, FormView):
     """View to update chatbot settings."""
 
     template_name = "chatbot/settings/form.html"
     form_class = ChatbotSettingsForm
-    permission_required = "customers.change_chatbot_settings"
     success_url = reverse_lazy("apps.chatbot:chatbot-settings-detail")
 
     def get_context_data(self, **kwargs):
@@ -92,7 +85,15 @@ class ChatbotSettingsUpdateView(
 
 
 class TemplateCreateView(LoginRequiredMixin, View):
-    """Create a new WhatsApp template (submitted to Meta for review)."""
+    """
+    Create a new WhatsApp template and immediately submit it to Meta for review.
+
+    Flow:
+    1. Validate + save to local DB (status=PENDING, no meta_template_id yet).
+    2. Call Meta Graph API to create the template.
+    3. On success → update meta_template_id with Meta's returned ID.
+    4. On API failure → template stays in DB as PENDING so the user can retry.
+    """
 
     def post(self, request, *args, **kwargs):
         name = request.POST.get("name", "").strip().lower().replace(" ", "_")
@@ -122,35 +123,123 @@ class TemplateCreateView(LoginRequiredMixin, View):
             body=body,
             status=TemplateStatus.PENDING,
         )
+
+        # Submit to Meta
+        meta_id = None
+        meta_error = None
+        client = WhatsAppCloudAPIClient()
+
+        if not client.waba_id:
+            meta_error = "WHATSAPP_CLOUD_WABA_ID not configured — template saved locally only."
+            logger.warning(meta_error)
+        else:
+            try:
+                response = client.create_template(
+                    waba_id=client.waba_id,
+                    name=name,
+                    category=category,
+                    language=language,
+                    body_text=body,
+                )
+                meta_id = response.get("id") or response.get("template_id")
+                if meta_id:
+                    tpl.meta_template_id = str(meta_id)
+                    tpl.save(update_fields=["meta_template_id"])
+                    logger.info(
+                        "Template '%s' submitted to Meta, id=%s", name, meta_id
+                    )
+            except APIClientError as exc:
+                meta_error = str(exc)
+                logger.error(
+                    "Meta API error creating template '%s': %s", name, exc
+                )
+            except Exception as exc:
+                meta_error = str(exc)
+                logger.error(
+                    "Unexpected error submitting template '%s' to Meta: %s", name, exc
+                )
+
         return JsonResponse(
             {
                 "ok": True,
                 "id": tpl.id,
                 "name": tpl.name,
                 "status": tpl.status,
+                "meta_template_id": tpl.meta_template_id,
                 "created": tpl.created.strftime("%d/%m/%Y"),
+                "meta_submitted": meta_id is not None,
+                "meta_error": meta_error,
             }
         )
 
 
-class TemplateApproveView(LoginRequiredMixin, View):
-    """Simulate Meta approval sync — marks a PENDING template as APPROVED."""
+class TemplateSyncView(LoginRequiredMixin, View):
+    """
+    Sync a template's approval status from Meta.
+
+    If the template already has a meta_template_id → fetch its current status
+    from Meta and update the local record.
+
+    If not (e.g. first submission failed) → re-submit to Meta and save the ID.
+    """
 
     def post(self, request, pk, *args, **kwargs):
-        try:
-            tpl = WhatsAppTemplate.objects.get(pk=pk)
-        except WhatsAppTemplate.DoesNotExist:
+        tpl = get_object_or_404(WhatsAppTemplate, pk=pk)
+        client = WhatsAppCloudAPIClient()
+
+        if not client.waba_id and not tpl.meta_template_id:
             return JsonResponse(
-                {"ok": False, "error": "Template not found."}, status=404
+                {
+                    "ok": False,
+                    "error": "WHATSAPP_CLOUD_WABA_ID not configured.",
+                },
+                status=400,
             )
 
-        import secrets
+        try:
+            if tpl.meta_template_id:
+                # Template exists on Meta — fetch current status
+                meta_data = client.get_template(tpl.meta_template_id)
+                raw_status = meta_data.get("status", "").upper()
+                status_map = {
+                    "APPROVED": TemplateStatus.APPROVED,
+                    "REJECTED": TemplateStatus.REJECTED,
+                    "PAUSED": TemplateStatus.PAUSED,
+                    "PENDING": TemplateStatus.PENDING,
+                    "PENDING_DELETION": TemplateStatus.PAUSED,
+                    "DISABLED": TemplateStatus.PAUSED,
+                }
+                new_status = status_map.get(raw_status, tpl.status)
+                tpl.status = new_status
+                tpl.save(update_fields=["status"])
+                logger.info(
+                    "Template '%s' synced from Meta: status=%s", tpl.name, new_status
+                )
+            else:
+                # Never reached Meta — try to submit now
+                if not client.waba_id:
+                    return JsonResponse(
+                        {"ok": False, "error": "WHATSAPP_CLOUD_WABA_ID not configured."},
+                        status=400,
+                    )
+                response = client.create_template(
+                    waba_id=client.waba_id,
+                    name=tpl.name,
+                    category=tpl.category,
+                    language=tpl.language,
+                    body_text=tpl.body,
+                )
+                meta_id = response.get("id") or response.get("template_id")
+                if meta_id:
+                    tpl.meta_template_id = str(meta_id)
+                    tpl.save(update_fields=["meta_template_id"])
 
-        tpl.status = TemplateStatus.APPROVED
-        tpl.meta_template_id = (
-            tpl.meta_template_id or f"MT-{secrets.token_hex(4).upper()}"
-        )
-        tpl.save(update_fields=["status", "meta_template_id"])
+        except APIClientError as exc:
+            logger.error("Meta API error syncing template %s: %s", pk, exc)
+            return JsonResponse({"ok": False, "error": str(exc)}, status=502)
+        except Exception as exc:
+            logger.error("Unexpected error syncing template %s: %s", pk, exc)
+            return JsonResponse({"ok": False, "error": str(exc)}, status=500)
 
         return JsonResponse(
             {
@@ -160,6 +249,46 @@ class TemplateApproveView(LoginRequiredMixin, View):
                 "meta_template_id": tpl.meta_template_id,
             }
         )
+
+
+class TemplateDeleteView(LoginRequiredMixin, View):
+    """Delete a template locally and, if possible, from Meta as well."""
+
+    def post(self, request, pk, *args, **kwargs):
+        tpl = get_object_or_404(WhatsAppTemplate, pk=pk)
+        client = WhatsAppCloudAPIClient()
+
+        # Best-effort deletion from Meta
+        if tpl.meta_template_id and client.waba_id:
+            try:
+                client.delete_template(name=tpl.name, waba_id=client.waba_id)
+            except APIClientError as exc:
+                logger.warning(
+                    "Could not delete template '%s' from Meta: %s", tpl.name, exc
+                )
+
+        tpl.delete()
+        return JsonResponse({"ok": True})
+
+
+class ConversationHistoryView(LoginRequiredMixin, TemplateView):
+    """Show the full message history for a single conversation."""
+
+    template_name = "chatbot/conversation/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        conversation = get_object_or_404(
+            AgentConversation.objects.select_related("partner"),
+            pk=self.kwargs["pk"],
+        )
+        messages_qs = (
+            ConversationMessage.objects.filter(conversation=conversation)
+            .order_by("created")
+        )
+        context["conversation"] = conversation
+        context["messages"] = messages_qs
+        return context
 
 
 @method_decorator(csrf_exempt, name="dispatch")
