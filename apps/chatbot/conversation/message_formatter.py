@@ -103,6 +103,9 @@ class MessageFormatter:
 
         # Build absolute URL for the image
         domain = config.COMPANY_DOMAIN.rstrip("/")
+        if not domain.startswith(("http://", "https://")):
+            domain = f"https://{domain}"
+
         media_url = settings.MEDIA_URL.strip("/")
         return f"{domain}/{media_url}/constance/{welcome_image}"
 

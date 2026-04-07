@@ -283,8 +283,16 @@ def _process_status(status: Dict) -> None:
     """Update delivery status on ConversationMessage from Meta webhook."""
     message_id = status.get("id")
     status_value = status.get("status", "").upper()
+    errors = status.get("errors", [])
 
-    logger.info("Status update — message %s: %s", message_id, status_value)
+    if status_value == "FAILED":
+        logger.error(
+            "WhatsApp delivery FAILED for message %s: %s",
+            message_id,
+            errors if errors else "No error details",
+        )
+    else:
+        logger.info("Status update — message %s: %s", message_id, status_value)
 
     if not message_id or not status_value:
         return
