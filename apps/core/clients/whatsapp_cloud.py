@@ -67,8 +67,8 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         self.verify_token = verify_token or config(
             "WHATSAPP_CLOUD_VERIFY_TOKEN", default=""
         )
-        self.app_secret = self._normalize_app_secret(
-            app_secret or config("WHATSAPP_CLOUD_APP_SECRET", default="")
+        self.app_secret = app_secret or config(
+            "WHATSAPP_CLOUD_APP_SECRET", default=""
         )
         api_version = api_version or config(
             "WHATSAPP_CLOUD_API_VERSION", default=DEFAULT_API_VERSION
