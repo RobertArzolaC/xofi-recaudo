@@ -82,7 +82,7 @@ class ConversationMessageAdmin(admin.ModelAdmin):
         "message_preview",
         "created",
     ]
-    list_filter = ["sender", "intent", "created"]
+    list_filter = ["sender", "created"]
     search_fields = ["message", "conversation__telegram_chat_id"]
     readonly_fields = ["created", "modified"]
 

@@ -109,8 +109,6 @@ UNEXPECTED_ERROR_MESSAGE = (
     "❌ Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde."
 )
 
-UNKNOWN_INTENT_RESPONSE = "Lo siento, no entendí tu consulta.\n\n{menu}"
-
 # ==========================================
 # CREDIT DETAIL PROMPTS
 # ==========================================
@@ -156,51 +154,10 @@ CREDIT_DETAIL_ERROR = "No se pudo obtener el detalle del préstamo."
 
 NO_CREDITS_MESSAGE = "No tienes créditos registrados."
 
-# ==========================================
-# AI SERVICE PROMPTS
-# ==========================================
-
-AI_SERVICE_UNAVAILABLE = (
-    "Lo siento, el servicio de IA no está disponible en este momento. "
-    "Por favor, intenta con comandos más específicos como 'mis préstamos' o 'estado de cuenta'."
-)
-
 AI_PROCESSING_ERROR = (
     "Lo siento, hubo un error al procesar tu consulta. "
     "Por favor, intenta reformular tu pregunta."
 )
-
-GEMINI_SYSTEM_PROMPT = """
-Eres un asistente virtual de una cooperativa de ahorro y crédito en Perú.
-Tu objetivo es ayudar a los socios con consultas sobre préstamos, pagos y su cuenta.
-
-Instrucciones:
-- Responde siempre en español
-- Sé claro, conciso y amable
-- Si no tienes información suficiente, solicítala educadamente
-- Usa formato markdown para mejor legibilidad
-- No inventes información, usa solo los datos proporcionados
-
-Información disponible:
-"""
-
-GEMINI_INTENT_ANALYSIS_PROMPT = """
-Analiza el siguiente mensaje de un socio de una cooperativa y clasifica su intención.
-
-Intenciones posibles:
-- PARTNER_DETAIL: Consultar datos personales
-- ACCOUNT_STATEMENT: Ver estado de cuenta o deuda
-- LIST_CREDITS: Ver lista de préstamos
-- CREDIT_DETAIL: Ver detalle de un préstamo específico
-- CREATE_TICKET: Reportar problema o solicitar soporte
-- UPLOAD_RECEIPT: Cargar comprobante de pago
-- HELP: Solicitar ayuda
-- UNKNOWN: No se puede clasificar
-
-Mensaje: "{message}"
-
-Clasifica la intención y proporciona un nivel de confianza entre 0.0 y 1.0.
-"""
 
 # ==========================================
 # MESSAGE FORMATTING TEMPLATES
@@ -255,96 +212,6 @@ CREDIT_DETAIL_TEMPLATE = """
 """
 
 GREETING_TEMPLATE = "Hola {name}! 👋\n\n{menu}"
-
-# ==========================================
-# INTENT KEYWORDS
-# ==========================================
-
-INTENT_KEYWORDS = {
-    "GREETING": [
-        "hola",
-        "buenos dias",
-        "buenas tardes",
-        "buenas noches",
-        "saludos",
-        "que tal",
-        "como estas",
-    ],
-    "GOODBYE": [
-        "adios",
-        "chao",
-        "hasta luego",
-        "nos vemos",
-        "bye",
-        "gracias adios",
-    ],
-    "HELP": [
-        "ayuda",
-        "ayudame",
-        "que puedes hacer",
-        "opciones",
-        "menu",
-        "comandos",
-        "que hago",
-    ],
-    "PARTNER_DETAIL": [
-        "mis datos",
-        "mi informacion",
-        "datos personales",
-        "mi perfil",
-        "informacion personal",
-    ],
-    "ACCOUNT_STATEMENT": [
-        "estado de cuenta",
-        "mi cuenta",
-        "saldo",
-        "balance",
-        "deuda total",
-        "cuanto debo",
-        "mi deuda",
-    ],
-    "LIST_CREDITS": [
-        "mis prestamos",
-        "mis préstamos",
-        "mis creditos",
-        "mis créditos",
-        "prestamos activos",
-        "listar prestamos",
-        "ver prestamos",
-    ],
-    "CREDIT_DETAIL": [
-        "detalle de prestamo",
-        "detalle de préstamo",
-        "detalle de credito",
-        "detalle de crédito",
-        "detalle de un préstamo",
-        "detalle de un crédito",
-        "detalle de un prestamo",
-        "detalle de un credito",
-        "info de prestamo",
-        "cuotas",
-        "pagos de prestamo",
-        "cronograma",
-    ],
-    "CREATE_TICKET": [
-        "ticket",
-        "soporte",
-        "problema",
-        "reclamo",
-        "queja",
-        "ayuda con",
-        "tengo un problema",
-    ],
-    "UPLOAD_RECEIPT": [
-        "comprobante",
-        "voucher",
-        "recibo de pago",
-        "subir comprobante",
-        "enviar comprobante",
-        "pago realizado",
-    ],
-}
-
 
 # ==========================================
 # Whapi CONSTANTS

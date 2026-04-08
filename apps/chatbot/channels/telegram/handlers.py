@@ -13,8 +13,8 @@ from telegram.ext import (
 
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
-from apps.chatbot.services.gemini_receipt_extraction import (
-    GeminiReceiptExtractionService,
+from apps.chatbot.services.receipt_extraction import (
+    ReceiptDataExtractionService,
 )
 from apps.core.services.chats.telegram import TelegramService
 
@@ -25,19 +25,16 @@ class TelegramBotHandler:
     """Handler for Telegram bot commands and messages."""
 
     def __init__(self):
-        """Initialize handlers and services."""
         self.conversation_service = ConversationService()
         self.telegram_service = TelegramService()
-        self.receipt_extraction_service = GeminiReceiptExtractionService()
+        self.receipt_extraction_service = ReceiptDataExtractionService()
 
     async def start_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ) -> None:
         """Handle /start command."""
         chat_id = str(update.effective_chat.id)
-
         logger.info(f"Received /start from chat {chat_id}")
-
         await update.message.reply_text(
             config.CHATBOT_WELCOME_MESSAGE, parse_mode="Markdown"
         )
@@ -47,9 +44,7 @@ class TelegramBotHandler:
     ) -> None:
         """Handle /help command."""
         chat_id = str(update.effective_chat.id)
-
         logger.info(f"Received /help from chat {chat_id}")
-
         await update.message.reply_text(
             constants.HELP_MESSAGE, parse_mode="Markdown"
         )
@@ -72,12 +67,9 @@ class TelegramBotHandler:
         logger.info(f"Received message from {chat_id}: {user_message}")
 
         try:
-            # Process message through conversation service (async)
             response = await self.conversation_service.aprocess_message(
                 chat_id, user_message, username
             )
-
-            # Send response
             await update.message.reply_text(response, parse_mode="Markdown")
 
         except Exception as e:
@@ -95,15 +87,12 @@ class TelegramBotHandler:
         logger.info(f"Received photo from {chat_id}")
 
         try:
-            # Get or create conversation
             conversation = (
                 await self.conversation_service.aget_or_create_conversation(
                     chat_id, username
                 )
             )
-            logger.info(f"Conversation for chat {chat_id}: {conversation}")
 
-            # Check if user is authenticated
             if not conversation.authenticated or not conversation.partner:
                 await update.message.reply_text(
                     "Por favor, autentícate primero enviando tu DNI y año de nacimiento.\n\n"
@@ -112,15 +101,10 @@ class TelegramBotHandler:
                 )
                 return
 
-            # Get the largest photo (best quality)
             photo = update.message.photo[-1]
-
-            # Download the photo
             photo_file = await photo.get_file()
             photo_bytes = await photo_file.download_as_bytearray()
 
-            # Extract receipt data using the dedicated service
-            logger.info("Extracting receipt data using extraction service...")
             amount, payment_date, filename, notes = (
                 self.receipt_extraction_service.prepare_receipt_data(
                     caption=caption,
@@ -131,28 +115,14 @@ class TelegramBotHandler:
                 )
             )
 
-            # Validate extracted data and get confidence scores
-            validation_results = (
-                self.receipt_extraction_service.validate_extracted_data(
-                    amount, payment_date
-                )
-            )
-            confidence_scores = (
-                self.receipt_extraction_service.get_extraction_confidence(
-                    caption
-                )
-            )
+            from apps.chatbot.services.partner_api import PartnerAPIService
 
-            logger.info(
-                f"Data validation: {validation_results}, "
-                f"Confidence: {confidence_scores['overall']:.2f}"
-            )
+            api_service = PartnerAPIService()
 
-            # Run synchronous API call in executor to avoid blocking
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None,
-                self.conversation_service.api_service.upload_payment_receipt,
+                api_service.upload_payment_receipt,
                 conversation.partner.id,
                 bytes(photo_bytes),
                 filename,
@@ -162,27 +132,18 @@ class TelegramBotHandler:
             )
 
             if result and result.get("id"):
-                # Success
                 response_message = (
                     f"✅ *Boleta de pago recibida correctamente*\n\n"
                     f"📝 Número de recibo: {result.get('id')}\n"
                     f"💰 Monto: S/ {amount:.2f}\n"
                     f"📅 Fecha: {payment_date}\n\n"
                     f"Tu boleta está en estado PENDIENTE y será revisada por nuestro equipo.\n\n"
+                    f"📝 *Datos procesados del mensaje*\n"
+                    f"Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
                 )
-
-                # Add contextual feedback based on data quality
-                if amount:
-                    response_message += (
-                        "📝 *Datos procesados del mensaje*\n"
-                        "Si algún dato es incorrecto, nuestro equipo lo corregirá durante la revisión."
-                    )
-
                 await update.message.reply_text(
                     response_message, parse_mode="Markdown"
                 )
-
-                # Save message to conversation
                 await self.conversation_service.asave_message(
                     conversation,
                     "USER",
@@ -193,7 +154,6 @@ class TelegramBotHandler:
                     },
                 )
             else:
-                # Error
                 await update.message.reply_text(
                     "❌ Hubo un error al procesar tu boleta de pago. "
                     "Por favor, intenta nuevamente o contacta con soporte.",
@@ -213,7 +173,6 @@ class TelegramBotHandler:
         logger.error(
             f"Update {update} caused error {context.error}", exc_info=True
         )
-
         if update and update.effective_message:
             await update.effective_message.reply_text(
                 constants.UNEXPECTED_ERROR_MESSAGE
@@ -221,26 +180,16 @@ class TelegramBotHandler:
 
 
 def setup_handlers(application: Application) -> None:
-    """
-    Setup all handlers for the Telegram bot.
-
-    Args:
-        application: Telegram bot application instance
-    """
+    """Setup all handlers for the Telegram bot."""
     handler = TelegramBotHandler()
 
-    # Command handlers
     application.add_handler(CommandHandler("start", handler.start_command))
     application.add_handler(CommandHandler("help", handler.help_command))
     application.add_handler(CommandHandler("menu", handler.menu_command))
-
-    # Message handlers
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handler.handle_message)
     )
     application.add_handler(MessageHandler(filters.PHOTO, handler.handle_photo))
-
-    # Error handler
     application.add_error_handler(handler.error_handler)
 
     logger.info("Telegram bot handlers setup completed")

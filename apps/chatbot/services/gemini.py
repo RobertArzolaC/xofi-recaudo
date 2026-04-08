@@ -8,8 +8,6 @@ import google.generativeai as genai
 from django.conf import settings
 from PIL import Image
 
-from apps.chatbot import constants
-
 logger = logging.getLogger(__name__)
 
 
@@ -266,21 +264,6 @@ Responde únicamente con el JSON solicitado.
 """
         return prompt
 
-    def build_intent_analysis_prompt(
-        self, message: str, base_prompt: str
-    ) -> str:
-        """
-        Build prompt for intent analysis.
-
-        Args:
-            message: User message to analyze
-            base_prompt: Base prompt template
-
-        Returns:
-            Formatted intent analysis prompt
-        """
-        return base_prompt.format(message=message)
-
     def get_receipt_extraction_schema(self) -> Dict[str, Any]:
         """
         Get the JSON schema for receipt extraction response.
@@ -317,46 +300,6 @@ Responde únicamente con el JSON solicitado.
                 },
             },
             "required": ["amount", "date", "confidence", "extraction_method"],
-        }
-
-    def get_intent_analysis_schema(self) -> Dict[str, Any]:
-        """
-        Get the JSON schema for intent analysis response.
-
-        Returns:
-            JSON schema dictionary for intent analysis response validation
-        """
-        return {
-            "type": "object",
-            "properties": {
-                "intent": {
-                    "type": "string",
-                    "enum": [
-                        "GREETING",
-                        "AUTHENTICATION",
-                        "PARTNER_DETAIL",
-                        "ACCOUNT_STATEMENT",
-                        "LIST_CREDITS",
-                        "CREDIT_DETAIL",
-                        "CREATE_TICKET",
-                        "UPLOAD_RECEIPT",
-                        "HELP",
-                        "GOODBYE",
-                        "UNKNOWN",
-                    ],
-                },
-                "confidence": {"type": "number"},
-                "entities": {
-                    "type": "object",
-                    "properties": {
-                        "loan_id": {"type": "string"},
-                        "amount": {"type": "string"},
-                        "date": {"type": "string"},
-                        "ticket_subject": {"type": "string"},
-                    },
-                },
-            },
-            "required": ["intent", "confidence", "entities"],
         }
 
     def format_generation_config(
@@ -412,14 +355,6 @@ class GeminiService:
         except Exception as e:
             logger.error(f"Error initializing Gemini client: {e}")
             self.gemini_model = None
-
-    def _build_prompt(
-        self, query: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
-        """Build prompt for AI model with context."""
-        return self.formatter.build_conversation_prompt(
-            query, constants.GEMINI_SYSTEM_PROMPT, context
-        )
 
     def _validate_image_bytes(self, image_bytes: bytes) -> bool:
         """
@@ -497,38 +432,6 @@ class GeminiService:
         except Exception as e:
             logger.error(f"Error preparing image for Gemini: {e}")
             return None
-
-    def analyze_intent_with_ai(self, message: str) -> Dict[str, Any]:
-        """
-        Use AI to analyze message intent when rule-based detection fails.
-
-        Args:
-            message: User's message
-
-        Returns:
-            Dict with intent classification and extracted entities
-        """
-        if not self.gemini_model:
-            return {"intent": "UNKNOWN", "confidence": 0, "entities": {}}
-
-        prompt = self.formatter.build_intent_analysis_prompt(
-            message, constants.GEMINI_INTENT_ANALYSIS_PROMPT
-        )
-
-        try:
-            # Configure generation to return JSON
-            schema = self.formatter.get_intent_analysis_schema()
-            generation_config = self.formatter.format_generation_config(schema)
-
-            response = self.gemini_model.generate_content(
-                prompt, generation_config=generation_config
-            )
-
-            result = json.loads(response.text)
-            return result
-        except Exception as e:
-            logger.exception(f"Error analyzing intent with AI: {e}")
-            return {"intent": "UNKNOWN", "confidence": 0, "entities": {}}
 
     def extract_receipt_data(self, image_bytes: bytes) -> Dict[str, Any]:
         """

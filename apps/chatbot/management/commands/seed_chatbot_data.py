@@ -71,18 +71,13 @@ USER_MESSAGES = [
     "Adjunto comprobante",
 ]
 
-INTENT_WEIGHTS = [
-    ("GREETING", 15),
-    ("AUTHENTICATION", 20),
-    ("ACCOUNT_STATEMENT", 12),
-    ("LIST_CREDITS", 10),
-    ("CREDIT_DETAIL", 8),
-    ("UPLOAD_RECEIPT", 18),
-    ("CREATE_TICKET", 6),
-    ("PARTNER_DETAIL", 5),
-    ("HELP", 4),
-    ("GOODBYE", 7),
-    ("UNKNOWN", 5),
+TOOL_WEIGHTS = [
+    ("get_account_statement", 12),
+    ("get_credits_list", 10),
+    ("get_credit_detail", 8),
+    ("create_support_ticket", 6),
+    ("get_partner_detail", 5),
+    ("", 59),  # No tool called (greeting, help, etc.)
 ]
 
 TEMPLATE_DATA = [
@@ -211,7 +206,7 @@ class Command(BaseCommand):
         from apps.chatbot.models import AgentConversation, ConversationMessage, WhatsAppTemplate
         from apps.chatbot.choices import (
             ChannelType, ConversationStatus, MessageSender,
-            IntentType, MessageDeliveryStatus, TemplateStatus,
+            MessageDeliveryStatus, TemplateStatus,
         )
 
         if options["clear"]:
@@ -339,7 +334,6 @@ class Command(BaseCommand):
                 conversation=conv,
                 sender=MessageSender.USER,
                 message=random.choice(["Hola", "Buenas", "Hola buenos días"]),
-                intent=IntentType.GREETING,
             )
             total_messages += 1
 
@@ -358,7 +352,6 @@ class Command(BaseCommand):
                     conversation=conv,
                     sender=MessageSender.USER,
                     message="Mi cédula es " + str(random.randint(10000000, 99999999)),
-                    intent=IntentType.AUTHENTICATION,
                 )
                 ConversationMessage.objects.create(
                     conversation=conv,
@@ -370,19 +363,19 @@ class Command(BaseCommand):
 
             # Remaining messages
             for _ in range(num_messages - 2):
-                intent = weighted_choice(INTENT_WEIGHTS)
+                tool_name = weighted_choice(TOOL_WEIGHTS)
                 user_msg = ConversationMessage.objects.create(
                     conversation=conv,
                     sender=MessageSender.USER,
                     message=random.choice(USER_MESSAGES),
-                    intent=intent,
                 )
                 total_messages += 1
 
-                bot_msg = ConversationMessage.objects.create(
+                ConversationMessage.objects.create(
                     conversation=conv,
                     sender=MessageSender.AGENT,
                     message=random.choice(BOT_RESPONSES[1:]),
+                    intent=tool_name,
                     delivery_status=random.choice(delivery_status_pool),
                 )
                 total_messages += 1

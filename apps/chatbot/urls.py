@@ -7,11 +7,17 @@ from apps.chatbot.views import (
     WhatsAppWebhookView,
     TemplateCreateView,
     TemplateApproveView,
+    ChatbotTestView,
 )
 
 app_name = "apps.chatbot"
 
 urlpatterns = [
+    path(
+        "test/",
+        ChatbotTestView.as_view(),
+        name="chatbot-test",
+    ),
     path(
         "webhook/whatsapp/",
         WhatsAppWebhookView.as_view(),

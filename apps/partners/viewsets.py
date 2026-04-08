@@ -61,7 +61,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def retrieve(self, request):
+    def retrieve(self, request, pk=None, *args, **kwargs):
         """
         Retrieve partner details.
 

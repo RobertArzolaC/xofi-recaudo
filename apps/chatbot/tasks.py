@@ -9,7 +9,9 @@ from apps.chatbot import constants
 from apps.chatbot.choices import MessageDeliveryStatus
 from apps.chatbot.conversation import ConversationService
 from apps.chatbot.models import ConversationMessage
+from apps.chatbot.services.authentication import PartnerAuthenticationService
 from apps.chatbot.services.gemini import GeminiService
+from apps.chatbot.services.partner_api import PartnerAPIService
 from apps.core.clients.whatsapp_cloud import WhatsAppCloudAPIClient
 
 logger = logging.getLogger(__name__)
@@ -38,6 +40,7 @@ def process_whatsapp_webhook(self, webhook_data: Dict) -> Dict:
         client = WhatsAppCloudAPIClient()
         conv_service = ConversationService()
         gemini_service = GeminiService()
+        api_service = PartnerAPIService()
 
         for entry in webhook_data.get("entry", []):
             for change in entry.get("changes", []):
@@ -47,7 +50,7 @@ def process_whatsapp_webhook(self, webhook_data: Dict) -> Dict:
                 value = change.get("value", {})
 
                 for message in value.get("messages", []):
-                    _process_message(client, conv_service, gemini_service, message)
+                    _process_message(client, conv_service, gemini_service, api_service, message)
 
                 for status in value.get("statuses", []):
                     _process_status(status)
@@ -67,6 +70,7 @@ def _process_message(
     client: WhatsAppCloudAPIClient,
     conv_service: ConversationService,
     gemini_service: GeminiService,
+    api_service: PartnerAPIService,
     message: Dict,
 ) -> None:
     """Process a single incoming WhatsApp message."""
@@ -91,7 +95,7 @@ def _process_message(
         if message_type == "text":
             _handle_text_message(client, conv_service, message)
         elif message_type == "image":
-            _handle_image_message(client, conv_service, gemini_service, message)
+            _handle_image_message(client, conv_service, gemini_service, api_service, message)
         elif message_type == "interactive":
             _handle_interactive_message(client, conv_service, message)
         else:
@@ -122,14 +126,12 @@ def _handle_text_message(
         conversation = conv_service.get_or_create_conversation_whatsapp(sender_phone)
 
         if not conversation.authenticated:
-            response, image_url = conv_service._handle_authentication_whatsapp(
-                conversation, user_message
-            )
+            auth_data = PartnerAuthenticationService.extract_auth_data(user_message)
             conv_service.save_message(conversation, "USER", user_message)
+            response = conv_service._handle_authentication(conversation, user_message)
 
-            auth_data = conv_service.intent_detector.extract_auth_data(user_message)
-            if image_url and not auth_data:
-                wamid = _send_image_message(client, sender_phone, image_url, response)
+            if auth_data:
+                wamid = _send_text_message(client, sender_phone, response)
             else:
                 wamid = _send_text_message(client, sender_phone, response)
 
@@ -142,14 +144,11 @@ def _handle_text_message(
             )
             return
 
-        response, image_url = conv_service.process_message_whatsapp(
+        response, _ = conv_service.process_message_whatsapp(
             sender_phone, user_message
         )
 
-        if image_url:
-            wamid = _send_image_message(client, sender_phone, image_url, response)
-        else:
-            wamid = _send_text_message(client, sender_phone, response)
+        wamid = _send_text_message(client, sender_phone, response)
 
         if wamid:
             ConversationMessage.objects.filter(
@@ -170,6 +169,7 @@ def _handle_image_message(
     client: WhatsAppCloudAPIClient,
     conv_service: ConversationService,
     gemini_service: GeminiService,
+    api_service: PartnerAPIService,
     message: Dict,
 ) -> None:
     """Handle an incoming image message (payment receipts)."""
@@ -204,7 +204,7 @@ def _handle_image_message(
         extracted_data = gemini_service.extract_receipt_data(image_bytes)
         logger.info("Extracted receipt data: %s", extracted_data)
 
-        result = conv_service.api_service.upload_payment_receipt(
+        result = api_service.upload_payment_receipt(
             conversation.partner.id,
             image_bytes,
             media_id,

@@ -61,8 +61,12 @@ class OpenRouterClient(BaseAPIClient):
         # Set OpenRouter-specific headers
         self.session.headers.update(
             {
-                "HTTP-Referer": config("SITE_URL", default="http://localhost:8000"),
-                "X-Title": config("SITE_NAME", default="Xara AI Sales Platform"),
+                "HTTP-Referer": config(
+                    "SITE_URL", default="http://localhost:8000"
+                ),
+                "X-Title": config(
+                    "SITE_NAME", default="Xara AI Sales Platform"
+                ),
             }
         )
 
@@ -75,8 +79,9 @@ class OpenRouterClient(BaseAPIClient):
         temperature: float = 0.7,
         max_tokens: int = 1000,
         model: str | None = None,
+        return_message: bool = False,
         **kwargs: Any,
-    ) -> str:
+    ) -> str | dict[str, Any]:
         """
         Generate chat completion using OpenRouter.
 
@@ -103,16 +108,15 @@ class OpenRouterClient(BaseAPIClient):
             raise APIValidationError("Messages list cannot be empty")
 
         for msg in messages:
-            if "role" not in msg or "content" not in msg:
+            if "role" not in msg:
+                raise APIValidationError("Each message must have a 'role' key")
+            if msg["role"] not in ["system", "user", "assistant", "tool"]:
                 raise APIValidationError(
-                    "Each message must have 'role' and 'content' keys"
+                    f"Invalid role '{msg['role']}'. Must be 'system', 'user', 'assistant', or 'tool'"
                 )
-            if msg["role"] not in ["system", "user", "assistant"]:
-                raise APIValidationError(
-                    f"Invalid role '{msg['role']}'. Must be 'system', 'user', or 'assistant'"
-                )
-            content = msg["content"]
-            if not isinstance(content, (str, list)):
+
+            content = msg.get("content")
+            if content is not None and not isinstance(content, (str, list)):
                 raise APIValidationError(
                     "Message 'content' must be a string or a list of content parts"
                 )
@@ -141,15 +145,15 @@ class OpenRouterClient(BaseAPIClient):
 
             # Extract response text
             if "choices" not in response_data or not response_data["choices"]:
-                raise APIClientError("Invalid response format: missing 'choices'")
+                raise APIClientError(
+                    "Invalid response format: missing 'choices'"
+                )
 
             choice = response_data["choices"][0]
-            if "message" not in choice or "content" not in choice["message"]:
-                raise APIClientError("Invalid response format: missing message content")
+            if "message" not in choice:
+                raise APIClientError("Invalid response format: missing message")
 
-            response_text = choice["message"].get("content") or choice["message"].get("reasoning") or ""
-            if not response_text:
-                raise APIClientError("LLM returned empty content")
+            message = choice["message"]
 
             # Track token usage
             if "usage" in response_data:
@@ -160,7 +164,18 @@ class OpenRouterClient(BaseAPIClient):
                     f"Total: {self.last_token_usage.get('total_tokens', 0)}"
                 )
 
-            logger.info(f"Chat completion successful: {len(response_text)} characters")
+            if return_message:
+                return message
+
+            response_text = (
+                message.get("content") or message.get("reasoning") or ""
+            )
+            if not response_text:
+                raise APIClientError("LLM returned empty content")
+
+            logger.info(
+                f"Chat completion successful: {len(response_text)} characters"
+            )
             return response_text
 
         except APIClientError:
@@ -197,7 +212,9 @@ class OpenRouterClient(BaseAPIClient):
         payload = {"model": embedding_model, "input": texts}
 
         logger.info(
-            "Requesting embeddings: model=%s, texts=%d", embedding_model, len(texts)
+            "Requesting embeddings: model=%s, texts=%d",
+            embedding_model,
+            len(texts),
         )
 
         try:
@@ -211,7 +228,9 @@ class OpenRouterClient(BaseAPIClient):
                 raise APIClientError("Embeddings response missing 'data' field")
 
             # Sort by index to preserve order
-            items = sorted(response_data["data"], key=lambda x: x.get("index", 0))
+            items = sorted(
+                response_data["data"], key=lambda x: x.get("index", 0)
+            )
             vectors = [item["embedding"] for item in items]
 
             logger.info("Embeddings generated: %d vectors", len(vectors))

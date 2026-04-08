@@ -131,12 +131,11 @@ def get_messages_by_intent_data():
     """Distribución de mensajes de usuarios por intent detectado."""
     try:
         from apps.chatbot.models import ConversationMessage
-        from apps.chatbot.choices import IntentType, MessageSender
+        from apps.chatbot.choices import MessageSender
 
         data = (
             ConversationMessage.objects.filter(
                 sender=MessageSender.USER,
-                intent__isnull=False,
             )
             .exclude(intent="")
             .values("intent")
@@ -146,10 +145,7 @@ def get_messages_by_intent_data():
         labels = []
         values = []
         for item in data:
-            try:
-                label = str(IntentType(item["intent"]).label)
-            except (ValueError, AttributeError):
-                label = item["intent"].replace("_", " ").title()
+            label = item["intent"].replace("_", " ").title()
             labels.append(label)
             values.append(item["count"])
         return {"labels": json.dumps(labels), "data": json.dumps(values)}

@@ -17,6 +17,7 @@ from django.views.generic import FormView, TemplateView
 
 from apps.chatbot import services as chatbot_services
 from apps.chatbot.choices import TemplateStatus
+from apps.chatbot.conversation import ConversationService
 from apps.chatbot.forms import ChatbotSettingsForm
 from apps.chatbot.models import WhatsAppTemplate
 from apps.chatbot.tasks import process_whatsapp_webhook
@@ -160,6 +161,47 @@ class TemplateApproveView(LoginRequiredMixin, View):
                 "meta_template_id": tpl.meta_template_id,
             }
         )
+
+
+class ChatbotTestView(LoginRequiredMixin, TemplateView):
+    """View to test the chatbot agent in a web interface."""
+
+    template_name = "chatbot/test.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Use a consistent session ID for the current user for testing
+        session_id = f"test-user-{self.request.user.id}"
+        conv_service = ConversationService()
+        conversation = conv_service.get_or_create_conversation_web(session_id)
+
+        context["session_id"] = session_id
+        context["conversation"] = conversation
+        context["messages"] = conversation.messages.all().order_by("created")
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """Handle incoming test messages via AJAX."""
+        user_message = request.POST.get("message", "").strip()
+        session_id = request.POST.get(
+            "session_id", f"test-user-{request.user.id}"
+        )
+
+        if not user_message:
+            return JsonResponse({"error": "Empty message"}, status=400)
+
+        conv_service = ConversationService()
+
+        try:
+            response_text, tools_called = conv_service.process_message_web(
+                session_id, user_message
+            )
+            return JsonResponse(
+                {"response": response_text, "tools_called": tools_called}
+            )
+        except Exception as e:
+            logger.error(f"Error in ChatbotTestView: {e}", exc_info=True)
+            return JsonResponse({"error": str(e)}, status=500)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

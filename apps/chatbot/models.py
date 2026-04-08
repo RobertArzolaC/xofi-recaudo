@@ -42,6 +42,12 @@ class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
         null=True,
         help_text=_("WhatsApp phone number for this conversation"),
     )
+    web_session_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_("Web session ID for testing purposes"),
+    )
     status = models.IntegerField(
         choices=choices.ConversationStatus.choices,
         default=choices.ConversationStatus.PENDING_AUTH,
@@ -70,6 +76,7 @@ class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
                 check=(
                     models.Q(channel="TELEGRAM", telegram_chat_id__isnull=False)
                     | models.Q(channel="WHATSAPP", whatsapp_phone__isnull=False)
+                    | models.Q(channel="WEB", web_session_id__isnull=False)
                 ),
                 name="channel_identifier_required",
             ),
@@ -83,13 +90,17 @@ class AgentConversation(core_models.BaseUserTracked, TimeStampedModel):
                 condition=models.Q(whatsapp_phone__isnull=False),
                 name="unique_whatsapp_phone",
             ),
+            models.UniqueConstraint(
+                fields=["web_session_id"],
+                condition=models.Q(web_session_id__isnull=False),
+                name="unique_web_session_id",
+            ),
         ]
 
     def __str__(self):
+        identifier = self.telegram_chat_id or self.whatsapp_phone or self.web_session_id
         if self.partner:
-            identifier = self.telegram_chat_id or self.whatsapp_phone
             return f"Conversation with {self.partner.full_name} ({identifier})"
-        identifier = self.telegram_chat_id or self.whatsapp_phone
         return f"Conversation {identifier}"
 
 
@@ -113,10 +124,10 @@ class ConversationMessage(TimeStampedModel):
         help_text=_("Message content"),
     )
     intent = models.CharField(
-        max_length=50,
-        choices=choices.IntentType.choices,
+        max_length=100,
         blank=True,
-        help_text=_("Detected intent of the message"),
+        default="",
+        help_text=_("Tool name called by the agent, if any"),
     )
     metadata = models.JSONField(
         default=dict,

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-25 09:08-0500\n"
+"POT-Creation-Date: 2026-04-08 13:52-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,7 +101,7 @@ msgstr "Enviando"
 msgid "Active"
 msgstr "Activo"
 
-#: apps/campaigns/choices.py:13 apps/chatbot/choices.py:61
+#: apps/campaigns/choices.py:13 apps/chatbot/choices.py:47
 #: templates/chatbot/dashboard/index.html:476
 msgid "Paused"
 msgstr "Pausado"
@@ -114,7 +114,7 @@ msgid "Completed"
 msgstr "Completado"
 
 #: apps/campaigns/choices.py:15 apps/campaigns/choices.py:39
-#: apps/campaigns/choices.py:58 apps/chatbot/choices.py:52
+#: apps/campaigns/choices.py:58 apps/chatbot/choices.py:38
 #: apps/core/choices.py:10 apps/credits/choices.py:85
 #: apps/notifications/choices.py:16 apps/reports/choices.py:13
 #: apps/reports/generators/analytics.py:211
@@ -165,17 +165,17 @@ msgstr "Notificación Programada"
 msgid "Pending"
 msgstr "Pendiente"
 
-#: apps/campaigns/choices.py:38 apps/chatbot/choices.py:49
+#: apps/campaigns/choices.py:38 apps/chatbot/choices.py:35
 #: apps/notifications/choices.py:15 apps/reports/generators/analytics.py:210
 msgid "Sent"
 msgstr "Enviado"
 
-#: apps/campaigns/choices.py:46 apps/chatbot/choices.py:42
+#: apps/campaigns/choices.py:46 apps/chatbot/choices.py:27
 #: apps/notifications/choices.py:23 templates/chatbot/settings/detail.html:111
 msgid "Telegram"
 msgstr "Telegram"
 
-#: apps/campaigns/choices.py:47 apps/chatbot/choices.py:43
+#: apps/campaigns/choices.py:47 apps/chatbot/choices.py:28
 #: apps/notifications/choices.py:24 templates/chatbot/settings/detail.html:95
 msgid "WhatsApp"
 msgstr "WhatsApp"
@@ -1113,66 +1113,26 @@ msgstr "Agente"
 msgid "System"
 msgstr "Sistema"
 
-#: apps/chatbot/choices.py:26
-msgid "Greeting"
-msgstr "Saludo"
-
-#: apps/chatbot/choices.py:27
-msgid "Authentication"
-msgstr "Autenticación"
-
-#: apps/chatbot/choices.py:28
-msgid "Partner Detail"
-msgstr "Detalles del Socio"
-
 #: apps/chatbot/choices.py:29
-msgid "Account Statement"
-msgstr "Estado de Cuenta"
+msgid "Web (Testing)"
+msgstr ""
 
-#: apps/chatbot/choices.py:30
-msgid "List Credits"
-msgstr "Listar Créditos"
-
-#: apps/chatbot/choices.py:31
-msgid "Credit Detail"
-msgstr "Detalles del Crédito"
-
-#: apps/chatbot/choices.py:32
-msgid "Create Support Ticket"
-msgstr "Crear Ticket de Soporte"
-
-#: apps/chatbot/choices.py:33
-msgid "Upload Payment Receipt"
-msgstr "Subir Comprobante de Pago"
-
-#: apps/chatbot/choices.py:34
-msgid "Help"
-msgstr "Ayuda"
-
-#: apps/chatbot/choices.py:35
-msgid "Goodbye"
-msgstr "Despedida"
-
-#: apps/chatbot/choices.py:36
-msgid "Unknown"
-msgstr "Desconocido"
-
-#: apps/chatbot/choices.py:50 templates/chatbot/dashboard/index.html:247
+#: apps/chatbot/choices.py:36 templates/chatbot/dashboard/index.html:247
 #: templates/chatbot/dashboard/index.html:749
 msgid "Delivered"
 msgstr "Entregado"
 
-#: apps/chatbot/choices.py:51 templates/chatbot/dashboard/index.html:260
+#: apps/chatbot/choices.py:37 templates/chatbot/dashboard/index.html:260
 msgid "Read"
 msgstr ""
 
-#: apps/chatbot/choices.py:58 templates/chatbot/dashboard/index.html:468
+#: apps/chatbot/choices.py:44 templates/chatbot/dashboard/index.html:468
 #, fuzzy
 #| msgid "Under Review"
 msgid "Pending Review"
 msgstr "En Revisión"
 
-#: apps/chatbot/choices.py:59 apps/core/choices.py:12 apps/credits/choices.py:9
+#: apps/chatbot/choices.py:45 apps/core/choices.py:12 apps/credits/choices.py:9
 #: apps/credits/choices.py:26 apps/credits/choices.py:64
 #: apps/credits/choices.py:73 apps/credits/choices.py:82
 #: apps/partners/choices.py:8 apps/payments/choices.py:47
@@ -1181,7 +1141,7 @@ msgstr "En Revisión"
 msgid "Approved"
 msgstr "Aprobado"
 
-#: apps/chatbot/choices.py:60 apps/credits/choices.py:10
+#: apps/chatbot/choices.py:46 apps/credits/choices.py:10
 #: apps/credits/choices.py:27 apps/credits/choices.py:65
 #: apps/credits/choices.py:74 apps/partners/choices.py:9
 #: apps/partners/choices.py:84 apps/payments/choices.py:48
@@ -1204,8 +1164,8 @@ msgid ""
 "Image sent before the welcome message on WhatsApp. Only *.png, *.jpg and "
 "*.jpeg files are accepted."
 msgstr ""
-"Imagen enviada antes del mensaje de bienvenida en WhatsApp. Solo se aceptan archivos *.png, "
-"*.jpg y *.jpeg."
+"Imagen enviada antes del mensaje de bienvenida en WhatsApp. Solo se aceptan "
+"archivos *.png, *.jpg y *.jpeg."
 
 #: apps/chatbot/forms.py:24 templates/chatbot/settings/detail.html:62
 msgid "Welcome Message"
@@ -1217,7 +1177,8 @@ msgstr "Ingrese el mensaje de bienvenida para el chatbot"
 
 #: apps/chatbot/forms.py:34
 msgid "Message displayed when a user starts a conversation with the chatbot."
-msgstr "Mensaje mostrado cuando un usuario inicia una conversación con el chatbot."
+msgstr ""
+"Mensaje mostrado cuando un usuario inicia una conversación con el chatbot."
 
 #: apps/chatbot/models.py:20
 msgid "Partner associated with this conversation"
@@ -1239,115 +1200,119 @@ msgstr "Nombre de usuario de Telegram del usuario"
 msgid "WhatsApp phone number for this conversation"
 msgstr "Número de teléfono de WhatsApp para esta conversación"
 
-#: apps/chatbot/models.py:48
+#: apps/chatbot/models.py:49
+msgid "Web session ID for testing purposes"
+msgstr ""
+
+#: apps/chatbot/models.py:54
 msgid "Current status of the conversation"
 msgstr "Estado actual de la conversación."
 
-#: apps/chatbot/models.py:52
+#: apps/chatbot/models.py:58
 msgid "Whether the user has been authenticated"
 msgstr "El usuario ha sido autenticado."
 
-#: apps/chatbot/models.py:56
+#: apps/chatbot/models.py:62
 msgid "Last interaction timestamp"
 msgstr "Marca de tiempo de la última interacción"
 
-#: apps/chatbot/models.py:61
+#: apps/chatbot/models.py:67
 msgid "Context data for the conversation (pending actions, state, etc.)"
 msgstr ""
 "Datos de contexto para la conversación (acciones pendientes, estado, etc.)"
 
-#: apps/chatbot/models.py:65
+#: apps/chatbot/models.py:71
 msgid "Agent Conversation"
 msgstr "Conversación del Agente"
 
-#: apps/chatbot/models.py:66
+#: apps/chatbot/models.py:72
 msgid "Agent Conversations"
 msgstr "Conversaciones del Agente"
 
-#: apps/chatbot/models.py:105
+#: apps/chatbot/models.py:116
 msgid "Conversation this message belongs to"
 msgstr "Conversación a la que pertenece este mensaje."
 
-#: apps/chatbot/models.py:110
+#: apps/chatbot/models.py:121
 msgid "Who sent this message"
 msgstr "Quién envió este mensaje"
 
-#: apps/chatbot/models.py:113
+#: apps/chatbot/models.py:124
 msgid "Message content"
 msgstr "Contenido del mensaje"
 
-#: apps/chatbot/models.py:119
-msgid "Detected intent of the message"
-msgstr "Intención detectada del mensaje"
+#: apps/chatbot/models.py:130
+msgid "Tool name called by the agent, if any"
+msgstr ""
 
-#: apps/chatbot/models.py:124
+#: apps/chatbot/models.py:135
 msgid "Additional metadata (API responses, file info, etc.)"
 msgstr ""
 "Metadatos adicionales (respuestas de API, información de archivos, etc.)"
 
-#: apps/chatbot/models.py:131
+#: apps/chatbot/models.py:142
 msgid "Delivery status for outbound WhatsApp messages"
 msgstr ""
 
-#: apps/chatbot/models.py:137
+#: apps/chatbot/models.py:148
 msgid "WhatsApp message ID for delivery tracking"
 msgstr ""
 
-#: apps/chatbot/models.py:141
+#: apps/chatbot/models.py:152
 msgid "Conversation Message"
 msgstr "Mensaje de la Conversación"
 
-#: apps/chatbot/models.py:142
+#: apps/chatbot/models.py:153
 msgid "Conversation Messages"
 msgstr "Conversaciones de Mensajes"
 
-#: apps/chatbot/models.py:156
+#: apps/chatbot/models.py:167
 msgid "Template name (as registered in Meta)"
 msgstr ""
 
-#: apps/chatbot/models.py:160
+#: apps/chatbot/models.py:171
 msgid "Template category (MARKETING, UTILITY, AUTHENTICATION)"
 msgstr ""
 
-#: apps/chatbot/models.py:165
+#: apps/chatbot/models.py:176
 msgid "Template language code"
 msgstr ""
 
-#: apps/chatbot/models.py:171
+#: apps/chatbot/models.py:182
 #, fuzzy
 #| msgid "Approval Date"
 msgid "Meta approval status"
 msgstr "Fecha de Aprobación"
 
-#: apps/chatbot/models.py:174
+#: apps/chatbot/models.py:185
 #, fuzzy
 #| msgid "Template Type"
 msgid "Template body text"
 msgstr "Tipo de Plantilla"
 
-#: apps/chatbot/models.py:180
+#: apps/chatbot/models.py:191
 msgid "Template ID assigned by Meta"
 msgstr ""
 
-#: apps/chatbot/models.py:184
+#: apps/chatbot/models.py:195
 #, fuzzy
 #| msgid "Number of times this campaign has been executed."
 msgid "Number of times this template has been sent"
 msgstr "Número de veces que se ha ejecutado esta campaña."
 
-#: apps/chatbot/models.py:188
+#: apps/chatbot/models.py:199
 #, fuzzy
 #| msgid "WhatsApp Template Name"
 msgid "WhatsApp Template"
 msgstr "Nombre de la Plantilla de WhatsApp"
 
-#: apps/chatbot/models.py:189
+#: apps/chatbot/models.py:200
 #, fuzzy
 #| msgid "WhatsApp Template Name"
 msgid "WhatsApp Templates"
 msgstr "Nombre de la Plantilla de WhatsApp"
 
-#: apps/chatbot/views.py:78 templates/campaigns/campaign/detail.html:23
+#: apps/chatbot/views.py:84 templates/campaigns/campaign/detail.html:23
 #: templates/campaigns/campaign_csv/detail.html:23
 #: templates/campaigns/group/detail.html:23
 #: templates/chatbot/settings/detail.html:16
@@ -1370,7 +1335,7 @@ msgstr "Nombre de la Plantilla de WhatsApp"
 msgid "Edit"
 msgstr "Editar"
 
-#: apps/chatbot/views.py:84
+#: apps/chatbot/views.py:90
 #, fuzzy
 #| msgid "Settings updated successfully"
 msgid "Chatbot settings updated successfully."
@@ -4361,7 +4326,7 @@ msgstr "Empleado asignado para hacer seguimiento a este aspirante"
 msgid "Prospect"
 msgstr "Aspirante"
 
-#: apps/partners/models.py:112 apps/partners/views.py:306
+#: apps/partners/models.py:112 apps/partners/views.py:316
 #: templates/partners/prospect/list.html:5
 #: templates/partners/prospect/list.html:64
 msgid "Prospects"
@@ -6248,11 +6213,15 @@ msgstr "Incluir enlace de pago en las notificaciones de la campaña."
 
 #: config/settings/tools/django_constance.py:45
 msgid "Chatbot welcome image. Sent before welcome message on WhatsApp."
-msgstr "Imagen de bienvenida del chatbot. Enviada antes del mensaje de bienvenida en WhatsApp."
+msgstr ""
+"Imagen de bienvenida del chatbot. Enviada antes del mensaje de bienvenida en "
+"WhatsApp."
 
 #: config/settings/tools/django_constance.py:50
 msgid "Chatbot welcome message displayed when user starts conversation."
-msgstr "Mensaje de bienvenida del chatbot que se muestra cuando el usuario inicia la conversación."
+msgstr ""
+"Mensaje de bienvenida del chatbot que se muestra cuando el usuario inicia la "
+"conversación."
 
 #: config/settings/tools/django_constance.py:54
 msgid "Enable welcome message on homepage."
@@ -7637,7 +7606,8 @@ msgstr "Mensaje Actual"
 msgid ""
 "This message is displayed when a user starts a conversation with the chatbot."
 msgstr ""
-"Este mensaje se muestra cuando un usuario inicia una conversación con el chatbot."
+"Este mensaje se muestra cuando un usuario inicia una conversación con el "
+"chatbot."
 
 #: templates/chatbot/settings/detail.html:82
 msgid "Channel Behavior"
@@ -7693,6 +7663,64 @@ msgstr ""
 #: templates/partners/prospect/form.html:195 templates/users/settings.html:131
 msgid "Save Changes"
 msgstr "Guardar Cambios"
+
+#: templates/chatbot/test.html:5
+#, fuzzy
+#| msgid "Chatbot Settings"
+msgid "Chatbot Testing"
+msgstr "Configuración del Chatbot"
+
+#: templates/chatbot/test.html:13
+msgid "Chatbot Agent Test"
+msgstr "Prueba del Agente del Chatbot"
+
+#: templates/chatbot/test.html:107
+msgid "Conversation Simulation"
+msgstr "Simulación de Conversación"
+
+#: templates/chatbot/test.html:134
+msgid "Type your message..."
+msgstr "Escribe tu mensaje..."
+
+#: templates/chatbot/test.html:148
+msgid "Instructions"
+msgstr "Instrucciones"
+
+#: templates/chatbot/test.html:151
+msgid ""
+"This view allows you to test the AI agent directly. The messages will be "
+"saved in a 'WEB' channel conversation."
+msgstr ""
+"Esta vista le permite probar el agente de IA directamente. Los mensajes se "
+"guardarán en una conversación del canal 'WEB'."
+
+#: templates/chatbot/test.html:155
+msgid "Authentication"
+msgstr "Autenticación"
+
+#: templates/chatbot/test.html:156
+msgid ""
+"If the conversation is not authenticated, the agent will ask for your DNI "
+"and birth year."
+msgstr ""
+"Si la conversación no está autenticada, el agente le pedirá su DNI y año "
+"de nacimiento."
+
+#: templates/chatbot/test.html:159
+msgid "Sample Commands:"
+msgstr "Comandos de Ejemplo:"
+
+#: templates/chatbot/test.html:162
+msgid "¿Cuál es mi deuda actual?"
+msgstr "¿Cuál es mi deuda actual?"
+
+#: templates/chatbot/test.html:163
+msgid "¿Qué campañas tengo disponibles?"
+msgstr "¿Qué campañas tengo disponibles?"
+
+#: templates/chatbot/test.html:164
+msgid "Quiero ver mis pagos"
+msgstr "Quiero ver mis pagos"
 
 #: templates/compliance/contribution/confirm_delete.html:14
 #: templates/compliance/penalty/confirm_delete.html:14
@@ -10853,6 +10881,39 @@ msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 #: templates/users/user/roles.html:137
 msgid "Save Roles"
 msgstr "Guardar Roles"
+
+#~ msgid "Greeting"
+#~ msgstr "Saludo"
+
+#~ msgid "Partner Detail"
+#~ msgstr "Detalles del Socio"
+
+#~ msgid "Account Statement"
+#~ msgstr "Estado de Cuenta"
+
+#~ msgid "List Credits"
+#~ msgstr "Listar Créditos"
+
+#~ msgid "Credit Detail"
+#~ msgstr "Detalles del Crédito"
+
+#~ msgid "Create Support Ticket"
+#~ msgstr "Crear Ticket de Soporte"
+
+#~ msgid "Upload Payment Receipt"
+#~ msgstr "Subir Comprobante de Pago"
+
+#~ msgid "Help"
+#~ msgstr "Ayuda"
+
+#~ msgid "Goodbye"
+#~ msgstr "Despedida"
+
+#~ msgid "Unknown"
+#~ msgstr "Desconocido"
+
+#~ msgid "Detected intent of the message"
+#~ msgstr "Intención detectada del mensaje"
 
 #~ msgid "Agent Assistant"
 #~ msgstr "Asistente de Agente"

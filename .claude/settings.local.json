@@ -13,7 +13,15 @@
       "Bash(python3 manage.py check)",
       "Bash(source .venv/bin/activate)",
       "Bash(source venv/bin/activate)",
-      "Bash(grep -v \":0$\")"
+      "Bash(grep -v \":0$\")",
+      "Bash(ls:*)",
+      "Bash(pip show:*)",
+      "Bash(pip3 show:*)",
+      "Bash(python3 -c ':*)",
+      "Bash(.venv/bin/python -c ':*)",
+      "Bash(.venv/bin/python manage.py migrate --settings=config.settings.development --check)",
+      "Bash(.venv/bin/python manage.py migrate --settings=config.settings.development --run-syncdb)",
+      "Bash(.venv/bin/python:*)"
     ]
   }
 }

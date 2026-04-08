@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Optional
 
 from apps.partners.models import Partner
@@ -24,10 +25,8 @@ class PartnerAuthenticationService:
             Partner instance if authenticated, None otherwise
         """
         try:
-            # Find partner by document number
             partner = Partner.objects.get(document_number=document_number)
 
-            # Verify birth year
             if (
                 partner.birth_date
                 and str(partner.birth_date.year) == birth_year
@@ -42,3 +41,29 @@ class PartnerAuthenticationService:
         except Partner.DoesNotExist:
             logger.warning(f"Partner with document {document_number} not found")
             return None
+
+    @staticmethod
+    def is_authentication_message(message: str) -> bool:
+        """
+        Check if message matches the authentication pattern.
+        Expected: document_number and birth_year (e.g., "12345678 1990")
+        """
+        pattern = r"\b\d{8}\s+\d{4}\b"
+        return bool(re.search(pattern, message))
+
+    @staticmethod
+    def extract_auth_data(message: str) -> Optional[dict]:
+        """
+        Extract authentication data from message.
+
+        Returns:
+            Dict with document_number and birth_year or None
+        """
+        pattern = r"\b(\d{8})\s+(\d{4})\b"
+        match = re.search(pattern, message)
+        if match:
+            return {
+                "document_number": match.group(1),
+                "birth_year": match.group(2),
+            }
+        return None

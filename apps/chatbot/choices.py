@@ -20,27 +20,13 @@ class MessageSender(models.TextChoices):
     SYSTEM = "SYSTEM", _("System")
 
 
-class IntentType(models.TextChoices):
-    """Intent types for user messages."""
-
-    GREETING = "GREETING", _("Greeting")
-    AUTHENTICATION = "AUTHENTICATION", _("Authentication")
-    PARTNER_DETAIL = "PARTNER_DETAIL", _("Partner Detail")
-    ACCOUNT_STATEMENT = "ACCOUNT_STATEMENT", _("Account Statement")
-    LIST_CREDITS = "LIST_CREDITS", _("List Credits")
-    CREDIT_DETAIL = "CREDIT_DETAIL", _("Credit Detail")
-    CREATE_TICKET = "CREATE_TICKET", _("Create Support Ticket")
-    UPLOAD_RECEIPT = "UPLOAD_RECEIPT", _("Upload Payment Receipt")
-    HELP = "HELP", _("Help")
-    GOODBYE = "GOODBYE", _("Goodbye")
-    UNKNOWN = "UNKNOWN", _("Unknown")
-
 
 class ChannelType(models.TextChoices):
     """Channel types for conversations."""
 
     TELEGRAM = "TELEGRAM", _("Telegram")
     WHATSAPP = "WHATSAPP", _("WhatsApp")
+    WEB = "WEB", _("Web (Testing)")
 
 
 class MessageDeliveryStatus(models.TextChoices):
