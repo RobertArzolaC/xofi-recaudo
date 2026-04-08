@@ -4,6 +4,7 @@ from constance import config
 from django.conf import settings
 
 from apps.chatbot import constants
+from apps.core.utils.urls import get_absolute_url
 
 
 class MessageFormatter:
@@ -102,12 +103,8 @@ class MessageFormatter:
             return None
 
         # Build absolute URL for the image
-        domain = config.COMPANY_DOMAIN.rstrip("/")
-        if not domain.startswith(("http://", "https://")):
-            domain = f"https://{domain}"
-
         media_url = settings.MEDIA_URL.strip("/")
-        return f"{domain}/{media_url}/constance/{welcome_image}"
+        return get_absolute_url(f"/{media_url}/constance/{welcome_image}")
 
     @staticmethod
     def format_error_message(error: str) -> str:

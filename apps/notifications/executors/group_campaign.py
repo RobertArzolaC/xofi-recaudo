@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.campaigns import choices as campaign_choices
 from apps.campaigns import models as campaign_models
+from apps.core.utils.urls import get_absolute_url
 from apps.notifications import choices
 from apps.notifications.executors.base import BaseCampaignExecutor
 from apps.notifications.models import CampaignNotification
@@ -190,7 +191,7 @@ class GroupCampaignExecutor(BaseCampaignExecutor):
             )
             if magic_link:
                 payment_link_path = magic_link.get_public_url()
-                payment_link_url = f"{config.COMPANY_DOMAIN}{payment_link_path}"
+                payment_link_url = get_absolute_url(payment_link_path)
                 self.logger.debug(
                     f"Generated payment link for partner {partner.full_name}: {payment_link_url}"
                 )

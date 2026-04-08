@@ -6,6 +6,8 @@ from django.conf import settings
 from apps.chatbot import constants
 from apps.chatbot.conversation import ConversationService
 from apps.core.services.chats.whatsapp_official import WhatsAppOfficialService
+from apps.core.utils.urls import get_absolute_url
+
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +30,8 @@ class WhatsAppBotHandler:
         welcome_image = config.CHATBOT_WELCOME_IMAGE
 
         if welcome_image:
-            domain = config.COMPANY_DOMAIN.rstrip("/")
             media_url = settings.MEDIA_URL.strip("/")
-            image_url = f"{domain}/{media_url}/constance/{welcome_image}"
+            image_url = get_absolute_url(f"/{media_url}/constance/{welcome_image}")
             self.whatsapp_service.send_image_message(sender_phone, image_url, welcome_message)
         else:
             self.whatsapp_service.send_text_message(sender_phone, welcome_message)
