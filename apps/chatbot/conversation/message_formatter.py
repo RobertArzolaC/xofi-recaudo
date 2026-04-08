@@ -25,11 +25,11 @@ class MessageFormatter:
         """Format account statement summary."""
         summary = summary_data.get("summary", {})
         return constants.ACCOUNT_STATEMENT_TEMPLATE.format(
-            total_credits=summary.get("total_credits", 0),
-            active_credits_count=summary.get("active_credits_count", 0),
-            total_disbursed=summary.get("total_disbursed", 0),
-            total_payments=summary.get("total_payments", 0),
-            total_outstanding=summary.get("total_outstanding", 0),
+            total_credits=summary.get("total_credits") or 0,
+            active_credits_count=summary.get("active_credits_count") or 0,
+            total_disbursed=summary.get("total_disbursed") or 0.0,
+            total_payments=summary.get("total_payments") or 0.0,
+            total_outstanding=summary.get("total_outstanding") or 0.0,
         )
 
     @staticmethod
@@ -42,11 +42,11 @@ class MessageFormatter:
         for i, credit in enumerate(credits, 1):
             result += constants.CREDIT_LIST_ITEM_TEMPLATE.format(
                 index=i,
-                credit_id=credit["id"],
-                product_name=credit["product"]["name"],
-                amount=credit["amount"],
-                outstanding_balance=credit["outstanding_balance"],
-                status=credit["status"],
+                credit_id=credit.get("id", ""),
+                product_name=credit.get("product", {}).get("name", ""),
+                amount=credit.get("amount") or 0.0,
+                outstanding_balance=credit.get("outstanding_balance") or 0.0,
+                status=credit.get("status", ""),
             )
         return result
 
@@ -57,17 +57,17 @@ class MessageFormatter:
         summary = credit_data.get("summary", {})
 
         return constants.CREDIT_DETAIL_TEMPLATE.format(
-            credit_id=credit["id"],
-            product_name=credit["product"]["name"],
-            amount=credit["amount"],
-            interest_rate=credit["interest_rate"],
-            term_duration=credit["term_duration"],
-            payment_amount=credit.get("payment_amount", 0),
-            outstanding_balance=credit["outstanding_balance"],
-            total_installments=summary.get("total_installments", 0),
-            paid_installments=summary.get("paid_installments", 0),
-            pending_installments=summary.get("pending_installments", 0),
-            overdue_installments=summary.get("overdue_installments", 0),
+            credit_id=credit.get("id", ""),
+            product_name=credit.get("product", {}).get("name", ""),
+            amount=credit.get("amount") or 0.0,
+            interest_rate=credit.get("interest_rate") or 0.0,
+            term_duration=credit.get("term_duration") or 0,
+            payment_amount=credit.get("payment_amount") or 0.0,
+            outstanding_balance=credit.get("outstanding_balance") or 0.0,
+            total_installments=summary.get("total_installments") or 0,
+            paid_installments=summary.get("paid_installments") or 0,
+            pending_installments=summary.get("pending_installments") or 0,
+            overdue_installments=summary.get("overdue_installments") or 0,
         )
 
     @staticmethod
