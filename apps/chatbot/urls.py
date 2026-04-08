@@ -4,9 +4,11 @@ from apps.chatbot.views import (
     ChatbotDashboardView,
     ChatbotSettingsDetailView,
     ChatbotSettingsUpdateView,
-    WhatsAppWebhookView,
+    ConversationHistoryView,
     TemplateCreateView,
-    TemplateApproveView,
+    TemplateDeleteView,
+    TemplateSyncView,
+    WhatsAppWebhookView,
 )
 
 app_name = "apps.chatbot"
@@ -37,9 +39,20 @@ urlpatterns = [
         TemplateCreateView.as_view(),
         name="template-create",
     ),
+    # Keep old name "template-approve" so the dashboard JS doesn't break
     path(
         "templates/<int:pk>/approve/",
-        TemplateApproveView.as_view(),
+        TemplateSyncView.as_view(),
         name="template-approve",
+    ),
+    path(
+        "templates/<int:pk>/delete/",
+        TemplateDeleteView.as_view(),
+        name="template-delete",
+    ),
+    path(
+        "conversations/<int:pk>/history/",
+        ConversationHistoryView.as_view(),
+        name="conversation-history",
     ),
 ]

@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 import requests
 from celery import shared_task
-from django.conf import settings
+from decouple import config
 
 from apps.chatbot import constants
 from apps.chatbot.choices import MessageDeliveryStatus
@@ -370,10 +370,10 @@ def _download_meta_media(media_id: str) -> Optional[bytes]:
     2. GET {url} with Bearer token → returns the file bytes
     """
     try:
-        access_token = getattr(settings, "WHATSAPP_API_TOKEN", None)
-        api_version = getattr(settings, "WHATSAPP_API_VERSION", "v21.0")
+        access_token = config("WHATSAPP_CLOUD_ACCESS_TOKEN", default="")
+        api_version = config("WHATSAPP_CLOUD_API_VERSION", default="v21.0")
         if not access_token:
-            logger.error("WHATSAPP_API_TOKEN not set, cannot download media")
+            logger.error("WHATSAPP_CLOUD_ACCESS_TOKEN not set, cannot download media")
             return None
 
         headers = {"Authorization": f"Bearer {access_token}"}

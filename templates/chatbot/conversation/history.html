@@ -1,0 +1,272 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title_page %}{% trans "Conversation History" %}{% endblock %}
+
+{% block toolbar_title %}
+    <i class="ki-duotone ki-message-text-2 fs-1 text-primary me-2">
+        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+    </i>
+    {% trans "Conversation History" %}
+{% endblock %}
+
+{% block entity_options %}
+<div class="d-flex align-items-center gap-2 py-1">
+    <a href="{% url 'apps.chatbot:chatbot-dashboard' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>
+        {% trans "Back to Dashboard" %}
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-wrapper {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+    .conv-meta-card {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 2px 12px rgba(0,0,0,.07);
+        background: #fff;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .conv-meta-item .label {
+        font-size: .75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #7E8299;
+        letter-spacing: .04em;
+        margin-bottom: .2rem;
+    }
+    .conv-meta-item .value {
+        font-size: .95rem;
+        font-weight: 600;
+        color: #181C32;
+    }
+
+    /* ── Chat bubbles ── */
+    .chat-area {
+        background: #e5ddd5;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        min-height: 200px;
+    }
+    .bubble-row {
+        display: flex;
+        align-items: flex-end;
+        gap: .5rem;
+    }
+    .bubble-row.user   { justify-content: flex-end; }
+    .bubble-row.agent  { justify-content: flex-start; }
+    .bubble-row.system { justify-content: center; }
+
+    .bubble {
+        max-width: 72%;
+        padding: .65rem 1rem;
+        border-radius: 1rem;
+        font-size: .88rem;
+        line-height: 1.55;
+        word-break: break-word;
+        white-space: pre-wrap;
+        box-shadow: 0 1px 2px rgba(0,0,0,.12);
+        position: relative;
+    }
+    .bubble.user {
+        background: #dcf8c6;
+        border-bottom-right-radius: .2rem;
+        color: #1a1a1a;
+    }
+    .bubble.agent {
+        background: #fff;
+        border-bottom-left-radius: .2rem;
+        color: #1a1a1a;
+    }
+    .bubble.system {
+        background: rgba(0,0,0,.06);
+        border-radius: .5rem;
+        color: #555;
+        font-size: .8rem;
+        max-width: 85%;
+        text-align: center;
+    }
+    .bubble-time {
+        font-size: .7rem;
+        color: #667781;
+        margin-top: .25rem;
+        display: flex;
+        align-items: center;
+        gap: .2rem;
+    }
+    .bubble-row.user   .bubble-time { justify-content: flex-end; }
+    .bubble-row.agent  .bubble-time { justify-content: flex-start; }
+
+    .delivery-icon {
+        font-size: .7rem;
+    }
+    .delivery-icon.read      { color: #53bdeb; }
+    .delivery-icon.delivered { color: #aaa; }
+    .delivery-icon.sent      { color: #aaa; }
+    .delivery-icon.failed    { color: #f1416c; }
+
+    .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-bottom: 1.5rem;
+    }
+    .avatar.agent-avatar { background: rgba(0,163,255,.15); color: #00a3ff; }
+    .avatar.user-avatar  { background: rgba(37,211,102,.15); color: #25d366; }
+
+    .intent-tag {
+        display: inline-block;
+        font-size: .65rem;
+        padding: .1rem .45rem;
+        border-radius: .35rem;
+        background: rgba(114,57,234,.1);
+        color: #7239ea;
+        font-weight: 600;
+        margin-left: .4rem;
+        vertical-align: middle;
+    }
+    .no-messages {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #667781;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl px-4 py-6">
+    <div class="chat-wrapper">
+
+        <!-- ── Conversation metadata ── -->
+        <div class="conv-meta-card">
+            <div class="d-flex flex-wrap gap-4">
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Contact" %}</div>
+                    <div class="value">
+                        {% if conversation.channel == "WHATSAPP" %}
+                            <i class="ki-duotone ki-whatsapp fs-5 me-1" style="color:#25D366"><span class="path1"></span><span class="path2"></span></i>
+                        {% else %}
+                            <i class="ki-duotone ki-send fs-5 me-1" style="color:#0088CC"><span class="path1"></span><span class="path2"></span></i>
+                        {% endif %}
+                        {{ conversation.whatsapp_phone|default:conversation.telegram_username|default:conversation.telegram_chat_id|default:"—" }}
+                    </div>
+                </div>
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Partner" %}</div>
+                    <div class="value">{{ conversation.partner.full_name|default:"—" }}</div>
+                </div>
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Channel" %}</div>
+                    <div class="value text-uppercase">{{ conversation.channel }}</div>
+                </div>
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Status" %}</div>
+                    <div class="value">
+                        {% if conversation.authenticated %}
+                            <span class="badge badge-light-success fs-8">{% trans "Authenticated" %}</span>
+                        {% else %}
+                            <span class="badge badge-light-warning fs-8">{% trans "Pending Auth" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Last Interaction" %}</div>
+                    <div class="value text-muted fs-8">{{ conversation.last_interaction|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="conv-meta-item flex-fill">
+                    <div class="label">{% trans "Messages" %}</div>
+                    <div class="value">
+                        <span class="badge badge-light-primary fs-8">{{ messages|length }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Chat area ── -->
+        <div class="chat-area" id="chatArea">
+            {% if messages %}
+                {% for msg in messages %}
+                    {% if msg.sender == "SYSTEM" %}
+                        <div class="bubble-row system">
+                            <div class="bubble system">{{ msg.message }}</div>
+                        </div>
+                    {% elif msg.sender == "USER" %}
+                        <div class="bubble-row user">
+                            <div>
+                                <div class="bubble user">
+                                    {{ msg.message }}
+                                    {% if msg.intent %}
+                                        <span class="intent-tag">{{ msg.intent }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="bubble-time justify-content-end">
+                                    <span>{{ msg.created|date:"H:i" }}</span>
+                                </div>
+                            </div>
+                            <div class="avatar user-avatar">
+                                <i class="ki-duotone ki-profile-user fs-6"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="bubble-row agent">
+                            <div class="avatar agent-avatar">
+                                <i class="ki-duotone ki-robot fs-6"><span class="path1"></span><span class="path2"></span></i>
+                            </div>
+                            <div>
+                                <div class="bubble agent">{{ msg.message }}</div>
+                                <div class="bubble-time">
+                                    <span>{{ msg.created|date:"H:i" }}</span>
+                                    {% if msg.delivery_status == "READ" %}
+                                        <i class="ki-duotone ki-double-check fs-8 delivery-icon read"><span class="path1"></span><span class="path2"></span></i>
+                                    {% elif msg.delivery_status == "DELIVERED" %}
+                                        <i class="ki-duotone ki-double-check fs-8 delivery-icon delivered"><span class="path1"></span><span class="path2"></span></i>
+                                    {% elif msg.delivery_status == "SENT" %}
+                                        <i class="ki-duotone ki-check fs-8 delivery-icon sent"><span class="path1"></span></i>
+                                    {% elif msg.delivery_status == "FAILED" %}
+                                        <i class="ki-duotone ki-cross-circle fs-8 delivery-icon failed"><span class="path1"></span><span class="path2"></span></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="no-messages">
+                    <i class="ki-duotone ki-message-text-2 fs-3x mb-3 d-block text-muted">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    </i>
+                    {% trans "No messages in this conversation yet." %}
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    // Scroll to the bottom of the chat on load
+    const chatArea = document.getElementById("chatArea");
+    if (chatArea) {
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+</script>
+{% endblock %}

@@ -379,6 +379,7 @@
                                     <th class="text-center">{% trans "Auth" %}</th>
                                     <th class="text-center">{% trans "Messages" %}</th>
                                     <th>{% trans "Last Interaction" %}</th>
+                                    <th class="text-end pe-3">{% trans "History" %}</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-600 fw-semibold">
@@ -426,10 +427,17 @@
                                     <td class="text-muted">
                                         {{ conv.last_interaction|date:"d/m/Y H:i" }}
                                     </td>
+                                    <td class="text-end pe-3">
+                                        <a href="{% url 'apps.chatbot:conversation-history' pk=conv.id %}"
+                                           class="btn btn-sm btn-light-primary">
+                                            <i class="ki-duotone ki-eye fs-6 me-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                            {% trans "View" %}
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-10">
+                                    <td colspan="8" class="text-center text-muted py-10">
                                         <i class="ki-duotone ki-message-text-2 fs-3x text-muted mb-3 d-block">
                                             <span class="path1"></span><span class="path2"></span><span class="path3"></span>
                                         </i>
@@ -972,9 +980,14 @@ function submitTemplate() {
             btn.innerHTML = original;
             return;
         }
-        btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Submitted! Awaiting Meta review..." %}';
-        btn.classList.replace("btn-primary", "btn-light-warning");
-        setTimeout(() => { window.location.reload(); }, 1800);
+        if (data.meta_submitted) {
+            btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Submitted to Meta! Awaiting review..." %}';
+            btn.classList.replace("btn-primary", "btn-light-success");
+        } else {
+            btn.innerHTML = '<i class="ki-duotone ki-time fs-5 me-2"><span class="path1"></span><span class="path2"></span></i>{% trans "Saved locally — check WABA config to submit to Meta" %}';
+            btn.classList.replace("btn-primary", "btn-light-warning");
+        }
+        setTimeout(() => { window.location.reload(); }, 2000);
     })
     .catch(() => {
         errBox.textContent = "{% trans 'Network error. Please try again.' %}";
@@ -984,7 +997,7 @@ function submitTemplate() {
     });
 }
 
-// ── Sync with Meta (PENDING → APPROVED) ───────────────────
+// ── Sync with Meta ─────────────────────────────────────────
 function syncWithMeta(templateId, btn) {
     const original = btn.innerHTML;
     btn.disabled = true;
@@ -1000,12 +1013,21 @@ function syncWithMeta(templateId, btn) {
     .then(r => r.json())
     .then(data => {
         if (data.ok) {
-            btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Approved!" %}';
-            btn.classList.replace("btn-light-warning", "btn-light-success");
-            setTimeout(() => { window.location.reload(); }, 1200);
+            const status = (data.status || "").toUpperCase();
+            if (status === "APPROVED") {
+                btn.innerHTML = '<i class="ki-duotone ki-check-circle fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Approved!" %}';
+                btn.classList.replace("btn-light-warning", "btn-light-success");
+            } else if (status === "REJECTED") {
+                btn.innerHTML = '<i class="ki-duotone ki-cross-circle fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Rejected" %}';
+                btn.classList.replace("btn-light-warning", "btn-light-danger");
+            } else {
+                btn.innerHTML = '<i class="ki-duotone ki-time fs-5 me-1"><span class="path1"></span><span class="path2"></span></i>{% trans "Still Pending" %}';
+            }
+            setTimeout(() => { window.location.reload(); }, 1500);
         } else {
             btn.disabled = false;
             btn.innerHTML = original;
+            console.warn("Sync error:", data.error);
         }
     })
     .catch(() => {
