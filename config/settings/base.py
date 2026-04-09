@@ -254,18 +254,6 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-# WhatsApp Business API Settings
-# https://developers.facebook.com/docs/whatsapp/cloud-api
-
-WHATSAPP_API_TOKEN = config("WHATSAPP_API_TOKEN", default="")
-WHATSAPP_PHONE_NUMBER_ID = config("WHATSAPP_PHONE_NUMBER_ID", default="")
-WHATSAPP_BUSINESS_ACCOUNT_ID = config(
-    "WHATSAPP_BUSINESS_ACCOUNT_ID", default=""
-)
-WHATSAPP_API_VERSION = config("WHATSAPP_API_VERSION", default="v21.0")
-WHATSAPP_VERIFY_TOKEN = config("WHATSAPP_VERIFY_TOKEN", default="")
-WHATSAPP_APP_SECRET = config("WHATSAPP_APP_SECRET", default="")
-
 # Whapi Settings
 # https://whapi.cloud/docs
 

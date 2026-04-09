@@ -284,7 +284,9 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             logger.error("Unexpected error sending media: %s", exc)
             raise APIClientError(f"Failed to send media: {exc}") from exc
 
-    def send_interactive(self, to: str, interactive_data: dict) -> dict[str, Any]:
+    def send_interactive(
+        self, to: str, interactive_data: dict
+    ) -> dict[str, Any]:
         """
         Send an interactive message (List or Buttons) via WhatsApp Cloud API.
 
@@ -314,7 +316,9 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             "interactive": interactive_data,
         }
 
-        logger.info("Sending WhatsApp Cloud API interactive message to %s", phone)
+        logger.info(
+            "Sending WhatsApp Cloud API interactive message to %s", phone
+        )
 
         try:
             response = self._make_request(
@@ -328,8 +332,12 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         except APIClientError:
             raise
         except Exception as exc:
-            logger.error("Unexpected error sending interactive message: %s", exc)
-            raise APIClientError(f"Failed to send interactive message: {exc}") from exc
+            logger.error(
+                "Unexpected error sending interactive message: %s", exc
+            )
+            raise APIClientError(
+                f"Failed to send interactive message: {exc}"
+            ) from exc
 
     def verify_webhook_challenge(
         self, mode: str, token: str, challenge: str
@@ -360,7 +368,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
 
         if not self.verify_token:
             logger.warning(
-                "WHATSAPP_VERIFY_TOKEN not configured; cannot verify webhook"
+                "WHATSAPP_CLOUD_VERIFY_TOKEN not configured; cannot verify webhook"
             )
             return None
 
@@ -389,7 +397,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         """
         if not self.app_secret:
             logger.debug(
-                "WHATSAPP_APP_SECRET not configured; "
+                "WHATSAPP_CLOUD_APP_SECRET not configured; "
                 "skipping signature validation"
             )
             return True
@@ -595,8 +603,8 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
         """
         if not self.phone_number_id or not self.api_key:
             logger.error(
-                "WHATSAPP_PHONE_NUMBER_ID or "
-                "WHATSAPP_ACCESS_TOKEN is not configured"
+                "WHATSAPP_CLOUD_PHONE_NUMBER_ID or "
+                "WHATSAPP_CLOUD_ACCESS_TOKEN is not configured"
             )
             return False
 

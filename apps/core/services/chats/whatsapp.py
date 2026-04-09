@@ -25,7 +25,7 @@ class WhatsAppService:
             }
         else:
             logger.warning(
-                "WHAPI not configured. Set WHATSAPP_API_TOKEN in settings"
+                "WHAPI not configured. Set WHATSAPP_CLOUD_ACCESS_TOKEN in settings"
             )
 
     def is_configured(self) -> bool:

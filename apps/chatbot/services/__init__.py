@@ -1,5 +1,5 @@
 from .authentication import PartnerAuthenticationService
-from .gemini import GeminiService
+from .openrouter_ocr import OpenRouterOCRService
 from .partner_api import PartnerAPIService
 from .dashboard import (
     get_chatbot_kpis,
@@ -16,7 +16,7 @@ from .dashboard import (
 __all__ = [
     "PartnerAuthenticationService",
     "PartnerAPIService",
-    "GeminiService",
+    "OpenRouterOCRService",
     "get_chatbot_kpis",
     "get_conversations_by_channel_data",
     "get_conversations_by_status_data",

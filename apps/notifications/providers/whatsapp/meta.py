@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Optional
 
-from django.conf import settings
+from decouple import config
 
 from apps.notifications.providers.base import BaseProvider
 
@@ -19,9 +19,9 @@ class MetaWhatsAppProvider(BaseProvider):
     def __init__(self):
         """Initialize Meta WhatsApp provider."""
         super().__init__()
-        self.token = getattr(settings, "WHATSAPP_API_TOKEN", None)
-        self.phone_number_id = getattr(
-            settings, "WHATSAPP_PHONE_NUMBER_ID", None
+        self.token = config("WHATSAPP_CLOUD_ACCESS_TOKEN", default="")
+        self.phone_number_id = config(
+            "WHATSAPP_CLOUD_PHONE_NUMBER_ID", default=""
         )
         self.messenger = None
 
@@ -38,7 +38,7 @@ class MetaWhatsAppProvider(BaseProvider):
                 self.logger.error(f"Failed to initialize Meta WhatsApp: {e}")
         else:
             self.logger.warning(
-                "Meta WhatsApp not configured. Set WHATSAPP_API_TOKEN and WHATSAPP_PHONE_NUMBER_ID"
+                "Meta WhatsApp not configured. Set WHATSAPP_CLOUD_ACCESS_TOKEN and WHATSAPP_CLOUD_PHONE_NUMBER_ID"
             )
 
     def is_configured(self) -> bool:
