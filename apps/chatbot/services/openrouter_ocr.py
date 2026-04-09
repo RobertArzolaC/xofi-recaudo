@@ -4,7 +4,7 @@ import logging
 from datetime import date
 from typing import Any, Dict
 
-from django.conf import settings
+from decouple import config
 
 from apps.core.clients.openrouter import OpenRouterClient
 
@@ -20,8 +20,8 @@ class OpenRouterOCRService:
         """Initialize with OpenRouter client."""
         self.client = OpenRouterClient()
         # Default model for vision tasks
-        self.model = getattr(
-            settings, "OPENROUTER_VISION_MODEL", "google/gemma-3n-e2b-it:free"
+        self.model = config(
+            "OPENROUTER_VISION_MODEL", default="minimax/minimax-m2.5:free"
         )
 
     def extract_receipt_data(self, image_bytes: bytes) -> Dict[str, Any]:
