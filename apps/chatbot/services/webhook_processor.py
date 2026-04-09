@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Optional
 
 import requests
-from django.conf import settings
+from decouple import config
 
 from apps.chatbot import constants
 from apps.chatbot.choices import MessageDeliveryStatus
@@ -273,9 +273,9 @@ class WhatsAppWebhookProcessor:
     def _download_media(self, media_id: str) -> Optional[bytes]:
         """Download media from Meta Graph API."""
         try:
-            token = getattr(settings, "WHATSAPP_CLOUD_ACCESS_TOKEN", "")
-            version = getattr(
-                settings, "WHATSAPP_CLOUD_VISION_API_VERSION", "v25.0"
+            token = config("WHATSAPP_CLOUD_ACCESS_TOKEN", default="")
+            version = config(
+                "WHATSAPP_CLOUD_VISION_API_VERSION", default="v25.0"
             )
 
             headers = {"Authorization": f"Bearer {token}"}
