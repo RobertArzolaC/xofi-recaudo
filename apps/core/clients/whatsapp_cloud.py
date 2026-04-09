@@ -284,6 +284,53 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             logger.error("Unexpected error sending media: %s", exc)
             raise APIClientError(f"Failed to send media: {exc}") from exc
 
+    def send_interactive(self, to: str, interactive_data: dict) -> dict[str, Any]:
+        """
+        Send an interactive message (List or Buttons) via WhatsApp Cloud API.
+
+        Args:
+            to: Recipient phone number in E.164 format.
+            interactive_data: Dictionary containing the interactive message structure.
+
+        Returns:
+            dict: API response.
+
+        Raises:
+            APIValidationError: If required fields are missing.
+            APIClientError: If the API request fails.
+        """
+        if not to:
+            raise APIValidationError("Recipient phone number (to) is required")
+        if not interactive_data:
+            raise APIValidationError("Interactive data is required")
+
+        phone = self._normalize_phone(to)
+
+        payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": phone,
+            "type": "interactive",
+            "interactive": interactive_data,
+        }
+
+        logger.info("Sending WhatsApp Cloud API interactive message to %s", phone)
+
+        try:
+            response = self._make_request(
+                method="POST",
+                endpoint=f"/{self.phone_number_id}/messages",
+                data=payload,
+            )
+            message_id = self._extract_message_id(response)
+            logger.info("Interactive message sent successfully: %s", message_id)
+            return response
+        except APIClientError:
+            raise
+        except Exception as exc:
+            logger.error("Unexpected error sending interactive message: %s", exc)
+            raise APIClientError(f"Failed to send interactive message: {exc}") from exc
+
     def verify_webhook_challenge(
         self, mode: str, token: str, challenge: str
     ) -> str | None:

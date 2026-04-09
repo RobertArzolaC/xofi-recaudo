@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
@@ -10,6 +10,7 @@ from django.utils import timezone
 from apps.chatbot import choices, constants, models
 from apps.chatbot.agent import AgentService
 from apps.chatbot.conversation.message_formatter import MessageFormatter
+from apps.chatbot.conversation.responses import BotResponse
 from apps.chatbot.services.authentication import PartnerAuthenticationService
 
 logger = logging.getLogger(__name__)
@@ -154,7 +155,8 @@ class ConversationService:
         )
 
         if not conversation.authenticated:
-            return self._handle_authentication(conversation, user_message)
+            auth_response = self._handle_authentication(conversation, user_message)
+            return auth_response.text
 
         response_text, tools_called = self.agent_service.process(
             conversation, user_message
@@ -190,13 +192,12 @@ class ConversationService:
         self,
         whatsapp_phone: str,
         user_message: str,
-    ) -> Tuple[str, None]:
+    ) -> Tuple[BotResponse, None]:
         """
         Process a user message (WhatsApp) and return the agent's response.
 
         Returns:
-            Tuple of (response_text, None). The second element is kept for
-            backwards-compatibility with callers that expect an image_url slot.
+            Tuple of (BotResponse, None).
         """
         conversation = self.get_or_create_conversation_whatsapp(whatsapp_phone)
         self._check_session_timeout(conversation)
@@ -206,8 +207,14 @@ class ConversationService:
         )
 
         if not conversation.authenticated:
-            response = self._handle_authentication(conversation, user_message)
-            return response, None
+            return self._handle_authentication(conversation, user_message), None
+
+        # Intercept menu/help requests to send interactive menu directly
+        if user_message.strip().lower() in ["menu", "menú", "ayuda", "opciones", "/menu"]:
+            return BotResponse(
+                text="Aquí tienes el menú de opciones:",
+                interactive=self.formatter.format_interactive_menu()
+            ), None
 
         response_text, tools_called = self.agent_service.process(
             conversation, user_message
@@ -223,7 +230,7 @@ class ConversationService:
             intent=tool_name,
             metadata=metadata,
         )
-        return response_text, None
+        return BotResponse(text=response_text), None
 
     # ------------------------------------------------------------------
     # Message processing — Web (Testing)
@@ -245,8 +252,8 @@ class ConversationService:
         )
 
         if not conversation.authenticated:
-            response = self._handle_authentication(conversation, user_message)
-            return response, []
+            auth_response = self._handle_authentication(conversation, user_message)
+            return auth_response.text, []
 
         response_text, tools_called = self.agent_service.process(
             conversation, user_message
@@ -270,12 +277,12 @@ class ConversationService:
 
     def _handle_authentication(
         self, conversation: models.AgentConversation, message: str
-    ) -> str:
+    ) -> BotResponse:
         """Handle authentication flow."""
         auth_data = self.auth_service.extract_auth_data(message)
 
         if not auth_data:
-            return self.formatter.format_authentication_prompt()
+            return BotResponse(text=self.formatter.format_authentication_prompt())
 
         partner = self.auth_service.authenticate(
             auth_data["document_number"], auth_data["birth_year"]
@@ -291,15 +298,26 @@ class ConversationService:
                 f"Partner {partner.id} authenticated in conversation {conversation.id}"
             )
 
-            return self.formatter.format_success_message(
-                constants.AUTHENTICATION_SUCCESS_TEMPLATE.format(
-                    name=partner.full_name,
-                    menu=self.formatter.format_help_message(),
-                )
+            success_text = constants.AUTHENTICATION_SUCCESS_TEMPLATE.format(
+                name=partner.full_name,
+                menu="",
+            ).strip()
+
+            # If it's a WhatsApp conversation, we send the interactive menu
+            interactive = None
+            if conversation.channel == choices.ChannelType.WHATSAPP:
+                interactive = self.formatter.format_interactive_menu()
+            else:
+                # For other channels, append the text menu
+                success_text += f"\n\n{self.formatter.format_help_message()}"
+
+            return BotResponse(
+                text=success_text,
+                interactive=interactive
             )
 
-        return self.formatter.format_error_message(
-            constants.AUTHENTICATION_ERROR
+        return BotResponse(
+            text=self.formatter.format_error_message(constants.AUTHENTICATION_ERROR)
         )
 
     def _check_session_timeout(self, conversation: models.AgentConversation) -> None:

@@ -71,6 +71,68 @@ class MessageFormatter:
         )
 
     @staticmethod
+    def format_interactive_menu() -> dict:
+        """
+        Format the main interactive menu for WhatsApp (List Message).
+        
+        Returns:
+            dict: Meta Interactive Message payload.
+        """
+        return {
+            "type": "list",
+            "header": {
+                "type": "text",
+                "text": "Menú XoFi"
+            },
+            "body": {
+                "text": "Elige una opción para continuar con tu consulta:"
+            },
+            "footer": {
+                "text": "Asistente Virtual XoFi"
+            },
+            "action": {
+                "button": "Ver opciones",
+                "sections": [
+                    {
+                        "title": "📋 Consultas",
+                        "rows": [
+                            {
+                                "id": "menu_perfil",
+                                "title": "Mis datos personales",
+                                "description": "Ver mi información registrada"
+                            },
+                            {
+                                "id": "menu_estado_cuenta",
+                                "title": "Estado de cuenta",
+                                "description": "Ver resumen de créditos y saldos"
+                            },
+                            {
+                                "id": "menu_prestamos",
+                                "title": "Mis préstamos",
+                                "description": "Ver lista de préstamos activos"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "🎫 Soporte",
+                        "rows": [
+                            {
+                                "id": "menu_ticket",
+                                "title": "Crear ticket",
+                                "description": "Reportar un problema o consulta"
+                            },
+                            {
+                                "id": "menu_comprobante",
+                                "title": "Subir comprobante",
+                                "description": "Registrar un pago realizado"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+    @staticmethod
     def format_help_message() -> str:
         """Format help message with available options."""
         return f"{config.CHATBOT_WELCOME_MESSAGE}\n{constants.MENU_MESSAGE}"

@@ -125,32 +125,18 @@ def _handle_text_message(
     try:
         conversation = conv_service.get_or_create_conversation_whatsapp(sender_phone)
 
-        if not conversation.authenticated:
-            auth_data = PartnerAuthenticationService.extract_auth_data(user_message)
-            conv_service.save_message(conversation, "USER", user_message)
-            response = conv_service._handle_authentication(conversation, user_message)
-
-            if auth_data:
-                wamid = _send_text_message(client, sender_phone, response)
-            else:
-                wamid = _send_text_message(client, sender_phone, response)
-
-            conv_service.save_message(
-                conversation,
-                "AGENT",
-                response,
-                whatsapp_message_id=wamid,
-                delivery_status=MessageDeliveryStatus.SENT if wamid else None,
-            )
-            return
-
+        # process_message_whatsapp now returns BotResponse
         response, _ = conv_service.process_message_whatsapp(
             sender_phone, user_message
         )
 
-        wamid = _send_text_message(client, sender_phone, response)
+        if response.interactive:
+            wamid = _send_interactive_message(client, sender_phone, response.interactive)
+        else:
+            wamid = _send_text_message(client, sender_phone, response.text)
 
         if wamid:
+            # Update the last agent message with the message ID
             ConversationMessage.objects.filter(
                 conversation=conversation,
                 sender="AGENT",
@@ -184,6 +170,8 @@ def _handle_image_message(
         conversation = conv_service.get_or_create_conversation_whatsapp(sender_phone)
 
         if not conversation.authenticated or not conversation.partner:
+            # Handle unauthenticated state with a BotResponse logic if needed, 
+            # but for now we keep it simple since it's a specific flow.
             _send_text_message(
                 client,
                 sender_phone,
@@ -334,6 +322,22 @@ def _send_text_message(
         return wamid
     except Exception as exc:
         logger.error("Error sending text to %s: %s", recipient_phone, exc)
+        return None
+
+
+def _send_interactive_message(
+    client: WhatsAppCloudAPIClient, recipient_phone: str, interactive_data: dict
+) -> Optional[str]:
+    """Send an interactive message via WhatsApp Cloud API. Returns wamid or None."""
+    try:
+        response = client.send_interactive(to=recipient_phone, interactive_data=interactive_data)
+        messages = response.get("messages", [])
+        wamid = messages[0].get("id") if messages else None
+        if wamid:
+            logger.info("Interactive sent to %s (id=%s)", recipient_phone, wamid)
+        return wamid
+    except Exception as exc:
+        logger.error("Error sending interactive to %s: %s", recipient_phone, exc)
         return None
 
 
