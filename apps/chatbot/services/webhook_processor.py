@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 class WhatsAppWebhookProcessor:
     """
     Encapsulates the logic for processing WhatsApp Webhooks.
-    
-    This class refactors functions previously found in tasks.py into a 
+
+    This class refactors functions previously found in tasks.py into a
     maintainable and scalable structure.
     """
 
@@ -32,7 +32,9 @@ class WhatsAppWebhookProcessor:
     def process(self, webhook_data: Dict) -> Dict:
         """Main entry point for processing the webhook payload."""
         if webhook_data.get("object") != "whatsapp_business_account":
-            logger.warning("Unexpected webhook object: %s", webhook_data.get("object"))
+            logger.warning(
+                "Unexpected webhook object: %s", webhook_data.get("object")
+            )
             return {"status": "ignored"}
 
         for entry in webhook_data.get("entry", []):
@@ -58,13 +60,20 @@ class WhatsAppWebhookProcessor:
         message_type = message.get("type")
         message_id = message.get("id")
 
-        logger.info("Processing %s message from %s (id=%s)", message_type, sender_phone, message_id)
+        logger.info(
+            "Processing %s message from %s (id=%s)",
+            message_type,
+            sender_phone,
+            message_id,
+        )
 
         if message_id:
             try:
                 self.client.mark_message_as_read(message_id)
             except Exception as exc:
-                logger.warning("Could not mark message %s as read: %s", message_id, exc)
+                logger.warning(
+                    "Could not mark message %s as read: %s", message_id, exc
+                )
 
         handlers = {
             "text": self._handle_text,
@@ -77,13 +86,17 @@ class WhatsAppWebhookProcessor:
             try:
                 handler(message)
             except Exception as exc:
-                logger.error("Error in handler %s: %s", message_type, exc, exc_info=True)
-                self._send_text(sender_phone, constants.ERROR_PROCESSING_MESSAGE)
+                logger.error(
+                    "Error in handler %s: %s", message_type, exc, exc_info=True
+                )
+                self._send_text(
+                    sender_phone, constants.ERROR_PROCESSING_MESSAGE
+                )
         else:
             logger.warning("Unsupported message type: %s", message_type)
             self._send_text(
                 sender_phone,
-                "Lo siento, ese tipo de mensaje no es soportado. Por favor envía un mensaje de texto."
+                "Lo siento, ese tipo de mensaje no es soportado. Por favor envía un mensaje de texto.",
             )
 
     def _handle_text(self, message: Dict) -> None:
@@ -91,40 +104,54 @@ class WhatsAppWebhookProcessor:
         sender_phone = message.get("from")
         user_message = message.get("text", {}).get("body", "")
 
-        conversation = self.conv_service.get_or_create_conversation_whatsapp(sender_phone)
-        
+        conversation = self.conv_service.get_or_create_conversation_whatsapp(
+            sender_phone
+        )
+
         # Conversation service handles everything (auth interception, AI agent, etc.)
-        response, _ = self.conv_service.process_message_whatsapp(sender_phone, user_message)
+        response, _ = self.conv_service.process_message_whatsapp(
+            sender_phone, user_message
+        )
 
         wamid = self._send_response(sender_phone, response)
-        
+
         if wamid:
             self._update_agent_message_id(conversation, wamid)
 
     def _handle_image(self, message: Dict) -> None:
         """Handle incoming image messages (OCR processing)."""
+        logger.info(
+            "Processing image message from %s (id=%s)",
+            message.get("from"),
+            message.get("id"),
+        )
         sender_phone = message.get("from")
         image_data = message.get("image", {})
         caption = image_data.get("caption", "")
         media_id = image_data.get("id")
 
-        conversation = self.conv_service.get_or_create_conversation_whatsapp(sender_phone)
+        conversation = self.conv_service.get_or_create_conversation_whatsapp(
+            sender_phone
+        )
 
         if not conversation.authenticated or not conversation.partner:
             self._send_text(
                 sender_phone,
-                "Por favor, autentícate primero enviando tu DNI y año de nacimiento.\n\nEjemplo: DNI 12345678 año 1990"
+                "Por favor, autentícate primero enviando tu DNI y año de nacimiento.\n\nEjemplo: DNI 12345678 año 1990",
             )
             return
 
         image_bytes = self._download_media(media_id)
         if not image_bytes:
-            self._send_text(sender_phone, "❌ No se pudo descargar la imagen. Intenta nuevamente.")
+            self._send_text(
+                sender_phone,
+                "❌ No se pudo descargar la imagen. Intenta nuevamente.",
+            )
             return
 
         # Use the new OpenRouter OCR Service
         extracted = self.ocr_service.extract_receipt_data(image_bytes)
-        
+
         # Upload to backend API
         result = self.api_service.upload_payment_receipt(
             conversation.partner.id,
@@ -144,19 +171,26 @@ class WhatsAppWebhookProcessor:
                 f"Será revisada por nuestro equipo."
             )
             wamid = self._send_text(sender_phone, msg)
-            
+
             # Persist messages
             self.conv_service.save_message(
-                conversation, "USER", f"[IMAGE] {caption}" if caption else "[IMAGE]",
-                metadata={"receipt_id": result.get("id"), "media_id": media_id}
+                conversation,
+                "USER",
+                f"[IMAGE] {caption}" if caption else "[IMAGE]",
+                metadata={"receipt_id": result.get("id"), "media_id": media_id},
             )
             self.conv_service.save_message(
-                conversation, "AGENT", msg,
+                conversation,
+                "AGENT",
+                msg,
                 whatsapp_message_id=wamid,
-                delivery_status=MessageDeliveryStatus.SENT if wamid else None
+                delivery_status=MessageDeliveryStatus.SENT if wamid else None,
             )
         else:
-            self._send_text(sender_phone, "❌ Error al procesar tu boleta. Contacta con soporte.")
+            self._send_text(
+                sender_phone,
+                "❌ Error al procesar tu boleta. Contacta con soporte.",
+            )
 
     def _handle_interactive(self, message: Dict) -> None:
         """Handle interactive replies (buttons/lists)."""
@@ -172,27 +206,32 @@ class WhatsAppWebhookProcessor:
 
         if reply_text:
             # Re-inject as a text message
-            self._handle_text({"from": sender_phone, "text": {"body": reply_text}})
+            self._handle_text(
+                {"from": sender_phone, "text": {"body": reply_text}}
+            )
         else:
-            self._send_text(sender_phone, "Opción no reconocida. Por favor usa comandos de texto.")
+            self._send_text(
+                sender_phone,
+                "Opción no reconocida. Por favor usa comandos de texto.",
+            )
 
     def _process_delivery_status(self, status: Dict) -> None:
         """Update message delivery status in database."""
         message_id = status.get("id")
         status_value = status.get("status", "").upper()
-        
+
         status_map = {
             "SENT": MessageDeliveryStatus.SENT,
             "DELIVERED": MessageDeliveryStatus.DELIVERED,
             "READ": MessageDeliveryStatus.READ,
             "FAILED": MessageDeliveryStatus.FAILED,
         }
-        
+
         delivery_status = status_map.get(status_value)
         if message_id and delivery_status:
-            ConversationMessage.objects.filter(whatsapp_message_id=message_id).update(
-                delivery_status=delivery_status
-            )
+            ConversationMessage.objects.filter(
+                whatsapp_message_id=message_id
+            ).update(delivery_status=delivery_status)
 
     # ── Sending Helpers ───────────────────────────────────────────────
 
@@ -235,13 +274,19 @@ class WhatsAppWebhookProcessor:
         """Download media from Meta Graph API."""
         try:
             token = getattr(settings, "WHATSAPP_CLOUD_ACCESS_TOKEN", "")
-            version = getattr(settings, "WHATSAPP_CLOUD_API_VERSION", "v21.0")
-            
+            version = getattr(
+                settings, "WHATSAPP_CLOUD_VISION_API_VERSION", "v25.0"
+            )
+
             headers = {"Authorization": f"Bearer {token}"}
-            res = requests.get(f"https://graph.facebook.com/{version}/{media_id}", headers=headers, timeout=15)
+            res = requests.get(
+                f"https://graph.facebook.com/{version}/{media_id}",
+                headers=headers,
+                timeout=15,
+            )
             res.raise_for_status()
             url = res.json().get("url")
-            
+
             if url:
                 file_res = requests.get(url, headers=headers, timeout=30)
                 file_res.raise_for_status()
