@@ -158,6 +158,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "template_type",
+        "campaign_type",
         "channel",
         "is_active",
         "include_payment_button",
@@ -166,6 +167,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
     list_filter = [
         "is_active",
         "template_type",
+        "campaign_type",
         "channel",
         "include_payment_button",
         "created",
@@ -176,6 +178,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
         "message_body",
         "subject",
         "whatsapp_template_name",
+        "whatsapp_variables",
     ]
     fieldsets = (
         (
@@ -185,6 +188,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
                     "name",
                     "description",
                     "template_type",
+                    "campaign_type",
                     "channel",
                     "is_active",
                 )
@@ -199,7 +203,8 @@ class MessageTemplateAdmin(admin.ModelAdmin):
                 ),
                 "description": _(
                     "Available placeholders: {partner_name}, {debt_amount}, "
-                    "{payment_link}, {due_date}, {company_name}, {contact_phone}"
+                    "{payment_link}, {due_date}, {company_name}, {contact_phone}. "
+                    "For CSV campaigns also: {full_name}, {amount}."
                 ),
             },
         ),
@@ -208,6 +213,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "whatsapp_template_name",
+                    "whatsapp_variables",
                     "include_payment_button",
                     "payment_button_text",
                 ),
@@ -226,7 +232,7 @@ class MessageTemplateAdmin(admin.ModelAdmin):
             },
         ),
     )
-    readonly_fields = ["created", "modified"]
+    readonly_fields = ["created", "modified", "created_by", "modified_by"]
     date_hierarchy = "created"
     ordering = ["template_type", "channel", "name"]
 

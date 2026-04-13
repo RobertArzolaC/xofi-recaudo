@@ -1,11 +1,10 @@
 import logging
 from typing import Optional
 
-from django.conf import settings
-
 from apps.campaigns import choices
 from apps.notifications.providers.base import BaseProvider
 from apps.notifications.providers.telegram import TelegramBotProvider
+from apps.notifications.providers.whatsapp.meta import MetaWhatsAppProvider
 
 logger = logging.getLogger(__name__)
 
@@ -53,22 +52,8 @@ class ProviderFactory:
         Returns:
             BaseProvider: WhatsApp provider instance
         """
-        # Check settings
-        configured_provider = getattr(
-            settings, "WHATSAPP_PROVIDER", "whapi"
-        ).lower()
-        if configured_provider in cls._WHATSAPP_PROVIDERS:
-            provider_class = cls._WHATSAPP_PROVIDERS[configured_provider]
-            provider = provider_class()
-            if provider.is_configured():
-                logger.info(
-                    f"Using {provider.get_provider_name()} as WhatsApp provider"
-                )
-                return provider
 
-        # Return default (even if not configured)
-        logger.warning("No WhatsApp provider configured, using Meta as default")
-        return cls._WHATSAPP_PROVIDERS.get("meta", lambda: None)()
+        return MetaWhatsAppProvider()
 
     @classmethod
     def _get_telegram_provider(cls) -> Optional[BaseProvider]:

@@ -105,6 +105,7 @@ class CampaignCSVFileAdmin(admin.ModelAdmin):
                 "fields": (
                     "status",
                     "channel",
+                    "message_template",
                     "use_payment_link",
                     "target_amount",
                     "average_cost",
@@ -196,7 +197,7 @@ class CampaignAdmin(admin.ModelAdmin):
         (
             "Notification Configuration",
             {
-                "fields": ("channel", "use_payment_link"),
+                "fields": ("channel", "message_template", "use_payment_link"),
             },
         ),
         (

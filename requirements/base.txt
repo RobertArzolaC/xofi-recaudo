@@ -32,7 +32,7 @@ requests==2.32.3
 setuptools==70.0.0
 
 # WhatsApp Business API
-heyoo==0.1.2
+# (Uses standard requests library)
 
 # Telegram Bot API
 python-telegram-bot==21.7

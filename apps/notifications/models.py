@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
+from apps.campaigns import choices as campaign_choices
 from apps.core import models as core_models
 from apps.notifications import choices
 
@@ -274,6 +275,21 @@ class MessageTemplate(
             "Name of the approved WhatsApp Business template (if using templates)."
         ),
     )
+    whatsapp_variables = models.CharField(
+        _("WhatsApp Variables"),
+        max_length=255,
+        blank=True,
+        help_text=_(
+            "Comma-separated list of context variables to send to Meta in the exact order (e.g. 'full_name,amount'). Meta uses positions {{1}}, {{2}}."
+        ),
+    )
+    campaign_type = models.CharField(
+        _("Campaign Type"),
+        max_length=20,
+        choices=campaign_choices.CampaignType.choices,
+        default=campaign_choices.CampaignType.GROUP,
+        help_text=_("Type of campaign this template is for (GROUP or FILE)."),
+    )
     include_payment_button = models.BooleanField(
         _("Include Payment Button"),
         default=False,
@@ -314,3 +330,38 @@ class MessageTemplate(
             if placeholder in message:
                 message = message.replace(placeholder, str(value))
         return message
+
+    def get_whatsapp_components(self, context: dict) -> list:
+        """
+        Build WhatsApp Cloud API components from template context.
+
+        Extracts placeholders from message_body in order or uses whatsapp_variables
+        if defined, then maps them to the context values.
+
+        Args:
+            context: Dictionary with values for template placeholders
+
+        Returns:
+            list: List of component dictionaries for Meta API
+        """
+        import re
+
+        parameters = []
+
+        if self.whatsapp_variables:
+            # Use explicit list of variables (positional for Meta)
+            variable_names = [v.strip() for v in self.whatsapp_variables.split(",") if v.strip()]
+            for name in variable_names:
+                value = context.get(name, "")
+                parameters.append({"type": "text", "text": str(value)})
+        else:
+            # Fallback: Extract placeholders in order of appearance: {var_name}
+            placeholders = re.findall(r"\{(\w+)\}", self.message_body)
+            for key in placeholders:
+                value = context.get(key, "")
+                parameters.append({"type": "text", "text": str(value)})
+
+        if not parameters:
+            return []
+
+        return [{"type": "body", "parameters": parameters}]

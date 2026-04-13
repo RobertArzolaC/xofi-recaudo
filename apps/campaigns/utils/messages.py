@@ -25,11 +25,21 @@ def prepare_message_context(
         "partner_name": recipient.full_name,
         "debt_amount": f"S/ {notification.total_debt_amount:,.2f}",
         "payment_link": notification.payment_link_url or "",
-        "campaign_name": campaign.name,
+        "campaign_name": getattr(campaign, "name", ""),
         "company_name": config.PROJECT_NAME,
         "contact_phone": f"+51 {config.COMPANY_PHONE}",
         "notification_type": notification.get_notification_type_display(),
     }
+
+    # Support specific CSV contact fields if applicable
+    if hasattr(recipient, 'amount'):
+        context["full_name"] = recipient.full_name
+        context["amount"] = f"{recipient.amount:,.2f}"
+    
+    if hasattr(recipient, 'additional_data') and isinstance(recipient.additional_data, dict):
+        # Expose all additional data keys into the context
+        for key, val in recipient.additional_data.items():
+            context[key] = str(val)
 
     # Add detailed debt information
     if debt_detail["credit_debt"] > 0:

@@ -149,6 +149,18 @@
                                 {{ campaign.get_channel_display }}
                             {% endif %}
                         </div>
+
+                        <div class="fw-bold mt-5">{% trans "Message Template" %}</div>
+                        <div class="text-gray-600">
+                            {% if campaign.message_template %}
+                                <span class="text-primary">{{ campaign.message_template.name }}</span>
+                                {% if campaign.message_template.whatsapp_template_name %}
+                                    <span class="text-muted fs-7">({{ campaign.message_template.whatsapp_template_name }})</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted italic">{% trans "Channel default" %}</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

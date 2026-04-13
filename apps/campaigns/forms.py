@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
 
 from apps.campaigns import choices, models, tasks
+from apps.notifications.models import MessageTemplate
 
 
 class CampaignForm(forms.ModelForm):
@@ -16,6 +17,7 @@ class CampaignForm(forms.ModelForm):
             "name",
             "description",
             "group",
+            "message_template",
             "execution_date",
             "status",
             "target_amount",
@@ -38,6 +40,9 @@ class CampaignForm(forms.ModelForm):
                 }
             ),
             "group": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
+            ),
+            "message_template": forms.Select(
                 attrs={"class": "form-select", "data-control": "select2"}
             ),
             "execution_date": forms.DateTimeInput(
@@ -75,6 +80,7 @@ class CampaignForm(forms.ModelForm):
             "name": _("Name"),
             "description": _("Description"),
             "group": _("Group"),
+            "message_template": _("Message Template"),
             "execution_date": _("Execution Date"),
             "status": _("Status"),
             "target_amount": _("Target Amount"),
@@ -86,6 +92,12 @@ class CampaignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["name"].required = True
+
+        # Filter templates to only show active ones for GROUP campaigns
+        self.fields["message_template"].queryset = MessageTemplate.objects.filter(
+            is_active=True,
+            campaign_type=choices.CampaignType.GROUP
+        )
 
         # Restrict status choices to only DRAFT and SCHEDULED for create/update operations
         self.fields["status"].choices = [
@@ -330,6 +342,7 @@ class CampaignCSVFileForm(forms.ModelForm):
             "name",
             "description",
             "file",
+            "message_template",
             "execution_date",
             "status",
             "channel",
@@ -356,6 +369,9 @@ class CampaignCSVFileForm(forms.ModelForm):
                     "class": "form-control",
                     "accept": ".csv,.xlsx,.xls",
                 }
+            ),
+            "message_template": forms.Select(
+                attrs={"class": "form-select", "data-control": "select2"}
             ),
             "execution_date": forms.DateTimeInput(
                 attrs={
@@ -392,6 +408,7 @@ class CampaignCSVFileForm(forms.ModelForm):
             "name": _("Name"),
             "description": _("Description"),
             "file": _("CSV/Excel File"),
+            "message_template": _("Message Template"),
             "execution_date": _("Execution Date"),
             "status": _("Status"),
             "channel": _("Channel"),
@@ -411,6 +428,12 @@ class CampaignCSVFileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["name"].required = True
         self.fields["file"].required = not self.instance.pk
+
+        # Filter templates to only show active ones for FILE campaigns
+        self.fields["message_template"].queryset = MessageTemplate.objects.filter(
+            is_active=True,
+            campaign_type=choices.CampaignType.FILE
+        )
 
         # Restrict status choices to only DRAFT and SCHEDULED
         self.fields["status"].choices = [

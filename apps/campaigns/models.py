@@ -114,6 +114,15 @@ class BaseCampaign(
             "Personalize each WhatsApp message to avoid spam detection."
         ),
     )
+    # Template to use for the campaign
+    message_template = models.ForeignKey(
+        "notifications.MessageTemplate",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Message Template"),
+        help_text=_("Specific template to use for this campaign's notifications."),
+    )
     whatsapp_include_stop_command = models.BooleanField(
         _("Include STOP Command"),
         default=True,

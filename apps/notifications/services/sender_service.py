@@ -28,19 +28,20 @@ class NotificationSenderService:
         """
         # Get the appropriate provider for the channel
         provider = ProviderFactory.get_provider(notification.channel)
+        channel_name = notification.get_channel_display()
 
         if not provider:
-            error_msg = f"No provider available for channel: {notification.get_channel_display()}"
+            error_msg = f"No provider available for channel: {channel_name}"
             logger.error(error_msg)
             return {"success": False, "error": error_msg}
 
         # Check if provider is configured
         if not provider.is_configured():
-            error_msg = f"{notification.get_channel_display()} provider is not configured"
+            error_msg = f"{channel_name} provider is not configured"
             logger.error(error_msg)
             return {"success": False, "error": error_msg}
 
-        # Prepare message
+        # Prepare message and get template
         message_result = cls._prepare_message(notification)
         if not message_result["success"]:
             return message_result
@@ -48,9 +49,29 @@ class NotificationSenderService:
         message_content = message_result["message"]
         recipient = message_result["recipient"]
 
+        # Fetch template: Priority 1: Campaign specific template, Priority 2: Channel default
+        template = getattr(notification.campaign, "message_template", None)
+
         # Send message
         try:
+            # Check if we should use WhatsApp Template (Official API)
             if (
+                notification.channel == choices.NotificationChannel.WHATSAPP
+                and template
+                and template.whatsapp_template_name
+            ):
+                debt_detail = cls._get_debt_detail(notification)
+                context = message_utils.prepare_message_context(
+                    notification, debt_detail
+                )
+                components = template.get_whatsapp_components(context)
+
+                result = provider.send_template_message(
+                    recipient=recipient,
+                    template_name=template.whatsapp_template_name,
+                    components=components,
+                )
+            elif (
                 notification.included_payment_link
                 and notification.payment_link_url
             ):
@@ -161,14 +182,17 @@ class NotificationSenderService:
         Returns:
             str: Generated message content
         """
-        try:
-            template = models.MessageTemplate.objects.get(
-                template_type=notification.notification_type,
-                channel=notification.channel,
-                is_active=True,
-            )
-        except models.MessageTemplate.DoesNotExist:
-            template = None
+        template = getattr(notification.campaign, "message_template", None)
+
+        if not template:
+            try:
+                template = models.MessageTemplate.objects.get(
+                    template_type=notification.notification_type,
+                    channel=notification.channel,
+                    is_active=True,
+                )
+            except models.MessageTemplate.DoesNotExist:
+                template = None
 
         debt_detail = cls._get_debt_detail(notification)
 
