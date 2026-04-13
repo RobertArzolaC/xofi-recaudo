@@ -67,7 +67,7 @@
                                         {% if form.file.errors %}
                                             <div class="text-danger fs-7">{{ form.file.errors.0 }}</div>
                                         {% endif %}
-                                        <div class="form-text">{{ form.file.help_text }}</div>
+                                        <div class="form-text">{{ form.file.help_text|linebreaksbr }}</div>
                                         {% if form.instance.file %}
                                         <div class="mt-2">
                                             <span class="text-muted">{% trans "Current file:" %}</span>

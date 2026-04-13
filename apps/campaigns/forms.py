@@ -4,7 +4,7 @@ from django import forms
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
 
-from apps.campaigns import choices, models
+from apps.campaigns import choices, models, tasks
 
 
 class CampaignForm(forms.ModelForm):
@@ -401,8 +401,8 @@ class CampaignCSVFileForm(forms.ModelForm):
         }
         help_texts = {
             "file": _(
-                "Upload a CSV or Excel file with contact information. "
-                "Required columns: full_name, amount. "
+                "Upload a CSV or Excel file with contact information.\n"
+                "Required columns: full_name, amount.\n"
                 "Optional columns: email, phone, document_number."
             ),
         }
@@ -476,9 +476,6 @@ class CampaignCSVFileForm(forms.ModelForm):
 
             # If a new file was uploaded, trigger validation
             if "file" in self.changed_data and instance.file:
-                # Import here to avoid circular imports
-                from apps.campaigns import tasks
-
                 # Queue validation task
                 tasks.validate_csv_campaign.delay(instance.id)
 

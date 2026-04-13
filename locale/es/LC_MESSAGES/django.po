@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-08 13:52-0500\n"
+"POT-Creation-Date: 2026-04-13 12:13-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -544,12 +544,13 @@ msgstr "Archivo CSV/Excel"
 
 #: apps/campaigns/forms.py:404
 msgid ""
-"Upload a CSV or Excel file with contact information. Required columns: "
-"full_name, amount. Optional columns: email, phone, document_number."
+"Upload a CSV or Excel file with contact information.\n"
+"Required columns: full_name, amount.\n"
+"Optional columns: email, phone, document_number."
 msgstr ""
-"Sube un archivo CSV o Excel con información de contacto. Columnas "
-"requeridas: full_name, amount. Columnas opcionales: email, phone, "
-"document_number."
+"Sube un archivo CSV o Excel con información de contacto.\n"
+"Columnas requeridas: full_name, amount.\n"
+"Columnas opcionales: email, phone, document_number."
 
 #: apps/campaigns/forms.py:441
 msgid "Only CSV and Excel files are allowed."
@@ -1009,52 +1010,44 @@ msgid "Campaign has no group assigned"
 msgstr "La campaña no tiene grupo asignado"
 
 #: apps/campaigns/views.py:366
-#, fuzzy, python-brace-format
-#| msgid "Campaign '{campaign_name}' has been queued for execution."
+#, python-brace-format
 msgid ""
 "Campaign '{campaign_name}' has been scheduled for execution at "
 "{execution_date}."
-msgstr "La campaña '{campaign_name}' ha sido puesta en cola para su ejecución."
+msgstr ""
+"La campaña '{campaign_name}' ha sido programada para su ejecución el "
+"{execution_date}."
 
 #: apps/campaigns/views.py:526 templates/campaigns/campaign_csv/form.html:209
-#, fuzzy
-#| msgid "Create Campaign"
 msgid "Create CSV Campaign"
-msgstr "Crear Campaña"
+msgstr "Crear Campaña CSV"
 
 #: apps/campaigns/views.py:556
-#, fuzzy
-#| msgid "Edit Campaign"
 msgid "Edit CSV Campaign"
-msgstr "Editar Campaña"
+msgstr "Editar Campaña CSV"
 
 #: apps/campaigns/views.py:579
 #: templates/campaigns/campaign_csv/confirm_delete.html:25
 #: templates/campaigns/campaign_csv/confirm_delete.html:83
-#, fuzzy
-#| msgid "Delete Campaign"
 msgid "Delete CSV Campaign"
-msgstr "Eliminar Campaña"
+msgstr "Eliminar Campaña CSV"
 
 #: apps/campaigns/views.py:617
-#, fuzzy
-#| msgid "Campaign has no group assigned"
 msgid "Campaign has no file uploaded"
-msgstr "La campaña no tiene grupo asignado"
+msgstr "La campaña no tiene archivo cargado"
 
 #: apps/campaigns/views.py:622
-#, fuzzy
-#| msgid "Campaign has no execution date configured"
 msgid "Campaign file has not been validated yet"
-msgstr "La campaña no tiene fecha de ejecución configurada"
+msgstr "El archivo de la campaña no ha sido validado aún"
 
 #: apps/campaigns/views.py:638
-#, fuzzy, python-brace-format
-#| msgid "Campaign '{campaign_name}' has been queued for execution."
+#, python-brace-format
 msgid ""
 "CSV Campaign '{campaign_name}' has been scheduled for execution at "
 "{execution_date}."
-msgstr "La campaña '{campaign_name}' ha sido puesta en cola para su ejecución."
+msgstr ""
+"La campaña CSV '{campaign_name}' ha sido programada para su ejecución el "
+"{execution_date}."
 
 #: apps/chatbot/admin.py:46 apps/notifications/admin.py:182
 #: templates/campaigns/campaign/form.html:39
@@ -1081,7 +1074,7 @@ msgstr "Vista previa del mensaje"
 
 #: apps/chatbot/apps.py:8
 msgid "Chatbot"
-msgstr ""
+msgstr "Chatbot"
 
 #: apps/chatbot/choices.py:8
 msgid "Pending Authentication"
@@ -1115,7 +1108,7 @@ msgstr "Sistema"
 
 #: apps/chatbot/choices.py:29
 msgid "Web (Testing)"
-msgstr ""
+msgstr "Web (Prueba)"
 
 #: apps/chatbot/choices.py:36 templates/chatbot/dashboard/index.html:247
 #: templates/chatbot/dashboard/index.html:749
@@ -1124,13 +1117,11 @@ msgstr "Entregado"
 
 #: apps/chatbot/choices.py:37 templates/chatbot/dashboard/index.html:260
 msgid "Read"
-msgstr ""
+msgstr "Leído"
 
 #: apps/chatbot/choices.py:44 templates/chatbot/dashboard/index.html:468
-#, fuzzy
-#| msgid "Under Review"
 msgid "Pending Review"
-msgstr "En Revisión"
+msgstr "Pendiente de Revisión"
 
 #: apps/chatbot/choices.py:45 apps/core/choices.py:12 apps/credits/choices.py:9
 #: apps/credits/choices.py:26 apps/credits/choices.py:64
@@ -7703,8 +7694,8 @@ msgid ""
 "If the conversation is not authenticated, the agent will ask for your DNI "
 "and birth year."
 msgstr ""
-"Si la conversación no está autenticada, el agente le pedirá su DNI y año "
-"de nacimiento."
+"Si la conversación no está autenticada, el agente le pedirá su DNI y año de "
+"nacimiento."
 
 #: templates/chatbot/test.html:159
 msgid "Sample Commands:"

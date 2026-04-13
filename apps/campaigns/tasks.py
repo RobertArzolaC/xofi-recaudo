@@ -4,6 +4,7 @@ from celery import shared_task
 
 from apps.campaigns import models
 from apps.campaigns.services import CSVValidationService
+from apps.notifications import tasks as notification_tasks
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,11 @@ def validate_csv_campaign(campaign_id: int) -> dict:
             f"CSV validation completed for campaign {campaign_id}: "
             f"{result['valid_contacts']} valid, {result['invalid_contacts']} invalid"
         )
+
+        if result["valid_contacts"] > 0:
+            notification_tasks.process_campaign_notifications.delay(
+                campaign_id, campaign_csv.campaign_type
+            )
 
         return {
             "success": True,

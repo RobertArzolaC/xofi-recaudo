@@ -157,14 +157,28 @@ class BaseCampaign(
         return self.status == choices.CampaignStatus.ACTIVE
 
     def start_execution(self):
-        """Mark campaign as being processed."""
-        # Implementación común o puede ser abstracta
-        raise NotImplementedError("Subclasses must implement start_execution()")
+        """
+        Mark campaign as being processed. Returns True if lock acquired, False otherwise.
+
+        Transitions campaign status to PROCESSING state and sets execution tracking fields.
+        This method ensures atomic execution through database-level locking.
+        """
+
+        return services.CampaignExecutionService.start_campaign_execution(self)
 
     def finish_execution(self, success=True, result_message=None):
-        """Mark campaign execution as finished."""
-        raise NotImplementedError(
-            "Subclasses must implement finish_execution()"
+        """
+        Mark campaign execution as finished and transition to appropriate status.
+
+        Flow after processing:
+        - Success + notifications created → SENDING (ready to send notifications)
+        - Success + no notifications → Return to original status
+        - Success + all sent → COMPLETED
+        - Failure → FAILED
+        """
+
+        services.CampaignExecutionService.finish_campaign_execution(
+            self, success, result_message
         )
 
     def get_notification_summary(self):
@@ -288,31 +302,6 @@ class Campaign(
         """Check if campaign can be executed now."""
 
         return services.CampaignExecutionService.can_execute_campaign(self)
-
-    def start_execution(self):
-        """
-        Mark campaign as being processed. Returns True if lock acquired, False otherwise.
-
-        Transitions campaign status to PROCESSING state and sets execution tracking fields.
-        This method ensures atomic execution through database-level locking.
-        """
-
-        return services.CampaignExecutionService.start_campaign_execution(self)
-
-    def finish_execution(self, success=True, result_message=None):
-        """
-        Mark campaign execution as finished and transition to appropriate status.
-
-        Flow after processing:
-        - Success + notifications created → SENDING (ready to send notifications)
-        - Success + no notifications → Return to original status
-        - Success + all sent → COMPLETED
-        - Failure → FAILED
-        """
-
-        services.CampaignExecutionService.finish_campaign_execution(
-            self, success, result_message
-        )
 
     def create_notifications_for_partners(
         self, notification_type, partners=None

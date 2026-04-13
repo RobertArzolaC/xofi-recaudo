@@ -1,12 +1,11 @@
 import logging
-from typing import Dict, Optional
+from typing import Optional
 
 from django.conf import settings
 
 from apps.campaigns import choices
 from apps.notifications.providers.base import BaseProvider
 from apps.notifications.providers.telegram import TelegramBotProvider
-from apps.notifications.providers.whatsapp import WHAPIProvider
 
 logger = logging.getLogger(__name__)
 
@@ -21,36 +20,6 @@ class ProviderFactory:
     3. Explicit provider preference (optional)
     """
 
-    # Provider registry by channel
-    _WHATSAPP_PROVIDERS = {}
-    _TELEGRAM_PROVIDERS = {}
-    _EMAIL_PROVIDERS = {}
-    _SMS_PROVIDERS = {}
-
-    @classmethod
-    def register_providers(cls):
-        """
-        Register all available providers.
-
-        This method is called once to populate the provider registry.
-        """
-        try:
-            cls._WHATSAPP_PROVIDERS = {
-                "meta": "MetaWhatsAppProvider",
-                "whapi": WHAPIProvider,
-            }
-        except ImportError as e:
-            logger.warning(f"Failed to import WhatsApp providers: {e}")
-
-        try:
-            cls._TELEGRAM_PROVIDERS = {
-                "telegram_bot": TelegramBotProvider,
-            }
-        except ImportError as e:
-            logger.warning(f"Failed to import Telegram providers: {e}")
-
-        logger.info("Providers registered successfully")
-
     @classmethod
     def get_provider(cls, channel: str) -> Optional[BaseProvider]:
         """
@@ -63,8 +32,6 @@ class ProviderFactory:
         Returns:
             BaseProvider: Provider instance or None if not available
         """
-        if not cls._WHATSAPP_PROVIDERS:
-            cls.register_providers()
 
         if channel == choices.NotificationChannel.WHATSAPP:
             return cls._get_whatsapp_provider()
@@ -82,12 +49,6 @@ class ProviderFactory:
     def _get_whatsapp_provider(cls) -> Optional[BaseProvider]:
         """
         Get WhatsApp provider.
-
-        Priority:
-        1. Explicit provider_name if specified
-        2. WHATSAPP_PROVIDER setting
-        3. First configured provider found
-        4. Default to Meta provider
 
         Returns:
             BaseProvider: WhatsApp provider instance
@@ -117,12 +78,8 @@ class ProviderFactory:
         Returns:
             BaseProvider: Telegram provider instance
         """
-        # For now, only one Telegram provider
-        if "telegram_bot" in cls._TELEGRAM_PROVIDERS:
-            return cls._TELEGRAM_PROVIDERS["telegram_bot"]()
 
-        logger.error("No Telegram provider available")
-        return None
+        return TelegramBotProvider()
 
     @classmethod
     def _get_email_provider(cls) -> Optional[BaseProvider]:
@@ -145,30 +102,3 @@ class ProviderFactory:
         """
         logger.warning("SMS providers not implemented yet")
         return None
-
-    @classmethod
-    def get_available_providers(cls, channel: str) -> Dict[str, Dict]:
-        """
-        Get information about available providers for a channel.
-
-        Args:
-            channel: Notification channel
-
-        Returns:
-            dict: Dictionary of provider names and their info
-        """
-        if not cls._WHATSAPP_PROVIDERS:
-            cls.register_providers()
-
-        providers_info = {}
-
-        if channel == choices.NotificationChannel.WHATSAPP:
-            for name, provider_class in cls._WHATSAPP_PROVIDERS.items():
-                provider = provider_class()
-                providers_info[name] = provider.get_provider_info()
-        elif channel == choices.NotificationChannel.TELEGRAM:
-            for name, provider_class in cls._TELEGRAM_PROVIDERS.items():
-                provider = provider_class()
-                providers_info[name] = provider.get_provider_info()
-
-        return providers_info

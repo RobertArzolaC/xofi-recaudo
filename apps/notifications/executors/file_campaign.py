@@ -1,8 +1,6 @@
 import logging
 from typing import Dict, Optional
 
-from constance import config
-
 from apps.campaigns import choices as campaign_choices
 from apps.core.utils.urls import get_absolute_url
 from apps.notifications import choices

@@ -53,7 +53,13 @@ class CampaignExecutionService:
         """
 
         with transaction.atomic():
-            locked_campaign = models.Campaign.objects.get(pk=campaign.pk)
+            if campaign.campaign_type == choices.CampaignType.FILE:
+                locked_campaign = models.CampaignCSVFile.objects.get(
+                    pk=campaign.pk
+                )
+            else:
+                locked_campaign = models.Campaign.objects.get(pk=campaign.pk)
+
             if locked_campaign.is_processing:
                 logger.warning(
                     f"Campaign {locked_campaign.id} is already being processed. "

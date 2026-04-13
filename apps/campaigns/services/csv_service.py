@@ -6,7 +6,7 @@ from typing import Dict, List
 
 import openpyxl
 
-from apps.campaigns import choices
+from apps.campaigns import choices, models
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,6 @@ class CSVValidationService:
         Returns:
             dict: Validation results
         """
-        from apps.campaigns.models import CSVContact
 
         logger.info(f"Starting CSV validation for campaign {campaign_csv.id}")
 
@@ -58,7 +57,7 @@ class CSVValidationService:
             }
 
             # Delete existing contacts for this campaign
-            CSVContact.objects.filter(campaign=campaign_csv).delete()
+            models.CSVContact.objects.filter(campaign=campaign_csv).delete()
 
             contacts_to_create = []
 
@@ -68,7 +67,7 @@ class CSVValidationService:
                 validation_result = cls._validate_row(row_data, row_number)
 
                 # Create CSVContact instance
-                contact = CSVContact(
+                contact = models.CSVContact(
                     campaign=campaign_csv,
                     full_name=row_data.get("full_name", ""),
                     email=row_data.get("email"),
@@ -97,7 +96,7 @@ class CSVValidationService:
 
             # Bulk create contacts
             if contacts_to_create:
-                CSVContact.objects.bulk_create(contacts_to_create)
+                models.CSVContact.objects.bulk_create(contacts_to_create)
                 logger.info(f"Created {len(contacts_to_create)} CSV contacts")
 
             # Update campaign with validation results
