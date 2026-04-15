@@ -98,7 +98,7 @@ class TemplateCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         name = request.POST.get("name", "").strip().lower().replace(" ", "_")
         category = request.POST.get("category", "UTILITY")
-        language = request.POST.get("language", "es")
+        language = request.POST.get("language", "es_PE")
         body = request.POST.get("body", "").strip()
 
         if not name or not body:

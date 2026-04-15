@@ -242,7 +242,7 @@ class WhatsAppWebhookProcessor:
                 res = self.client.send_template(
                     to=phone,
                     template_name=response.template["name"],
-                    language=response.template.get("language", "es"),
+                    language=response.template.get("language", "es_PE"),
                     components=response.template.get("components"),
                 )
                 return self.client._extract_message_id(res)

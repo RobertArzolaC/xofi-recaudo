@@ -84,7 +84,7 @@ TEMPLATE_DATA = [
     {
         "name": "bienvenida_cooperativa",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Bienvenido a la Cooperativa. Soy tu asistente virtual y estoy aquí para ayudarte con tus consultas de crédito y pagos. ¿En qué puedo ayudarte hoy?",
         "meta_template_id": "MT-001",
@@ -93,7 +93,7 @@ TEMPLATE_DATA = [
     {
         "name": "recordatorio_pago",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Hola {{1}}, te recordamos que tu cuota de crédito por {{2}} vence el {{3}}. Para pagar, responde este mensaje con tu comprobante.",
         "meta_template_id": "MT-002",
@@ -102,7 +102,7 @@ TEMPLATE_DATA = [
     {
         "name": "confirmacion_pago",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Tu pago de {{1}} ha sido recibido y procesado exitosamente. Número de transacción: {{2}}. ¡Gracias!",
         "meta_template_id": "MT-003",
@@ -111,7 +111,7 @@ TEMPLATE_DATA = [
     {
         "name": "alerta_mora",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Estimado {{1}}, tienes una cuota vencida desde el {{2}} por valor de {{3}}. Comunícate con nosotros para regularizar tu situación.",
         "meta_template_id": "MT-004",
@@ -120,7 +120,7 @@ TEMPLATE_DATA = [
     {
         "name": "encuesta_satisfaccion",
         "category": "MARKETING",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Hola {{1}}, queremos conocer tu opinión sobre nuestro servicio. ¿Cómo calificarías tu experiencia del 1 al 5?",
         "meta_template_id": "MT-005",
@@ -129,7 +129,7 @@ TEMPLATE_DATA = [
     {
         "name": "extracto_mensual",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Tu extracto del mes de {{1}} ya está disponible. Total a pagar: {{2}}. Próximo vencimiento: {{3}}.",
         "meta_template_id": "MT-006",
@@ -138,7 +138,7 @@ TEMPLATE_DATA = [
     {
         "name": "oferta_nuevo_credito",
         "category": "MARKETING",
-        "language": "es",
+        "language": "es_PE",
         "status": "PENDING",
         "body": "{{1}}, tienes una oferta preaprobada de crédito hasta {{2}} con una tasa preferencial. ¿Te interesa conocer más detalles?",
         "meta_template_id": None,
@@ -147,7 +147,7 @@ TEMPLATE_DATA = [
     {
         "name": "autenticacion_otp",
         "category": "AUTHENTICATION",
-        "language": "es",
+        "language": "es_PE",
         "status": "APPROVED",
         "body": "Tu código de verificación es: {{1}}. Válido por 5 minutos. No lo compartas con nadie.",
         "meta_template_id": "MT-007",
@@ -156,7 +156,7 @@ TEMPLATE_DATA = [
     {
         "name": "actualizacion_datos",
         "category": "UTILITY",
-        "language": "es",
+        "language": "es_PE",
         "status": "REJECTED",
         "body": "Hola {{1}}, detectamos que tus datos necesitan actualización. Por favor acércate a la oficina más cercana.",
         "meta_template_id": None,
@@ -165,7 +165,7 @@ TEMPLATE_DATA = [
     {
         "name": "promocion_diciembre",
         "category": "MARKETING",
-        "language": "es",
+        "language": "es_PE",
         "status": "PAUSED",
         "body": "¡Felices fiestas! Durante diciembre, disfruta de tasas especiales en tu próximo crédito. Válido hasta el 31/12.",
         "meta_template_id": "MT-008",

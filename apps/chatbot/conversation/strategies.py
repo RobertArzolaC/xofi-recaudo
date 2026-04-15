@@ -45,7 +45,7 @@ class GetPartnerDetailStrategy(IntentStrategy):
                 text=f"Aquí tienes un resumen de tus datos personales, {full_name}.",
                 template={
                     "name": "customer_profile_summary",
-                    "language": "es",
+                    "language": "es_PE",
                     "components": [
                         {
                             "type": "body",
