@@ -111,10 +111,9 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
-                                    <span class="text-gray-800 fw-bold">S/ {{ contribution.amount|floatformat:2 }}</span>
-                                    {% if contribution.remaining_balance > 0 %}
-                                        <span class="text-danger fs-7">{% trans "Pending" %}: S/ {{ contribution.remaining_balance|floatformat:2 }}</span>
-                                    {% endif %}
+                                    <span class="text-gray-800 fw-bold">
+                                        S/ {{ contribution.amount|floatformat:2 }}
+                                    </span>
                                 </div>
                             </td>
                             <td>

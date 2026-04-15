@@ -5188,110 +5188,76 @@ msgid "Month"
 msgstr "Meses"
 
 #: apps/reports/generators/analytics.py:39 apps/reports/generators/groups.py:48
-#, fuzzy
-#| msgid "List Campaigns"
 msgid "Total Campaigns"
-msgstr "Listar Campañas"
+msgstr "Total de Campañas"
 
 #: apps/reports/generators/analytics.py:40 apps/reports/generators/groups.py:49
 #: templates/dashboard/index.html:879
-#, fuzzy
-#| msgid "Execute Campaign"
 msgid "Active Campaigns"
-msgstr "Ejecutar Campaña"
+msgstr "Campañas Activas"
 
 #: apps/reports/generators/analytics.py:41 apps/reports/generators/groups.py:50
-#, fuzzy
-#| msgid "Delete Campaign"
 msgid "Completed Campaigns"
-msgstr "Eliminar Campaña"
+msgstr "Campañas Completadas"
 
 #: apps/reports/generators/analytics.py:42 apps/reports/generators/groups.py:51
-#, fuzzy
-#| msgid "Notification Type"
 msgid "Total Notifications Sent"
-msgstr "Tipo de Notificación"
+msgstr "Total de Notificaciones Enviadas"
 
 #: apps/reports/generators/analytics.py:43 apps/reports/generators/groups.py:52
-#, fuzzy
-#| msgid "Scheduled Notification"
 msgid "Successful Notifications"
-msgstr "Notificación Programada"
+msgstr "Notificaciones Exitosas"
 
 #: apps/reports/generators/analytics.py:44
-#, fuzzy
-#| msgid "Notification Type"
 msgid "Notification Success Rate %"
-msgstr "Tipo de Notificación"
+msgstr "Porcentaje de Éxito de Notificaciones"
 
 #: apps/reports/generators/analytics.py:45
-#, fuzzy
-#| msgid "Total amount of the credit"
 msgid "Total Amount Collected"
-msgstr "Monto total del crédito"
+msgstr "Total Recaudado"
 
 #: apps/reports/generators/analytics.py:46
-#, fuzzy
-#| msgid "Total Repayment"
 msgid "Total Payments"
-msgstr "Total a Pagar"
+msgstr "Total de Pagos"
 
 #: apps/reports/generators/analytics.py:47
-#, fuzzy
-#| msgid "Payment Amount"
 msgid "Average Payment Amount"
-msgstr "Monto del Pago"
+msgstr "Monto Promedio de Pago"
 
 #: apps/reports/generators/analytics.py:48
-#, fuzzy
-#| msgid "Add Magic Link"
 msgid "Magic Links Created"
-msgstr "Agregar Enlace Mágico"
+msgstr "Enlaces Mágicos Creados"
 
 #: apps/reports/generators/analytics.py:49
-#, fuzzy
-#| msgid "Add Magic Link"
 msgid "Magic Links Used"
-msgstr "Agregar Enlace Mágico"
+msgstr "Enlaces Mágicos Usados"
 
 #: apps/reports/generators/analytics.py:50
-#, fuzzy
-#| msgid "Conversation Message"
 msgid "Link Conversion Rate %"
-msgstr "Mensaje de la Conversación"
+msgstr "Porcentaje de Conversión de Enlaces"
 
 #: apps/reports/generators/analytics.py:51
-#, fuzzy
-#| msgid "Overdue Payments"
 msgid "Overdue Installments"
-msgstr "Pagos Vencidos"
+msgstr "Cuotas Vencidas"
 
 #: apps/reports/generators/analytics.py:52
-#, fuzzy
-#| msgid "Total Debt Amount"
 msgid "Total Overdue Amount"
-msgstr "Monto Total de la Deuda"
+msgstr "Monto Total Vencido"
 
 #: apps/reports/generators/analytics.py:203
 #: apps/reports/generators/campaigns.py:50
-#, fuzzy
-#| msgid "Campaign Name:"
 msgid "Campaign Name"
-msgstr "Nombre de la campaña:"
+msgstr "Nombre de la Campaña"
 
 #: apps/reports/generators/analytics.py:209
 #: apps/reports/generators/campaigns.py:56
-#, fuzzy
-#| msgid "Campaign Notifications"
 msgid "Total Notifications"
-msgstr "Notificaciones de Campaña"
+msgstr "Total de Notificaciones"
 
 #: apps/reports/generators/analytics.py:212
 #: apps/reports/generators/groups.py:54
-#, fuzzy
-#| msgid "Successfully added"
 msgid "Success Rate %"
-msgstr "Agregado con éxito."
+msgstr "Porcentaje de Éxito"
 
 #: apps/reports/generators/analytics.py:213
 #: apps/reports/generators/campaigns.py:61
