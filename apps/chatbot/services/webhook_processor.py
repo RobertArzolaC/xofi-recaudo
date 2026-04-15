@@ -236,7 +236,20 @@ class WhatsAppWebhookProcessor:
     # ── Sending Helpers ───────────────────────────────────────────────
 
     def _send_response(self, phone: str, response) -> Optional[str]:
-        """Sends a BotResponse object (text or interactive)."""
+        """Sends a BotResponse object (text, interactive, or template)."""
+        if getattr(response, "template", None):
+            try:
+                res = self.client.send_template(
+                    to=phone,
+                    template_name=response.template["name"],
+                    language=response.template.get("language", "es"),
+                    components=response.template.get("components"),
+                )
+                return self.client._extract_message_id(res)
+            except Exception as exc:
+                logger.error("Failed to send template to %s: %s", phone, exc)
+                return None
+
         if response.interactive:
             return self._send_interactive(phone, response.interactive)
         return self._send_text(phone, response.text)

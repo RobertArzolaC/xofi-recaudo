@@ -162,17 +162,21 @@ class ConversationService:
             conversation, user_message
         )
 
+        bot_response = self._apply_response_strategy(
+            conversation, response_text, tools_called
+        )
+
         tool_name = tools_called[0]["tool"] if tools_called else ""
         metadata = {"tools_called": tools_called} if tools_called else {}
 
         self.save_message(
             conversation,
             choices.MessageSender.AGENT,
-            response_text,
+            bot_response.text,
             intent=tool_name,
             metadata=metadata,
         )
-        return response_text
+        return bot_response.text
 
     @sync_to_async
     def aprocess_message(
@@ -220,17 +224,21 @@ class ConversationService:
             conversation, user_message
         )
 
+        bot_response = self._apply_response_strategy(
+            conversation, response_text, tools_called
+        )
+
         tool_name = tools_called[0]["tool"] if tools_called else ""
         metadata = {"tools_called": tools_called} if tools_called else {}
 
         self.save_message(
             conversation,
             choices.MessageSender.AGENT,
-            response_text,
+            bot_response.text,
             intent=tool_name,
             metadata=metadata,
         )
-        return BotResponse(text=response_text), None
+        return bot_response, None
 
     # ------------------------------------------------------------------
     # Message processing — Web (Testing)
@@ -259,17 +267,51 @@ class ConversationService:
             conversation, user_message
         )
 
+        bot_response = self._apply_response_strategy(
+            conversation, response_text, tools_called
+        )
+
         tool_name = tools_called[0]["tool"] if tools_called else ""
         metadata = {"tools_called": tools_called} if tools_called else {}
 
         self.save_message(
             conversation,
             choices.MessageSender.AGENT,
-            response_text,
+            bot_response.text,
             intent=tool_name,
             metadata=metadata,
         )
-        return response_text, tools_called
+        return bot_response.text, tools_called
+
+    # ------------------------------------------------------------------
+    # Strategy Pattern helper
+    # ------------------------------------------------------------------
+
+    def _apply_response_strategy(
+        self, conversation, response_text: str, tools_called: list
+    ) -> BotResponse:
+        """
+        Apply tool-specific response strategies (formatting, templates, etc.)
+        based on the tools called by the agent and the communication channel.
+        """
+        from apps.chatbot.conversation.strategies import StrategyFactory
+
+        if not tools_called:
+            return BotResponse(text=response_text)
+
+        # We take the first tool called as the primary intent
+        primary_tool = tools_called[0]
+        tool_name = primary_tool.get("tool")
+
+        strategy = StrategyFactory.get_strategy(tool_name)
+        if strategy:
+            return strategy.handle(
+                primary_tool.get("args", {}),
+                primary_tool.get("result", {}),
+                conversation.channel,
+            )
+
+        return BotResponse(text=response_text)
 
     # ------------------------------------------------------------------
     # Authentication flow

@@ -106,7 +106,16 @@ class AgentService:
 
                     logger.info("OpenRouter called tool: %s with args: %s", tool_name, tool_args)
                     result = registry.execute(tool_name, tool_args)
-                    tools_called.append({"tool": tool_name, "args": tool_args})
+                    tools_called.append({
+                        "tool": tool_name, 
+                        "args": tool_args,
+                        "result": result
+                    })
+
+                    # If this is a terminal tool that handles its own formatting via Strategy,
+                    # we break early to save tokens and latency.
+                    if tool_name in ["get_partner_detail"]:
+                        return "", tools_called
 
                     history.append({
                         "role": "tool",

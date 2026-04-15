@@ -160,60 +160,6 @@ AI_PROCESSING_ERROR = (
 )
 
 # ==========================================
-# MESSAGE FORMATTING TEMPLATES
-# ==========================================
-
-PARTNER_INFO_TEMPLATE = """
-📋 *Información del Socio*
-
-👤 *Nombre:* {full_name}
-🆔 *Documento:* {document_number}
-📱 *Teléfono:* {phone}
-📧 *Email:* {email}
-"""
-
-ACCOUNT_STATEMENT_TEMPLATE = """
-💰 *Estado de Cuenta*
-
-📊 *Resumen General:*
-• Créditos totales: {total_credits}
-• Créditos activos: {active_credits_count}
-• Total desembolsado: S/ {total_disbursed:,.2f}
-• Total pagado: S/ {total_payments:,.2f}
-• *Saldo pendiente:* S/ {total_outstanding:,.2f}
-"""
-
-CREDIT_LIST_HEADER = "📋 *Mis Préstamos*\n\n"
-
-CREDIT_LIST_ITEM_TEMPLATE = """
-{index}. *Préstamo #{credit_id}*
-    Producto: {product_name}
-    Monto: S/ {amount:,.2f}
-    Saldo: S/ {outstanding_balance:,.2f}
-    Estado: {status}
-"""
-
-CREDIT_DETAIL_TEMPLATE = """
-💳 *Detalle del Préstamo #{credit_id}*
-
-*Información General:*
-• Producto: {product_name}
-• Monto: S/ {amount:,.2f}
-• Tasa de interés: {interest_rate}%
-• Plazo: {term_duration} meses
-• Cuota: S/ {payment_amount:,.2f}
-• Saldo pendiente: S/ {outstanding_balance:,.2f}
-
-*Resumen de Pagos:*
-• Total de cuotas: {total_installments}
-• Cuotas pagadas: {paid_installments}
-• Cuotas pendientes: {pending_installments}
-• Cuotas vencidas: {overdue_installments}
-"""
-
-GREETING_TEMPLATE = "Hola {name}! 👋\n\n{menu}"
-
-# ==========================================
 # Whapi CONSTANTS
 # ==========================================
 
