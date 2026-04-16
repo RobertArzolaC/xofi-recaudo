@@ -114,7 +114,7 @@ class AgentService:
 
                     # If this is a terminal tool that handles its own formatting via Strategy,
                     # we break early to save tokens and latency.
-                    if tool_name in ["get_partner_detail", "get_account_statement"]:
+                    if tool_name in ["get_partner_detail", "get_account_statement", "get_credits_list"]:
                         return "", tools_called
 
                     history.append({

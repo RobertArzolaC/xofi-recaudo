@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from django.db.models import Q, Sum
+from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import (
@@ -164,7 +164,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     if credit.payment_frequency
                     else None,
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.get_status_display().title() if credit.status else None,
+                    "status": credit.get_status_display().title()
+                    if credit.status
+                    else None,
                     "application_date": (
                         credit.application_date.isoformat()
                         if credit.application_date
@@ -251,56 +253,46 @@ class PartnerViewSet(viewsets.GenericViewSet):
         partner = self.get_object()
 
         # Get credits queryset
-        credits = partner.credits.select_related(
+        credits_qs = partner.credits.select_related(
             "product", "product__product_type"
         )
 
         # Apply status filter if provided
         status_filter = request.query_params.get("status", None)
         if status_filter:
-            credits = credits.filter(status=status_filter.upper())
+            credits_qs = credits_qs.filter(status=status_filter.upper())
 
-        # Build credit list
+        # Calculate summary statistics
+        summary = credits_qs.filter(status="ACTIVE").aggregate(
+            active_count=Count("id"),
+            total_debt=Sum("outstanding_balance"),
+        )
+        active_credits_count = summary["active_count"] or 0
+        total_outstanding = summary["total_debt"] or Decimal("0.00")
+
+        # Calculate total payments
+        total_payments = partner.payments.aggregate(total=Sum("amount"))[
+            "total"
+        ] or Decimal("0.00")
+
+        # Get unique product names
+        associated_products_list = list(
+            credits_qs.values_list("product__name", flat=True).distinct()
+        )
+        associated_products = ", ".join(associated_products_list)
+
+        # Build credit list (minimal)
         credit_list = []
-        for credit in credits:
+        for credit in credits_qs:
             credit_list.append(
                 {
                     "id": credit.id,
-                    "product": {
-                        "id": credit.product.id,
-                        "name": credit.product.name,
-                        "product_type": credit.product.product_type.name,
-                    },
+                    "product_name": credit.product.name,
                     "amount": float(credit.amount),
-                    "interest_rate": float(credit.interest_rate),
-                    "term_duration": credit.term_duration,
-                    "payment_frequency": credit.get_payment_frequency_display().title()
-                    if credit.payment_frequency
-                    else None,
-                    "payment_amount": (
-                        float(credit.payment_amount)
-                        if credit.payment_amount
-                        else None
-                    ),
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.get_status_display().title() if credit.status else None,
-                    "application_date": (
-                        credit.application_date.isoformat()
-                        if credit.application_date
-                        else None
-                    ),
-                    "approval_date": (
-                        credit.approval_date.isoformat()
-                        if credit.approval_date
-                        else None
-                    ),
-                    "disbursement_date": (
-                        credit.disbursement_date.isoformat()
-                        if credit.disbursement_date
-                        else None
-                    ),
-                    "created": credit.created.isoformat(),
-                    "modified": credit.modified.isoformat(),
+                    "status": credit.get_status_display().title()
+                    if credit.status
+                    else None,
                 }
             )
 
@@ -310,6 +302,12 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "id": partner.id,
                     "full_name": partner.full_name,
                     "document_number": partner.document_number,
+                },
+                "summary": {
+                    "active_credits_count": active_credits_count,
+                    "total_outstanding": float(total_outstanding),
+                    "total_payments": float(total_payments),
+                    "associated_products": associated_products,
                 },
                 "credits": credit_list,
                 "count": len(credit_list),
@@ -400,7 +398,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "principal_amount": float(installment.principal_amount),
                     "interest_amount": float(installment.interest_amount),
                     "balance_after": float(installment.balance_after),
-                    "status": installment.get_status_display().title() if installment.status else None,
+                    "status": installment.get_status_display().title()
+                    if installment.status
+                    else None,
                     "payment_date": (
                         installment.payment_date.isoformat()
                         if installment.payment_date
@@ -449,7 +449,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                         "amount": float(allocation.payment.amount),
                         "payment_method": allocation.payment.payment_method,
                         "reference_number": allocation.payment.reference_number,
-                        "status": allocation.payment.get_status_display().title() if allocation.payment.status else None,
+                        "status": allocation.payment.get_status_display().title()
+                        if allocation.payment.status
+                        else None,
                     }
                 )
 
@@ -480,7 +482,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                         else None
                     ),
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.get_status_display().title() if credit.status else None,
+                    "status": credit.get_status_display().title()
+                    if credit.status
+                    else None,
                     "application_date": (
                         credit.application_date.isoformat()
                         if credit.application_date

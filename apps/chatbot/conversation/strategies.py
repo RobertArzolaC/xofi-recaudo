@@ -106,7 +106,13 @@ class GetAccountStatementStrategy(IntentStrategy):
         credits = tool_result.get("credits") or []
         main_credit = credits[0] if credits else {}
 
-        product = main_credit.get("product") or "-"
+        product_names = []
+        for c in credits:
+            name = c.get("product") or c.get("product_name")
+            if name and str(name) not in product_names:
+                product_names.append(str(name))
+        associated_products = ", ".join(product_names) if product_names else "-"
+        
         amount = f"{main_credit.get('amount', 0.0):,.2f}"
         interest_rate = f"{main_credit.get('interest_rate', 0.0):,.2f}"
         term = str(main_credit.get("term_duration") or "-")
@@ -148,7 +154,7 @@ class GetAccountStatementStrategy(IntentStrategy):
                                     "type": "text",
                                     "text": total_outstanding,
                                 },  # {{5}}
-                                {"type": "text", "text": product},  # {{6}}
+                                {"type": "text", "text": associated_products},  # {{6}}
                                 {"type": "text", "text": amount},  # {{7}}
                                 {"type": "text", "text": interest_rate},  # {{8}}
                                 {"type": "text", "text": term},  # {{9}}
@@ -177,7 +183,7 @@ class GetAccountStatementStrategy(IntentStrategy):
                 f"• Total pagado: *S/ {total_paid}*\n"
                 f"• Saldo pendiente: *S/ {total_outstanding}*\n\n"
                 f"💳 *Detalle de tu crédito*\n"
-                f"• Producto: *{product}*\n"
+                f"• Productos: *{associated_products}*\n"
                 f"• Monto original: *S/ {amount}*\n"
                 f"• Tasa: *{interest_rate}% anual*\n"
                 f"• Plazo: *{term} meses*\n"
@@ -196,12 +202,64 @@ class GetAccountStatementStrategy(IntentStrategy):
             return BotResponse(text=text)
 
 
+class GetCreditsListStrategy(IntentStrategy):
+    """Strategy for the get_credits_list tool."""
+
+    def handle(
+        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        summary = tool_result.get("summary") or {}
+        active_count = str(summary.get("active_credits_count", 0))
+        total_outstanding = f"{summary.get('total_outstanding', 0.0):,.2f}"
+        total_paid = f"{summary.get('total_payments', 0.0):,.2f}"
+        associated_products = summary.get("associated_products") or "Ninguno"
+
+        current_date = datetime.now().strftime("%d/%m/%Y")
+
+        if channel == choices.ChannelType.WHATSAPP:
+            # According to docs/template_account_credit_list.md
+            return BotResponse(
+                text=f"Tienes {active_count} préstamos activos.",
+                template={
+                    "name": "account_credit_list",
+                    "language": "es_PE",
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {"type": "text", "text": current_date},  # {{1}}
+                                {"type": "text", "text": active_count},  # {{2}}
+                                {"type": "text", "text": total_outstanding},  # {{3}}
+                                {"type": "text", "text": total_paid},  # {{4}}
+                                {"type": "text", "text": associated_products},  # {{5}}
+                            ],
+                        }
+                    ],
+                },
+            )
+        else:
+            text = (
+                f"Tienes *{active_count} préstamos activos*:\n\n"
+                f"📊 *Resumen*\n"
+                f"• Deuda total: *S/ {total_outstanding}*\n"
+                f"• Total pagado: *S/ {total_paid}*\n\n"
+                f"📂 *Productos asociados:*\n"
+                f"{associated_products}\n\n"
+                f"Selecciona un préstamo para ver el detalle 👇"
+            )
+            return BotResponse(text=text)
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
     _strategies = {
         "get_partner_detail": GetPartnerDetailStrategy(),
         "get_account_statement": GetAccountStatementStrategy(),
+        "get_credits_list": GetCreditsListStrategy(),
     }
 
     @classmethod
