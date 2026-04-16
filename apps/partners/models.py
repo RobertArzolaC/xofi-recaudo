@@ -167,34 +167,38 @@ class Partner(core_models.Person, TimeStampedModel):
     @property
     def total_contributed(self):
         """Calculate total amount contributed including initial balance."""
+        try:
+            initial = Decimal("0.00")
+            if hasattr(self, "compliance_initial_balance"):
+                initial = (
+                    self.compliance_initial_balance.initial_contribution_amount
+                )
 
-        initial = Decimal("0.00")
-        if hasattr(self, "compliance_initial_balance"):
-            initial = (
-                self.compliance_initial_balance.initial_contribution_amount
-            )
+            current = self.contribution_set.filter(
+                status=compliance_choices.ComplianceStatus.PAID
+            ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
 
-        current = self.contribution_set.filter(
-            status=compliance_choices.ComplianceStatus.PAID
-        ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
-
-        return initial + current
+            return initial + current
+        except Exception:
+            return Decimal("0.00")
 
     @property
     def total_social_security_paid(self):
         """Calculate total social security paid including initial balance."""
+        try:
+            initial = Decimal("0.00")
+            if hasattr(self, "compliance_initial_balance"):
+                initial = (
+                    self.compliance_initial_balance.initial_social_security_amount
+                )
 
-        initial = Decimal("0.00")
-        if hasattr(self, "compliance_initial_balance"):
-            initial = (
-                self.compliance_initial_balance.initial_social_security_amount
-            )
+            current = self.socialsecurity_set.filter(
+                status=compliance_choices.ComplianceStatus.PAID
+            ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
 
-        current = self.socialsecurity_set.filter(
-            status=compliance_choices.ComplianceStatus.PAID
-        ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
-
-        return initial + current
+            return initial + current
+        except Exception:
+            return Decimal("0.00")
 
 
 class PartnerEmploymentInfo(core_models.BaseUserTracked, TimeStampedModel):
