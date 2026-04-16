@@ -1,8 +1,11 @@
+from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
+from apps.compliance import choices as compliance_choices
 from apps.core import choices as core_choices
 from apps.core import models as core_models
 from apps.partners import choices
@@ -160,6 +163,38 @@ class Partner(core_models.Person, TimeStampedModel):
 
     def __str__(self):
         return f"{self.first_name} {self.paternal_last_name}"
+
+    @property
+    def total_contributed(self):
+        """Calculate total amount contributed including initial balance."""
+
+        initial = Decimal("0.00")
+        if hasattr(self, "compliance_initial_balance"):
+            initial = (
+                self.compliance_initial_balance.initial_contribution_amount
+            )
+
+        current = self.contribution_set.filter(
+            status=compliance_choices.ComplianceStatus.PAID
+        ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
+
+        return initial + current
+
+    @property
+    def total_social_security_paid(self):
+        """Calculate total social security paid including initial balance."""
+
+        initial = Decimal("0.00")
+        if hasattr(self, "compliance_initial_balance"):
+            initial = (
+                self.compliance_initial_balance.initial_social_security_amount
+            )
+
+        current = self.socialsecurity_set.filter(
+            status=compliance_choices.ComplianceStatus.PAID
+        ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
+
+        return initial + current
 
 
 class PartnerEmploymentInfo(core_models.BaseUserTracked, TimeStampedModel):

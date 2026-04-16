@@ -174,3 +174,46 @@ class Penalty(BaseCompliancePayment):
 
     def __str__(self) -> str:
         return f"{self.partner.full_name} - {self.get_penalty_type_display()} - ${self.amount:,.2f}"
+
+
+class ComplianceInitialBalance(core_models.BaseUserTracked, TimeStampedModel):
+    """Model to store initial balances for partner contributions and social security."""
+
+    partner = models.OneToOneField(
+        "partners.Partner",
+        on_delete=models.CASCADE,
+        related_name="compliance_initial_balance",
+        help_text=_("Partner associated with this initial balance."),
+    )
+    initial_contribution_amount = models.DecimalField(
+        _("Initial Contribution Amount"),
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal("0.00"),
+        validators=[MinValueValidator(Decimal("0.00"))],
+        help_text=_("Total amount contributed before system implementation."),
+    )
+    initial_social_security_amount = models.DecimalField(
+        _("Initial Social Security Amount"),
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal("0.00"),
+        validators=[MinValueValidator(Decimal("0.00"))],
+        help_text=_(
+            "Total social security amount paid before system implementation."
+        ),
+    )
+    cut_off_date = models.DateField(
+        _("Cut-off Date"),
+        help_text=_(
+            "Date from which the system starts tracking detailed payments."
+        ),
+    )
+
+    class Meta:
+        managed = False
+        verbose_name = _("Compliance Initial Balance")
+        verbose_name_plural = _("Compliance Initial Balances")
+
+    def __str__(self) -> str:
+        return f"{self.partner.full_name} - {_('Initial Balance')}"

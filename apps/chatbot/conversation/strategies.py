@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, Dict
+
+from django.conf import settings
 
 from apps.chatbot import choices
 from apps.chatbot.conversation.responses import BotResponse
@@ -85,11 +88,120 @@ class GetPartnerDetailStrategy(IntentStrategy):
             return BotResponse(text=text)
 
 
+class GetAccountStatementStrategy(IntentStrategy):
+    """Strategy for the get_account_statement tool."""
+
+    def handle(
+        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        summary = tool_result.get("summary") or {}
+        active_credits = str(summary.get("active_credits_count", 0))
+        total_disbursed = f"{summary.get('total_disbursed', 0.0):,.2f}"
+        total_paid = f"{summary.get('total_payments', 0.0):,.2f}"
+        total_outstanding = f"{summary.get('total_outstanding', 0.0):,.2f}"
+
+        credits = tool_result.get("credits") or []
+        main_credit = credits[0] if credits else {}
+
+        product = main_credit.get("product") or "-"
+        amount = f"{main_credit.get('amount', 0.0):,.2f}"
+        interest_rate = f"{main_credit.get('interest_rate', 0.0):,.2f}"
+        term = str(main_credit.get("term_duration") or "-")
+        frequency = main_credit.get("payment_frequency") or "-"
+        balance = f"{main_credit.get('outstanding_balance', 0.0):,.2f}"
+        status = main_credit.get("status") or "-"
+
+        app_date = main_credit.get("application_date") or "-"
+        disb_date = main_credit.get("disbursement_date") or "-"
+        if app_date != "-":
+            app_date = app_date[:10]
+        if disb_date != "-":
+            disb_date = disb_date[:10]
+
+        contributed = f"{tool_result.get('total_contributed', 0.0):,.2f}"
+        social_security = f"{tool_result.get('total_social_security_paid', 0.0):,.2f}"
+
+        current_date = datetime.now().strftime("%d/%m/%Y")
+        portal_link = getattr(
+            settings, "PAYMENT_PORTAL_URL", "https://portal.xofi.pe/pago"
+        )
+
+        if channel == choices.ChannelType.WHATSAPP:
+            # According to docs/template_account_statement_summary.md (17 parameters)
+            return BotResponse(
+                text=f"Aquí tienes tu estado de cuenta actualizado al {current_date}.",
+                template={
+                    "name": "account_statement_summary",
+                    "language": "es_PE",
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {"type": "text", "text": current_date},  # {{1}}
+                                {"type": "text", "text": active_credits},  # {{2}}
+                                {"type": "text", "text": total_disbursed},  # {{3}}
+                                {"type": "text", "text": total_paid},  # {{4}}
+                                {
+                                    "type": "text",
+                                    "text": total_outstanding,
+                                },  # {{5}}
+                                {"type": "text", "text": product},  # {{6}}
+                                {"type": "text", "text": amount},  # {{7}}
+                                {"type": "text", "text": interest_rate},  # {{8}}
+                                {"type": "text", "text": term},  # {{9}}
+                                {"type": "text", "text": frequency},  # {{10}}
+                                {"type": "text", "text": balance},  # {{11}}
+                                {"type": "text", "text": status},  # {{12}}
+                                {"type": "text", "text": app_date},  # {{13}}
+                                {"type": "text", "text": disb_date},  # {{14}}
+                                {"type": "text", "text": contributed},  # {{15}}
+                                {
+                                    "type": "text",
+                                    "text": social_security,
+                                },  # {{16}}
+                                {"type": "text", "text": portal_link},  # {{17}}
+                            ],
+                        }
+                    ],
+                },
+            )
+        else:
+            text = (
+                f"Aquí tienes tu *estado de cuenta actualizado* al *{current_date}*:\n\n"
+                f"📊 *Resumen general*\n"
+                f"• Créditos activos: *{active_credits}*\n"
+                f"• Total desembolsado: *S/ {total_disbursed}*\n"
+                f"• Total pagado: *S/ {total_paid}*\n"
+                f"• Saldo pendiente: *S/ {total_outstanding}*\n\n"
+                f"💳 *Detalle de tu crédito*\n"
+                f"• Producto: *{product}*\n"
+                f"• Monto original: *S/ {amount}*\n"
+                f"• Tasa: *{interest_rate}% anual*\n"
+                f"• Plazo: *{term} meses*\n"
+                f"• Frecuencia: *{frequency}*\n"
+                f"• Saldo actual: *S/ {balance}*\n"
+                f"• Estado: *{status}*\n\n"
+                f"📅 *Fechas importantes*\n"
+                f"• Solicitud: {app_date}\n"
+                f"• Desembolso: {disb_date}\n\n"
+                f"🏦 *Aportes y Previsión Social*\n"
+                f"• Aportes: *S/ {contributed}*\n"
+                f"• Previsión social: *S/ {social_security}*\n\n"
+                f"Si deseas ver el detalle completo o realizar un pago, puedes hacerlo aquí 👇\n"
+                f"{portal_link}"
+            )
+            return BotResponse(text=text)
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
     _strategies = {
         "get_partner_detail": GetPartnerDetailStrategy(),
+        "get_account_statement": GetAccountStatementStrategy(),
     }
 
     @classmethod

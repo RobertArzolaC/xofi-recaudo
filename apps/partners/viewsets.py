@@ -3,7 +3,11 @@ from decimal import Decimal
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -124,22 +128,23 @@ class PartnerViewSet(viewsets.GenericViewSet):
         partner = self.get_object()
 
         # Get all credits for this partner
-        credits = partner.credits.select_related("product", "product__product_type")
+        credits = partner.credits.select_related(
+            "product", "product__product_type"
+        )
 
         # Calculate summary statistics
         total_credits = credits.count()
-        total_disbursed = (
-            credits.aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
-        )
-        total_outstanding = (
-            credits.aggregate(total=Sum("outstanding_balance"))["total"]
-            or Decimal("0.00")
-        )
+        total_disbursed = credits.aggregate(total=Sum("amount"))[
+            "total"
+        ] or Decimal("0.00")
+        total_outstanding = credits.aggregate(total=Sum("outstanding_balance"))[
+            "total"
+        ] or Decimal("0.00")
 
         # Calculate total payments
-        total_payments = (
-            partner.payments.aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
-        )
+        total_payments = partner.payments.aggregate(total=Sum("amount"))[
+            "total"
+        ] or Decimal("0.00")
 
         # Count active credits
         active_credits_count = credits.filter(status="ACTIVE").count()
@@ -193,6 +198,8 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "active_credits_count": active_credits_count,
                 },
                 "credits": credit_details,
+                "total_contributed": partner.total_contributed,
+                "total_social_security_paid": partner.total_social_security_paid,
             }
         )
 
@@ -242,7 +249,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
         partner = self.get_object()
 
         # Get credits queryset
-        credits = partner.credits.select_related("product", "product__product_type")
+        credits = partner.credits.select_related(
+            "product", "product__product_type"
+        )
 
         # Apply status filter if provided
         status_filter = request.query_params.get("status", None)
@@ -265,7 +274,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "term_duration": credit.term_duration,
                     "payment_frequency": credit.payment_frequency,
                     "payment_amount": (
-                        float(credit.payment_amount) if credit.payment_amount else None
+                        float(credit.payment_amount)
+                        if credit.payment_amount
+                        else None
                     ),
                     "outstanding_balance": float(credit.outstanding_balance),
                     "status": credit.status,
@@ -401,18 +412,22 @@ class PartnerViewSet(viewsets.GenericViewSet):
         # Get payments for this credit (via installment allocations)
         from apps.credits.models import Installment
 
-        credit_installment_ids = Installment.objects.filter(credit=credit).values_list(
-            "id", flat=True
-        )
+        credit_installment_ids = Installment.objects.filter(
+            credit=credit
+        ).values_list("id", flat=True)
 
         # Get payment allocations for these installments
-        from apps.payments.models import PaymentConceptAllocation
         from django.contrib.contenttypes.models import ContentType
 
-        installment_content_type = ContentType.objects.get_for_model(Installment)
+        from apps.payments.models import PaymentConceptAllocation
+
+        installment_content_type = ContentType.objects.get_for_model(
+            Installment
+        )
 
         payment_allocations = PaymentConceptAllocation.objects.filter(
-            content_type=installment_content_type, object_id__in=credit_installment_ids
+            content_type=installment_content_type,
+            object_id__in=credit_installment_ids,
         ).select_related("payment")
 
         # Build payment list
@@ -454,7 +469,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "delinquency_rate": float(credit.delinquency_rate),
                     "payment_frequency": credit.payment_frequency,
                     "payment_amount": (
-                        float(credit.payment_amount) if credit.payment_amount else None
+                        float(credit.payment_amount)
+                        if credit.payment_amount
+                        else None
                     ),
                     "outstanding_balance": float(credit.outstanding_balance),
                     "status": credit.status,
