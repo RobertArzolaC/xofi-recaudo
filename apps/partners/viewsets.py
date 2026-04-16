@@ -160,9 +160,11 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "amount": float(credit.amount),
                     "interest_rate": float(credit.interest_rate),
                     "term_duration": credit.term_duration,
-                    "payment_frequency": credit.payment_frequency,
+                    "payment_frequency": credit.get_payment_frequency_display().title()
+                    if credit.payment_frequency
+                    else None,
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.status,
+                    "status": credit.get_status_display().title() if credit.status else None,
                     "application_date": (
                         credit.application_date.isoformat()
                         if credit.application_date
@@ -272,14 +274,16 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "amount": float(credit.amount),
                     "interest_rate": float(credit.interest_rate),
                     "term_duration": credit.term_duration,
-                    "payment_frequency": credit.payment_frequency,
+                    "payment_frequency": credit.get_payment_frequency_display().title()
+                    if credit.payment_frequency
+                    else None,
                     "payment_amount": (
                         float(credit.payment_amount)
                         if credit.payment_amount
                         else None
                     ),
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.status,
+                    "status": credit.get_status_display().title() if credit.status else None,
                     "application_date": (
                         credit.application_date.isoformat()
                         if credit.application_date
@@ -396,7 +400,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "principal_amount": float(installment.principal_amount),
                     "interest_amount": float(installment.interest_amount),
                     "balance_after": float(installment.balance_after),
-                    "status": installment.status,
+                    "status": installment.get_status_display().title() if installment.status else None,
                     "payment_date": (
                         installment.payment_date.isoformat()
                         if installment.payment_date
@@ -445,7 +449,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
                         "amount": float(allocation.payment.amount),
                         "payment_method": allocation.payment.payment_method,
                         "reference_number": allocation.payment.reference_number,
-                        "status": allocation.payment.status,
+                        "status": allocation.payment.get_status_display().title() if allocation.payment.status else None,
                     }
                 )
 
@@ -467,14 +471,16 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "interest_rate": float(credit.interest_rate),
                     "term_duration": credit.term_duration,
                     "delinquency_rate": float(credit.delinquency_rate),
-                    "payment_frequency": credit.payment_frequency,
+                    "payment_frequency": credit.get_payment_frequency_display().title()
+                    if credit.payment_frequency
+                    else None,
                     "payment_amount": (
                         float(credit.payment_amount)
                         if credit.payment_amount
                         else None
                     ),
                     "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.status,
+                    "status": credit.get_status_display().title() if credit.status else None,
                     "application_date": (
                         credit.application_date.isoformat()
                         if credit.application_date
