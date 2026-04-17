@@ -79,6 +79,7 @@ class WhatsAppWebhookProcessor:
             "text": self._handle_text,
             "image": self._handle_image,
             "interactive": self._handle_interactive,
+            "button": self._handle_button,
         }
 
         handler = handlers.get(message_type)
@@ -204,6 +205,24 @@ class WhatsAppWebhookProcessor:
         elif itype == "list_reply":
             reply_text = interactive.get("list_reply", {}).get("title", "")
 
+        if reply_text:
+            # Re-inject as a text message
+            self._handle_text(
+                {"from": sender_phone, "text": {"body": reply_text}}
+            )
+        else:
+            self._send_text(
+                sender_phone,
+                "Opción no reconocida. Por favor usa comandos de texto.",
+            )
+
+    def _handle_button(self, message: Dict) -> None:
+        """Handle button replies (usually from templates)."""
+        sender_phone = message.get("from")
+        button = message.get("button", {})
+        
+        reply_text = button.get("payload") or button.get("text", "")
+        
         if reply_text:
             # Re-inject as a text message
             self._handle_text(
