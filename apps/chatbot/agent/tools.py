@@ -56,16 +56,33 @@ TOOL_DECLARATIONS = [
         "type": "function",
         "function": {
             "name": "get_credit_detail",
-            "description": "Obtener el detalle completo de un préstamo/crédito específico: producto, monto, tasa de interés, plazo, cuota mensual, saldo pendiente, cuotas pagadas, pendientes y vencidas.",
+            "description": "Obtener el detalle de un préstamo/crédito específico usando el nombre del producto asociado (ej. 'CRÉDITO PERSONAL'). Devuelve monto, saldo, cuota y estado.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "credit_id": {
-                        "type": "integer",
-                        "description": "ID numérico del préstamo/crédito a consultar.",
+                    "product_name": {
+                        "type": "string",
+                        "description": "Nombre del producto del crédito a consultar (ej. 'CRÉDITO PERSONAL').",
                     },
                 },
-                "required": ["credit_id"],
+                "required": ["product_name"],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_credit_schedule",
+            "description": "Obtener el cronograma de pagos detallado de un préstamo usando el nombre del producto. Muestra cuotas vencidas y próximas cuotas.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "product_name": {
+                        "type": "string",
+                        "description": "Nombre del producto del crédito a consultar.",
+                    },
+                },
+                "required": ["product_name"],
             },
         }
     },
@@ -115,6 +132,7 @@ class ToolRegistry:
             "get_account_statement": self._exec_account_statement,
             "get_credits_list": self._exec_credits_list,
             "get_credit_detail": self._exec_credit_detail,
+            "get_credit_schedule": self._exec_credit_schedule,
             "create_support_ticket": self._exec_create_support_ticket,
         }
 
@@ -152,10 +170,16 @@ class ToolRegistry:
             return {"error": "No se pudo obtener la lista de préstamos."}
         return data
 
-    def _exec_credit_detail(self, credit_id: int) -> dict:
-        data = self.api_service.get_credit_detail(self.partner_id, credit_id)
+    def _exec_credit_detail(self, product_name: str) -> dict:
+        data = self.api_service.get_credit_detail(self.partner_id, product_name)
         if not data:
-            return {"error": f"No se encontró el préstamo #{credit_id}."}
+            return {"error": f"No se encontró el préstamo '{product_name}'."}
+        return data
+
+    def _exec_credit_schedule(self, product_name: str) -> dict:
+        data = self.api_service.get_credit_schedule(self.partner_id, product_name)
+        if not data:
+            return {"error": f"No se pudo obtener el cronograma del préstamo '{product_name}'."}
         return data
 
     def _exec_create_support_ticket(self, subject: str, description: str) -> dict:

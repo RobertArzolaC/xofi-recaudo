@@ -137,14 +137,12 @@ class PartnerViewSet(viewsets.GenericViewSet):
         total_disbursed = credits.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
-        total_outstanding = credits.aggregate(total=Sum("outstanding_balance"))[
+        total_pending = partner.payments.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
 
         # Calculate total payments
-        total_payments = partner.payments.aggregate(total=Sum("amount"))[
-            "total"
-        ] or Decimal("0.00")
+        total_payments = total_disbursed - total_pending
 
         # Count active credits
         active_credits_count = credits.filter(status="ACTIVE").count()
@@ -198,7 +196,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "total_credits": total_credits,
                     "total_disbursed": float(total_disbursed),
                     "total_payments": float(total_payments),
-                    "total_outstanding": float(total_outstanding),
+                    "total_outstanding": float(total_pending),
                     "active_credits_count": active_credits_count,
                 },
                 "credits": credit_details,
@@ -316,212 +314,116 @@ class PartnerViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         operation_id="partners_credit_detail",
-        summary="Get credit detail",
+        summary="Get credit detail (AI Agent)",
         description=(
-            "Retrieve detailed information about a specific credit for a partner, "
-            "including installment schedule and payment history."
+            "Retrieve minimal credit information for the chatbot agent. "
+            "Looks up credit by product name."
         ),
         parameters=[
             OpenApiParameter(
-                name="id",
+                name="product_name",
                 type=str,
-                location=OpenApiParameter.PATH,
-                description="Partner ID, document number, or phone number",
-            ),
-            OpenApiParameter(
-                name="credit_id",
-                type=int,
-                location=OpenApiParameter.PATH,
-                description="Credit ID",
+                location=OpenApiParameter.QUERY,
+                description="Product name of the credit",
             ),
         ],
-        responses={
-            200: {
-                "type": "object",
-                "properties": {
-                    "partner": {"type": "object"},
-                    "credit": {"type": "object"},
-                    "installments": {
-                        "type": "array",
-                        "items": {"type": "object"},
-                    },
-                    "payments": {
-                        "type": "array",
-                        "items": {"type": "object"},
-                    },
-                },
-            },
-            404: {"description": "Credit not found"},
-        },
         tags=["Partners"],
     )
-    @action(
-        detail=True,
-        methods=["get"],
-        url_path="credits/(?P<credit_id>[^/.]+)",
-    )
-    def credit_detail(self, request, pk=None, credit_id=None):
+    @action(detail=True, methods=["get"], url_path="credit-detail")
+    def credit_detail(self, request, pk=None):
         """
-        Get detailed information about a specific credit.
-
-        Returns:
-            - Partner information
-            - Credit details
-            - Installment schedule
-            - Payment history
+        Get minimal credit detail for chatbot templates.
         """
         partner = self.get_object()
+        product_name = request.query_params.get("product_name")
 
-        # Get the specific credit
-        try:
-            credit = partner.credits.select_related(
-                "product", "product__product_type"
-            ).get(id=credit_id)
-        except models.Partner.credits.rel.related_model.DoesNotExist:
+        if not product_name:
             return Response(
-                {"detail": _("Credit not found for this partner.")},
+                {"detail": _("Product name is required.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        credit = partner.credits.select_related("product").filter(
+            product__name__iexact=product_name
+        ).first()
+
+        if not credit:
+            return Response(
+                {"detail": _("Credit not found for this product.")},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Get installments for current version
         installments = credit.get_current_installments()
+        overdue_count = sum(1 for i in installments if i.is_overdue)
+        pending_count = sum(1 for i in installments if i.status in ["PENDING", "PARTIAL"])
 
-        # Build installment list
-        installment_list = []
-        for installment in installments:
-            installment_list.append(
-                {
-                    "id": installment.id,
-                    "installment_number": installment.installment_number,
-                    "due_date": installment.due_date.isoformat(),
-                    "installment_amount": float(installment.installment_amount),
-                    "principal_amount": float(installment.principal_amount),
-                    "interest_amount": float(installment.interest_amount),
-                    "balance_after": float(installment.balance_after),
-                    "status": installment.get_status_display().title()
-                    if installment.status
-                    else None,
-                    "payment_date": (
-                        installment.payment_date.isoformat()
-                        if installment.payment_date
-                        else None
-                    ),
-                    "amount_paid": float(installment.amount_paid),
-                    "remaining_balance": float(installment.remaining_balance),
-                    "is_overdue": installment.is_overdue,
-                    "days_overdue": installment.days_overdue,
-                }
-            )
+        return Response({
+            "product_name": credit.product.name,
+            "amount": float(credit.amount),
+            "outstanding_balance": float(credit.outstanding_balance),
+            "payment_amount": float(credit.payment_amount) if credit.payment_amount else 0.0,
+            "status": credit.get_status_display().title(),
+            "term_duration": credit.term_duration,
+            "payment_frequency": credit.get_payment_frequency_display().title(),
+            "interest_rate": float(credit.interest_rate),
+            "overdue_count": overdue_count,
+            "pending_count": pending_count,
+        })
 
-        # Get payments for this credit (via installment allocations)
-        from apps.credits.models import Installment
+    @extend_schema(
+        operation_id="partners_credit_schedule",
+        summary="Get credit schedule (AI Agent)",
+        description="Retrieve overdue and next installments for the chatbot schedule message.",
+        parameters=[
+            OpenApiParameter(
+                name="product_name",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Product name of the credit",
+            ),
+        ],
+        tags=["Partners"],
+    )
+    @action(detail=True, methods=["get"], url_path="credit-schedule")
+    def credit_schedule(self, request, pk=None):
+        """
+        Get credit schedule for chatbot.
+        """
+        partner = self.get_object()
+        product_name = request.query_params.get("product_name")
 
-        credit_installment_ids = Installment.objects.filter(
-            credit=credit
-        ).values_list("id", flat=True)
+        if not product_name:
+            return Response({"detail": _("Product name is required.")}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get payment allocations for these installments
-        from django.contrib.contenttypes.models import ContentType
+        credit = partner.credits.select_related("product").filter(
+            product__name__iexact=product_name
+        ).first()
 
-        from apps.payments.models import PaymentConceptAllocation
+        if not credit:
+            return Response({"detail": _("Credit not found.")}, status=status.HTTP_404_NOT_FOUND)
 
-        installment_content_type = ContentType.objects.get_for_model(
-            Installment
-        )
+        installments = credit.get_current_installments()
+        
+        overdue = []
+        next_installments = []
+        total_overdue_amount = 0.0
 
-        payment_allocations = PaymentConceptAllocation.objects.filter(
-            content_type=installment_content_type,
-            object_id__in=credit_installment_ids,
-        ).select_related("payment")
-
-        # Build payment list
-        payment_list = []
-        seen_payment_ids = set()
-
-        for allocation in payment_allocations:
-            if allocation.payment.id not in seen_payment_ids:
-                seen_payment_ids.add(allocation.payment.id)
-                payment_list.append(
-                    {
-                        "id": allocation.payment.id,
-                        "payment_number": allocation.payment.payment_number,
-                        "payment_date": allocation.payment.payment_date.isoformat(),
-                        "amount": float(allocation.payment.amount),
-                        "payment_method": allocation.payment.payment_method,
-                        "reference_number": allocation.payment.reference_number,
-                        "status": allocation.payment.get_status_display().title()
-                        if allocation.payment.status
-                        else None,
-                    }
-                )
-
-        return Response(
-            {
-                "partner": {
-                    "id": partner.id,
-                    "full_name": partner.full_name,
-                    "document_number": partner.document_number,
-                },
-                "credit": {
-                    "id": credit.id,
-                    "product": {
-                        "id": credit.product.id,
-                        "name": credit.product.name,
-                        "product_type": credit.product.product_type.name,
-                    },
-                    "amount": float(credit.amount),
-                    "interest_rate": float(credit.interest_rate),
-                    "term_duration": credit.term_duration,
-                    "delinquency_rate": float(credit.delinquency_rate),
-                    "payment_frequency": credit.get_payment_frequency_display().title()
-                    if credit.payment_frequency
-                    else None,
-                    "payment_amount": (
-                        float(credit.payment_amount)
-                        if credit.payment_amount
-                        else None
-                    ),
-                    "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.get_status_display().title()
-                    if credit.status
-                    else None,
-                    "application_date": (
-                        credit.application_date.isoformat()
-                        if credit.application_date
-                        else None
-                    ),
-                    "approval_date": (
-                        credit.approval_date.isoformat()
-                        if credit.approval_date
-                        else None
-                    ),
-                    "disbursement_date": (
-                        credit.disbursement_date.isoformat()
-                        if credit.disbursement_date
-                        else None
-                    ),
-                    "total_interest": float(credit.total_interest),
-                    "total_repayment": float(credit.total_repayment),
-                    "current_version": credit.current_version,
-                    "notes": credit.notes,
-                    "created": credit.created.isoformat(),
-                    "modified": credit.modified.isoformat(),
-                },
-                "installments": installment_list,
-                "payments": payment_list,
-                "summary": {
-                    "total_installments": len(installment_list),
-                    "paid_installments": sum(
-                        1 for i in installment_list if i["status"] == "PAID"
-                    ),
-                    "pending_installments": sum(
-                        1 for i in installment_list if i["status"] == "PENDING"
-                    ),
-                    "overdue_installments": sum(
-                        1 for i in installment_list if i["is_overdue"]
-                    ),
-                    "total_payments": len(payment_list),
-                    "total_paid": sum(p["amount"] for p in payment_list),
-                },
+        for inst in installments:
+            data = {
+                "number": inst.installment_number,
+                "due_date": inst.due_date.strftime("%d %b %Y"),
+                "amount": float(inst.installment_amount),
+                "days_overdue": inst.days_overdue,
             }
-        )
+            if inst.is_overdue:
+                overdue.append(data)
+                total_overdue_amount += data["amount"]
+            elif inst.status in ["PENDING", "PARTIAL"] and len(next_installments) < 3:
+                next_installments.append(data)
+
+        return Response({
+            "product_name": credit.product.name,
+            "overdue": overdue,
+            "next_installments": next_installments,
+            "total_overdue_amount": total_overdue_amount,
+        })

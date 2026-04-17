@@ -278,6 +278,112 @@ class GetCreditsListStrategy(IntentStrategy):
             return BotResponse(text=text)
 
 
+class GetCreditDetailStrategy(IntentStrategy):
+    """Strategy for the get_credit_detail tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        product_name = tool_result.get("product_name") or "-"
+        amount = f"{tool_result.get('amount', 0.0):,.2f}"
+        balance = f"{tool_result.get('outstanding_balance', 0.0):,.2f}"
+        payment = f"{tool_result.get('payment_amount', 0.0):,.2f}"
+        status = tool_result.get("status") or "-"
+        term = str(tool_result.get("term_duration") or "-")
+        freq = tool_result.get("payment_frequency") or "-"
+        rate = f"{tool_result.get('interest_rate', 0.0):,.2f}"
+        overdue = str(tool_result.get("overdue_count") or "0")
+        pending = str(tool_result.get("pending_count") or "0")
+
+        if channel == choices.ChannelType.WHATSAPP:
+            # According to docs/template_account_credit_detail.md (10 parameters)
+            return BotResponse(
+                text=f"Aquí tienes el detalle de tu {product_name}.",
+                template={
+                    "name": "account_credit_detail",
+                    "language": "es_PE",
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {"type": "text", "text": product_name},  # {{1}}
+                                {"type": "text", "text": amount},        # {{2}}
+                                {"type": "text", "text": balance},       # {{3}}
+                                {"type": "text", "text": payment},       # {{4}}
+                                {"type": "text", "text": status},        # {{5}}
+                                {"type": "text", "text": term},          # {{6}}
+                                {"type": "text", "text": freq},          # {{7}}
+                                {"type": "text", "text": rate},          # {{8}}
+                                {"type": "text", "text": overdue},       # {{9}}
+                                {"type": "text", "text": pending},       # {{10}}
+                            ],
+                        }
+                    ],
+                },
+            )
+        else:
+            text = (
+                f"Aquí tienes el *detalle de tu préstamo*:\n\n"
+                f"💳 *{product_name}*\n\n"
+                f"📊 *Resumen*\n"
+                f"• Monto original: *S/ {amount}*\n"
+                f"• Saldo pendiente: *S/ {balance}*\n"
+                f"• Cuota mensual: *S/ {payment}*\n"
+                f"• Estado: *{status}*\n\n"
+                f"📅 *Condiciones*\n"
+                f"• Plazo: *{term} meses*\n"
+                f"• Frecuencia: *{freq}*\n"
+                f"• Tasa: *{rate}%*\n\n"
+                f"⚠️ *Situación actual*\n"
+                f"• Cuotas vencidas: *{overdue}*\n"
+                f"• Cuotas pendientes: *{pending}*\n\n"
+                f"👉 Escribe *CRONOGRAMA* para ver el detalle de tus cuotas"
+            )
+            return BotResponse(text=text)
+
+
+class GetCreditScheduleStrategy(IntentStrategy):
+    """Strategy for the get_credit_schedule tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        product_name = tool_result.get("product_name") or "Crédito"
+        overdue = tool_result.get("overdue") or []
+        next_3 = tool_result.get("next_installments") or []
+        total_overdue = f"{tool_result.get('total_overdue_amount', 0.0):,.2f}"
+
+        lines = [f"📅 *Cronograma de pagos - {product_name}*", ""]
+
+        if overdue:
+            lines.append("🔴 *Cuotas vencidas*")
+            for i, inst in enumerate(overdue, 1):
+                lines.append(f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f} ({inst['days_overdue']} días)")
+            lines.append("")
+
+        if next_3:
+            lines.append("🟡 *Próximas 3 cuotas*")
+            for inst in next_3:
+                lines.append(f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f}")
+            lines.append("")
+
+        lines.append(f"💰 Total vencido: *S/ {total_overdue}*")
+        
+        return BotResponse(text="\n".join(lines))
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
@@ -285,6 +391,8 @@ class StrategyFactory:
         "get_partner_detail": GetPartnerDetailStrategy(),
         "get_account_statement": GetAccountStatementStrategy(),
         "get_credits_list": GetCreditsListStrategy(),
+        "get_credit_detail": GetCreditDetailStrategy(),
+        "get_credit_schedule": GetCreditScheduleStrategy(),
     }
 
     @classmethod

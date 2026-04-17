@@ -62,16 +62,31 @@ class PartnerAPIService:
             return {}
 
     def get_credit_detail(
-        self, partner_id: int, credit_id: int
+        self, partner_id: int, product_name: str
     ) -> Dict[str, Any]:
-        """Get credit detail from API."""
-        url = f"{self.base_url}/api/v1/partners/partners/{partner_id}/credits/{credit_id}/"
+        """Get credit detail from API using product name."""
+        url = f"{self.base_url}/api/v1/partners/partners/{partner_id}/credit-detail/"
+        params = {"product_name": product_name}
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, params=params, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            logger.error(f"Error fetching credit detail: {e}")
+            logger.error(f"Error fetching credit detail for '{product_name}': {e}")
+            return {}
+
+    def get_credit_schedule(
+        self, partner_id: int, product_name: str
+    ) -> Dict[str, Any]:
+        """Get credit schedule from API using product name."""
+        url = f"{self.base_url}/api/v1/partners/partners/{partner_id}/credit-schedule/"
+        params = {"product_name": product_name}
+        try:
+            response = requests.get(url, headers=self.headers, params=params, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            logger.error(f"Error fetching credit schedule for '{product_name}': {e}")
             return {}
 
     def create_support_ticket(
