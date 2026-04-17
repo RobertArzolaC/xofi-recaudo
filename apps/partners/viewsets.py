@@ -408,10 +408,16 @@ class PartnerViewSet(viewsets.GenericViewSet):
         next_installments = []
         total_overdue_amount = 0.0
 
+        MONTHS_ES = {
+            1: "Ene", 2: "Feb", 3: "Mar", 4: "Abr",
+            5: "May", 6: "Jun", 7: "Jul", 8: "Ago",
+            9: "Sep", 10: "Oct", 11: "Nov", 12: "Dic"
+        }
+
         for inst in installments:
             data = {
                 "number": inst.installment_number,
-                "due_date": inst.due_date.strftime("%d %b %Y"),
+                "due_date": f"{inst.due_date.day:02d} {MONTHS_ES[inst.due_date.month]} {inst.due_date.year}",
                 "amount": float(inst.installment_amount),
                 "days_overdue": inst.days_overdue,
             }
