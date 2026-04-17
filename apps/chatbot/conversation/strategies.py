@@ -120,13 +120,7 @@ class GetAccountStatementStrategy(IntentStrategy):
         credits = tool_result.get("credits") or []
         main_credit = credits[0] if credits else {}
 
-        product_names = []
-        for c in credits:
-            name = c.get("product") or c.get("product_name")
-            if name and str(name) not in product_names:
-                product_names.append(str(name))
-        associated_products = ", ".join(product_names) if product_names else "-"
-
+        product_name = main_credit.get("product", "Préstamo")
         amount = f"{main_credit.get('amount', 0.0):,.2f}"
         interest_rate = f"{main_credit.get('interest_rate', 0.0):,.2f}"
         term = str(main_credit.get("term_duration") or "-")
@@ -134,10 +128,7 @@ class GetAccountStatementStrategy(IntentStrategy):
         balance = f"{main_credit.get('outstanding_balance', 0.0):,.2f}"
         status = main_credit.get("status") or "-"
 
-        app_date = main_credit.get("application_date") or "-"
         disb_date = main_credit.get("disbursement_date") or "-"
-        if app_date != "-":
-            app_date = app_date[:10]
         if disb_date != "-":
             disb_date = disb_date[:10]
 
@@ -148,7 +139,9 @@ class GetAccountStatementStrategy(IntentStrategy):
 
         current_date = datetime.now().strftime("%d/%m/%Y")
         portal_link = getattr(
-            settings, "PAYMENT_PORTAL_URL", "https://portal.xofi.pe/pago"
+            settings,
+            "PAYMENT_PORTAL_URL",
+            "https://xofi.com/prestamo/1020/summary",
         )
 
         if channel == choices.ChannelType.WHATSAPP:
@@ -178,7 +171,7 @@ class GetAccountStatementStrategy(IntentStrategy):
                                 },  # {{5}}
                                 {
                                     "type": "text",
-                                    "text": associated_products,
+                                    "text": product_name,
                                 },  # {{6}}
                                 {"type": "text", "text": amount},  # {{7}}
                                 {
@@ -189,14 +182,13 @@ class GetAccountStatementStrategy(IntentStrategy):
                                 {"type": "text", "text": frequency},  # {{10}}
                                 {"type": "text", "text": balance},  # {{11}}
                                 {"type": "text", "text": status},  # {{12}}
-                                {"type": "text", "text": app_date},  # {{13}}
-                                {"type": "text", "text": disb_date},  # {{14}}
-                                {"type": "text", "text": contributed},  # {{15}}
+                                {"type": "text", "text": disb_date},  # {{13}}
+                                {"type": "text", "text": contributed},  # {{14}}
                                 {
                                     "type": "text",
                                     "text": social_security,
-                                },  # {{16}}
-                                {"type": "text", "text": portal_link},  # {{17}}
+                                },  # {{15}}
+                                {"type": "text", "text": portal_link},  # {{16}}
                             ],
                         }
                     ],
@@ -210,8 +202,8 @@ class GetAccountStatementStrategy(IntentStrategy):
                 f"• Total desembolsado: *S/ {total_disbursed}*\n"
                 f"• Total pagado: *S/ {total_paid}*\n"
                 f"• Saldo pendiente: *S/ {total_outstanding}*\n\n"
-                f"💳 *Detalle de tu crédito*\n"
-                f"• Productos: *{associated_products}*\n"
+                f"💳 *Detalle de tu último crédito*\n"
+                f"• Producto: *{product_name}*\n"
                 f"• Monto original: *S/ {amount}*\n"
                 f"• Tasa: *{interest_rate}% anual*\n"
                 f"• Plazo: *{term} meses*\n"
@@ -219,7 +211,6 @@ class GetAccountStatementStrategy(IntentStrategy):
                 f"• Saldo actual: *S/ {balance}*\n"
                 f"• Estado: *{status}*\n\n"
                 f"📅 *Fechas importantes*\n"
-                f"• Solicitud: {app_date}\n"
                 f"• Desembolso: {disb_date}\n\n"
                 f"🏦 *Aportes y Previsión Social*\n"
                 f"• Aportes: *S/ {contributed}*\n"

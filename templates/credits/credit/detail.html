@@ -83,9 +83,6 @@
                         <div class="fw-bold mt-5">{% trans "Partner Document" %}</div>
                         <div class="text-gray-600">{{ credit.partner.document_number }}</div>
 
-                        <div class="fw-bold mt-5">{% trans "Application Date" %}</div>
-                        <div class="text-gray-600">{{ credit.application_date|date:"F d, Y" }}</div>
-
                         {% if credit.approval_date %}
                         <div class="fw-bold mt-5">{% trans "Approval Date" %}</div>
                         <div class="text-gray-600">{{ credit.approval_date|date:"F d, Y" }}</div>

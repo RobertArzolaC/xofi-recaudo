@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-13 17:06-0500\n"
+"POT-Creation-Date: 2026-04-17 10:58-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,9 +159,6 @@ msgstr "Notificación Programada"
 #: apps/credits/choices.py:81 apps/notifications/choices.py:14
 #: apps/partners/choices.py:6 apps/partners/choices.py:13
 #: apps/payments/choices.py:46 apps/reports/choices.py:10
-#: templates/compliance/contribution/list.html:116
-#: templates/compliance/penalty/list.html:116
-#: templates/compliance/social_security/list.html:116
 msgid "Pending"
 msgstr "Pendiente"
 
@@ -511,7 +508,7 @@ msgid "Select partners..."
 msgstr "Seleccionar socios..."
 
 #: apps/campaigns/forms.py:197 apps/campaigns/models.py:214
-#: apps/partners/apps.py:8 apps/partners/models.py:158
+#: apps/partners/apps.py:8 apps/partners/models.py:161
 #: templates/campaigns/group/detail.html:78
 #: templates/campaigns/group/list.html:91 templates/dashboard/index.html:804
 #: templates/includes/aside.html:39 templates/partners/partner/list.html:5
@@ -1569,7 +1566,7 @@ msgstr "Seleccionar socio"
 
 #: apps/compliance/forms.py:73 apps/compliance/forms.py:196
 #: apps/compliance/forms.py:322 apps/credits/forms.py:351
-#: apps/credits/forms.py:638 apps/partners/models.py:157
+#: apps/credits/forms.py:638 apps/partners/models.py:160
 #: apps/payments/filtersets.py:34 apps/payments/filtersets.py:114
 #: apps/payments/filtersets.py:169 apps/payments/forms.py:59
 #: apps/payments/forms.py:172 apps/support/models.py:19
@@ -1718,6 +1715,62 @@ msgstr "Multa"
 #: templates/compliance/penalty/list.html:5 templates/includes/aside.html:169
 msgid "Penalties"
 msgstr "Multas"
+
+#: apps/compliance/models.py:186
+#, fuzzy
+#| msgid "Partner associated with this conversation"
+msgid "Partner associated with this initial balance."
+msgstr "Socio asociado con esta conversación"
+
+#: apps/compliance/models.py:189
+#, fuzzy
+#| msgid "Contribution Amount"
+msgid "Initial Contribution Amount"
+msgstr "Monto de Aporte"
+
+#: apps/compliance/models.py:194
+#, fuzzy
+#| msgid "Total debt amount for the partner at the time of notification."
+msgid "Total amount contributed before system implementation."
+msgstr "Monto total de la deuda del socio en el momento de la notificación."
+
+#: apps/compliance/models.py:197
+#, fuzzy
+#| msgid "Social Security Amount"
+msgid "Initial Social Security Amount"
+msgstr "Monto de Previsión Social"
+
+#: apps/compliance/models.py:203
+msgid "Total social security amount paid before system implementation."
+msgstr ""
+
+#: apps/compliance/models.py:207
+#, fuzzy
+#| msgid "Execution Date"
+msgid "Cut-off Date"
+msgstr "Fecha de ejecución"
+
+#: apps/compliance/models.py:209
+msgid "Date from which the system starts tracking detailed payments."
+msgstr ""
+
+#: apps/compliance/models.py:215
+#, fuzzy
+#| msgid "Account Settings"
+msgid "Compliance Initial Balance"
+msgstr "Configuración de la Cuenta"
+
+#: apps/compliance/models.py:216
+#, fuzzy
+#| msgid "Account Settings"
+msgid "Compliance Initial Balances"
+msgstr "Configuración de la Cuenta"
+
+#: apps/compliance/models.py:219
+#, fuzzy
+#| msgid "Balance"
+msgid "Initial Balance"
+msgstr "Saldo"
 
 #: apps/compliance/views.py:73 templates/compliance/contribution/form.html:138
 msgid "Create Contribution"
@@ -2864,7 +2917,6 @@ msgstr "Estado actual del crédito."
 
 #: apps/credits/models.py:211 apps/payments/models.py:222
 #: templates/credits/credit/detail.html:86
-#: templates/credits/credit/list.html:78
 msgid "Application Date"
 msgstr "Fecha de Solicitud"
 
@@ -2881,6 +2933,7 @@ msgid "Date when the credit was approved."
 msgstr "Fecha en que se aprobó el crédito."
 
 #: apps/credits/models.py:222 templates/credits/credit/detail.html:95
+#: templates/credits/credit/list.html:78
 msgid "Disbursement Date"
 msgstr "Fecha de Desembolso"
 
@@ -4073,12 +4126,12 @@ msgid "External ID"
 msgstr "ID Externo"
 
 #: apps/partners/forms.py:77 apps/partners/forms.py:267
-#: apps/partners/forms.py:599 apps/partners/models.py:61
+#: apps/partners/forms.py:599 apps/partners/models.py:64
 msgid "Phone number"
 msgstr "Número de teléfono"
 
 #: apps/partners/forms.py:83 apps/partners/forms.py:273
-#: apps/partners/forms.py:593 apps/partners/models.py:57 apps/users/forms.py:68
+#: apps/partners/forms.py:593 apps/partners/models.py:60 apps/users/forms.py:68
 #: apps/users/forms.py:136
 msgid "Email address"
 msgstr "Dirección de correo electrónico"
@@ -4274,7 +4327,7 @@ msgstr "Correo electrónico del trabajo"
 msgid "Supervisor Name"
 msgstr "Nombre del supervisor"
 
-#: apps/partners/forms.py:607 apps/partners/models.py:105
+#: apps/partners/forms.py:607 apps/partners/models.py:108
 msgid "Additional notes about the prospect"
 msgstr "Notas adicionales sobre el aspirante"
 
@@ -4282,177 +4335,177 @@ msgstr "Notas adicionales sobre el aspirante"
 msgid "Last Names"
 msgstr "Apellidos"
 
-#: apps/partners/models.py:15
+#: apps/partners/models.py:18
 msgid "Unique external identifier for the applicant."
 msgstr "Identificador externo único para el solicitante."
 
-#: apps/partners/models.py:20
+#: apps/partners/models.py:23
 msgid "Current status of the applicant."
 msgstr "Estado actual del solicitante."
 
-#: apps/partners/models.py:25
+#: apps/partners/models.py:28
 msgid "Applicant"
 msgstr "Solicitante"
 
-#: apps/partners/models.py:26 templates/partners/applicant/list.html:5
+#: apps/partners/models.py:29 templates/partners/applicant/list.html:5
 msgid "Applicants"
 msgstr "Solicitantes"
 
-#: apps/partners/models.py:37
+#: apps/partners/models.py:40
 msgid "Type of identification document"
 msgstr "Tipo de documento de identificación"
 
-#: apps/partners/models.py:41
+#: apps/partners/models.py:44
 msgid "Document identification number"
 msgstr "Número de documento de identificación"
 
-#: apps/partners/models.py:47
+#: apps/partners/models.py:50
 msgid "First name of the prospect"
 msgstr "Primer nombre del aspirante"
 
-#: apps/partners/models.py:51
+#: apps/partners/models.py:54
 msgid "Last name of the prospect"
 msgstr "Apellido del aspirante"
 
-#: apps/partners/models.py:54
+#: apps/partners/models.py:57
 msgid "Date of birth"
 msgstr "Fecha de nacimiento"
 
-#: apps/partners/models.py:68
+#: apps/partners/models.py:71
 msgid "Current status of the prospect"
 msgstr "Estado actual del aspirante"
 
-#: apps/partners/models.py:75
+#: apps/partners/models.py:78
 msgid "Source of the prospect registration"
 msgstr "Fuente de registro del aspirante"
 
-#: apps/partners/models.py:82
+#: apps/partners/models.py:85
 msgid "IP address when the prospect registered"
 msgstr "Dirección IP cuando se registró el aspirante"
 
-#: apps/partners/models.py:86
+#: apps/partners/models.py:89
 msgid "Browser user agent when registered"
 msgstr "Agente de usuario del navegador cuando se registró"
 
-#: apps/partners/models.py:93
+#: apps/partners/models.py:96
 msgid "Date and time when prospect was first contacted"
 msgstr "Fecha y hora en que se contactó por primera vez al aspirante"
 
-#: apps/partners/models.py:101
+#: apps/partners/models.py:104
 msgid "Employee assigned to follow up with this prospect"
 msgstr "Empleado asignado para hacer seguimiento a este aspirante"
 
-#: apps/partners/models.py:111
+#: apps/partners/models.py:114
 msgid "Prospect"
 msgstr "Aspirante"
 
-#: apps/partners/models.py:112 apps/partners/views.py:316
+#: apps/partners/models.py:115 apps/partners/views.py:316
 #: templates/partners/prospect/list.html:5
 #: templates/partners/prospect/list.html:64
 msgid "Prospects"
 msgstr "Aspirantes"
 
-#: apps/partners/models.py:152
+#: apps/partners/models.py:155
 msgid "Current status of the partner."
 msgstr "Estado actual del socio."
 
-#: apps/partners/models.py:172
+#: apps/partners/models.py:211
 msgid "Partner associated with this employment information."
 msgstr "Socio asociado con esta información laboral."
 
-#: apps/partners/models.py:179
+#: apps/partners/models.py:218
 msgid "Current occupation of the partner."
 msgstr "Ocupación actual del socio."
 
-#: apps/partners/models.py:184
+#: apps/partners/models.py:223
 msgid "Professional specialization or career."
 msgstr "Especialización o carrera profesional."
 
-#: apps/partners/models.py:190
+#: apps/partners/models.py:229
 msgid "Highest education level achieved."
 msgstr "Nivel educativo más alto alcanzado."
 
-#: apps/partners/models.py:198
+#: apps/partners/models.py:237
 msgid "Type of employment according to Peruvian labor law."
 msgstr "Tipo de empleo según la legislación laboral peruana."
 
-#: apps/partners/models.py:202
+#: apps/partners/models.py:241
 msgid "Whether the partner is currently employed."
 msgstr "Si el socio está actualmente empleado."
 
-#: apps/partners/models.py:209
+#: apps/partners/models.py:248
 msgid "Name of the current workplace or company."
 msgstr "Nombre del lugar de trabajo o empresa actual."
 
-#: apps/partners/models.py:214
+#: apps/partners/models.py:253
 msgid "Address of the current workplace."
 msgstr "Dirección del lugar de trabajo actual."
 
-#: apps/partners/models.py:219
+#: apps/partners/models.py:258
 msgid "Additional or secondary workplace."
 msgstr "Lugar de trabajo adicional o secundario."
 
-#: apps/partners/models.py:224
+#: apps/partners/models.py:263
 msgid "Current job position or title."
 msgstr "Cargo o título del trabajo actual."
 
-#: apps/partners/models.py:229
+#: apps/partners/models.py:268
 msgid "Department or area within the company."
 msgstr "Departamento o área dentro de la empresa."
 
-#: apps/partners/models.py:237
+#: apps/partners/models.py:276
 msgid "Type of employment contract."
 msgstr "Tipo de contrato de trabajo."
 
-#: apps/partners/models.py:242
+#: apps/partners/models.py:281
 msgid "Start date of current employment contract."
 msgstr "Fecha de inicio del contrato de trabajo actual."
 
-#: apps/partners/models.py:247
+#: apps/partners/models.py:286
 msgid "End date of contract (if applicable)."
 msgstr "Fecha de finalización del contrato (si aplica)."
 
-#: apps/partners/models.py:253
+#: apps/partners/models.py:292
 msgid "Type of work schedule."
 msgstr "Tipo de horario laboral."
 
-#: apps/partners/models.py:258
+#: apps/partners/models.py:297
 msgid "Number of weekly working hours."
 msgstr "Número de horas laborales semanales."
 
-#: apps/partners/models.py:267
+#: apps/partners/models.py:306
 msgid "Base salary amount in Peruvian Soles (PEN)."
 msgstr "Monto del salario base en Soles Peruanos (PEN)."
 
-#: apps/partners/models.py:273
+#: apps/partners/models.py:312
 msgid "Frequency of salary payment."
 msgstr "Frecuencia de pago del salario."
 
-#: apps/partners/models.py:280
+#: apps/partners/models.py:319
 msgid "Additional income from bonuses, commissions, etc."
 msgstr "Ingresos adicionales por bonificaciones, comisiones, etc."
 
-#: apps/partners/models.py:287
+#: apps/partners/models.py:326
 msgid "Total estimated monthly income."
 msgstr "Ingreso mensual total estimado."
 
-#: apps/partners/models.py:294
+#: apps/partners/models.py:333
 msgid "Work phone number."
 msgstr "Número de teléfono laboral."
 
-#: apps/partners/models.py:298
+#: apps/partners/models.py:337
 msgid "Work email address."
 msgstr "Dirección de correo electrónico laboral."
 
-#: apps/partners/models.py:303
+#: apps/partners/models.py:342
 msgid "Name of direct supervisor or manager."
 msgstr "Nombre del supervisor o gerente directo."
 
-#: apps/partners/models.py:309
+#: apps/partners/models.py:348
 msgid "Additional notes about employment information."
 msgstr "Notas adicionales sobre la información laboral."
 
-#: apps/partners/models.py:313 apps/partners/models.py:314
+#: apps/partners/models.py:352 apps/partners/models.py:353
 msgid "Partner Employment Information"
 msgstr "Información Laboral del Socio"
 
@@ -4460,7 +4513,7 @@ msgstr "Información Laboral del Socio"
 msgid "A partner with this document number already exists."
 msgstr "Ya existe una cuenta con este número de documento."
 
-#: apps/partners/viewsets.py:369
+#: apps/partners/viewsets.py:382
 msgid "Credit not found for this partner."
 msgstr "Crédito no encontrado para este socio."
 
@@ -6787,7 +6840,8 @@ msgstr "Seleccione el canal de comunicación para enviar las notificaciones"
 #: templates/campaigns/campaign/form.html:145
 #: templates/campaigns/campaign_csv/form.html:138
 msgid "Select a specific message template for this campaign (optional)"
-msgstr "Seleccione una plantilla de mensaje específica para esta campaña (opcional)"
+msgstr ""
+"Seleccione una plantilla de mensaje específica para esta campaña (opcional)"
 
 #: templates/campaigns/campaign/form.html:161
 #: templates/campaigns/campaign_csv/form.html:153
@@ -7875,21 +7929,21 @@ msgstr "Listar Contribución"
 msgid "contributions"
 msgstr "contribuciones"
 
-#: templates/compliance/contribution/list.html:124
-#: templates/compliance/penalty/list.html:124
-#: templates/compliance/social_security/list.html:124
+#: templates/compliance/contribution/list.html:123
+#: templates/compliance/penalty/list.html:123
+#: templates/compliance/social_security/list.html:123
 msgid "days overdue"
 msgstr "días de retraso"
 
-#: templates/compliance/contribution/list.html:163
+#: templates/compliance/contribution/list.html:162
 msgid "No contributions found"
 msgstr "No se encontraron contribuciones"
 
-#: templates/compliance/contribution/list.html:166
+#: templates/compliance/contribution/list.html:165
 msgid "Start by creating your first contribution"
 msgstr "Comienza creando tu primera contribución"
 
-#: templates/compliance/contribution/list.html:167
+#: templates/compliance/contribution/list.html:166
 msgid "Add Contribution"
 msgstr "Agregar Contribución"
 
@@ -7944,15 +7998,15 @@ msgstr "Lista de Penalizaciones"
 msgid "penalties"
 msgstr "penalizaciones"
 
-#: templates/compliance/penalty/list.html:163
+#: templates/compliance/penalty/list.html:162
 msgid "No penalties found"
 msgstr "No se encontraron penalizaciones"
 
-#: templates/compliance/penalty/list.html:165
+#: templates/compliance/penalty/list.html:164
 msgid "Start by creating your first penalty"
 msgstr "Comienza creando tu primera penalización"
 
-#: templates/compliance/penalty/list.html:166
+#: templates/compliance/penalty/list.html:165
 msgid "Add Penalty"
 msgstr "Agregar Penalización"
 
@@ -7996,15 +8050,15 @@ msgstr "Listar Seguridad Social"
 msgid "social security records"
 msgstr "registros de seguridad social"
 
-#: templates/compliance/social_security/list.html:163
+#: templates/compliance/social_security/list.html:162
 msgid "No social security records found"
 msgstr "No se encontraron registros de seguridad social"
 
-#: templates/compliance/social_security/list.html:166
+#: templates/compliance/social_security/list.html:165
 msgid "Start by creating your first social security record"
 msgstr "Comienza creando tu primer registro de seguridad social"
 
-#: templates/compliance/social_security/list.html:167
+#: templates/compliance/social_security/list.html:166
 msgid "Add Social Security"
 msgstr "Agregar Seguridad Social"
 
@@ -10923,14 +10977,8 @@ msgstr "Guardar Roles"
 #~ msgid "Partner who received this notification."
 #~ msgstr "Socio que recibió esta notificación."
 
-#~ msgid "Contribution Amount"
-#~ msgstr "Monto de Aporte"
-
 #~ msgid "Monthly contribution amount"
 #~ msgstr "Monto de aporte mensual"
-
-#~ msgid "Social Security Amount"
-#~ msgstr "Monto de Previsión Social"
 
 #~ msgid "Monthly social security amount"
 #~ msgstr "Monto de previsión social mensual"
@@ -10991,11 +11039,6 @@ msgstr "Guardar Roles"
 
 #~ msgid "Historial de Pagos"
 #~ msgstr "Historial de Pagos"
-
-#, fuzzy
-#~| msgid "Account Settings"
-#~ msgid "Compliance Settings"
-#~ msgstr "Configuración de la Cuenta"
 
 #, fuzzy
 #~| msgid "May"

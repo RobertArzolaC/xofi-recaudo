@@ -75,7 +75,7 @@
                             <th class="min-w-120px">{% trans "Product" %}</th>
                             <th class="min-w-100px">{% trans "Amount" %}</th>
                             <th class="min-w-100px">{% trans "Status" %}</th>
-                            <th class="min-w-120px">{% trans "Application Date" %}</th>
+                            <th class="min-w-120px">{% trans "Disbursement Date" %}</th>
                             <th class="min-w-100px text-end">{% trans "Actions" %}</th>
                         </tr>
                     </thead>
@@ -126,7 +126,7 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
-                                    <span class="text-gray-800 fs-7">{{ credit.application_date|date:"M d, Y" }}</span>
+                                    <span class="text-gray-800 fs-7">{{ credit.disbursement_date|date:"M d, Y" }}</span>
                                     {% if credit.approval_date %}
                                         <span class="text-muted fs-7">{% trans "Approved" %}: {{ credit.approval_date|date:"M d, Y" }}</span>
                                     {% endif %}

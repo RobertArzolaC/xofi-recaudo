@@ -130,7 +130,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
         # Get all credits for this partner
         credits = partner.credits.select_related(
             "product", "product__product_type"
-        )
+        ).order_by("-disbursement_date")
 
         # Calculate summary statistics
         total_credits = credits.count()
