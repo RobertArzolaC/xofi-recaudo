@@ -13,7 +13,10 @@ class IntentStrategy(ABC):
 
     @abstractmethod
     def handle(
-        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
     ) -> BotResponse:
         """Handle the tool result and return a formatted BotResponse."""
         pass
@@ -23,7 +26,10 @@ class GetPartnerDetailStrategy(IntentStrategy):
     """Strategy for the get_partner_detail tool."""
 
     def handle(
-        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
     ) -> BotResponse:
         if "error" in tool_result:
             return BotResponse(text=tool_result["error"])
@@ -38,7 +44,12 @@ class GetPartnerDetailStrategy(IntentStrategy):
         registration_date = created[:10] if created else "-"
 
         # Human readable status
-        status_map = {0: "Pendiente", 1: "Activo", 2: "Inactivo", 3: "Suspendido"}
+        status_map = {
+            0: "Pendiente",
+            1: "Activo",
+            2: "Inactivo",
+            3: "Suspendido",
+        }
         status_text = status_map.get(status_val, "Desconocido")
 
         if channel == choices.ChannelType.WHATSAPP:
@@ -92,7 +103,10 @@ class GetAccountStatementStrategy(IntentStrategy):
     """Strategy for the get_account_statement tool."""
 
     def handle(
-        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
     ) -> BotResponse:
         if "error" in tool_result:
             return BotResponse(text=tool_result["error"])
@@ -112,7 +126,7 @@ class GetAccountStatementStrategy(IntentStrategy):
             if name and str(name) not in product_names:
                 product_names.append(str(name))
         associated_products = ", ".join(product_names) if product_names else "-"
-        
+
         amount = f"{main_credit.get('amount', 0.0):,.2f}"
         interest_rate = f"{main_credit.get('interest_rate', 0.0):,.2f}"
         term = str(main_credit.get("term_duration") or "-")
@@ -128,7 +142,9 @@ class GetAccountStatementStrategy(IntentStrategy):
             disb_date = disb_date[:10]
 
         contributed = f"{tool_result.get('total_contributed', 0.0):,.2f}"
-        social_security = f"{tool_result.get('total_social_security_paid', 0.0):,.2f}"
+        social_security = (
+            f"{tool_result.get('total_social_security_paid', 0.0):,.2f}"
+        )
 
         current_date = datetime.now().strftime("%d/%m/%Y")
         portal_link = getattr(
@@ -147,16 +163,28 @@ class GetAccountStatementStrategy(IntentStrategy):
                             "type": "body",
                             "parameters": [
                                 {"type": "text", "text": current_date},  # {{1}}
-                                {"type": "text", "text": active_credits},  # {{2}}
-                                {"type": "text", "text": total_disbursed},  # {{3}}
+                                {
+                                    "type": "text",
+                                    "text": active_credits,
+                                },  # {{2}}
+                                {
+                                    "type": "text",
+                                    "text": total_disbursed,
+                                },  # {{3}}
                                 {"type": "text", "text": total_paid},  # {{4}}
                                 {
                                     "type": "text",
                                     "text": total_outstanding,
                                 },  # {{5}}
-                                {"type": "text", "text": associated_products},  # {{6}}
+                                {
+                                    "type": "text",
+                                    "text": associated_products,
+                                },  # {{6}}
                                 {"type": "text", "text": amount},  # {{7}}
-                                {"type": "text", "text": interest_rate},  # {{8}}
+                                {
+                                    "type": "text",
+                                    "text": interest_rate,
+                                },  # {{8}}
                                 {"type": "text", "text": term},  # {{9}}
                                 {"type": "text", "text": frequency},  # {{10}}
                                 {"type": "text", "text": balance},  # {{11}}
@@ -206,7 +234,10 @@ class GetCreditsListStrategy(IntentStrategy):
     """Strategy for the get_credits_list tool."""
 
     def handle(
-        self, tool_args: Dict[str, Any], tool_result: Dict[str, Any], channel: str
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
     ) -> BotResponse:
         if "error" in tool_result:
             return BotResponse(text=tool_result["error"])
@@ -216,8 +247,6 @@ class GetCreditsListStrategy(IntentStrategy):
         total_outstanding = f"{summary.get('total_outstanding', 0.0):,.2f}"
         total_paid = f"{summary.get('total_payments', 0.0):,.2f}"
         associated_products = summary.get("associated_products") or "Ninguno"
-
-        current_date = datetime.now().strftime("%d/%m/%Y")
 
         if channel == choices.ChannelType.WHATSAPP:
             # According to docs/template_account_credit_list.md
@@ -230,11 +259,16 @@ class GetCreditsListStrategy(IntentStrategy):
                         {
                             "type": "body",
                             "parameters": [
-                                {"type": "text", "text": current_date},  # {{1}}
-                                {"type": "text", "text": active_count},  # {{2}}
-                                {"type": "text", "text": total_outstanding},  # {{3}}
-                                {"type": "text", "text": total_paid},  # {{4}}
-                                {"type": "text", "text": associated_products},  # {{5}}
+                                {"type": "text", "text": active_count},  # {{1}}
+                                {
+                                    "type": "text",
+                                    "text": total_outstanding,
+                                },  # {{2}}
+                                {"type": "text", "text": total_paid},  # {{3}}
+                                {
+                                    "type": "text",
+                                    "text": associated_products,
+                                },  # {{4}}
                             ],
                         }
                     ],
