@@ -151,12 +151,34 @@ class ToolRegistry:
 
     def execute(self, tool_name: str, args: dict) -> dict[str, Any]:
         """Dispatch a tool call to its executor. Returns the result dict."""
+        import inspect
+
         executor = self._executors.get(tool_name)
         if not executor:
             logger.warning("Unknown tool requested: %s", tool_name)
             return {"error": f"Herramienta desconocida: {tool_name}"}
+
+        # Some models might nest arguments under '@arguments' or similar keys
+        actual_args = args
+        if isinstance(args, dict):
+            if "@arguments" in args:
+                actual_args = args["@arguments"]
+            elif "arguments" in args and isinstance(args["arguments"], dict):
+                actual_args = args["arguments"]
+
         try:
-            return executor(**args)
+            # Get the expected parameters for the executor
+            sig = inspect.signature(executor)
+            valid_params = sig.parameters.keys()
+
+            # Filter out arguments that are not expected by the executor
+            # This handles cases where the model hallucinations keys like '' or '@type'
+            filtered_args = {
+                k: v for k, v in actual_args.items() 
+                if k in valid_params and k != ""
+            }
+
+            return executor(**filtered_args)
         except Exception as exc:
             logger.error("Error executing tool %s: %s", tool_name, exc, exc_info=True)
             return {"error": "No se pudo completar la consulta. Intenta de nuevo."}
