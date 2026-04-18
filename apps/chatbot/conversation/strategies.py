@@ -384,6 +384,49 @@ class GetCreditScheduleStrategy(IntentStrategy):
         return BotResponse(text="\n".join(lines))
 
 
+class RequestSupportTicketStrategy(IntentStrategy):
+    """Strategy for the request_support_ticket tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if channel == choices.ChannelType.WHATSAPP:
+            return BotResponse(
+                text="Por favor, completa el formulario para crear tu ticket.",
+                template={
+                    "name": "support_ticket_create",
+                    "language": "es_PE",
+                },
+            )
+        else:
+            return BotResponse(
+                text="Por favor, indícame el *asunto* y la *descripción* detallada de tu consulta para crear el ticket de soporte."
+            )
+
+
+class CreateSupportTicketStrategy(IntentStrategy):
+    """Strategy for the create_support_ticket tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        ticket_id = tool_result.get("id") or "-"
+        text = (
+            f"✅ *Ticket #{ticket_id} creado correctamente*\n\n"
+            f"Nuestro equipo revisará tu caso y se contactará contigo lo antes posible."
+        )
+        return BotResponse(text=text)
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
@@ -393,6 +436,8 @@ class StrategyFactory:
         "get_credits_list": GetCreditsListStrategy(),
         "get_credit_detail": GetCreditDetailStrategy(),
         "get_credit_schedule": GetCreditScheduleStrategy(),
+        "request_support_ticket": RequestSupportTicketStrategy(),
+        "create_support_ticket": CreateSupportTicketStrategy(),
     }
 
     @classmethod

@@ -119,28 +119,6 @@ CREDIT_DETAIL_REQUEST = (
 )
 
 # ==========================================
-# TICKET CREATION FLOW
-# ==========================================
-
-TICKET_START_MESSAGE = (
-    "Voy a ayudarte a crear un ticket de soporte.\n\n"
-    "Por favor, describe brevemente el asunto:"
-)
-
-TICKET_DESCRIPTION_PROMPT = (
-    "Ahora, describe con más detalle tu problema o consulta:"
-)
-
-TICKET_SUCCESS_TEMPLATE = (
-    "Ticket #{ticket_id} creado exitosamente.\n"
-    "Nuestro equipo lo atenderá pronto."
-)
-
-TICKET_ERROR = "No se pudo crear el ticket."
-
-TICKET_FLOW_ERROR = "Hubo un error en el proceso."
-
-# ==========================================
 # ERROR MESSAGES
 # ==========================================
 

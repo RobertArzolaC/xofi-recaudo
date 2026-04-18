@@ -89,8 +89,20 @@ TOOL_DECLARATIONS = [
     {
         "type": "function",
         "function": {
+            "name": "request_support_ticket",
+            "description": "Usar cuando el socio solicita crear un ticket de soporte, ayuda, queja o reclamo. NO pide parámetros, solo envía el formulario.",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "create_support_ticket",
-            "description": "Crear un ticket de soporte para el socio. Usar cuando el socio reporta un problema, queja, reclamo o necesita asistencia especializada que no se puede resolver con las consultas disponibles.",
+            "description": "Crear un ticket de soporte en el sistema. Usar ÚNICAMENTE cuando el socio ya ha enviado los datos estructurados del formulario (asunto y descripción).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -133,6 +145,7 @@ class ToolRegistry:
             "get_credits_list": self._exec_credits_list,
             "get_credit_detail": self._exec_credit_detail,
             "get_credit_schedule": self._exec_credit_schedule,
+            "request_support_ticket": self._exec_request_support_ticket,
             "create_support_ticket": self._exec_create_support_ticket,
         }
 
@@ -151,6 +164,9 @@ class ToolRegistry:
     # ------------------------------------------------------------------
     # Executors
     # ------------------------------------------------------------------
+
+    def _exec_request_support_ticket(self) -> dict:
+        return {"status": "form_requested"}
 
     def _exec_partner_detail(self) -> dict:
         data = self.api_service.get_partner_detail(self.partner_id)

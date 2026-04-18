@@ -204,6 +204,27 @@ class WhatsAppWebhookProcessor:
             reply_text = interactive.get("button_reply", {}).get("title", "")
         elif itype == "list_reply":
             reply_text = interactive.get("list_reply", {}).get("title", "")
+        elif itype == "nfm_reply":
+            # Parse WhatsApp Flow form data (e.g. support ticket form)
+            response_json = (
+                interactive.get("nfm_reply", {}).get("response_json", "{}")
+            )
+            import json
+
+            try:
+                data = json.loads(response_json)
+                subject = data.get("subject", "")
+                description = data.get("description", "")
+                if subject and description:
+                    reply_text = (
+                        f"Aquí están los datos de mi ticket:\n"
+                        f"Asunto: {subject}\n"
+                        f"Descripción: {description}"
+                    )
+                else:
+                    reply_text = "Formulario enviado."
+            except (json.JSONDecodeError, KeyError):
+                reply_text = "Formulario enviado."
 
         if reply_text:
             # Re-inject as a text message
