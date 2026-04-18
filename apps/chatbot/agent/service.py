@@ -81,14 +81,26 @@ class AgentService:
         tools_called: list[dict[str, Any]] = []
 
         for _ in range(_MAX_TOOL_ITERATIONS):
-            try:
-                response_msg = self._client.chat_completion(
-                    messages=history,
-                    tools=TOOL_DECLARATIONS,
-                    return_message=True
-                )
-            except Exception as exc:
-                logger.error("Error calling OpenRouter: %s", exc, exc_info=True)
+            # Inner retry loop for the current turn (to handle intermittent API format errors)
+            response_msg = None
+            last_error = None
+            for attempt in range(3):
+                try:
+                    response_msg = self._client.chat_completion(
+                        messages=history,
+                        tools=TOOL_DECLARATIONS,
+                        return_message=True
+                    )
+                    break # Success!
+                except Exception as exc:
+                    last_error = exc
+                    logger.warning(f"Turn attempt {attempt + 1} failed: {exc}")
+                    if attempt < 2:
+                        import time
+                        time.sleep(1) # Small delay before retry
+            
+            if not response_msg:
+                logger.error("All attempts for current turn failed.")
                 return ERROR_PROCESSING_MESSAGE, tools_called
 
             history.append(response_msg)

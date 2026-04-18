@@ -143,8 +143,17 @@ class OpenRouterClient(BaseAPIClient):
                 data=payload,
             )
 
+            # Check for error in response body even if status was 200
+            if "error" in response_data:
+                error_info = response_data["error"]
+                error_msg = error_info.get("message", "Unknown provider error")
+                error_code = error_info.get("code", "unknown")
+                logger.error(f"OpenRouter returned error in body: {error_msg} (code: {error_code})")
+                raise APIClientError(f"OpenRouter Error: {error_msg}")
+
             # Extract response text
             if "choices" not in response_data or not response_data["choices"]:
+                logger.error(f"OpenRouter response missing choices. Keys: {list(response_data.keys())}")
                 raise APIClientError(
                     "Invalid response format: missing 'choices'"
                 )
