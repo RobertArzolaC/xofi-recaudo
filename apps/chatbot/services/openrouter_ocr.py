@@ -21,7 +21,8 @@ class OpenRouterOCRService:
         self.client = OpenRouterClient()
         # Default model for vision tasks
         self.model = config(
-            "OPENROUTER_VISION_MODEL", default="minimax/minimax-m2.5:free"
+            "OPENROUTER_VISION_MODEL",
+            default="nvidia/nemotron-nano-12b-v2-vl:free",
         )
 
     def extract_receipt_data(self, image_bytes: bytes) -> Dict[str, Any]:
