@@ -399,7 +399,21 @@ class RequestSupportTicketStrategy(IntentStrategy):
                 template={
                     "name": "support_ticket_create",
                     "language": "es_PE",
-                    "components": [],
+                    "components": [
+                        {
+                            "type": "button",
+                            "sub_type": "flow",
+                            "index": "0",
+                            "parameters": [
+                                {
+                                    "type": "action",
+                                    "action": {
+                                        "flow_token": "support_ticket_request",
+                                    },
+                                }
+                            ],
+                        }
+                    ],
                 },
             )
         else:

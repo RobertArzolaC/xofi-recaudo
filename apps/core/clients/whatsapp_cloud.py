@@ -177,7 +177,7 @@ class WhatsAppCloudAPIClient(BaseAPIClient):
             "name": template_name,
             "language": {"code": language},
         }
-        if components is not None:
+        if components:
             template_data["components"] = components
 
         payload = {
