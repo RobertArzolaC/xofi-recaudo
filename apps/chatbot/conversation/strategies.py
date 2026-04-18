@@ -399,6 +399,7 @@ class RequestSupportTicketStrategy(IntentStrategy):
                 template={
                     "name": "support_ticket_create",
                     "language": "es_PE",
+                    "components": [],
                 },
             )
         else:
