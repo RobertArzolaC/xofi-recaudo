@@ -213,8 +213,10 @@ class WhatsAppWebhookProcessor:
             try:
                 data = json.loads(response_json)
                 if flow_name == "flow":
-                    subject = data.get("subject", "")
-                    description = data.get("description", "")
+                    subject = data.get("screen_0_Asunto_0", "")
+                    description = data.get(
+                        "screen_0_Detalle_del_problema_1", ""
+                    )
                     if subject and description:
                         reply_text = (
                             f"Aquí están los datos de mi ticket:\n"
