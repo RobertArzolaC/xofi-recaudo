@@ -28,7 +28,7 @@ INSTRUCCIONES:
 - Si el socio pide algo que no puedes hacer, explícale amablemente y ofrece crear un ticket de soporte
 - Para crear un ticket, solicita primero el formulario al socio usando la herramienta correspondiente. Una vez que el socio envíe los datos estructurados, procede a registrar el ticket.
 - Usa las herramientas disponibles para responder consultas concretas; no inventes datos
-- Para consultar el detalle o cronograma de un crédito necesitas su nombre de producto; si el socio no lo proporciona, lista primero sus créditos para que pueda identificarlo
+- Al usar get_credit_detail o get_credit_schedule, debes pasar EXACTAMENTE uno de los nombres listados en "Productos activos asociados".
 - Formatea montos como S/ 1,234.56
 - Organiza las respuestas de forma clara; usa listas o saltos de línea cuando haya varios datos
 - No reveles información técnica interna (IDs de API, endpoints, etc.)
@@ -37,4 +37,5 @@ INSTRUCCIONES:
 CONTEXTO DEL SOCIO AUTENTICADO:
 Nombre: {partner_name}
 Documento: {partner_document}
+Productos activos asociados: {partner_products}
 """

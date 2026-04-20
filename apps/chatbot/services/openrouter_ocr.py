@@ -47,16 +47,13 @@ class OpenRouterOCRService:
         if image_bytes.startswith(b"\x89PNG"):
             mime_type = "image/png"
 
-        current_date = date.today().strftime("%Y-%m-%d")
-
-        prompt = f"""
+        prompt = """
 Eres un asistente especializado en extracción de datos de comprobantes de pago peruanos.
 Tu tarea es extraer información precisa de pagos a partir de la imagen proporcionada.
 
 CONTEXTO:
 - Usuarios envían comprobantes (vouchers, capturas de pantalla, etc.)
 - La moneda es soles peruanos (S/)
-- La fecha actual es: {current_date}
 
 INSTRUCCIONES DE EXTRACCIÓN:
 1. MONTO (amount): Monto principal de la transacción (numérico).
@@ -65,13 +62,13 @@ INSTRUCCIONES DE EXTRACCIÓN:
 4. CONFIANZA (confidence): 0.0 a 1.0.
 
 Responde únicamente con un objeto JSON válido con estas llaves:
-{{
+{
   "amount": number or null,
   "date": "string" or null,
   "document_id": "string" or null,
   "confidence": number,
   "notes": "string"
-}}
+}
 """
 
         messages = [

@@ -5,7 +5,7 @@ import logging
 from typing import Any
 
 from apps.chatbot.agent.prompts import AGENT_SYSTEM_PROMPT
-from apps.chatbot.agent.tools import TOOL_DECLARATIONS, ToolRegistry
+from apps.chatbot.agent.tools import ToolRegistry
 from apps.chatbot.constants import ERROR_PROCESSING_MESSAGE
 from apps.chatbot.services.partner_api import PartnerAPIService
 from apps.core.clients.openrouter import OpenRouterClient
@@ -70,15 +70,24 @@ class AgentService:
             api_service=api_service,
         )
 
+        # Fetch associated products to inject into the system prompt context
+        credits_data = api_service.get_credits_list(partner.id, status="ACTIVE")
+        active_products = []
+        if credits_data and "credits" in credits_data:
+            active_products = list(set([c["product_name"] for c in credits_data["credits"]]))
+        partner_products = ", ".join(active_products) if active_products else "Ninguno"
+
         system_prompt = AGENT_SYSTEM_PROMPT.format(
             partner_name=partner.full_name,
             partner_document=partner.document_number,
+            partner_products=partner_products,
         )
 
         history = [{"role": "system", "content": system_prompt}] + self._build_history(conversation)
         history.append({"role": "user", "content": user_message})
 
         tools_called: list[dict[str, Any]] = []
+        tool_declarations = registry.get_tool_declarations()
 
         for _ in range(_MAX_TOOL_ITERATIONS):
             # Inner retry loop for the current turn (to handle intermittent API format errors)
@@ -88,7 +97,7 @@ class AgentService:
                 try:
                     response_msg = self._client.chat_completion(
                         messages=history,
-                        tools=TOOL_DECLARATIONS,
+                        tools=tool_declarations,
                         return_message=True
                     )
                     break # Success!

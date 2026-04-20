@@ -110,7 +110,7 @@ class WhatsAppWebhookProcessor:
         )
 
         # Conversation service handles everything (auth interception, AI agent, etc.)
-        response, _ = self.conv_service.process_message_whatsapp(
+        response = self.conv_service.process_message_whatsapp(
             sender_phone, user_message
         )
 

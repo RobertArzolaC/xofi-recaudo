@@ -334,6 +334,8 @@ class PartnerViewSet(viewsets.GenericViewSet):
         """
         Get minimal credit detail for chatbot templates.
         """
+        import unicodedata
+
         partner = self.get_object()
         product_name = request.query_params.get("product_name")
 
@@ -343,10 +345,26 @@ class PartnerViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        credit = (
-            partner.credits.select_related("product")
-            .filter(product__name__iexact=product_name)
-            .first()
+        def normalize(s):
+            if not s:
+                return ""
+            return (
+                unicodedata.normalize("NFKD", s)
+                .encode("ASCII", "ignore")
+                .decode("utf-8")
+                .lower()
+            )
+
+        normalized_target = normalize(product_name)
+        credits = partner.credits.select_related("product").all()
+
+        credit = next(
+            (
+                c
+                for c in credits
+                if normalize(c.product.name) == normalized_target
+            ),
+            None,
         )
 
         if not credit:
@@ -397,6 +415,8 @@ class PartnerViewSet(viewsets.GenericViewSet):
         """
         Get credit schedule for chatbot.
         """
+        import unicodedata
+
         partner = self.get_object()
         product_name = request.query_params.get("product_name")
 
@@ -406,10 +426,26 @@ class PartnerViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        credit = (
-            partner.credits.select_related("product")
-            .filter(product__name__iexact=product_name)
-            .first()
+        def normalize(s):
+            if not s:
+                return ""
+            return (
+                unicodedata.normalize("NFKD", s)
+                .encode("ASCII", "ignore")
+                .decode("utf-8")
+                .lower()
+            )
+
+        normalized_target = normalize(product_name)
+        credits = partner.credits.select_related("product").all()
+
+        credit = next(
+            (
+                c
+                for c in credits
+                if normalize(c.product.name) == normalized_target
+            ),
+            None,
         )
 
         if not credit:

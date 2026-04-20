@@ -5,6 +5,6 @@ Provides the Gemini-powered AI agent with function calling support.
 """
 
 from .service import AgentService
-from .tools import TOOL_DECLARATIONS, ToolRegistry
+from .tools import ToolRegistry
 
-__all__ = ["AgentService", "ToolRegistry", "TOOL_DECLARATIONS"]
+__all__ = ["AgentService", "ToolRegistry"]

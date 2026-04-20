@@ -196,12 +196,12 @@ class ConversationService:
         self,
         whatsapp_phone: str,
         user_message: str,
-    ) -> Tuple[BotResponse, None]:
+    ) -> BotResponse:
         """
         Process a user message (WhatsApp) and return the agent's response.
 
         Returns:
-            Tuple of (BotResponse, None).
+            BotResponse instance.
         """
         conversation = self.get_or_create_conversation_whatsapp(whatsapp_phone)
         self._check_session_timeout(conversation)
@@ -211,14 +211,14 @@ class ConversationService:
         )
 
         if not conversation.authenticated:
-            return self._handle_authentication(conversation, user_message), None
+            return self._handle_authentication(conversation, user_message)
 
         # Intercept menu/help requests to send interactive menu directly
         if user_message.strip().lower() in ["menu", "menú", "ayuda", "opciones", "/menu"]:
             return BotResponse(
                 text="Aquí tienes el menú de opciones:",
                 interactive=self.formatter.format_interactive_menu()
-            ), None
+            )
 
         response_text, tools_called = self.agent_service.process(
             conversation, user_message
@@ -238,7 +238,7 @@ class ConversationService:
             intent=tool_name,
             metadata=metadata,
         )
-        return bot_response, None
+        return bot_response
 
     # ------------------------------------------------------------------
     # Message processing — Web (Testing)

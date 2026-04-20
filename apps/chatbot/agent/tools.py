@@ -6,121 +6,6 @@ from apps.chatbot.services.partner_api import PartnerAPIService
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Tool declarations (OpenAI-compatible function calling format)
-# ---------------------------------------------------------------------------
-
-TOOL_DECLARATIONS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "get_partner_detail",
-            "description": "Obtener los datos personales del socio autenticado: nombre completo, número de documento, teléfono y email.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_account_statement",
-            "description": "Obtener el estado de cuenta del socio: resumen de créditos, montos desembolsados, total de pagos realizados y saldo pendiente total.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_credits_list",
-            "description": "Obtener la lista de préstamos/créditos del socio con sus montos, saldos y estados. Útil para identificar el ID de un crédito específico.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "description": "Filtrar por estado: 'active' (activos), 'closed' (cancelados), 'overdue' (en mora). Omitir para ver todos.",
-                    },
-                },
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_credit_detail",
-            "description": "Obtener el detalle de un préstamo/crédito específico usando el nombre del producto asociado (ej. 'CRÉDITO PERSONAL'). Devuelve monto, saldo, cuota y estado.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "product_name": {
-                        "type": "string",
-                        "description": "Nombre del producto del crédito a consultar (ej. 'CRÉDITO PERSONAL').",
-                    },
-                },
-                "required": ["product_name"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_credit_schedule",
-            "description": "Obtener el cronograma de pagos detallado de un préstamo usando el nombre del producto. Muestra cuotas vencidas y próximas cuotas.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "product_name": {
-                        "type": "string",
-                        "description": "Nombre del producto del crédito a consultar.",
-                    },
-                },
-                "required": ["product_name"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "request_support_ticket",
-            "description": "Usar cuando el socio solicita crear un ticket de soporte, ayuda, queja o reclamo. NO pide parámetros, solo envía el formulario.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "create_support_ticket",
-            "description": "Crear un ticket de soporte en el sistema. Usar ÚNICAMENTE cuando el socio ya ha enviado los datos estructurados del formulario (asunto y descripción).",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "subject": {
-                        "type": "string",
-                        "description": "Asunto breve del ticket (máximo 100 caracteres).",
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "Descripción detallada del problema o consulta.",
-                    },
-                },
-                "required": ["subject", "description"],
-            },
-        }
-    },
-]
-
 
 # ---------------------------------------------------------------------------
 # Tool Registry
@@ -148,6 +33,127 @@ class ToolRegistry:
             "request_support_ticket": self._exec_request_support_ticket,
             "create_support_ticket": self._exec_create_support_ticket,
         }
+
+    def get_tool_declarations(self) -> list[dict]:
+        """Generate tool declarations dynamically to inject context like associated products."""
+        # Fetch associated products to use as enum in tool parameters
+        credits_data = self.api_service.get_credits_list(self.partner_id, status="ACTIVE")
+        product_names = []
+        if credits_data and "credits" in credits_data:
+            product_names = list(set([c["product_name"] for c in credits_data["credits"]]))
+
+        # Define product_name parameter schema based on available products
+        product_param = {
+            "type": "string",
+            "description": "Nombre del producto del crédito a consultar.",
+        }
+        if product_names:
+            product_param["enum"] = product_names
+
+        return [
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_partner_detail",
+                    "description": "Obtener los datos personales del socio autenticado: nombre completo, número de documento, teléfono y email.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_account_statement",
+                    "description": "Obtener el estado de cuenta del socio: resumen de créditos, montos desembolsados, total de pagos realizados y saldo pendiente total.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_credits_list",
+                    "description": "Obtener la lista de préstamos/créditos del socio con sus montos, saldos y estados.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "status": {
+                                "type": "string",
+                                "description": "Filtrar por estado: 'active' (activos), 'closed' (cancelados), 'overdue' (en mora). Omitir para ver todos.",
+                            },
+                        },
+                        "required": [],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_credit_detail",
+                    "description": "Obtener el detalle de un préstamo/crédito específico.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "product_name": product_param,
+                        },
+                        "required": ["product_name"],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_credit_schedule",
+                    "description": "Obtener el cronograma de pagos detallado de un préstamo. Muestra cuotas vencidas y próximas cuotas.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "product_name": product_param,
+                        },
+                        "required": ["product_name"],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "request_support_ticket",
+                    "description": "Usar cuando el socio solicita crear un ticket de soporte, ayuda, queja o reclamo. NO pide parámetros, solo envía el formulario.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                    },
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "create_support_ticket",
+                    "description": "Crear un ticket de soporte en el sistema. Usar ÚNICAMENTE cuando el socio ya ha enviado los datos estructurados del formulario (asunto y descripción).",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "description": "Asunto breve del ticket (máximo 100 caracteres).",
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Descripción detallada del problema o consulta.",
+                            },
+                        },
+                        "required": ["subject", "description"],
+                    },
+                }
+            },
+        ]
 
     def execute(self, tool_name: str, args: dict) -> dict[str, Any]:
         """Dispatch a tool call to its executor. Returns the result dict."""
