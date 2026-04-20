@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Dict, Optional
 
@@ -205,26 +206,27 @@ class WhatsAppWebhookProcessor:
         elif itype == "list_reply":
             reply_text = interactive.get("list_reply", {}).get("title", "")
         elif itype == "nfm_reply":
-            # Parse WhatsApp Flow form data (e.g. support ticket form)
-            response_json = (
-                interactive.get("nfm_reply", {}).get("response_json", "{}")
-            )
-            import json
+            nfm_reply = interactive.get("nfm_reply", {})
+            flow_name = nfm_reply.get("name", "")
+            response_json = nfm_reply.get("response_json", "{}")
+            data = json.loads(response_json)
 
-            try:
-                data = json.loads(response_json)
-                subject = data.get("subject", "")
-                description = data.get("description", "")
-                if subject and description:
-                    reply_text = (
-                        f"Aquí están los datos de mi ticket:\n"
-                        f"Asunto: {subject}\n"
-                        f"Descripción: {description}"
+            if flow_name == "flow":
+                try:
+                    subject = data.get("screen_0_Asunto_0", "")
+                    description = data.get(
+                        "screen_0_Detalle_del_problema_1", ""
                     )
-                else:
+                    if subject and description:
+                        reply_text = (
+                            f"Aquí están los datos de mi ticket:\n"
+                            f"Asunto: {subject}\n"
+                            f"Descripción: {description}"
+                        )
+                    else:
+                        reply_text = "Formulario enviado."
+                except (json.JSONDecodeError, KeyError):
                     reply_text = "Formulario enviado."
-            except (json.JSONDecodeError, KeyError):
-                reply_text = "Formulario enviado."
 
         if reply_text:
             # Re-inject as a text message
@@ -241,9 +243,9 @@ class WhatsAppWebhookProcessor:
         """Handle button replies (usually from templates)."""
         sender_phone = message.get("from")
         button = message.get("button", {})
-        
+
         reply_text = button.get("payload") or button.get("text", "")
-        
+
         if reply_text:
             # Re-inject as a text message
             self._handle_text(
