@@ -201,7 +201,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
                 },
                 "credits": credit_details,
                 "total_contributed": partner.total_contributed,
-                "total_social_security_paid": partner.total_social_security_paid,
+                "total_social_security_pending": partner.total_social_security_pending,
             }
         )
 
@@ -343,9 +343,11 @@ class PartnerViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        credit = partner.credits.select_related("product").filter(
-            product__name__iexact=product_name
-        ).first()
+        credit = (
+            partner.credits.select_related("product")
+            .filter(product__name__iexact=product_name)
+            .first()
+        )
 
         if not credit:
             return Response(
@@ -355,20 +357,26 @@ class PartnerViewSet(viewsets.GenericViewSet):
 
         installments = credit.get_current_installments()
         overdue_count = sum(1 for i in installments if i.is_overdue)
-        pending_count = sum(1 for i in installments if i.status in ["PENDING", "PARTIAL"])
+        pending_count = sum(
+            1 for i in installments if i.status in ["PENDING", "PARTIAL"]
+        )
 
-        return Response({
-            "product_name": credit.product.name,
-            "amount": float(credit.amount),
-            "outstanding_balance": float(credit.outstanding_balance),
-            "payment_amount": float(credit.payment_amount) if credit.payment_amount else 0.0,
-            "status": credit.get_status_display().title(),
-            "term_duration": credit.term_duration,
-            "payment_frequency": credit.get_payment_frequency_display().title(),
-            "interest_rate": float(credit.interest_rate),
-            "overdue_count": overdue_count,
-            "pending_count": pending_count,
-        })
+        return Response(
+            {
+                "product_name": credit.product.name,
+                "amount": float(credit.amount),
+                "outstanding_balance": float(credit.outstanding_balance),
+                "payment_amount": float(credit.payment_amount)
+                if credit.payment_amount
+                else 0.0,
+                "status": credit.get_status_display().title(),
+                "term_duration": credit.term_duration,
+                "payment_frequency": credit.get_payment_frequency_display().title(),
+                "interest_rate": float(credit.interest_rate),
+                "overdue_count": overdue_count,
+                "pending_count": pending_count,
+            }
+        )
 
     @extend_schema(
         operation_id="partners_credit_schedule",
@@ -393,25 +401,42 @@ class PartnerViewSet(viewsets.GenericViewSet):
         product_name = request.query_params.get("product_name")
 
         if not product_name:
-            return Response({"detail": _("Product name is required.")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": _("Product name is required.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        credit = partner.credits.select_related("product").filter(
-            product__name__iexact=product_name
-        ).first()
+        credit = (
+            partner.credits.select_related("product")
+            .filter(product__name__iexact=product_name)
+            .first()
+        )
 
         if not credit:
-            return Response({"detail": _("Credit not found.")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": _("Credit not found.")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         installments = credit.get_current_installments()
-        
+
         overdue = []
         next_installments = []
         total_overdue_amount = 0.0
 
         MONTHS_ES = {
-            1: "Ene", 2: "Feb", 3: "Mar", 4: "Abr",
-            5: "May", 6: "Jun", 7: "Jul", 8: "Ago",
-            9: "Sep", 10: "Oct", 11: "Nov", 12: "Dic"
+            1: "Ene",
+            2: "Feb",
+            3: "Mar",
+            4: "Abr",
+            5: "May",
+            6: "Jun",
+            7: "Jul",
+            8: "Ago",
+            9: "Sep",
+            10: "Oct",
+            11: "Nov",
+            12: "Dic",
         }
 
         for inst in installments:
@@ -424,12 +449,17 @@ class PartnerViewSet(viewsets.GenericViewSet):
             if inst.is_overdue:
                 overdue.append(data)
                 total_overdue_amount += data["amount"]
-            elif inst.status in ["PENDING", "PARTIAL"] and len(next_installments) < 3:
+            elif (
+                inst.status in ["PENDING", "PARTIAL"]
+                and len(next_installments) < 3
+            ):
                 next_installments.append(data)
 
-        return Response({
-            "product_name": credit.product.name,
-            "overdue": overdue,
-            "next_installments": next_installments,
-            "total_overdue_amount": total_overdue_amount,
-        })
+        return Response(
+            {
+                "product_name": credit.product.name,
+                "overdue": overdue,
+                "next_installments": next_installments,
+                "total_overdue_amount": total_overdue_amount,
+            }
+        )

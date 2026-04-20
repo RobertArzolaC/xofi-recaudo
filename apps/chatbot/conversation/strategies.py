@@ -133,8 +133,8 @@ class GetAccountStatementStrategy(IntentStrategy):
             disb_date = disb_date[:10]
 
         contributed = f"{tool_result.get('total_contributed', 0.0):,.2f}"
-        social_security = (
-            f"{tool_result.get('total_social_security_paid', 0.0):,.2f}"
+        social_security_pending = (
+            f"{tool_result.get('total_social_security_pending', 0.0):,.2f}"
         )
 
         current_date = datetime.now().strftime("%d/%m/%Y")
@@ -186,7 +186,7 @@ class GetAccountStatementStrategy(IntentStrategy):
                                 {"type": "text", "text": contributed},  # {{14}}
                                 {
                                     "type": "text",
-                                    "text": social_security,
+                                    "text": social_security_pending,
                                 },  # {{15}}
                                 {"type": "text", "text": portal_link},  # {{16}}
                             ],
@@ -313,15 +313,15 @@ class GetCreditDetailStrategy(IntentStrategy):
                             "type": "body",
                             "parameters": [
                                 {"type": "text", "text": product_name},  # {{1}}
-                                {"type": "text", "text": amount},        # {{2}}
-                                {"type": "text", "text": balance},       # {{3}}
-                                {"type": "text", "text": payment},       # {{4}}
-                                {"type": "text", "text": status},        # {{5}}
-                                {"type": "text", "text": term},          # {{6}}
-                                {"type": "text", "text": freq},          # {{7}}
-                                {"type": "text", "text": rate},          # {{8}}
-                                {"type": "text", "text": overdue},       # {{9}}
-                                {"type": "text", "text": pending},       # {{10}}
+                                {"type": "text", "text": amount},  # {{2}}
+                                {"type": "text", "text": balance},  # {{3}}
+                                {"type": "text", "text": payment},  # {{4}}
+                                {"type": "text", "text": status},  # {{5}}
+                                {"type": "text", "text": term},  # {{6}}
+                                {"type": "text", "text": freq},  # {{7}}
+                                {"type": "text", "text": rate},  # {{8}}
+                                {"type": "text", "text": overdue},  # {{9}}
+                                {"type": "text", "text": pending},  # {{10}}
                             ],
                         }
                     ],
@@ -370,17 +370,21 @@ class GetCreditScheduleStrategy(IntentStrategy):
         if overdue:
             lines.append("🔴 *Cuotas vencidas*")
             for i, inst in enumerate(overdue, 1):
-                lines.append(f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f} ({inst['days_overdue']} días)")
+                lines.append(
+                    f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f} ({inst['days_overdue']} días)"
+                )
             lines.append("")
 
         if next_3:
             lines.append("🟡 *Próximas 3 cuotas*")
             for inst in next_3:
-                lines.append(f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f}")
+                lines.append(
+                    f"{inst['number']}. {inst['due_date']} - S/ {inst['amount']:,.2f}"
+                )
             lines.append("")
 
         lines.append(f"💰 Total vencido: *S/ {total_overdue}*")
-        
+
         return BotResponse(text="\n".join(lines))
 
 

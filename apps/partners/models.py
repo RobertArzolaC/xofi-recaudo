@@ -188,15 +188,28 @@ class Partner(core_models.Person, TimeStampedModel):
         try:
             initial = Decimal("0.00")
             if hasattr(self, "compliance_initial_balance"):
-                initial = (
-                    self.compliance_initial_balance.initial_social_security_amount
-                )
+                initial = self.compliance_initial_balance.initial_social_security_amount
 
             current = self.socialsecurity_set.filter(
                 status=compliance_choices.ComplianceStatus.PAID
             ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
 
             return initial + current
+        except Exception:
+            return Decimal("0.00")
+
+    @property
+    def total_social_security_pending(self):
+        """Calculate total social security pending including initial balance."""
+        try:
+            amount = self.socialsecurity_set.filter(
+                status__in=[
+                    compliance_choices.ComplianceStatus.PENDING,
+                    compliance_choices.ComplianceStatus.OVERDUE,
+                ]
+            ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
+
+            return amount
         except Exception:
             return Decimal("0.00")
 
