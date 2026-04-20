@@ -209,14 +209,12 @@ class WhatsAppWebhookProcessor:
             nfm_reply = interactive.get("nfm_reply", {})
             flow_name = nfm_reply.get("name", "")
             response_json = nfm_reply.get("response_json", "{}")
-            data = json.loads(response_json)
 
-            if flow_name == "flow":
-                try:
-                    subject = data.get("screen_0_Asunto_0", "")
-                    description = data.get(
-                        "screen_0_Detalle_del_problema_1", ""
-                    )
+            try:
+                data = json.loads(response_json)
+                if flow_name == "flow":
+                    subject = data.get("subject", "")
+                    description = data.get("description", "")
                     if subject and description:
                         reply_text = (
                             f"Aquí están los datos de mi ticket:\n"
@@ -225,11 +223,10 @@ class WhatsAppWebhookProcessor:
                         )
                     else:
                         reply_text = "Formulario enviado."
-                except (json.JSONDecodeError, KeyError):
-                    reply_text = "Formulario enviado."
+            except (json.JSONDecodeError, KeyError):
+                reply_text = "Formulario enviado."
 
         if reply_text:
-            # Re-inject as a text message
             self._handle_text(
                 {"from": sender_phone, "text": {"body": reply_text}}
             )

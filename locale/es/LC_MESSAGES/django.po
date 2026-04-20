@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-17 10:58-0500\n"
+"POT-Creation-Date: 2026-04-20 15:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -273,7 +273,7 @@ msgstr "Todos los estados"
 #: templates/compliance/penalty/list.html:82
 #: templates/compliance/social_security/detail.html:128
 #: templates/compliance/social_security/list.html:82
-#: templates/credits/credit/detail.html:232
+#: templates/credits/credit/detail.html:229
 #: templates/credits/credit/list.html:77
 #: templates/credits/product/delete.html:62
 #: templates/credits/product/list.html:93
@@ -511,7 +511,7 @@ msgstr "Seleccionar socios..."
 #: apps/partners/apps.py:8 apps/partners/models.py:161
 #: templates/campaigns/group/detail.html:78
 #: templates/campaigns/group/list.html:91 templates/dashboard/index.html:804
-#: templates/includes/aside.html:39 templates/partners/partner/list.html:5
+#: templates/includes/aside.html:58 templates/partners/partner/list.html:5
 msgid "Partners"
 msgstr "Socios"
 
@@ -723,7 +723,7 @@ msgid "Priority level of the group."
 msgstr "Nivel de prioridad del grupo."
 
 #: apps/campaigns/models.py:227 templates/campaigns/group/list.html:5
-#: templates/includes/aside.html:283
+#: templates/includes/aside.html:302
 msgid "Groups"
 msgstr "Grupos"
 
@@ -738,8 +738,8 @@ msgid "Campaign"
 msgstr "Campaña"
 
 #: apps/campaigns/models.py:293 templates/campaigns/campaign/list.html:5
-#: templates/dashboard/index.html:776 templates/includes/aside.html:268
-#: templates/includes/aside.html:302
+#: templates/dashboard/index.html:776 templates/includes/aside.html:287
+#: templates/includes/aside.html:321
 msgid "Campaigns"
 msgstr "Campañas"
 
@@ -1109,7 +1109,7 @@ msgstr "Bloqueado"
 msgid "User"
 msgstr "Usuario"
 
-#: apps/chatbot/choices.py:19 templates/includes/aside.html:420
+#: apps/chatbot/choices.py:19 templates/includes/aside.html:439
 msgid "Agent"
 msgstr "Agente"
 
@@ -1372,7 +1372,7 @@ msgstr "Información de Auditoría"
 
 #: apps/compliance/admin.py:72 apps/compliance/admin.py:115
 #: apps/compliance/admin.py:191 apps/compliance/choices.py:10
-#: apps/credits/choices.py:53 templates/credits/credit/detail.html:261
+#: apps/credits/choices.py:53 templates/credits/credit/detail.html:258
 #: templates/payments/form.html:405
 msgid "Overdue"
 msgstr "Atrasado"
@@ -1381,7 +1381,7 @@ msgstr "Atrasado"
 msgid "Penalty Information"
 msgstr "Información de la Penalización"
 
-#: apps/compliance/apps.py:8 templates/includes/aside.html:120
+#: apps/compliance/apps.py:8 templates/includes/aside.html:139
 msgid "Compliance"
 msgstr "Cumplimiento"
 
@@ -1598,7 +1598,7 @@ msgstr "Socio"
 #: templates/compliance/penalty/detail.html:128
 #: templates/compliance/social_security/detail.html:124
 #: templates/compliance/social_security/list.html:81
-#: templates/credits/credit/detail.html:227
+#: templates/credits/credit/detail.html:224
 #: templates/payments/confirm_delete.html:101
 #: templates/payments/magic_link/detail.html:205
 msgid "Due Date"
@@ -1666,7 +1666,7 @@ msgstr "Aporte"
 
 #: apps/compliance/models.py:122 templates/campaigns/campaign/form.html:258
 #: templates/compliance/contribution/list.html:5
-#: templates/includes/aside.html:135
+#: templates/includes/aside.html:154
 msgid "Contributions"
 msgstr "Aportes"
 
@@ -1683,7 +1683,7 @@ msgstr "Mes del período de previsión social."
 #: apps/payments/services.py:478 apps/payments/services.py:481
 #: templates/campaigns/campaign/form.html:259
 #: templates/compliance/social_security/list.html:5
-#: templates/includes/aside.html:152
+#: templates/includes/aside.html:171
 #: templates/payments/magic_link/detail.html:218
 msgid "Social Security"
 msgstr "Previsión Social"
@@ -1712,7 +1712,7 @@ msgid "Penalty"
 msgstr "Multa"
 
 #: apps/compliance/models.py:172 templates/campaigns/campaign/form.html:260
-#: templates/compliance/penalty/list.html:5 templates/includes/aside.html:169
+#: templates/compliance/penalty/list.html:5 templates/includes/aside.html:188
 msgid "Penalties"
 msgstr "Multas"
 
@@ -1960,7 +1960,7 @@ msgid "Previous status value."
 msgstr "Valor del estado anterior."
 
 #: apps/core/models.py:197 apps/credits/forms.py:502 apps/credits/forms.py:1048
-#: apps/credits/forms.py:1551 templates/credits/credit/detail.html:310
+#: apps/credits/forms.py:1551 templates/credits/credit/detail.html:307
 msgid "Note"
 msgstr "Nota"
 
@@ -1969,7 +1969,7 @@ msgid "Optional note about the status change."
 msgstr "Nota opcional sobre el cambio de estado."
 
 #: apps/core/models.py:203 templates/credits/credit/change_status.html:146
-#: templates/credits/credit/detail.html:298
+#: templates/credits/credit/detail.html:295
 msgid "Status History"
 msgstr "Historial de estado"
 
@@ -1979,7 +1979,7 @@ msgstr "Historiales de estado"
 
 #: apps/core/templatetags/breadcrumb_tags.py:14
 #: templates/dashboard/index.html:6 templates/dashboard/index.html:14
-#: templates/includes/aside.html:434
+#: templates/includes/aside.html:453
 msgid "Dashboard"
 msgstr "Tablero"
 
@@ -1989,7 +1989,7 @@ msgid "Amount Range"
 msgstr "Rango de Monto"
 
 #: apps/credits/admin.py:69 apps/credits/models.py:178
-#: templates/credits/credit/detail.html:146
+#: templates/credits/credit/detail.html:143
 msgid "Interest Rate"
 msgstr "Tasa de Interés"
 
@@ -1998,7 +1998,7 @@ msgid "Term"
 msgstr "Plazo"
 
 #: apps/credits/admin.py:89 apps/credits/models.py:193
-#: templates/credits/credit/detail.html:164
+#: templates/credits/credit/detail.html:161
 msgid "Delinquency Rate"
 msgstr "Tasa de Morosidad"
 
@@ -2028,7 +2028,7 @@ msgstr "Cálculos"
 #: apps/payments/forms.py:273 apps/payments/models.py:68
 #: apps/payments/models.py:234 apps/payments/models.py:319
 #: apps/reports/generators/portfolio.py:50
-#: templates/credits/credit/detail.html:390
+#: templates/credits/credit/detail.html:387
 #: templates/partners/prospect/detail.html:140
 #: templates/payments/detail.html:132 templates/payments/detail.html:158
 #: templates/payments/receipt/detail.html:106
@@ -2103,8 +2103,8 @@ msgstr "Referencia y Documentos"
 
 #: apps/credits/apps.py:8 apps/credits/models.py:279
 #: templates/credits/credit/list.html:5 templates/credits/credit/list.html:6
-#: templates/dashboard/index.html:794 templates/includes/aside.html:50
-#: templates/includes/aside.html:67
+#: templates/dashboard/index.html:794 templates/includes/aside.html:69
+#: templates/includes/aside.html:86
 msgid "Credits"
 msgstr "Créditos"
 
@@ -2451,7 +2451,7 @@ msgid "Additional notes about the credit"
 msgstr "Notas adicionales sobre el crédito."
 
 #: apps/credits/forms.py:640 apps/credits/models.py:171
-#: templates/credits/credit/detail.html:142
+#: templates/credits/credit/detail.html:139
 msgid "Credit Amount"
 msgstr "Monto del Crédito"
 
@@ -2460,7 +2460,7 @@ msgid "Interest Rate (%)"
 msgstr "Tasa de Interés (%)"
 
 #: apps/credits/forms.py:642 apps/credits/models.py:188
-#: templates/credits/credit/detail.html:150
+#: templates/credits/credit/detail.html:147
 msgid "Term Duration"
 msgstr "Duración del Plazo"
 
@@ -2469,20 +2469,20 @@ msgid "Delinquency Rate (%)"
 msgstr "Tasa de Morosidad (%)"
 
 #: apps/credits/forms.py:644 apps/credits/models.py:104
-#: apps/credits/models.py:228 templates/credits/credit/detail.html:154
+#: apps/credits/models.py:228 templates/credits/credit/detail.html:151
 #: templates/credits/product/detail.html:136
 msgid "Payment Frequency"
 msgstr "Frecuencia de Pago"
 
 #: apps/credits/forms.py:645 apps/credits/models.py:235
-#: templates/credits/credit/detail.html:159 templates/payments/detail.html:258
+#: templates/credits/credit/detail.html:156 templates/payments/detail.html:258
 #: templates/payments/form.html:185
 msgid "Payment Amount"
 msgstr "Monto del Pago"
 
 #: apps/credits/forms.py:646 apps/credits/models.py:243
 #: apps/reports/generators/portfolio.py:114
-#: templates/credits/credit/detail.html:189
+#: templates/credits/credit/detail.html:186
 msgid "Outstanding Balance"
 msgstr "Saldo Pendiente"
 
@@ -2916,7 +2916,6 @@ msgid "Current status of the credit."
 msgstr "Estado actual del crédito."
 
 #: apps/credits/models.py:211 apps/payments/models.py:222
-#: templates/credits/credit/detail.html:86
 msgid "Application Date"
 msgstr "Fecha de Solicitud"
 
@@ -2924,7 +2923,7 @@ msgstr "Fecha de Solicitud"
 msgid "Date when the credit was applied for."
 msgstr "Fecha en que se solicitó el crédito."
 
-#: apps/credits/models.py:216 templates/credits/credit/detail.html:90
+#: apps/credits/models.py:216 templates/credits/credit/detail.html:87
 msgid "Approval Date"
 msgstr "Fecha de Aprobación"
 
@@ -2932,7 +2931,7 @@ msgstr "Fecha de Aprobación"
 msgid "Date when the credit was approved."
 msgstr "Fecha en que se aprobó el crédito."
 
-#: apps/credits/models.py:222 templates/credits/credit/detail.html:95
+#: apps/credits/models.py:222 templates/credits/credit/detail.html:92
 #: templates/credits/credit/list.html:78
 msgid "Disbursement Date"
 msgstr "Fecha de Desembolso"
@@ -3062,7 +3061,7 @@ msgid "Date when this installment is due."
 msgstr "Fecha de vencimiento de esta cuota."
 
 #: apps/credits/models.py:958 apps/reports/generators/portfolio.py:111
-#: templates/credits/credit/detail.html:228
+#: templates/credits/credit/detail.html:225
 msgid "Installment Amount"
 msgstr "Monto de la Cuota"
 
@@ -3079,7 +3078,7 @@ msgid "Principal portion of the installment."
 msgstr "Porción principal de la cuota."
 
 #: apps/credits/models.py:970 apps/reports/generators/portfolio.py:113
-#: templates/credits/credit/detail.html:230
+#: templates/credits/credit/detail.html:227
 msgid "Interest Amount"
 msgstr "Monto de Interés"
 
@@ -3101,7 +3100,7 @@ msgstr "Estado actual de la cuota."
 
 #: apps/credits/models.py:989 apps/payments/models.py:37
 #: apps/payments/models.py:289 apps/reports/generators/portfolio.py:42
-#: templates/credits/credit/detail.html:233 templates/payments/detail.html:85
+#: templates/credits/credit/detail.html:230 templates/payments/detail.html:85
 #: templates/payments/list.html:98
 #: templates/payments/receipt/confirm_delete.html:61
 #: templates/payments/receipt/detail.html:74
@@ -3626,7 +3625,7 @@ msgid "Dominio de la empresa (opcional)"
 msgstr "Dominio de la empresa (opcional)"
 
 #: apps/customers/models.py:44 templates/customers/company/form.html:8
-#: templates/includes/aside.html:476
+#: templates/includes/aside.html:495
 msgid "Company"
 msgstr "Empresa"
 
@@ -3650,7 +3649,7 @@ msgid "Unique code for the agency"
 msgstr "Código único de la agencia"
 
 #: apps/customers/models.py:107 templates/customers/agency/list.html:5
-#: templates/includes/aside.html:494
+#: templates/includes/aside.html:513
 msgid "Agencies"
 msgstr "Agencias"
 
@@ -4329,7 +4328,7 @@ msgstr "Nombre del supervisor"
 
 #: apps/partners/forms.py:607 apps/partners/models.py:108
 msgid "Additional notes about the prospect"
-msgstr "Notas adicionales sobre el aspirante"
+msgstr "Notas adicionales sobre el prospecto"
 
 #: apps/partners/forms.py:614
 msgid "Last Names"
@@ -4361,11 +4360,11 @@ msgstr "Número de documento de identificación"
 
 #: apps/partners/models.py:50
 msgid "First name of the prospect"
-msgstr "Primer nombre del aspirante"
+msgstr "Primer nombre del prospecto"
 
 #: apps/partners/models.py:54
 msgid "Last name of the prospect"
-msgstr "Apellido del aspirante"
+msgstr "Apellido del prospecto"
 
 #: apps/partners/models.py:57
 msgid "Date of birth"
@@ -4373,11 +4372,11 @@ msgstr "Fecha de nacimiento"
 
 #: apps/partners/models.py:71
 msgid "Current status of the prospect"
-msgstr "Estado actual del aspirante"
+msgstr "Estado actual del prospecto"
 
 #: apps/partners/models.py:78
 msgid "Source of the prospect registration"
-msgstr "Fuente de registro del aspirante"
+msgstr "Fuente de registro del prospecto"
 
 #: apps/partners/models.py:85
 msgid "IP address when the prospect registered"
@@ -4389,123 +4388,123 @@ msgstr "Agente de usuario del navegador cuando se registró"
 
 #: apps/partners/models.py:96
 msgid "Date and time when prospect was first contacted"
-msgstr "Fecha y hora en que se contactó por primera vez al aspirante"
+msgstr "Fecha y hora en que se contactó por primera vez al prospecto"
 
 #: apps/partners/models.py:104
 msgid "Employee assigned to follow up with this prospect"
-msgstr "Empleado asignado para hacer seguimiento a este aspirante"
+msgstr "Empleado asignado para hacer seguimiento a este prospecto"
 
 #: apps/partners/models.py:114
 msgid "Prospect"
-msgstr "Aspirante"
+msgstr "Prospecto"
 
 #: apps/partners/models.py:115 apps/partners/views.py:316
-#: templates/partners/prospect/list.html:5
+#: templates/includes/aside.html:39 templates/partners/prospect/list.html:5
 #: templates/partners/prospect/list.html:64
 msgid "Prospects"
-msgstr "Aspirantes"
+msgstr "Prospectos"
 
 #: apps/partners/models.py:155
 msgid "Current status of the partner."
 msgstr "Estado actual del socio."
 
-#: apps/partners/models.py:211
+#: apps/partners/models.py:224
 msgid "Partner associated with this employment information."
 msgstr "Socio asociado con esta información laboral."
 
-#: apps/partners/models.py:218
+#: apps/partners/models.py:231
 msgid "Current occupation of the partner."
 msgstr "Ocupación actual del socio."
 
-#: apps/partners/models.py:223
+#: apps/partners/models.py:236
 msgid "Professional specialization or career."
 msgstr "Especialización o carrera profesional."
 
-#: apps/partners/models.py:229
+#: apps/partners/models.py:242
 msgid "Highest education level achieved."
 msgstr "Nivel educativo más alto alcanzado."
 
-#: apps/partners/models.py:237
+#: apps/partners/models.py:250
 msgid "Type of employment according to Peruvian labor law."
 msgstr "Tipo de empleo según la legislación laboral peruana."
 
-#: apps/partners/models.py:241
+#: apps/partners/models.py:254
 msgid "Whether the partner is currently employed."
 msgstr "Si el socio está actualmente empleado."
 
-#: apps/partners/models.py:248
+#: apps/partners/models.py:261
 msgid "Name of the current workplace or company."
 msgstr "Nombre del lugar de trabajo o empresa actual."
 
-#: apps/partners/models.py:253
+#: apps/partners/models.py:266
 msgid "Address of the current workplace."
 msgstr "Dirección del lugar de trabajo actual."
 
-#: apps/partners/models.py:258
+#: apps/partners/models.py:271
 msgid "Additional or secondary workplace."
 msgstr "Lugar de trabajo adicional o secundario."
 
-#: apps/partners/models.py:263
+#: apps/partners/models.py:276
 msgid "Current job position or title."
 msgstr "Cargo o título del trabajo actual."
 
-#: apps/partners/models.py:268
+#: apps/partners/models.py:281
 msgid "Department or area within the company."
 msgstr "Departamento o área dentro de la empresa."
 
-#: apps/partners/models.py:276
+#: apps/partners/models.py:289
 msgid "Type of employment contract."
 msgstr "Tipo de contrato de trabajo."
 
-#: apps/partners/models.py:281
+#: apps/partners/models.py:294
 msgid "Start date of current employment contract."
 msgstr "Fecha de inicio del contrato de trabajo actual."
 
-#: apps/partners/models.py:286
+#: apps/partners/models.py:299
 msgid "End date of contract (if applicable)."
 msgstr "Fecha de finalización del contrato (si aplica)."
 
-#: apps/partners/models.py:292
+#: apps/partners/models.py:305
 msgid "Type of work schedule."
 msgstr "Tipo de horario laboral."
 
-#: apps/partners/models.py:297
+#: apps/partners/models.py:310
 msgid "Number of weekly working hours."
 msgstr "Número de horas laborales semanales."
 
-#: apps/partners/models.py:306
+#: apps/partners/models.py:319
 msgid "Base salary amount in Peruvian Soles (PEN)."
 msgstr "Monto del salario base en Soles Peruanos (PEN)."
 
-#: apps/partners/models.py:312
+#: apps/partners/models.py:325
 msgid "Frequency of salary payment."
 msgstr "Frecuencia de pago del salario."
 
-#: apps/partners/models.py:319
+#: apps/partners/models.py:332
 msgid "Additional income from bonuses, commissions, etc."
 msgstr "Ingresos adicionales por bonificaciones, comisiones, etc."
 
-#: apps/partners/models.py:326
+#: apps/partners/models.py:339
 msgid "Total estimated monthly income."
 msgstr "Ingreso mensual total estimado."
 
-#: apps/partners/models.py:333
+#: apps/partners/models.py:346
 msgid "Work phone number."
 msgstr "Número de teléfono laboral."
 
-#: apps/partners/models.py:337
+#: apps/partners/models.py:350
 msgid "Work email address."
 msgstr "Dirección de correo electrónico laboral."
 
-#: apps/partners/models.py:342
+#: apps/partners/models.py:355
 msgid "Name of direct supervisor or manager."
 msgstr "Nombre del supervisor o gerente directo."
 
-#: apps/partners/models.py:348
+#: apps/partners/models.py:361
 msgid "Additional notes about employment information."
 msgstr "Notas adicionales sobre la información laboral."
 
-#: apps/partners/models.py:352 apps/partners/models.py:353
+#: apps/partners/models.py:365 apps/partners/models.py:366
 msgid "Partner Employment Information"
 msgstr "Información Laboral del Socio"
 
@@ -4513,9 +4512,23 @@ msgstr "Información Laboral del Socio"
 msgid "A partner with this document number already exists."
 msgstr "Ya existe una cuenta con este número de documento."
 
-#: apps/partners/viewsets.py:382
-msgid "Credit not found for this partner."
+#: apps/partners/viewsets.py:344 apps/partners/viewsets.py:425
+#, fuzzy
+#| msgid "Payment date is required."
+msgid "Product name is required."
+msgstr "Se requiere fecha de pago."
+
+#: apps/partners/viewsets.py:372
+#, fuzzy
+#| msgid "Credit not found for this partner."
+msgid "Credit not found for this product."
 msgstr "Crédito no encontrado para este socio."
+
+#: apps/partners/viewsets.py:453
+#, fuzzy
+#| msgid "Payment not found."
+msgid "Credit not found."
+msgstr "Pago no encontrado."
 
 #: apps/payments/admin.py:64 templates/payments/detail.html:5
 msgid "Payment Details"
@@ -4547,7 +4560,7 @@ msgstr "Pago asignado automáticamente."
 
 #: apps/payments/apps.py:8 apps/payments/models.py:82
 #: templates/dashboard/index.html:785 templates/dashboard/index.html:1632
-#: templates/includes/aside.html:206 templates/includes/aside.html:225
+#: templates/includes/aside.html:225 templates/includes/aside.html:244
 #: templates/payments/list.html:5
 msgid "Payments"
 msgstr "Pagos"
@@ -4893,7 +4906,7 @@ msgstr "Nota opcional sobre el recibo."
 msgid "Payment Receipt"
 msgstr "Recibo de Pago"
 
-#: apps/payments/models.py:326 templates/includes/aside.html:257
+#: apps/payments/models.py:326 templates/includes/aside.html:276
 #: templates/payments/receipt/list.html:7
 #: templates/payments/receipt/list.html:8
 #: templates/payments/receipt/list.html:81
@@ -5120,7 +5133,7 @@ msgid "File Size"
 msgstr "Tamaño del Archivo"
 
 #: apps/reports/apps.py:12 apps/reports/models.py:116
-#: templates/includes/aside.html:346 templates/reports/report_list.html:5
+#: templates/includes/aside.html:365 templates/reports/report_list.html:5
 msgid "Reports"
 msgstr "Reportes"
 
@@ -5132,7 +5145,7 @@ msgstr "CSV"
 msgid "Excel"
 msgstr "Excel"
 
-#: apps/reports/choices.py:31 templates/credits/credit/detail.html:306
+#: apps/reports/choices.py:31 templates/credits/credit/detail.html:303
 #: templates/payments/detail.html:157
 msgid "Date"
 msgstr "Fecha"
@@ -5586,7 +5599,7 @@ msgid "Report"
 msgstr "Reporte"
 
 #: apps/support/apps.py:8 templates/dashboard/index.html:812
-#: templates/includes/aside.html:180
+#: templates/includes/aside.html:199
 msgid "Support"
 msgstr "Soporte"
 
@@ -5656,7 +5669,7 @@ msgid "Ticket"
 msgstr "Ticket"
 
 #: apps/support/models.py:58 templates/dashboard/index.html:1649
-#: templates/includes/aside.html:195
+#: templates/includes/aside.html:214
 msgid "Tickets"
 msgstr "Tickets"
 
@@ -5843,7 +5856,7 @@ msgid "This email is already registered for another employee."
 msgstr "Este correo electrónico ya está registrado para otro empleado."
 
 #: apps/team/models.py:17 apps/team/views.py:45
-#: templates/includes/aside.html:373 templates/team/area/list.html:5
+#: templates/includes/aside.html:392 templates/team/area/list.html:5
 msgid "Areas"
 msgstr "Áreas"
 
@@ -5852,7 +5865,7 @@ msgid "Area this position belongs to."
 msgstr "Área a la que pertenece esta posición."
 
 #: apps/team/models.py:40 apps/team/views.py:169
-#: templates/includes/aside.html:390 templates/team/position/list.html:5
+#: templates/includes/aside.html:409 templates/team/position/list.html:5
 msgid "Positions"
 msgstr "Posiciones"
 
@@ -5869,7 +5882,7 @@ msgid "Employee"
 msgstr "Empleado"
 
 #: apps/team/models.py:70 apps/team/views.py:305
-#: templates/includes/aside.html:409 templates/team/area/detail.html:111
+#: templates/includes/aside.html:428 templates/team/area/detail.html:111
 #: templates/team/employee/list.html:5 templates/team/position/list.html:88
 msgid "Employees"
 msgstr "Empleados"
@@ -6132,7 +6145,7 @@ msgid "Confirm password"
 msgstr "Confirmar contraseña"
 
 #: apps/users/forms.py:58 apps/users/forms.py:126 apps/users/forms.py:180
-#: templates/includes/aside.html:529 templates/users/role/list.html:5
+#: templates/includes/aside.html:548 templates/users/role/list.html:5
 #: templates/users/user/list.html:87
 msgid "Roles"
 msgstr "Roles"
@@ -6174,7 +6187,7 @@ msgstr "Es socio"
 msgid "Designates whether the user is a partner."
 msgstr "Designa si el usuario es un socio."
 
-#: apps/users/models.py:42 templates/includes/aside.html:513
+#: apps/users/models.py:42 templates/includes/aside.html:532
 #: templates/users/user/list.html:6
 msgid "Users"
 msgstr "Usuarios"
@@ -6188,7 +6201,7 @@ msgid "Settings updated successfully"
 msgstr "Configuración actualizada con éxito"
 
 #: apps/users/views.py:48 templates/chatbot/dashboard/index.html:24
-#: templates/includes/aside.html:450 templates/includes/aside.html:461
+#: templates/includes/aside.html:469 templates/includes/aside.html:480
 msgid "Settings"
 msgstr "Configuración"
 
@@ -6699,7 +6712,7 @@ msgstr "No programado"
 #: templates/campaigns/campaign/list.html:96
 #: templates/campaigns/campaign_csv/detail.html:242
 #: templates/campaigns/campaign_csv/list.html:93
-#: templates/includes/aside.html:241
+#: templates/includes/aside.html:260
 #: templates/payments/magic_link/detail.html:139
 msgid "Payment Link"
 msgstr "Enlace de Pago"
@@ -7104,7 +7117,7 @@ msgid "Update CSV Campaign"
 msgstr "Actualizar Campaña CSV"
 
 #: templates/campaigns/campaign_csv/list.html:5
-#: templates/includes/aside.html:318
+#: templates/includes/aside.html:337
 msgid "CSV Campaigns"
 msgstr "Campañas CSV"
 
@@ -7470,7 +7483,7 @@ msgstr "Marcas de tiempo"
 #: templates/compliance/contribution/detail.html:142
 #: templates/compliance/penalty/detail.html:148
 #: templates/compliance/social_security/detail.html:144
-#: templates/credits/credit/detail.html:114
+#: templates/credits/credit/detail.html:111
 #: templates/credits/product/detail.html:161
 #: templates/credits/product_type/detail.html:70
 #: templates/credits/product_type/detail.html:151
@@ -8140,7 +8153,7 @@ msgid "Term Duration:"
 msgstr "Duración del Plazo:"
 
 #: templates/credits/credit/delete.html:54
-#: templates/credits/credit/detail.html:151
+#: templates/credits/credit/detail.html:148
 #: templates/credits/product/detail.html:129
 #: templates/credits/product/detail.html:133
 msgid "months"
@@ -8158,11 +8171,11 @@ msgstr "Fecha de Solicitud:"
 msgid "Credit Information"
 msgstr "Información de la Cuenta"
 
-#: templates/credits/credit/detail.html:106
+#: templates/credits/credit/detail.html:103
 msgid "Dates Information"
 msgstr "Información de Fechas"
 
-#: templates/credits/credit/detail.html:118
+#: templates/credits/credit/detail.html:115
 #: templates/credits/product/detail.html:165
 #: templates/credits/product_type/detail.html:155
 #: templates/customers/agency/detail.html:161
@@ -8175,43 +8188,43 @@ msgstr "Información de Fechas"
 msgid "Last Modified"
 msgstr "Última actualización"
 
-#: templates/credits/credit/detail.html:134
+#: templates/credits/credit/detail.html:131
 msgid "Credit Terms"
 msgstr "Términos del Crédito"
 
-#: templates/credits/credit/detail.html:177
+#: templates/credits/credit/detail.html:174
 msgid "Financial Summary"
 msgstr "Resumen Financiero"
 
-#: templates/credits/credit/detail.html:185
+#: templates/credits/credit/detail.html:182
 msgid "Original Amount"
 msgstr "Monto Original"
 
-#: templates/credits/credit/detail.html:193
+#: templates/credits/credit/detail.html:190
 msgid "Total Interest"
 msgstr "Total de Intereses"
 
-#: templates/credits/credit/detail.html:197
+#: templates/credits/credit/detail.html:194
 msgid "Total Repayment"
 msgstr "Total a Pagar"
 
-#: templates/credits/credit/detail.html:211
+#: templates/credits/credit/detail.html:208
 msgid "Installments Schedule"
 msgstr "Calendario de Cuotas"
 
-#: templates/credits/credit/detail.html:216
+#: templates/credits/credit/detail.html:213
 msgid "installments total"
 msgstr "total de cuotas"
 
-#: templates/credits/credit/detail.html:229
+#: templates/credits/credit/detail.html:226
 msgid "Principal"
 msgstr "Capital"
 
-#: templates/credits/credit/detail.html:231
+#: templates/credits/credit/detail.html:228
 msgid "Balance After"
 msgstr "Saldo Después"
 
-#: templates/credits/credit/detail.html:245
+#: templates/credits/credit/detail.html:242
 #, python-format
 msgid ""
 "\n"
@@ -8234,24 +8247,24 @@ msgstr[1] ""
 "de retraso\n"
 "                                                    "
 
-#: templates/credits/credit/detail.html:307
+#: templates/credits/credit/detail.html:304
 msgid "From Status"
 msgstr "Desde Estado"
 
-#: templates/credits/credit/detail.html:308
+#: templates/credits/credit/detail.html:305
 msgid "To Status"
 msgstr "Hasta Estado"
 
-#: templates/credits/credit/detail.html:309
+#: templates/credits/credit/detail.html:306
 msgid "Changed By"
 msgstr "Cambiado Por"
 
-#: templates/credits/credit/detail.html:327
+#: templates/credits/credit/detail.html:324
 #, python-format
 msgid "%(previous_display)s"
 msgstr "%(previous_display)s"
 
-#: templates/credits/credit/detail.html:385
+#: templates/credits/credit/detail.html:382
 msgid "Additional Information"
 msgstr "Información Personal"
 
@@ -9027,23 +9040,23 @@ msgstr "Error del sistema"
 msgid "Clients"
 msgstr "Clientes"
 
-#: templates/includes/aside.html:78
+#: templates/includes/aside.html:97
 msgid "My Payments"
 msgstr "Mis Pagos"
 
-#: templates/includes/aside.html:92
+#: templates/includes/aside.html:111
 msgid "Make Payment"
 msgstr "Realizar Pago"
 
-#: templates/includes/aside.html:110
+#: templates/includes/aside.html:129
 msgid "Payment History"
 msgstr "Historial de Pagos"
 
-#: templates/includes/aside.html:329 templates/reports/report_create.html:144
+#: templates/includes/aside.html:348 templates/reports/report_create.html:144
 msgid "Analytics"
 msgstr "Analíticas"
 
-#: templates/includes/aside.html:358
+#: templates/includes/aside.html:377
 msgid "Team Management"
 msgstr "Gestión de Permisos"
 
