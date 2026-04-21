@@ -208,23 +208,21 @@ class WhatsAppWebhookProcessor:
             reply_text = interactive.get("list_reply", {}).get("title", "")
         elif itype == "nfm_reply":
             nfm_reply = interactive.get("nfm_reply", {})
-            flow_name = nfm_reply.get("name", "")
             response_json = nfm_reply.get("response_json", "{}")
 
             try:
                 data = json.loads(response_json)
-                if flow_name == "loan_prospect_create":
+                flow_token = response_json.get("flow_token", "")
+                if flow_token == "loan_prospect_create":
                     reply_text = (
                         f"Formulario de registro enviado:\n"
-                        f"Nombre: {data.get('first_name', '')}\n"
-                        f"Apellido: {data.get('last_name', '')}\n"
-                        f"DNI: {data.get('document_number', '')}\n"
-                        f"Email: {data.get('email', '')}\n"
-                        f"Teléfono: {data.get('phone', '')}"
+                        f"Nombre: {data.get('screen_0_Nombres_0', '')}\n"
+                        f"Apellido: {data.get('screen_0_Apellidos_1', '')}\n"
+                        f"DNI: {data.get('screen_0_DNI__Documento_2', '')}\n"
+                        f"Email: {data.get('screen_0_Correo_3', '')}\n"
+                        f"Teléfono: {data.get('screen_0_Celular_4', '')}"
                     )
-                elif (
-                    flow_name == "support_ticket_request" or flow_name == "flow"
-                ):
+                else:
                     subject = data.get("screen_0_Asunto_0", "")
                     description = data.get(
                         "screen_0_Detalle_del_problema_1", ""
