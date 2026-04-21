@@ -459,7 +459,7 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
             return BotResponse(
                 text="¡Genial! Por favor, completa el siguiente formulario para registrarte y ser evaluado.",
                 template={
-                    "name": "onboarding_prospect",
+                    "name": "register_prospect",
                     "language": "es_PE",
                     "components": [
                         {
@@ -470,7 +470,7 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
                                 {
                                     "type": "action",
                                     "action": {
-                                        "flow_token": "loan_prospect_create",
+                                        "flow_token": "register_prospect",
                                     },
                                 }
                             ],
