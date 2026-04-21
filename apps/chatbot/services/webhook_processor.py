@@ -220,7 +220,8 @@ class WhatsAppWebhookProcessor:
                         f"Apellido: {data.get('screen_0_Apellidos_1', '')}\n"
                         f"DNI: {data.get('screen_0_DNI__Documento_2', '')}\n"
                         f"Email: {data.get('screen_0_Correo_3', '')}\n"
-                        f"Teléfono: {data.get('screen_0_Celular_4', '')}"
+                        f"Teléfono: {data.get('screen_0_Celular_4', '')}\n"
+                        f"Fecha Nac.: {data.get('screen_0_Fecha_de_nacimiento_5', '')}"
                     )
                 else:
                     subject = data.get("screen_0_Asunto_0", "")

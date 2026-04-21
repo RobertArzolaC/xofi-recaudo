@@ -86,8 +86,9 @@ class ToolRegistry:
                             "document_number": {"type": "string", "description": "Número de DNI (8 dígitos)."},
                             "email": {"type": "string", "description": "Correo electrónico."},
                             "phone": {"type": "string", "description": "Número de teléfono/celular."},
+                            "birth_date": {"type": "string", "description": "Fecha de nacimiento (YYYY-MM-DD)."},
                         },
-                        "required": ["first_name", "last_name", "document_number", "email", "phone"],
+                        "required": ["first_name", "last_name", "document_number", "email", "phone", "birth_date"],
                     },
                 }
             },
@@ -248,7 +249,8 @@ class ToolRegistry:
         last_name: str, 
         document_number: str, 
         email: str, 
-        phone: str
+        phone: str,
+        birth_date: str
     ) -> dict:
         from apps.partners.models import Prospect
         from apps.partners.choices import ProspectStatus
@@ -261,6 +263,7 @@ class ToolRegistry:
                 document_number=document_number,
                 email=email,
                 phone=phone,
+                birth_date=birth_date,
                 status=ProspectStatus.NEW,
                 source="whatsapp_chatbot"
             )

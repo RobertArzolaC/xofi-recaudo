@@ -480,7 +480,7 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
             )
         else:
             return BotResponse(
-                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email y Teléfono) para registrarte como prospecto."
+                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email, Teléfono y Fecha de Nacimiento) para registrarte como prospecto."
             )
 
 
