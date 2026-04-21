@@ -11,59 +11,80 @@ class MessageFormatter:
     """Helper class to format messages for Telegram and WhatsApp."""
 
     @staticmethod
-    def format_interactive_menu() -> dict:
+    def format_interactive_menu(authenticated: bool = True) -> dict:
         """
         Format the main interactive menu for WhatsApp (List Message).
 
         Returns:
             dict: Meta Interactive Message payload.
         """
+        if authenticated:
+            sections = [
+                {
+                    "title": "📋 Consultas",
+                    "rows": [
+                        {
+                            "id": "menu_perfil",
+                            "title": "Mis datos personales",
+                            "description": "Ver mi información registrada",
+                        },
+                        {
+                            "id": "menu_estado_cuenta",
+                            "title": "Estado de cuenta",
+                            "description": "Ver resumen de créditos y saldos",
+                        },
+                        {
+                            "id": "menu_prestamos",
+                            "title": "Mis préstamos",
+                            "description": "Ver lista de préstamos activos",
+                        },
+                    ],
+                },
+                {
+                    "title": "🎫 Soporte",
+                    "rows": [
+                        {
+                            "id": "menu_ticket",
+                            "title": "Crear ticket",
+                            "description": "Reportar un problema o consulta",
+                        },
+                        {
+                            "id": "menu_comprobante",
+                            "title": "Subir comprobante",
+                            "description": "Registrar un pago realizado",
+                        },
+                    ],
+                },
+            ]
+        else:
+            sections = [
+                {
+                    "title": "Bienvenido a XoFi",
+                    "rows": [
+                        {
+                            "id": "menu_solicitar_credito",
+                            "title": "Solicitar crédito",
+                            "description": "Pide un préstamo fácil y rápido",
+                        },
+                        {
+                            "id": "menu_autenticacion",
+                            "title": "Ya soy socio",
+                            "description": "Accede a tus consultas y trámites",
+                        },
+                    ],
+                }
+            ]
+
         return {
             "type": "list",
             "header": {"type": "text", "text": "Menú XoFi"},
             "body": {
-                "text": "Elige una opción para continuar con tu consulta:"
+                "text": "Elige una opción para continuar:"
             },
             "footer": {"text": "Asistente Virtual XoFi"},
             "action": {
                 "button": "Ver opciones",
-                "sections": [
-                    {
-                        "title": "📋 Consultas",
-                        "rows": [
-                            {
-                                "id": "menu_perfil",
-                                "title": "Mis datos personales",
-                                "description": "Ver mi información registrada",
-                            },
-                            {
-                                "id": "menu_estado_cuenta",
-                                "title": "Estado de cuenta",
-                                "description": "Ver resumen de créditos y saldos",
-                            },
-                            {
-                                "id": "menu_prestamos",
-                                "title": "Mis préstamos",
-                                "description": "Ver lista de préstamos activos",
-                            },
-                        ],
-                    },
-                    {
-                        "title": "🎫 Soporte",
-                        "rows": [
-                            {
-                                "id": "menu_ticket",
-                                "title": "Crear ticket",
-                                "description": "Reportar un problema o consulta",
-                            },
-                            {
-                                "id": "menu_comprobante",
-                                "title": "Subir comprobante",
-                                "description": "Registrar un pago realizado",
-                            },
-                        ],
-                    },
-                ],
+                "sections": sections,
             },
         }
 

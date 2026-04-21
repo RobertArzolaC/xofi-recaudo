@@ -46,10 +46,10 @@ class AgentService:
         self, conversation, user_message: str
     ) -> tuple[str, list[dict[str, Any]]]:
         """
-        Process a user message within an authenticated conversation.
+        Process a user message within a conversation.
 
         Args:
-            conversation: AgentConversation instance (partner must be set).
+            conversation: AgentConversation instance.
             user_message: The raw text from the user.
 
         Returns:
@@ -59,28 +59,38 @@ class AgentService:
         if not self._available:
             return ERROR_PROCESSING_MESSAGE, []
 
+        is_auth = conversation.authenticated
         partner = conversation.partner
-        if not partner:
-            return ERROR_PROCESSING_MESSAGE, []
-
         api_service = PartnerAPIService()
+        
         registry = ToolRegistry(
-            partner_id=partner.id,
-            partner_document=partner.document_number,
+            partner_id=partner.id if partner else None,
+            partner_document=partner.document_number if partner else None,
             api_service=api_service,
+            authenticated=is_auth,
         )
 
-        # Fetch associated products to inject into the system prompt context
-        credits_data = api_service.get_credits_list(partner.id, status="ACTIVE")
-        active_products = []
-        if credits_data and "credits" in credits_data:
-            active_products = list(set([c["product_name"] for c in credits_data["credits"]]))
-        partner_products = ", ".join(active_products) if active_products else "Ninguno"
+        partner_info = ""
+        if is_auth and partner:
+            # Fetch associated products to inject into the system prompt context
+            credits_data = api_service.get_credits_list(partner.id, status="ACTIVE")
+            active_products = []
+            if credits_data and "credits" in credits_data:
+                active_products = list(set([c["product_name"] for c in credits_data["credits"]]))
+            partner_products = ", ".join(active_products) if active_products else "Ninguno"
+            
+            partner_info = (
+                f"Nombre: {partner.full_name}\n"
+                f"Documento: {partner.document_number}\n"
+                f"Productos activos asociados: {partner_products}"
+            )
+            auth_status = "AUTENTICADO"
+        else:
+            auth_status = "NO AUTENTICADO"
 
         system_prompt = AGENT_SYSTEM_PROMPT.format(
-            partner_name=partner.full_name,
-            partner_document=partner.document_number,
-            partner_products=partner_products,
+            auth_status=auth_status,
+            partner_info=partner_info,
         )
 
         history = [{"role": "system", "content": system_prompt}] + self._build_history(conversation)
@@ -143,6 +153,8 @@ class AgentService:
                         "get_credit_schedule",
                         "request_support_ticket",
                         "create_support_ticket",
+                        "request_loan_prospect",
+                        "create_loan_prospect",
                     ]:
                         return "", tools_called
 

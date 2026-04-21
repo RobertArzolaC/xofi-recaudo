@@ -214,7 +214,7 @@ class GetAccountStatementStrategy(IntentStrategy):
                 f"• Desembolso: {disb_date}\n\n"
                 f"🏦 *Aportes y Previsión Social*\n"
                 f"• Aportes: *S/ {contributed}*\n"
-                f"• Previsión social: *S/ {social_security}*\n\n"
+                f"• Previsión social: *S/ {social_security_pending}*\n\n"
                 f"Si deseas ver el detalle completo o realizar un pago, puedes hacerlo aquí 👇\n"
                 f"{portal_link}"
             )
@@ -446,6 +446,64 @@ class CreateSupportTicketStrategy(IntentStrategy):
         return BotResponse(text=text)
 
 
+class RequestLoanProspectStrategy(IntentStrategy):
+    """Strategy for the request_loan_prospect tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if channel == choices.ChannelType.WHATSAPP:
+            return BotResponse(
+                text="¡Genial! Por favor, completa el siguiente formulario para evaluar tu solicitud de crédito.",
+                template={
+                    "name": "credit_application_invitation",
+                    "language": "es_PE",
+                    "components": [
+                        {
+                            "type": "button",
+                            "sub_type": "flow",
+                            "index": "0",
+                            "parameters": [
+                                {
+                                    "type": "action",
+                                    "action": {
+                                        "flow_token": "loan_prospect_create",
+                                    },
+                                }
+                            ],
+                        }
+                    ],
+                },
+            )
+        else:
+            return BotResponse(
+                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email, Teléfono, Fecha de Nacimiento y Monto) para registrar tu solicitud de crédito."
+            )
+
+
+class CreateLoanProspectStrategy(IntentStrategy):
+    """Strategy for the create_loan_prospect tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        text = (
+            "✅ *¡Solicitud recibida!*\n\n"
+            "Tus datos han sido registrados correctamente. Un asesor se pondrá en contacto contigo muy pronto para continuar con la evaluación de tu crédito.\n\n"
+            "¡Gracias por confiar en XoFi!"
+        )
+        return BotResponse(text=text)
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
@@ -457,6 +515,8 @@ class StrategyFactory:
         "get_credit_schedule": GetCreditScheduleStrategy(),
         "request_support_ticket": RequestSupportTicketStrategy(),
         "create_support_ticket": CreateSupportTicketStrategy(),
+        "request_loan_prospect": RequestLoanProspectStrategy(),
+        "create_loan_prospect": CreateLoanProspectStrategy(),
     }
 
     @classmethod

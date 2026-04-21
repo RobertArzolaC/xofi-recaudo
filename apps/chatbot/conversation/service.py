@@ -154,7 +154,8 @@ class ConversationService:
             conversation, choices.MessageSender.USER, user_message
         )
 
-        if not conversation.authenticated:
+        # Handle authentication if it matches the pattern
+        if not conversation.authenticated and self.auth_service.is_authentication_message(user_message):
             auth_response = self._handle_authentication(conversation, user_message)
             return auth_response.text
 
@@ -210,14 +211,15 @@ class ConversationService:
             conversation, choices.MessageSender.USER, user_message
         )
 
-        if not conversation.authenticated:
+        # Intercept authentication attempt
+        if not conversation.authenticated and self.auth_service.is_authentication_message(user_message):
             return self._handle_authentication(conversation, user_message)
 
         # Intercept menu/help requests to send interactive menu directly
         if user_message.strip().lower() in ["menu", "menú", "ayuda", "opciones", "/menu"]:
             return BotResponse(
                 text="Aquí tienes el menú de opciones:",
-                interactive=self.formatter.format_interactive_menu()
+                interactive=self.formatter.format_interactive_menu(conversation.authenticated)
             )
 
         response_text, tools_called = self.agent_service.process(
@@ -259,7 +261,7 @@ class ConversationService:
             conversation, choices.MessageSender.USER, user_message
         )
 
-        if not conversation.authenticated:
+        if not conversation.authenticated and self.auth_service.is_authentication_message(user_message):
             auth_response = self._handle_authentication(conversation, user_message)
             return auth_response.text, []
 
@@ -348,7 +350,7 @@ class ConversationService:
             # If it's a WhatsApp conversation, we send the interactive menu
             interactive = None
             if conversation.channel == choices.ChannelType.WHATSAPP:
-                interactive = self.formatter.format_interactive_menu()
+                interactive = self.formatter.format_interactive_menu(True)
             else:
                 # For other channels, append the text menu
                 success_text += f"\n\n{self.formatter.format_help_message()}"

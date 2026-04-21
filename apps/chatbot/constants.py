@@ -9,16 +9,12 @@ WELCOME_MESSAGE = """
 
 Soy tu asistente virtual y estoy aquí para ayudarte con:
 
-📋 Consultas sobre tu cuenta y préstamos
-💰 Estado de cuenta y pagos
+📋 Consultas sobre tu cuenta y préstamos (solo para socios)
+💰 Solicitar un crédito personal
 🎫 Soporte técnico
 📄 Carga de comprobantes
 
-Para comenzar, necesito autenticarte.
-
-Por favor, envía tu *número de documento* y *año de nacimiento* separados por un espacio.
-
-*Ejemplo:* 12345678 1990
+¿En qué puedo ayudarte hoy?
 """
 
 HELP_MESSAGE = """
@@ -27,46 +23,36 @@ HELP_MESSAGE = """
 /start - Iniciar conversación
 /help - Ver ayuda
 /menu - Ver menú de opciones
-/micuenta - Ver mi información
-/prestamos - Ver mis préstamos
-/saldo - Ver estado de cuenta
 
 💬 *También puedes escribir tus consultas en lenguaje natural:*
 
 Ejemplos:
-• "Cuál es mi saldo?"
-• "Muéstrame mis préstamos"
-• "Detalle del préstamo 123"
-• "Necesito ayuda con un pago"
+• "Quiero solicitar un crédito"
+• "Cuál es mi saldo?" (solo socios)
+• "Necesito ayuda"
 """
 
 MENU_MESSAGE = """
 Puedo ayudarte con lo siguiente:
 
-📋 *Consultas:*
-• Ver mis datos personales
-• Consultar estado de cuenta
-• Ver mis préstamos
-• Detalle de un préstamo específico
-
-🎫 *Soporte:*
+📋 *Servicios:*
+• Solicitar crédito (nuevo)
+• Consultas para socios (requiere autenticación)
 • Crear ticket de soporte
-• Cargar comprobante de pago
 
 💬 *Ejemplos de preguntas:*
+• "Quiero pedir un préstamo"
+• "Cómo me hago socio?"
 • "Cuál es mi estado de cuenta?"
-• "Muéstrame mis préstamos"
-• "Detalle del préstamo 123"
 • "Necesito ayuda con un pago"
-• "Quiero subir un comprobante"
 
 Escribe tu consulta y te ayudaré de inmediato.
 """
 
 AUTHENTICATION_PROMPT = """
-🔐 *Autenticación requerida*
+🔐 *Autenticación para socios*
 
-Para continuar, por favor proporciona:
+Para acceder a tu información personal y préstamos, por favor proporciona:
 
 1️⃣ Tu número de documento (DNI)
 2️⃣ Tu año de nacimiento
@@ -76,13 +62,13 @@ Para continuar, por favor proporciona:
 Esta información será validada en nuestro sistema.
 """
 
-AUTHENTICATION_SUCCESS_TEMPLATE = "Bienvenido {name}!\n\n{menu}"
+AUTHENTICATION_SUCCESS_TEMPLATE = "¡Bienvenido {name}!\n\n{menu}"
 
 AUTHENTICATION_ERROR = (
     "No se pudo autenticar. Verifica tu documento y año de nacimiento."
 )
 
-GOODBYE_MESSAGE = "Hasta luego! Si necesitas ayuda, aquí estaré. 👋"
+GOODBYE_MESSAGE = "¡Hasta luego! Si necesitas ayuda, aquí estaré. 👋"
 
 UPLOAD_RECEIPT_MESSAGE = """
 Para cargar un comprobante de pago, por favor envía la imagen del comprobante.

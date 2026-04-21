@@ -84,6 +84,7 @@ class WhatsAppWebhookProcessor:
         }
 
         handler = handlers.get(message_type)
+        logger.info("Message: %s", message)
         if handler:
             try:
                 handler(message)
@@ -212,7 +213,20 @@ class WhatsAppWebhookProcessor:
 
             try:
                 data = json.loads(response_json)
-                if flow_name == "flow":
+                if flow_name == "loan_prospect_create":
+                    reply_text = (
+                        f"Formulario de crédito enviado:\n"
+                        f"Nombre: {data.get('first_name', '')}\n"
+                        f"Apellido: {data.get('last_name', '')}\n"
+                        f"DNI: {data.get('document_number', '')}\n"
+                        f"Email: {data.get('email', '')}\n"
+                        f"Teléfono: {data.get('phone', '')}\n"
+                        f"Fecha Nac.: {data.get('birth_date', '')}\n"
+                        f"Monto: {data.get('amount', '')}"
+                    )
+                elif (
+                    flow_name == "support_ticket_request" or flow_name == "flow"
+                ):
                     subject = data.get("screen_0_Asunto_0", "")
                     description = data.get(
                         "screen_0_Detalle_del_problema_1", ""

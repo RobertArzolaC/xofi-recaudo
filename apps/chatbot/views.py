@@ -267,7 +267,6 @@ class WhatsAppWebhookView(View):
 
         try:
             body = json.loads(request.body)
-            logger.info("Received webhook: %s", body)
             logger.info("Received webhook, dispatching to Celery")
             process_whatsapp_webhook.delay(body)
             return JsonResponse({"status": "success"}, status=200)

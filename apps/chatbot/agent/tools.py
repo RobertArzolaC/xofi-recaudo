@@ -20,10 +20,17 @@ class ToolRegistry:
     that data.
     """
 
-    def __init__(self, partner_id: int, partner_document: str, api_service: PartnerAPIService):
+    def __init__(
+        self, 
+        partner_id: int = None, 
+        partner_document: str = None, 
+        api_service: PartnerAPIService = None,
+        authenticated: bool = False
+    ):
         self.partner_id = partner_id
         self.partner_document = partner_document
         self.api_service = api_service
+        self.authenticated = authenticated
         self._executors = {
             "get_partner_detail": self._exec_partner_detail,
             "get_account_statement": self._exec_account_statement,
@@ -32,15 +39,18 @@ class ToolRegistry:
             "get_credit_schedule": self._exec_credit_schedule,
             "request_support_ticket": self._exec_request_support_ticket,
             "create_support_ticket": self._exec_create_support_ticket,
+            "request_loan_prospect": self._exec_request_loan_prospect,
+            "create_loan_prospect": self._exec_create_loan_prospect,
         }
 
     def get_tool_declarations(self) -> list[dict]:
         """Generate tool declarations dynamically to inject context like associated products."""
-        # Fetch associated products to use as enum in tool parameters
-        credits_data = self.api_service.get_credits_list(self.partner_id, status="ACTIVE")
         product_names = []
-        if credits_data and "credits" in credits_data:
-            product_names = list(set([c["product_name"] for c in credits_data["credits"]]))
+        if self.authenticated and self.partner_id:
+            # Fetch associated products to use as enum in tool parameters
+            credits_data = self.api_service.get_credits_list(self.partner_id, status="ACTIVE")
+            if credits_data and "credits" in credits_data:
+                product_names = list(set([c["product_name"] for c in credits_data["credits"]]))
 
         # Define product_name parameter schema based on available products
         product_param = {
@@ -50,12 +60,12 @@ class ToolRegistry:
         if product_names:
             product_param["enum"] = product_names
 
-        return [
+        tools = [
             {
                 "type": "function",
                 "function": {
-                    "name": "get_partner_detail",
-                    "description": "Obtener los datos personales del socio autenticado: nombre completo, número de documento, teléfono y email.",
+                    "name": "request_loan_prospect",
+                    "description": "Solicitar un crédito o préstamo personal para un usuario (socio o no socio). Envía un formulario de registro.",
                     "parameters": {
                         "type": "object",
                         "properties": {},
@@ -66,94 +76,133 @@ class ToolRegistry:
             {
                 "type": "function",
                 "function": {
-                    "name": "get_account_statement",
-                    "description": "Obtener el estado de cuenta del socio: resumen de créditos, montos desembolsados, total de pagos realizados y saldo pendiente total.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {},
-                        "required": [],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_credits_list",
-                    "description": "Obtener la lista de préstamos/créditos del socio con sus montos, saldos y estados.",
+                    "name": "create_loan_prospect",
+                    "description": "Registrar los datos de un prospecto de crédito en el sistema. Usar únicamente cuando el usuario ya ha enviado los datos del formulario.",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "status": {
-                                "type": "string",
-                                "description": "Filtrar por estado: 'active' (activos), 'closed' (cancelados), 'overdue' (en mora). Omitir para ver todos.",
-                            },
+                            "first_name": {"type": "string", "description": "Nombres del usuario."},
+                            "last_name": {"type": "string", "description": "Apellidos del usuario."},
+                            "document_number": {"type": "string", "description": "Número de DNI (8 dígitos)."},
+                            "email": {"type": "string", "description": "Correo electrónico."},
+                            "phone": {"type": "string", "description": "Número de teléfono/celular."},
+                            "birth_date": {"type": "string", "description": "Fecha de nacimiento (YYYY-MM-DD)."},
+                            "amount": {"type": "number", "description": "Monto solicitado del crédito."},
                         },
-                        "required": [],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_credit_detail",
-                    "description": "Obtener el detalle de un préstamo/crédito específico.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "product_name": product_param,
-                        },
-                        "required": ["product_name"],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_credit_schedule",
-                    "description": "Obtener el cronograma de pagos detallado de un préstamo. Muestra cuotas vencidas y próximas cuotas.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "product_name": product_param,
-                        },
-                        "required": ["product_name"],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "request_support_ticket",
-                    "description": "Usar cuando el socio solicita crear un ticket de soporte, ayuda, queja o reclamo. NO pide parámetros, solo envía el formulario.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {},
-                        "required": [],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "create_support_ticket",
-                    "description": "Crear un ticket de soporte en el sistema. Usar ÚNICAMENTE cuando el socio ya ha enviado los datos estructurados del formulario (asunto y descripción).",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "subject": {
-                                "type": "string",
-                                "description": "Asunto breve del ticket (máximo 100 caracteres).",
-                            },
-                            "description": {
-                                "type": "string",
-                                "description": "Descripción detallada del problema o consulta.",
-                            },
-                        },
-                        "required": ["subject", "description"],
+                        "required": ["first_name", "last_name", "document_number", "email", "phone", "birth_date", "amount"],
                     },
                 }
             },
         ]
+
+        # Only include member-specific tools if authenticated
+        if self.authenticated:
+            tools.extend([
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_partner_detail",
+                        "description": "Obtener los datos personales del socio autenticado: nombre completo, número de documento, teléfono y email.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_account_statement",
+                        "description": "Obtener el estado de cuenta del socio: resumen de créditos, montos desembolsados, total de pagos realizados y saldo pendiente total.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_credits_list",
+                        "description": "Obtener la lista de préstamos/créditos del socio con sus montos, saldos y estados.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "Filtrar por estado: 'active' (activos), 'closed' (cancelados), 'overdue' (en mora). Omitir para ver todos.",
+                                },
+                            },
+                            "required": [],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_credit_detail",
+                        "description": "Obtener el detalle de un préstamo/crédito específico.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "product_name": product_param,
+                            },
+                            "required": ["product_name"],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_credit_schedule",
+                        "description": "Obtener el cronograma de pagos detallado de un préstamo. Muestra cuotas vencidas y próximas cuotas.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "product_name": product_param,
+                            },
+                            "required": ["product_name"],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "request_support_ticket",
+                        "description": "Usar cuando el socio solicita crear un ticket de soporte, ayuda, queja o reclamo. NO pide parámetros, solo envía el formulario.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "create_support_ticket",
+                        "description": "Crear un ticket de soporte en el sistema. Usar ÚNICAMENTE cuando el socio ya ha enviado los datos estructurados del formulario (asunto y descripción).",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "subject": {
+                                    "type": "string",
+                                    "description": "Asunto breve del ticket (máximo 100 caracteres).",
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Descripción detallada del problema o consulta.",
+                                },
+                            },
+                            "required": ["subject", "description"],
+                        },
+                    }
+                },
+            ])
+
+        return tools
 
     def execute(self, tool_name: str, args: dict) -> dict[str, Any]:
         """Dispatch a tool call to its executor. Returns the result dict."""
@@ -178,7 +227,6 @@ class ToolRegistry:
             valid_params = sig.parameters.keys()
 
             # Filter out arguments that are not expected by the executor
-            # This handles cases where the model hallucinations keys like '' or '@type'
             filtered_args = {
                 k: v for k, v in actual_args.items() 
                 if k in valid_params and k != ""
@@ -193,40 +241,90 @@ class ToolRegistry:
     # Executors
     # ------------------------------------------------------------------
 
+    def _exec_request_loan_prospect(self) -> dict:
+        return {"status": "loan_form_requested"}
+
+    def _exec_create_loan_prospect(
+        self, 
+        first_name: str, 
+        last_name: str, 
+        document_number: str, 
+        email: str, 
+        phone: str, 
+        birth_date: str, 
+        amount: float
+    ) -> dict:
+        from apps.partners.models import Prospect
+        from apps.partners.choices import ProspectStatus
+
+        try:
+            prospect = Prospect.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                document_type="DNI",
+                document_number=document_number,
+                email=email,
+                phone=phone,
+                birth_date=birth_date,
+                status=ProspectStatus.NEW,
+                source="whatsapp_chatbot",
+                notes=f"Monto solicitado: S/ {amount:,.2f}"
+            )
+            return {
+                "status": "success",
+                "prospect_id": prospect.id,
+                "message": "Prospecto registrado correctamente."
+            }
+        except Exception as exc:
+            logger.error("Error creating Prospect: %s", exc)
+            return {"error": "Error al registrar los datos del prospecto."}
+
     def _exec_request_support_ticket(self) -> dict:
         return {"status": "form_requested"}
 
     def _exec_partner_detail(self) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.get_partner_detail(self.partner_id)
         if not data:
             return {"error": "No se encontró información del socio."}
         return data
 
     def _exec_account_statement(self) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.get_account_statement(self.partner_id)
         if not data:
             return {"error": "No se pudo obtener el estado de cuenta."}
         return data
 
     def _exec_credits_list(self, status: str = None) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.get_credits_list(self.partner_id, status=status)
         if not data:
             return {"error": "No se pudo obtener la lista de préstamos."}
         return data
 
     def _exec_credit_detail(self, product_name: str) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.get_credit_detail(self.partner_id, product_name)
         if not data:
             return {"error": f"No se encontró el préstamo '{product_name}'."}
         return data
 
     def _exec_credit_schedule(self, product_name: str) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.get_credit_schedule(self.partner_id, product_name)
         if not data:
             return {"error": f"No se pudo obtener el cronograma del préstamo '{product_name}'."}
         return data
 
     def _exec_create_support_ticket(self, subject: str, description: str) -> dict:
+        if not self.partner_document:
+            return {"error": "Acceso denegado: debe estar autenticado."}
         data = self.api_service.create_support_ticket(
             self.partner_document, subject, description
         )
