@@ -10,7 +10,7 @@ WELCOME_MESSAGE = """
 Soy tu asistente virtual y estoy aquí para ayudarte con:
 
 📋 Consultas sobre tu cuenta y préstamos (solo para socios)
-💰 Solicitar un crédito personal
+🤝 Registrarte para ser evaluado
 🎫 Soporte técnico
 📄 Carga de comprobantes
 
@@ -27,7 +27,7 @@ HELP_MESSAGE = """
 💬 *También puedes escribir tus consultas en lenguaje natural:*
 
 Ejemplos:
-• "Quiero solicitar un crédito"
+• "Quiero registrarme"
 • "Cuál es mi saldo?" (solo socios)
 • "Necesito ayuda"
 """
@@ -36,12 +36,12 @@ MENU_MESSAGE = """
 Puedo ayudarte con lo siguiente:
 
 📋 *Servicios:*
-• Solicitar crédito (nuevo)
+• Registrarse para evaluación (nuevo)
 • Consultas para socios (requiere autenticación)
 • Crear ticket de soporte
 
 💬 *Ejemplos de preguntas:*
-• "Quiero pedir un préstamo"
+• "Cómo me registro?"
 • "Cómo me hago socio?"
 • "Cuál es mi estado de cuenta?"
 • "Necesito ayuda con un pago"

@@ -62,9 +62,9 @@ class MessageFormatter:
                     "title": "Bienvenido a XoFi",
                     "rows": [
                         {
-                            "id": "menu_solicitar_credito",
-                            "title": "Solicitar crédito",
-                            "description": "Pide un préstamo fácil y rápido",
+                            "id": "menu_registrarse",
+                            "title": "Registrarse",
+                            "description": "Regístrate para ser evaluado",
                         },
                         {
                             "id": "menu_autenticacion",

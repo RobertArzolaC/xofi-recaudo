@@ -215,14 +215,12 @@ class WhatsAppWebhookProcessor:
                 data = json.loads(response_json)
                 if flow_name == "loan_prospect_create":
                     reply_text = (
-                        f"Formulario de crédito enviado:\n"
+                        f"Formulario de registro enviado:\n"
                         f"Nombre: {data.get('first_name', '')}\n"
                         f"Apellido: {data.get('last_name', '')}\n"
                         f"DNI: {data.get('document_number', '')}\n"
                         f"Email: {data.get('email', '')}\n"
-                        f"Teléfono: {data.get('phone', '')}\n"
-                        f"Fecha Nac.: {data.get('birth_date', '')}\n"
-                        f"Monto: {data.get('amount', '')}"
+                        f"Teléfono: {data.get('phone', '')}"
                     )
                 elif (
                     flow_name == "support_ticket_request" or flow_name == "flow"

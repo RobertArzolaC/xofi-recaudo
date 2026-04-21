@@ -446,8 +446,8 @@ class CreateSupportTicketStrategy(IntentStrategy):
         return BotResponse(text=text)
 
 
-class RequestLoanProspectStrategy(IntentStrategy):
-    """Strategy for the request_loan_prospect tool."""
+class RequestProspectRegistrationStrategy(IntentStrategy):
+    """Strategy for the request_prospect_registration tool."""
 
     def handle(
         self,
@@ -457,10 +457,10 @@ class RequestLoanProspectStrategy(IntentStrategy):
     ) -> BotResponse:
         if channel == choices.ChannelType.WHATSAPP:
             return BotResponse(
-                text="¡Genial! Por favor, completa el siguiente formulario para evaluar tu solicitud de crédito.",
+                text="¡Genial! Por favor, completa el siguiente formulario para registrarte y ser evaluado.",
                 template={
-                    "name": "credit_application_invitation",
-                    "language": "en",
+                    "name": "onboarding_prospect",
+                    "language": "es_PE",
                     "components": [
                         {
                             "type": "button",
@@ -480,12 +480,12 @@ class RequestLoanProspectStrategy(IntentStrategy):
             )
         else:
             return BotResponse(
-                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email, Teléfono, Fecha de Nacimiento y Monto) para registrar tu solicitud de crédito."
+                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email y Teléfono) para registrarte como prospecto."
             )
 
 
-class CreateLoanProspectStrategy(IntentStrategy):
-    """Strategy for the create_loan_prospect tool."""
+class SaveProspectDataStrategy(IntentStrategy):
+    """Strategy for the save_prospect_data tool."""
 
     def handle(
         self,
@@ -497,9 +497,9 @@ class CreateLoanProspectStrategy(IntentStrategy):
             return BotResponse(text=tool_result["error"])
 
         text = (
-            "✅ *¡Solicitud recibida!*\n\n"
-            "Tus datos han sido registrados correctamente. Un asesor se pondrá en contacto contigo muy pronto para continuar con la evaluación de tu crédito.\n\n"
-            "¡Gracias por confiar en XoFi!"
+            "✅ *¡Datos recibidos!*\n\n"
+            "Tus datos han sido registrados correctamente para ser evaluados. Un asesor se pondrá en contacto contigo muy pronto.\n\n"
+            "¡Gracias por tu interés en XoFi!"
         )
         return BotResponse(text=text)
 
@@ -515,8 +515,8 @@ class StrategyFactory:
         "get_credit_schedule": GetCreditScheduleStrategy(),
         "request_support_ticket": RequestSupportTicketStrategy(),
         "create_support_ticket": CreateSupportTicketStrategy(),
-        "request_loan_prospect": RequestLoanProspectStrategy(),
-        "create_loan_prospect": CreateLoanProspectStrategy(),
+        "request_prospect_registration": RequestProspectRegistrationStrategy(),
+        "save_prospect_data": SaveProspectDataStrategy(),
     }
 
     @classmethod
