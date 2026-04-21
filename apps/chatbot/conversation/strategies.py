@@ -460,7 +460,7 @@ class RequestLoanProspectStrategy(IntentStrategy):
                 text="¡Genial! Por favor, completa el siguiente formulario para evaluar tu solicitud de crédito.",
                 template={
                     "name": "credit_application_invitation",
-                    "language": "es_PE",
+                    "language": "en",
                     "components": [
                         {
                             "type": "button",
