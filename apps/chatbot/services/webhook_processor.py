@@ -212,7 +212,7 @@ class WhatsAppWebhookProcessor:
 
             try:
                 data = json.loads(response_json)
-                flow_token = response_json.get("flow_token", "")
+                flow_token = data.get("flow_token", "")
                 if flow_token == "loan_prospect_create":
                     reply_text = (
                         f"Formulario de registro enviado:\n"
