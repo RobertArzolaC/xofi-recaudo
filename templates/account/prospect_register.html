@@ -1,0 +1,105 @@
+{% extends "layouts/home.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title_page %}
+    {% trans "Prospect Registration" %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+        <a href="/" class="mb-12">
+            <img alt="Logo" src="{{ MEDIA_URL }}{{ config.COMPANY_LOGO_BLACK }}" class="h-60px" />
+        </a>
+        <div class="w-lg-700px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+            <form class="form w-100" method="POST">
+                {% csrf_token %}
+                <div class="mb-10 text-center">
+                    <h1 class="text-gray-900 mb-3">{% trans "Register as a Prospect" %}</h1>
+                    <div class="text-gray-500 fw-semibold fs-4">{% trans "Fill in your details below." %}</div>
+                </div>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row fv-row mb-7">
+                    <div class="col-xl-6">
+                        {{ form.document_type|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.document_type|add_class:"form-select form-select-lg form-select-solid" }}
+                        {% if form.document_type.errors %}
+                            <div class="invalid-feedback d-block">{{ form.document_type.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-xl-6">
+                        {{ form.document_number|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.document_number|add_class:"form-control form-control-lg form-control-solid" }}
+                        {% if form.document_number.errors %}
+                            <div class="invalid-feedback d-block">{{ form.document_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row fv-row mb-7">
+                    <div class="col-xl-6">
+                        {{ form.first_name|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.first_name|add_class:"form-control form-control-lg form-control-solid" }}
+                        {% if form.first_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-xl-6">
+                        {{ form.last_name|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.last_name|add_class:"form-control form-control-lg form-control-solid" }}
+                        {% if form.last_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row fv-row mb-7">
+                    <div class="col-xl-6">
+                        {{ form.birth_date|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.birth_date|add_class:"form-control form-control-lg form-control-solid" }}
+                        {% if form.birth_date.errors %}
+                            <div class="invalid-feedback d-block">{{ form.birth_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-xl-6">
+                        {{ form.phone|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                        {{ form.phone|add_class:"form-control form-control-lg form-control-solid" }}
+                        {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">{{ form.phone.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="fv-row mb-10">
+                    {{ form.email|add_label_class:"form-label fw-bold text-gray-900 fs-6" }}
+                    {{ form.email|add_class:"form-control form-control-lg form-control-solid" }}
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-lg btn-primary w-100">
+                        <span class="indicator-label">{% trans "Register" %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

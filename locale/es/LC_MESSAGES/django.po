@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-20 15:14-0500\n"
+"POT-Creation-Date: 2026-04-22 16:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,25 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/authentication/forms.py:12 apps/partners/forms.py:143
-#: apps/partners/forms.py:333 apps/partners/forms.py:613 apps/team/forms.py:191
-#: apps/users/forms.py:91 apps/users/forms.py:159
-#: templates/users/settings.html:58 templates/users/user/detail.html:104
+#: apps/authentication/forms.py:13 apps/authentication/forms.py:49
+#: apps/partners/forms.py:143 apps/partners/forms.py:333
+#: apps/partners/forms.py:613 apps/team/forms.py:191 apps/users/forms.py:91
+#: apps/users/forms.py:159 templates/users/settings.html:58
+#: templates/users/user/detail.html:104
 msgid "First Name"
 msgstr "Nombre"
 
-#: apps/authentication/forms.py:17 apps/users/forms.py:92
-#: apps/users/forms.py:160 templates/users/settings.html:66
-#: templates/users/user/detail.html:107
+#: apps/authentication/forms.py:18 apps/authentication/forms.py:52
+#: apps/users/forms.py:92 apps/users/forms.py:160
+#: templates/users/settings.html:66 templates/users/user/detail.html:107
 msgid "Last Name"
 msgstr "Apellido"
 
-#: apps/authentication/forms.py:29 apps/campaigns/choices.py:49
-#: apps/campaigns/models.py:512 apps/core/models.py:37
-#: apps/customers/forms.py:63 apps/notifications/choices.py:26
-#: apps/partners/forms.py:151 apps/partners/forms.py:341
-#: apps/partners/forms.py:618 apps/users/forms.py:90 apps/users/forms.py:158
-#: templates/account/password_reset.html:85
+#: apps/authentication/forms.py:46 apps/campaigns/models.py:532
+#: apps/partners/forms.py:147 apps/partners/forms.py:337
+#: apps/partners/forms.py:616 apps/team/forms.py:195
+#: templates/partners/applicant/detail.html:69
+#: templates/partners/partner/detail.html:61
+msgid "Document Number"
+msgstr "Número de documento"
+
+#: apps/authentication/forms.py:58 apps/authentication/forms.py:72
+#: apps/campaigns/choices.py:49 apps/campaigns/models.py:512
+#: apps/core/models.py:37 apps/customers/forms.py:63
+#: apps/notifications/choices.py:26 apps/partners/forms.py:151
+#: apps/partners/forms.py:341 apps/partners/forms.py:618 apps/users/forms.py:90
+#: apps/users/forms.py:158 templates/account/password_reset.html:85
 #: templates/customers/account/list.html:82
 #: templates/customers/agency/detail.html:87
 #: templates/partners/applicant/detail.html:109
@@ -50,7 +59,20 @@ msgstr "Apellido"
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: apps/authentication/forms.py:36
+#: apps/authentication/forms.py:61 apps/campaigns/models.py:518
+#: apps/core/models.py:36 apps/partners/forms.py:150 apps/partners/forms.py:340
+#: apps/partners/forms.py:619 templates/customers/agency/detail.html:83
+#: templates/partners/applicant/detail.html:105
+#: templates/partners/partner/confirm_delete.html:60
+#: templates/partners/partner/detail.html:97
+#: templates/partners/prospect/detail.html:67
+#: templates/payments/detail.html:233 templates/payments/form.html:376
+#: templates/support/ticket/detail.html:194
+#: templates/team/employee/detail.html:114
+msgid "Phone"
+msgstr "Teléfono"
+
+#: apps/authentication/forms.py:79
 msgid "The email address is not registered with us."
 msgstr "La dirección de correo electrónico no está registrada con nosotros."
 
@@ -853,19 +875,6 @@ msgstr "Teléfono de contacto"
 msgid "Contact's email address."
 msgstr "Dirección de correo electrónico laboral."
 
-#: apps/campaigns/models.py:518 apps/core/models.py:36
-#: apps/partners/forms.py:150 apps/partners/forms.py:340
-#: apps/partners/forms.py:619 templates/customers/agency/detail.html:83
-#: templates/partners/applicant/detail.html:105
-#: templates/partners/partner/confirm_delete.html:60
-#: templates/partners/partner/detail.html:97
-#: templates/partners/prospect/detail.html:67
-#: templates/payments/detail.html:233 templates/payments/form.html:376
-#: templates/support/ticket/detail.html:194
-#: templates/team/employee/detail.html:114
-msgid "Phone"
-msgstr "Teléfono"
-
 #: apps/campaigns/models.py:522
 #, fuzzy
 #| msgid "Work phone number."
@@ -881,13 +890,6 @@ msgstr "Telegram"
 #: apps/campaigns/models.py:529
 msgid "Contact's Telegram ID or username."
 msgstr ""
-
-#: apps/campaigns/models.py:532 apps/partners/forms.py:147
-#: apps/partners/forms.py:337 apps/partners/forms.py:616 apps/team/forms.py:195
-#: templates/partners/applicant/detail.html:69
-#: templates/partners/partner/detail.html:61
-msgid "Document Number"
-msgstr "Número de documento"
 
 #: apps/campaigns/models.py:536
 msgid "Contact's document number (DNI, RUC, etc.)."
@@ -6496,6 +6498,39 @@ msgstr ""
 #: templates/account/password_reset_from_key_done.html:17
 msgid "Password is changed"
 msgstr "La contraseña ha sido cambiada."
+
+#: templates/account/prospect_register.html:7
+msgid "Prospect Registration"
+msgstr "Registro de Prospecto"
+
+#: templates/account/prospect_register.html:20
+msgid "Register as a Prospect"
+msgstr "Registrarse como Prospecto"
+
+#: templates/account/prospect_register.html:21
+msgid "Fill in your details below."
+msgstr "Llena los datos que se encuentran abajo"
+
+#: templates/account/prospect_register.html:98
+msgid "Register"
+msgstr "Registrarse"
+
+#: templates/account/prospect_register_success.html:6
+#: templates/account/prospect_register_success.html:18
+msgid "Registration Successful"
+msgstr "Registro Exitoso"
+
+#: templates/account/prospect_register_success.html:20
+msgid ""
+"We have received your information. A member of our team will contact you "
+"shortly."
+msgstr ""
+"Hemos recibido su información. Un miembro de nuestro equipo se pondrá en "
+"contacto con usted en breve."
+
+#: templates/account/prospect_register_success.html:26
+msgid "Back to Home"
+msgstr "Volver al Inicio"
 
 #: templates/account/signup.html:7
 msgid "Signup"

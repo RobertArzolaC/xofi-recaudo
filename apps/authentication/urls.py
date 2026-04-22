@@ -3,8 +3,17 @@ from django.urls import path
 from apps.authentication import views
 
 app_name = "apps.authentication"
-
 urlpatterns = [
+    path(
+        "prospect/register/",
+        views.ProspectRegistrationView.as_view(),
+        name="prospect_register",
+    ),
+    path(
+        "prospect/register/success/",
+        views.ProspectRegistrationSuccessView.as_view(),
+        name="prospect_register_success",
+    ),
     path(
         "api/change-password/",
         views.ChangePasswordView.as_view(),

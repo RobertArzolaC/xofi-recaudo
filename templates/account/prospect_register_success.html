@@ -1,0 +1,32 @@
+{% extends "layouts/home.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title_page %}
+    {% trans "Registration Successful" %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+        <a href="/" class="mb-12">
+            <img alt="Logo" src="{{ MEDIA_URL }}{{ config.COMPANY_LOGO_BLACK }}" class="h-60px" />
+        </a>
+        <div class="w-lg-600px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto text-center">
+            <div class="mb-10">
+                <i class="ki-outline ki-check-circle fs-5x text-success mb-5"></i>
+                <h1 class="text-gray-900 mb-3">{% trans "Registration Successful" %}</h1>
+                <div class="text-gray-500 fw-semibold fs-4">
+                    {% trans "We have received your information. A member of our team will contact you shortly." %}
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'apps.authentication:prospect_register' %}" class="btn btn-lg btn-primary">
+                    {% trans "Back" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
