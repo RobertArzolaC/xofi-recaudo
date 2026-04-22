@@ -212,30 +212,18 @@ class WhatsAppWebhookProcessor:
 
             try:
                 data = json.loads(response_json)
-                flow_token = data.get("flow_token", "")
-                if flow_token == "register_prospect":
+                subject = data.get("screen_0_Asunto_0", "")
+                description = data.get(
+                    "screen_0_Detalle_del_problema_1", ""
+                )
+                if subject and description:
                     reply_text = (
-                        f"Formulario de registro enviado:\n"
-                        f"Nombre: {data.get('screen_0_Nombres_0', '')}\n"
-                        f"Apellido: {data.get('screen_0_Apellidos_1', '')}\n"
-                        f"DNI: {data.get('screen_0_DNI__Documento_2', '')}\n"
-                        f"Email: {data.get('screen_0_Correo_3', '')}\n"
-                        f"Teléfono: {data.get('screen_0_Celular_4', '')}\n"
-                        f"Fecha Nac.: {data.get('screen_0_Fecha_de_nacimiento_5', '')}"
+                        f"Aquí están los datos de mi ticket:\n"
+                        f"Asunto: {subject}\n"
+                        f"Descripción: {description}"
                     )
                 else:
-                    subject = data.get("screen_0_Asunto_0", "")
-                    description = data.get(
-                        "screen_0_Detalle_del_problema_1", ""
-                    )
-                    if subject and description:
-                        reply_text = (
-                            f"Aquí están los datos de mi ticket:\n"
-                            f"Asunto: {subject}\n"
-                            f"Descripción: {description}"
-                        )
-                    else:
-                        reply_text = "Formulario enviado."
+                    reply_text = "Formulario enviado."
             except (json.JSONDecodeError, KeyError):
                 reply_text = "Formulario enviado."
 

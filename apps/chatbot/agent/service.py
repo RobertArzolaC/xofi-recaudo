@@ -154,7 +154,6 @@ class AgentService:
                         "request_support_ticket",
                         "create_support_ticket",
                         "request_prospect_registration",
-                        "save_prospect_data",
                     ]:
                         return "", tools_called
 

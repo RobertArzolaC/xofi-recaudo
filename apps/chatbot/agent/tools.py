@@ -40,7 +40,6 @@ class ToolRegistry:
             "request_support_ticket": self._exec_request_support_ticket,
             "create_support_ticket": self._exec_create_support_ticket,
             "request_prospect_registration": self._exec_request_prospect_registration,
-            "save_prospect_data": self._exec_save_prospect_data,
         }
 
     def get_tool_declarations(self) -> list[dict]:
@@ -65,30 +64,11 @@ class ToolRegistry:
                 "type": "function",
                 "function": {
                     "name": "request_prospect_registration",
-                    "description": "Iniciar el registro de un prospecto para ser evaluado (público general). Envía un formulario de registro.",
+                    "description": "Obtener el acceso al formulario web para que un no socio pueda registrarse como prospecto para ser evaluado.",
                     "parameters": {
                         "type": "object",
                         "properties": {},
                         "required": [],
-                    },
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "save_prospect_data",
-                    "description": "Guardar los datos de un prospecto en el sistema. Usar únicamente cuando el usuario ya ha enviado los datos del formulario de registro.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "first_name": {"type": "string", "description": "Nombres del usuario."},
-                            "last_name": {"type": "string", "description": "Apellidos del usuario."},
-                            "document_number": {"type": "string", "description": "Número de DNI (8 dígitos)."},
-                            "email": {"type": "string", "description": "Correo electrónico."},
-                            "phone": {"type": "string", "description": "Número de teléfono/celular."},
-                            "birth_date": {"type": "string", "description": "Fecha de nacimiento (YYYY-MM-DD)."},
-                        },
-                        "required": ["first_name", "last_name", "document_number", "email", "phone", "birth_date"],
                     },
                 }
             },
@@ -242,39 +222,6 @@ class ToolRegistry:
 
     def _exec_request_prospect_registration(self) -> dict:
         return {"status": "prospect_form_requested"}
-
-    def _exec_save_prospect_data(
-        self, 
-        first_name: str, 
-        last_name: str, 
-        document_number: str, 
-        email: str, 
-        phone: str,
-        birth_date: str
-    ) -> dict:
-        from apps.partners.models import Prospect
-        from apps.partners.choices import ProspectStatus
-
-        try:
-            prospect = Prospect.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                document_type="DNI",
-                document_number=document_number,
-                email=email,
-                phone=phone,
-                birth_date=birth_date,
-                status=ProspectStatus.NEW,
-                source="whatsapp_chatbot"
-            )
-            return {
-                "status": "success",
-                "prospect_id": prospect.id,
-                "message": "Datos de prospecto guardados correctamente."
-            }
-        except Exception as exc:
-            logger.error("Error creating Prospect: %s", exc)
-            return {"error": "Error al guardar los datos del prospecto."}
 
     def _exec_request_support_ticket(self) -> dict:
         return {"status": "form_requested"}

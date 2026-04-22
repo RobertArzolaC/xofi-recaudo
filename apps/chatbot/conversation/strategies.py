@@ -457,51 +457,18 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
     ) -> BotResponse:
         if channel == choices.ChannelType.WHATSAPP:
             return BotResponse(
-                text="¡Genial! Por favor, completa el siguiente formulario para registrarte y ser evaluado.",
+                text="¡Genial! Por favor, haz clic en el botón para ir a nuestra página web y completar tu registro para ser evaluado.",
                 template={
-                    "name": "register_prospect",
+                    "name": "prospect_registration_access",
                     "language": "es_PE",
-                    "components": [
-                        {
-                            "type": "button",
-                            "sub_type": "flow",
-                            "index": "0",
-                            "parameters": [
-                                {
-                                    "type": "action",
-                                    "action": {
-                                        "flow_token": "register_prospect",
-                                    },
-                                }
-                            ],
-                        }
-                    ],
+                    "components": [],
                 },
             )
         else:
+            portal_url = getattr(settings, "PAYMENT_PORTAL_URL", "https://xofi.com")
             return BotResponse(
-                text="Por favor, indícame tus datos (Nombres, Apellidos, DNI, Email, Teléfono y Fecha de Nacimiento) para registrarte como prospecto."
+                text=f"¡Genial! Puedes registrarte para ser evaluado ingresando a nuestro sitio web:\n{portal_url}"
             )
-
-
-class SaveProspectDataStrategy(IntentStrategy):
-    """Strategy for the save_prospect_data tool."""
-
-    def handle(
-        self,
-        tool_args: Dict[str, Any],
-        tool_result: Dict[str, Any],
-        channel: str,
-    ) -> BotResponse:
-        if "error" in tool_result:
-            return BotResponse(text=tool_result["error"])
-
-        text = (
-            "✅ *¡Datos recibidos!*\n\n"
-            "Tus datos han sido registrados correctamente para ser evaluados. Un asesor se pondrá en contacto contigo muy pronto.\n\n"
-            "¡Gracias por tu interés en XoFi!"
-        )
-        return BotResponse(text=text)
 
 
 class StrategyFactory:
@@ -516,7 +483,6 @@ class StrategyFactory:
         "request_support_ticket": RequestSupportTicketStrategy(),
         "create_support_ticket": CreateSupportTicketStrategy(),
         "request_prospect_registration": RequestProspectRegistrationStrategy(),
-        "save_prospect_data": SaveProspectDataStrategy(),
     }
 
     @classmethod
