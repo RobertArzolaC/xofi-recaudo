@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 10:36-0500\n"
+"POT-Creation-Date: 2026-04-30 10:41-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,7 +147,8 @@ msgstr "Enviando"
 #: templates/customers/agency/list.html:126
 #: templates/customers/company/detail.html:40
 #: templates/customers/company/detail.html:50
-#: templates/dashboard/index.html:777 templates/dashboard/index.html:1001
+#: templates/dashboard/index.html:777 templates/dashboard/index.html:875
+#: templates/dashboard/index.html:925 templates/dashboard/index.html:1001
 #: templates/payments/magic_link/detail.html:104
 #: templates/payments/magic_link/list.html:134
 #: templates/team/employee/confirm_delete.html:64
@@ -163,8 +164,8 @@ msgstr "Pausado"
 
 #: apps/campaigns/choices.py:14 apps/core/choices.py:9
 #: apps/credits/choices.py:12 apps/credits/choices.py:84
-#: apps/reports/choices.py:12 templates/dashboard/index.html:1006
-#: templates/reports/report_detail.html:170
+#: apps/reports/choices.py:12 templates/dashboard/index.html:900
+#: templates/dashboard/index.html:1006 templates/reports/report_detail.html:170
 msgid "Completed"
 msgstr "Completado"
 
@@ -4831,7 +4832,7 @@ msgid ""
 "Type of concept receiving the payment (Installment, Contribution, Penalty, "
 "etc.)."
 msgstr ""
-"Tipo de concepto que recibe el pago (Cuota, Contribución, Penalidad, etc.)."
+"Tipo de concepto que recibe el pago (Cuota, Aporte, Penalidad, etc.)."
 
 #: apps/payments/models.py:211
 msgid "ID of the concept receiving the payment."
@@ -5619,6 +5620,7 @@ msgid "Support"
 msgstr "Soporte"
 
 #: apps/support/choices.py:17 templates/dashboard/index.html:813
+#: templates/dashboard/index.html:949
 msgid "Open"
 msgstr "Abierto"
 
@@ -7358,54 +7360,38 @@ msgstr "Comience creando su primer grupo."
 
 #: templates/chatbot/dashboard/index.html:6
 #: templates/chatbot/dashboard/index.html:14
-#, fuzzy
-#| msgid "Dashboard"
 msgid "Chatbot Dashboard"
-msgstr "Tablero"
+msgstr "Tablero de Chatbot"
 
 #: templates/chatbot/dashboard/index.html:137
-#, fuzzy
-#| msgid "Agent Conversations"
 msgid "Total Conversations"
-msgstr "Conversaciones del Agente"
+msgstr "Conversaciones Totales"
 
 #: templates/chatbot/dashboard/index.html:151
-#, fuzzy
-#| msgid "Active"
 msgid "Active Now"
-msgstr "Activo"
+msgstr "Activas Ahora"
 
 #: templates/chatbot/dashboard/index.html:165
-#, fuzzy
-#| msgid "Authenticated"
 msgid "Auth Rate"
-msgstr "Autenticado"
+msgstr "Tasa de Autenticación"
 
 #: templates/chatbot/dashboard/index.html:179
-#, fuzzy
-#| msgid "Message content"
 msgid "Messages / Month"
-msgstr "Contenido del mensaje"
+msgstr "Mensajes por Mes"
 
 #: templates/chatbot/dashboard/index.html:193
-#, fuzzy
-#| msgid "WhatsApp"
 msgid "WhatsApp Users"
-msgstr "WhatsApp"
+msgstr "Usuarios de WhatsApp"
 
 #: templates/chatbot/dashboard/index.html:207
-#, fuzzy
-#| msgid "Telegram"
 msgid "Telegram Users"
-msgstr "Telegram"
+msgstr "Usuarios de Telegram"
 
 #: templates/chatbot/dashboard/index.html:220
 msgid "WhatsApp Message Delivery"
-msgstr ""
+msgstr "Entrega de Mensajes de WhatsApp"
 
 #: templates/chatbot/dashboard/index.html:221
-#, fuzzy
-#| msgid "Active Status"
 msgid "Live Stats"
 msgstr "Estado Activo"
 
@@ -7904,15 +7890,15 @@ msgstr "¡Sí, elimínalo!"
 
 #: templates/compliance/contribution/detail.html:5
 msgid "Contribution Details"
-msgstr "Detalles de la Contribución"
+msgstr "Detalles de los Aportes"
 
 #: templates/compliance/contribution/detail.html:6
 msgid "Detail Contribution"
-msgstr "Detalle de la Contribución"
+msgstr "Detalle del Aporte"
 
 #: templates/compliance/contribution/detail.html:37
 msgid "Contribution Summary"
-msgstr "Resumen de la Contribución"
+msgstr "Resumen del Aporte"
 
 #: templates/compliance/contribution/detail.html:65
 #: templates/compliance/penalty/detail.html:67
@@ -7942,7 +7928,7 @@ msgstr "días"
 
 #: templates/compliance/contribution/detail.html:98
 msgid "Contribution Information"
-msgstr "Información de la Contribución"
+msgstr "Información del Aporte"
 
 #: templates/compliance/contribution/detail.html:114
 #: templates/compliance/contribution/list.html:79
@@ -7960,7 +7946,7 @@ msgstr "Modificado"
 #: templates/compliance/contribution/form.html:32
 #: templates/compliance/social_security/form.html:32
 msgid "Partner and Period Information"
-msgstr "Información de la Contribución"
+msgstr "Información del Socio y Período"
 
 #: templates/compliance/contribution/form.html:120
 #: templates/compliance/penalty/form.html:127
@@ -7971,11 +7957,11 @@ msgstr "Error de Validación"
 #: templates/compliance/contribution/list.html:6
 #: templates/compliance/contribution/list.html:68
 msgid "List Contribution"
-msgstr "Listar Contribución"
+msgstr "Listar Aportes"
 
 #: templates/compliance/contribution/list.html:69
 msgid "contributions"
-msgstr "contribuciones"
+msgstr "aportes"
 
 #: templates/compliance/contribution/list.html:123
 #: templates/compliance/penalty/list.html:123
@@ -7985,15 +7971,15 @@ msgstr "días de retraso"
 
 #: templates/compliance/contribution/list.html:162
 msgid "No contributions found"
-msgstr "No se encontraron contribuciones"
+msgstr "No se encontraron aportes"
 
 #: templates/compliance/contribution/list.html:165
 msgid "Start by creating your first contribution"
-msgstr "Comienza creando tu primera contribución"
+msgstr "Comienza creando tu primer aporte"
 
 #: templates/compliance/contribution/list.html:166
 msgid "Add Contribution"
-msgstr "Agregar Contribución"
+msgstr "Agregar Aporte"
 
 #: templates/compliance/penalty/confirm_delete.html:24
 msgid "Are you sure you want to delete this penalty?"

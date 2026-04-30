@@ -872,7 +872,7 @@
                                 <span class="path3"></span>
                             </i>
                         </div>
-                        <div class="enhanced-kpi-badge primary">ACTIVE</div>
+                        <div class="enhanced-kpi-badge primary">{% trans "Active" %}</div>
                     </div>
                     <div class="enhanced-kpi-body">
                         <div class="enhanced-kpi-value">{{ active_campaigns_count|default:"0" }}</div>
@@ -897,7 +897,7 @@
                                 <span class="path3"></span>
                             </i>
                         </div>
-                        <div class="enhanced-kpi-badge success">COMPLETED</div>
+                        <div class="enhanced-kpi-badge success">{% trans "Completed" %}</div>
                     </div>
                     <div class="enhanced-kpi-body">
                         <div class="enhanced-kpi-value">{{ completed_payments_count|default:"0" }}</div>
@@ -922,7 +922,7 @@
                                 <span class="path3"></span>
                             </i>
                         </div>
-                        <div class="enhanced-kpi-badge warning">ACTIVE</div>
+                        <div class="enhanced-kpi-badge warning">{% trans "Active" %}</div>
                     </div>
                     <div class="enhanced-kpi-body">
                         <div class="enhanced-kpi-value">{{ active_credits_count|default:"0" }}</div>
@@ -946,7 +946,7 @@
                                 <span class="path2"></span>
                             </i>
                         </div>
-                        <div class="enhanced-kpi-badge danger">OPEN</div>
+                        <div class="enhanced-kpi-badge danger">{% trans "Open" %}</div>
                     </div>
                     <div class="enhanced-kpi-body">
                         <div class="enhanced-kpi-value">{{ open_tickets_count|default:"0" }}</div>
