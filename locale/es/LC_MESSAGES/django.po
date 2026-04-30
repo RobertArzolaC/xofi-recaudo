@@ -7396,16 +7396,12 @@ msgid "Live Stats"
 msgstr "Estado Activo"
 
 #: templates/chatbot/dashboard/index.html:235
-#, fuzzy
-#| msgid "Message content"
 msgid "Messages Sent"
-msgstr "Contenido del mensaje"
+msgstr "Mensajes Enviados"
 
 #: templates/chatbot/dashboard/index.html:290
-#, fuzzy
-#| msgid "Message Templates"
 msgid "Messages (last 14 days)"
-msgstr "Plantillas de Mensajes"
+msgstr "Mensajes (últimos 14 días)"
 
 #: templates/chatbot/dashboard/index.html:306
 msgid "Channel Distribution"
@@ -7438,43 +7434,33 @@ msgstr "Contacto"
 
 #: templates/chatbot/dashboard/index.html:379
 msgid "Auth"
-msgstr ""
+msgstr "Autenticación"
 
 #: templates/chatbot/dashboard/index.html:380
 #: templates/chatbot/dashboard/index.html:868
-#, fuzzy
-#| msgid "Message Body"
 msgid "Messages"
-msgstr "Cuerpo del Mensaje"
+msgstr "Mensajes"
 
 #: templates/chatbot/dashboard/index.html:381
-#, fuzzy
-#| msgid "Last Execution At"
 msgid "Last Interaction"
-msgstr "Última ejecución en"
+msgstr "Última interacción"
 
 #: templates/chatbot/dashboard/index.html:436
-#, fuzzy
-#| msgid "No comments yet"
 msgid "No conversations yet"
-msgstr "No hay comentarios aún"
+msgstr "No hay conversaciones"
 
 #: templates/chatbot/dashboard/index.html:458
 msgid "WhatsApp Business API — Meta approval status"
-msgstr ""
+msgstr "Estado de aprobación de la API de WhatsApp Business - Meta"
 
 #: templates/chatbot/dashboard/index.html:481
-#, fuzzy
-#| msgid "Message Template"
 msgid "New Template"
-msgstr "Plantilla de Mensaje"
+msgstr "Nueva Plantilla"
 
 #: templates/chatbot/dashboard/index.html:496
 #: templates/chatbot/dashboard/index.html:624
-#, fuzzy
-#| msgid "Template Type"
 msgid "Template Name"
-msgstr "Tipo de Plantilla"
+msgstr "Nombre de la Plantilla"
 
 #: templates/chatbot/dashboard/index.html:497
 #: templates/chatbot/dashboard/index.html:630
@@ -7485,20 +7471,16 @@ msgstr "Categoría"
 
 #: templates/chatbot/dashboard/index.html:498
 msgid "Lang"
-msgstr ""
+msgstr "Idioma"
 
 #: templates/chatbot/dashboard/index.html:499
-#, fuzzy
-#| msgid "New Status"
 msgid "Meta Status"
-msgstr "Nuevo Estado"
+msgstr "Estado Meta"
 
 #: templates/chatbot/dashboard/index.html:500
 #: templates/chatbot/dashboard/index.html:720
-#, fuzzy
-#| msgid "Timestamps"
 msgid "Times Used"
-msgstr "Marcas de tiempo"
+msgstr "Veces utilizado"
 
 #: templates/chatbot/dashboard/index.html:501
 #: templates/compliance/contribution/detail.html:142
@@ -7531,11 +7513,11 @@ msgstr "Creado"
 
 #: templates/chatbot/dashboard/index.html:559
 msgid "Sync approval status from Meta"
-msgstr ""
+msgstr "Sincronizar estado de aprobación de Meta"
 
 #: templates/chatbot/dashboard/index.html:562
 msgid "Sync Meta"
-msgstr ""
+msgstr "Sincronizar Meta"
 
 #: templates/chatbot/dashboard/index.html:579
 #: templates/customers/account/form.html:123
@@ -7544,99 +7526,83 @@ msgid "View"
 msgstr "Ver"
 
 #: templates/chatbot/dashboard/index.html:591
-#, fuzzy
-#| msgid "There are no prospects registered yet."
 msgid "No templates registered yet"
-msgstr "No hay prospectos registrados aún."
+msgstr "No hay plantillas registradas aún."
 
 #: templates/chatbot/dashboard/index.html:612
-#, fuzzy
-#| msgid "Message Template"
 msgid "Create Message Template"
-msgstr "Plantilla de Mensaje"
+msgstr "Crear plantilla de mensaje"
 
 #: templates/chatbot/dashboard/index.html:613
-#, fuzzy
-#| msgid "Successfully submitted {} applications for review."
 msgid "Will be submitted to Meta for review"
-msgstr "Envío exitoso de {} solicitudes para revisión."
+msgstr "Se enviará a Meta para revisión"
 
 #: templates/chatbot/dashboard/index.html:627
 msgid "Lowercase, no spaces (use underscores)"
-msgstr ""
+msgstr "minúsculas, sin espacios (usa guiones bajos)"
 
 #: templates/chatbot/dashboard/index.html:638
 #: templates/chatbot/dashboard/index.html:716
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: templates/chatbot/dashboard/index.html:646
 #: templates/chatbot/dashboard/index.html:729
-#, fuzzy
-#| msgid "Template Type"
 msgid "Template Body"
-msgstr "Tipo de Plantilla"
+msgstr "Cuerpo de la Plantilla"
 
 #: templates/chatbot/dashboard/index.html:648
 msgid ""
 "Hola {{1}}, tu pago de {{2}} vence el {{3}}. Responde este mensaje para más "
 "info."
 msgstr ""
+"Hola {{1}}, tu pago de {{2}} vence el {{3}}. Responde este mensaje para más "
+"info."
 
 #: templates/chatbot/dashboard/index.html:649
 msgid "Use {{1}}, {{2}}... for dynamic variables"
-msgstr ""
+msgstr "Usa {{1}}, {{2}}... para variables dinámicas"
 
 #: templates/chatbot/dashboard/index.html:657
-#, fuzzy
-#| msgid "Hide Preview"
 msgid "Live Preview"
-msgstr "Ocultar Vista Previa"
+msgstr "Vista Previa en Vivo"
 
 #: templates/chatbot/dashboard/index.html:663
 #: templates/chatbot/dashboard/index.html:932
 msgid "Preview will appear here..."
-msgstr ""
+msgstr "La vista previa aparecerá aquí..."
 
 #: templates/chatbot/dashboard/index.html:674
 msgid "Submit to Meta for Review"
-msgstr ""
+msgstr "Enviar a Meta para revisión"
 
 #: templates/chatbot/dashboard/index.html:708
-#, fuzzy
-#| msgid "Approval Date"
 msgid "Meta Approval Status"
-msgstr "Fecha de Aprobación"
+msgstr "Estado de Aprobación de Meta"
 
 #: templates/chatbot/dashboard/index.html:740
-#, fuzzy
-#| msgid "Contacts Preview"
 msgid "WhatsApp Preview"
-msgstr "Vista Previa de Contactos"
+msgstr "Vista Previa de WhatsApp"
 
 #: templates/chatbot/dashboard/index.html:799
-#, fuzzy
-#| msgid "Error Message"
 msgid "User Messages"
-msgstr "Mensaje de error"
+msgstr "Mensajes de Usuario"
 
 #: templates/chatbot/dashboard/index.html:947
 msgid "Template name and body are required."
-msgstr ""
+msgstr "El nombre y el cuerpo de la plantilla son obligatorios."
 
 #: templates/chatbot/dashboard/index.html:954
 msgid "Submitting to Meta..."
-msgstr ""
+msgstr "Enviando a Meta..."
 
 #: templates/chatbot/dashboard/index.html:975
 msgid "Submitted! Awaiting Meta review..."
-msgstr ""
+msgstr "¡Enviado! Awaiting Meta review..."
 
 #: templates/chatbot/dashboard/index.html:980
-#, fuzzy
-#| msgid "Error loading filters. Please try again."
 msgid "Network error. Please try again."
-msgstr "Error al cargar los filtros. Por favor, inténtalo de nuevo."
+msgstr "Error de red. Por favor, inténtalo de nuevo."
 
 #: templates/chatbot/dashboard/index.html:991
 msgid "Syncing..."
@@ -7722,20 +7688,16 @@ msgid "Remove image"
 msgstr "Eliminar imagen"
 
 #: templates/chatbot/settings/form.html:55
-#, fuzzy
-#| msgid ""
-#| "Set the company logo. Only *.png, *.jpg and *.jpeg image files are "
-#| "accepted"
 msgid ""
 "Set the welcome image for WhatsApp. Only *.png, *.jpg and *.jpeg image files "
 "are accepted"
 msgstr ""
-"Establezca el logo de la empresa. Solo se aceptan archivos de imagen *.png, "
-"*.jpg y *.jpeg"
+"Establezca la imagen de bienvenida para WhatsApp. Solo se aceptan archivos de "
+"imagen *.png, *.jpg y *.jpeg"
 
 #: templates/chatbot/settings/form.html:89
 msgid "Use *text* for bold formatting in WhatsApp and Telegram."
-msgstr ""
+msgstr "Use *texto* para el formato negrita en WhatsApp y Telegram."
 
 #: templates/chatbot/settings/form.html:102
 #: templates/compliance/contribution/form.html:140
@@ -7749,10 +7711,8 @@ msgid "Save Changes"
 msgstr "Guardar Cambios"
 
 #: templates/chatbot/test.html:5
-#, fuzzy
-#| msgid "Chatbot Settings"
 msgid "Chatbot Testing"
-msgstr "Configuración del Chatbot"
+msgstr "Prueba del Chatbot"
 
 #: templates/chatbot/test.html:13
 msgid "Chatbot Agent Test"
