@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-22 16:11-0500\n"
+"POT-Creation-Date: 2026-04-30 10:36-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,34 +18,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/authentication/forms.py:13 apps/authentication/forms.py:49
-#: apps/partners/forms.py:143 apps/partners/forms.py:333
-#: apps/partners/forms.py:613 apps/team/forms.py:191 apps/users/forms.py:91
-#: apps/users/forms.py:159 templates/users/settings.html:58
-#: templates/users/user/detail.html:104
+#: apps/authentication/forms.py:14 apps/authentication/forms.py:58
+#: apps/authentication/forms.py:89 apps/partners/forms.py:143
+#: apps/partners/forms.py:333 apps/partners/forms.py:613 apps/team/forms.py:191
+#: apps/users/forms.py:91 apps/users/forms.py:159
+#: templates/users/settings.html:58 templates/users/user/detail.html:104
 msgid "First Name"
 msgstr "Nombre"
 
-#: apps/authentication/forms.py:18 apps/authentication/forms.py:52
-#: apps/users/forms.py:92 apps/users/forms.py:160
-#: templates/users/settings.html:66 templates/users/user/detail.html:107
+#: apps/authentication/forms.py:19 apps/users/forms.py:92
+#: apps/users/forms.py:160 templates/users/settings.html:66
+#: templates/users/user/detail.html:107
 msgid "Last Name"
 msgstr "Apellido"
 
-#: apps/authentication/forms.py:46 apps/campaigns/models.py:532
-#: apps/partners/forms.py:147 apps/partners/forms.py:337
-#: apps/partners/forms.py:616 apps/team/forms.py:195
+#: apps/authentication/forms.py:52 apps/authentication/forms.py:88
+#: apps/campaigns/models.py:532 apps/partners/forms.py:147
+#: apps/partners/forms.py:337 apps/partners/forms.py:616 apps/team/forms.py:195
 #: templates/partners/applicant/detail.html:69
 #: templates/partners/partner/detail.html:61
 msgid "Document Number"
 msgstr "Número de documento"
 
-#: apps/authentication/forms.py:58 apps/authentication/forms.py:72
-#: apps/campaigns/choices.py:49 apps/campaigns/models.py:512
-#: apps/core/models.py:37 apps/customers/forms.py:63
-#: apps/notifications/choices.py:26 apps/partners/forms.py:151
-#: apps/partners/forms.py:341 apps/partners/forms.py:618 apps/users/forms.py:90
-#: apps/users/forms.py:158 templates/account/password_reset.html:85
+#: apps/authentication/forms.py:64 apps/authentication/forms.py:90
+#: apps/partners/forms.py:614
+msgid "Last Names"
+msgstr "Apellidos"
+
+#: apps/authentication/forms.py:76 apps/authentication/forms.py:92
+#: apps/authentication/forms.py:122 apps/campaigns/choices.py:49
+#: apps/campaigns/models.py:512 apps/core/models.py:37
+#: apps/customers/forms.py:63 apps/notifications/choices.py:26
+#: apps/partners/forms.py:151 apps/partners/forms.py:341
+#: apps/partners/forms.py:618 apps/users/forms.py:90 apps/users/forms.py:158
+#: templates/account/password_reset.html:85
 #: templates/customers/account/list.html:82
 #: templates/customers/agency/detail.html:87
 #: templates/partners/applicant/detail.html:109
@@ -59,8 +65,9 @@ msgstr "Número de documento"
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: apps/authentication/forms.py:61 apps/campaigns/models.py:518
-#: apps/core/models.py:36 apps/partners/forms.py:150 apps/partners/forms.py:340
+#: apps/authentication/forms.py:82 apps/authentication/forms.py:93
+#: apps/campaigns/models.py:518 apps/core/models.py:36
+#: apps/partners/forms.py:150 apps/partners/forms.py:340
 #: apps/partners/forms.py:619 templates/customers/agency/detail.html:83
 #: templates/partners/applicant/detail.html:105
 #: templates/partners/partner/confirm_delete.html:60
@@ -72,7 +79,33 @@ msgstr "Correo electrónico"
 msgid "Phone"
 msgstr "Teléfono"
 
-#: apps/authentication/forms.py:79
+#: apps/authentication/forms.py:87 apps/partners/forms.py:146
+#: apps/partners/forms.py:336 apps/partners/forms.py:615 apps/team/forms.py:194
+#: templates/partners/applicant/detail.html:66
+#: templates/partners/partner/detail.html:58
+msgid "Document Type"
+msgstr "Tipo de documento"
+
+#: apps/authentication/forms.py:91 apps/partners/forms.py:149
+#: apps/partners/forms.py:339 apps/partners/forms.py:617 apps/team/forms.py:196
+#: templates/partners/applicant/detail.html:75
+#: templates/partners/partner/detail.html:67
+#: templates/partners/prospect/detail.html:71
+#: templates/team/employee/detail.html:91
+msgid "Birth Date"
+msgstr "Fecha de nacimiento"
+
+#: apps/authentication/forms.py:107
+msgid "You must be at least 18 years old."
+msgstr ""
+
+#: apps/authentication/forms.py:115 apps/authentication/forms.py:117
+#, fuzzy
+#| msgid "This email is already registered for another employee."
+msgid "This email is already registered."
+msgstr "Este correo electrónico ya está registrado para otro empleado."
+
+#: apps/authentication/forms.py:130
 msgid "The email address is not registered with us."
 msgstr "La dirección de correo electrónico no está registrada con nosotros."
 
@@ -1668,7 +1701,7 @@ msgstr "Aporte"
 
 #: apps/compliance/models.py:122 templates/campaigns/campaign/form.html:258
 #: templates/compliance/contribution/list.html:5
-#: templates/includes/aside.html:154
+#: templates/includes/aside.html:154 templates/partners/partner/detail.html:181
 msgid "Contributions"
 msgstr "Aportes"
 
@@ -4165,22 +4198,6 @@ msgstr "Apellido paterno"
 msgid "Maternal Last Name"
 msgstr "Apellido materno"
 
-#: apps/partners/forms.py:146 apps/partners/forms.py:336
-#: apps/partners/forms.py:615 apps/team/forms.py:194
-#: templates/partners/applicant/detail.html:66
-#: templates/partners/partner/detail.html:58
-msgid "Document Type"
-msgstr "Tipo de documento"
-
-#: apps/partners/forms.py:149 apps/partners/forms.py:339
-#: apps/partners/forms.py:617 apps/team/forms.py:196
-#: templates/partners/applicant/detail.html:75
-#: templates/partners/partner/detail.html:67
-#: templates/partners/prospect/detail.html:71
-#: templates/team/employee/detail.html:91
-msgid "Birth Date"
-msgstr "Fecha de nacimiento"
-
 #: apps/partners/forms.py:182
 msgid ""
 "Status cannot be changed after approval. A partner record has been created."
@@ -4332,10 +4349,6 @@ msgstr "Nombre del supervisor"
 msgid "Additional notes about the prospect"
 msgstr "Notas adicionales sobre el prospecto"
 
-#: apps/partners/forms.py:614
-msgid "Last Names"
-msgstr "Apellidos"
-
 #: apps/partners/models.py:18
 msgid "Unique external identifier for the applicant."
 msgstr "Identificador externo único para el solicitante."
@@ -4410,103 +4423,103 @@ msgstr "Prospectos"
 msgid "Current status of the partner."
 msgstr "Estado actual del socio."
 
-#: apps/partners/models.py:224
+#: apps/partners/models.py:220
 msgid "Partner associated with this employment information."
 msgstr "Socio asociado con esta información laboral."
 
-#: apps/partners/models.py:231
+#: apps/partners/models.py:227
 msgid "Current occupation of the partner."
 msgstr "Ocupación actual del socio."
 
-#: apps/partners/models.py:236
+#: apps/partners/models.py:232
 msgid "Professional specialization or career."
 msgstr "Especialización o carrera profesional."
 
-#: apps/partners/models.py:242
+#: apps/partners/models.py:238
 msgid "Highest education level achieved."
 msgstr "Nivel educativo más alto alcanzado."
 
-#: apps/partners/models.py:250
+#: apps/partners/models.py:246
 msgid "Type of employment according to Peruvian labor law."
 msgstr "Tipo de empleo según la legislación laboral peruana."
 
-#: apps/partners/models.py:254
+#: apps/partners/models.py:250
 msgid "Whether the partner is currently employed."
 msgstr "Si el socio está actualmente empleado."
 
-#: apps/partners/models.py:261
+#: apps/partners/models.py:257
 msgid "Name of the current workplace or company."
 msgstr "Nombre del lugar de trabajo o empresa actual."
 
-#: apps/partners/models.py:266
+#: apps/partners/models.py:262
 msgid "Address of the current workplace."
 msgstr "Dirección del lugar de trabajo actual."
 
-#: apps/partners/models.py:271
+#: apps/partners/models.py:267
 msgid "Additional or secondary workplace."
 msgstr "Lugar de trabajo adicional o secundario."
 
-#: apps/partners/models.py:276
+#: apps/partners/models.py:272
 msgid "Current job position or title."
 msgstr "Cargo o título del trabajo actual."
 
-#: apps/partners/models.py:281
+#: apps/partners/models.py:277
 msgid "Department or area within the company."
 msgstr "Departamento o área dentro de la empresa."
 
-#: apps/partners/models.py:289
+#: apps/partners/models.py:285
 msgid "Type of employment contract."
 msgstr "Tipo de contrato de trabajo."
 
-#: apps/partners/models.py:294
+#: apps/partners/models.py:290
 msgid "Start date of current employment contract."
 msgstr "Fecha de inicio del contrato de trabajo actual."
 
-#: apps/partners/models.py:299
+#: apps/partners/models.py:295
 msgid "End date of contract (if applicable)."
 msgstr "Fecha de finalización del contrato (si aplica)."
 
-#: apps/partners/models.py:305
+#: apps/partners/models.py:301
 msgid "Type of work schedule."
 msgstr "Tipo de horario laboral."
 
-#: apps/partners/models.py:310
+#: apps/partners/models.py:306
 msgid "Number of weekly working hours."
 msgstr "Número de horas laborales semanales."
 
-#: apps/partners/models.py:319
+#: apps/partners/models.py:315
 msgid "Base salary amount in Peruvian Soles (PEN)."
 msgstr "Monto del salario base en Soles Peruanos (PEN)."
 
-#: apps/partners/models.py:325
+#: apps/partners/models.py:321
 msgid "Frequency of salary payment."
 msgstr "Frecuencia de pago del salario."
 
-#: apps/partners/models.py:332
+#: apps/partners/models.py:328
 msgid "Additional income from bonuses, commissions, etc."
 msgstr "Ingresos adicionales por bonificaciones, comisiones, etc."
 
-#: apps/partners/models.py:339
+#: apps/partners/models.py:335
 msgid "Total estimated monthly income."
 msgstr "Ingreso mensual total estimado."
 
-#: apps/partners/models.py:346
+#: apps/partners/models.py:342
 msgid "Work phone number."
 msgstr "Número de teléfono laboral."
 
-#: apps/partners/models.py:350
+#: apps/partners/models.py:346
 msgid "Work email address."
 msgstr "Dirección de correo electrónico laboral."
 
-#: apps/partners/models.py:355
+#: apps/partners/models.py:351
 msgid "Name of direct supervisor or manager."
 msgstr "Nombre del supervisor o gerente directo."
 
-#: apps/partners/models.py:361
+#: apps/partners/models.py:357
 msgid "Additional notes about employment information."
 msgstr "Notas adicionales sobre la información laboral."
 
-#: apps/partners/models.py:365 apps/partners/models.py:366
+#: apps/partners/models.py:361 apps/partners/models.py:362
 msgid "Partner Employment Information"
 msgstr "Información Laboral del Socio"
 
@@ -6529,17 +6542,6 @@ msgstr ""
 "contacto con usted en breve."
 
 #: templates/account/prospect_register_success.html:26
-msgid "Back to Home"
-msgstr "Volver al Inicio"
-
-#: templates/account/signup.html:7
-msgid "Signup"
-msgstr "Registro"
-
-#: templates/account/verification_sent.html:7
-msgid "Verify Your Email Address"
-msgstr "Verificar su dirección de correo electrónico"
-
 #: templates/campaigns/campaign/confirm_delete.html:15
 #: templates/campaigns/campaign/detail.html:15
 #: templates/campaigns/campaign/form.html:16
@@ -6596,6 +6598,14 @@ msgstr "Verificar su dirección de correo electrónico"
 #: templates/users/user/roles.html:16
 msgid "Back"
 msgstr "Volver"
+
+#: templates/account/signup.html:7
+msgid "Signup"
+msgstr "Registro"
+
+#: templates/account/verification_sent.html:7
+msgid "Verify Your Email Address"
+msgstr "Verificar su dirección de correo electrónico"
 
 #: templates/campaigns/campaign/confirm_delete.html:27
 msgid "Are you sure you want to delete this campaign?"
@@ -7412,34 +7422,24 @@ msgid "Messages (last 14 days)"
 msgstr "Plantillas de Mensajes"
 
 #: templates/chatbot/dashboard/index.html:306
-#, fuzzy
-#| msgid "Contribution"
 msgid "Channel Distribution"
-msgstr "Aporte"
+msgstr "Aporte por canal"
 
 #: templates/chatbot/dashboard/index.html:329
-#, fuzzy
-#| msgid "Message content"
 msgid "Messages by Intent"
-msgstr "Contenido del mensaje"
+msgstr "Mensajes por intención"
 
 #: templates/chatbot/dashboard/index.html:345
-#, fuzzy
-#| msgid "Campaigns by Status"
 msgid "Conversations by Status"
-msgstr "Campañas por Estado"
+msgstr "Conversaciones por estado"
 
 #: templates/chatbot/dashboard/index.html:366
-#, fuzzy
-#| msgid "Agent Conversations"
 msgid "Recent Conversations"
-msgstr "Conversaciones del Agente"
+msgstr "Conversaciones recientes"
 
 #: templates/chatbot/dashboard/index.html:367
-#, fuzzy
-#| msgid "Last interaction timestamp"
 msgid "Last 10 interactions"
-msgstr "Marca de tiempo de la última interacción"
+msgstr "Últimas 10 interacciones"
 
 #: templates/chatbot/dashboard/index.html:375
 #: templates/customers/agency/list.html:90
@@ -7527,7 +7527,7 @@ msgstr "Marcas de tiempo"
 #: templates/customers/company/detail.html:142
 #: templates/partners/applicant/detail.html:189
 #: templates/partners/modals/document_detail_modal.html:108
-#: templates/partners/partner/detail.html:181
+#: templates/partners/partner/detail.html:202
 #: templates/partners/prospect/list.html:81
 #: templates/payments/magic_link/detail.html:87
 #: templates/payments/magic_link/list.html:97
@@ -8217,7 +8217,7 @@ msgstr "Información de Fechas"
 #: templates/customers/company/detail.html:152
 #: templates/partners/applicant/detail.html:193
 #: templates/partners/modals/document_detail_modal.html:117
-#: templates/partners/partner/detail.html:185
+#: templates/partners/partner/detail.html:206
 #: templates/payments/receipt/detail.html:167
 #: templates/support/ticket/detail.html:262
 msgid "Last Modified"
@@ -8407,7 +8407,7 @@ msgstr "Plazo Máximo"
 #: templates/customers/company/detail.html:134
 #: templates/partners/applicant/detail.html:181
 #: templates/partners/modals/document_detail_modal.html:100
-#: templates/partners/partner/detail.html:173
+#: templates/partners/partner/detail.html:194
 #: templates/support/ticket/detail.html:250
 msgid "System Information"
 msgstr "Información del Sistema"
@@ -9290,6 +9290,10 @@ msgstr "Eliminar Socio"
 #: templates/partners/partner/detail.html:5
 msgid "Partner Details"
 msgstr "Detalles del Socio"
+
+#: templates/partners/partner/detail.html:173
+msgid "Contributions Information"
+msgstr "Información de Aportes"
 
 #: templates/partners/partner/form.html:241
 msgid "Create Partner"
@@ -10979,6 +10983,9 @@ msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 #: templates/users/user/roles.html:137
 msgid "Save Roles"
 msgstr "Guardar Roles"
+
+#~ msgid "Back to Home"
+#~ msgstr "Volver al Inicio"
 
 #~ msgid "Greeting"
 #~ msgstr "Saludo"

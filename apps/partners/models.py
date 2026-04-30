@@ -174,11 +174,7 @@ class Partner(core_models.Person, TimeStampedModel):
                     self.compliance_initial_balance.initial_contribution_amount
                 )
 
-            current = self.contribution_set.filter(
-                status=compliance_choices.ComplianceStatus.PAID
-            ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0.00")
-
-            return initial + current
+            return initial
         except Exception:
             return Decimal("0.00")
 

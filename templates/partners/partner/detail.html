@@ -166,6 +166,27 @@
                 </div>
             </div>
 
+            <!-- Contributions Information Card -->
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">{% trans "Contributions Information" %}</h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <tbody class="text-gray-600 fw-semibold">
+                                <tr>
+                                    <td class="text-gray-800">{% trans "Contributions" %}</td>
+                                    <td>{{ partner.total_contributed }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- System Information Card -->
             <div class="card card-flush">
                 <div class="card-header">
