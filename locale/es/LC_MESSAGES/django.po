@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 10:41-0500\n"
+"POT-Creation-Date: 2026-05-06 16:37-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -290,7 +290,7 @@ msgid "All statuses"
 msgstr "Todos los estados"
 
 #: apps/campaigns/filtersets.py:31 apps/campaigns/forms.py:85
-#: apps/campaigns/forms.py:413 apps/campaigns/models.py:29
+#: apps/campaigns/forms.py:414 apps/campaigns/models.py:29
 #: apps/compliance/filtersets.py:31 apps/compliance/filtersets.py:107
 #: apps/compliance/filtersets.py:183 apps/compliance/forms.py:78
 #: apps/compliance/forms.py:201 apps/compliance/forms.py:327
@@ -299,9 +299,9 @@ msgstr "Todos los estados"
 #: apps/credits/filtersets.py:199 apps/credits/filtersets.py:249
 #: apps/credits/filtersets.py:299 apps/credits/forms.py:830
 #: apps/credits/forms.py:1200 apps/credits/forms.py:1542
-#: apps/credits/models.py:204 apps/credits/models.py:499
-#: apps/credits/models.py:982 apps/credits/models.py:1095
-#: apps/credits/models.py:1247 apps/credits/models.py:1295
+#: apps/credits/models.py:205 apps/credits/models.py:513
+#: apps/credits/models.py:996 apps/credits/models.py:1109
+#: apps/credits/models.py:1261 apps/credits/models.py:1309
 #: apps/customers/filtersets.py:16 apps/customers/filtersets.py:54
 #: apps/notifications/models.py:63 apps/partners/filtersets.py:31
 #: apps/partners/filtersets.py:88 apps/partners/filtersets.py:144
@@ -404,7 +404,7 @@ msgid "No"
 msgstr "No"
 
 #: apps/campaigns/filtersets.py:58 apps/campaigns/forms.py:88
-#: apps/campaigns/forms.py:415 apps/campaigns/models.py:43
+#: apps/campaigns/forms.py:416 apps/campaigns/models.py:43
 msgid "Use Payment Link"
 msgstr "Usar enlace de pago"
 
@@ -415,7 +415,7 @@ msgid "All channels"
 msgstr "Todas las agencias"
 
 #: apps/campaigns/filtersets.py:68 apps/campaigns/forms.py:89
-#: apps/campaigns/forms.py:414 apps/campaigns/models.py:36
+#: apps/campaigns/forms.py:415 apps/campaigns/models.py:36
 #: apps/notifications/models.py:56 apps/notifications/models.py:242
 #: apps/reports/generators/analytics.py:205
 #: apps/reports/generators/campaigns.py:52
@@ -431,7 +431,7 @@ msgstr "Canal"
 msgid "All priorities"
 msgstr "Todas las prioridades"
 
-#: apps/campaigns/filtersets.py:115 apps/campaigns/forms.py:198
+#: apps/campaigns/filtersets.py:115 apps/campaigns/forms.py:199
 #: apps/campaigns/models.py:219 apps/reports/generators/groups.py:46
 #: apps/support/filtersets.py:41 apps/support/models.py:47
 #: templates/campaigns/group/list.html:90 templates/support/ticket/list.html:80
@@ -450,24 +450,24 @@ msgstr "Sin socios"
 msgid "Has Partners"
 msgstr "Tiene socios"
 
-#: apps/campaigns/forms.py:32 apps/campaigns/forms.py:357
+#: apps/campaigns/forms.py:32 apps/campaigns/forms.py:358
 msgid "Campaign name"
 msgstr "Nombre de la campaña"
 
-#: apps/campaigns/forms.py:38 apps/campaigns/forms.py:363
+#: apps/campaigns/forms.py:38 apps/campaigns/forms.py:364
 msgid "Campaign description"
 msgstr "Descripción de la campaña"
 
-#: apps/campaigns/forms.py:59 apps/campaigns/forms.py:393
+#: apps/campaigns/forms.py:59 apps/campaigns/forms.py:394
 msgid "Target amount"
 msgstr "Monto objetivo"
 
-#: apps/campaigns/forms.py:67 apps/campaigns/forms.py:401
+#: apps/campaigns/forms.py:67 apps/campaigns/forms.py:402
 msgid "Average cost"
 msgstr "Costo promedio"
 
-#: apps/campaigns/forms.py:80 apps/campaigns/forms.py:195
-#: apps/campaigns/forms.py:408 apps/core/models.py:151
+#: apps/campaigns/forms.py:80 apps/campaigns/forms.py:196
+#: apps/campaigns/forms.py:409 apps/core/models.py:151
 #: apps/credits/filtersets.py:13 apps/credits/filtersets.py:53
 #: apps/customers/forms.py:188 apps/customers/forms.py:317
 #: apps/reports/models.py:49 apps/users/forms.py:234
@@ -491,8 +491,8 @@ msgstr "Costo promedio"
 msgid "Name"
 msgstr "Nombre"
 
-#: apps/campaigns/forms.py:81 apps/campaigns/forms.py:196
-#: apps/campaigns/forms.py:409 apps/compliance/forms.py:325
+#: apps/campaigns/forms.py:81 apps/campaigns/forms.py:197
+#: apps/campaigns/forms.py:410 apps/compliance/forms.py:325
 #: apps/compliance/models.py:165 apps/core/models.py:152
 #: apps/credits/filtersets.py:23 apps/customers/forms.py:318
 #: apps/reports/models.py:76 apps/support/models.py:40
@@ -523,14 +523,14 @@ msgstr "Descripción"
 msgid "Group"
 msgstr "Grupo"
 
-#: apps/campaigns/forms.py:83 apps/campaigns/forms.py:411
+#: apps/campaigns/forms.py:83 apps/campaigns/forms.py:412
 #: apps/campaigns/models.py:123 apps/notifications/models.py:306
 #: templates/campaigns/campaign/detail.html:137
 #: templates/campaigns/campaign_csv/detail.html:153
 msgid "Message Template"
 msgstr "Plantilla de Mensaje"
 
-#: apps/campaigns/forms.py:84 apps/campaigns/forms.py:412
+#: apps/campaigns/forms.py:84 apps/campaigns/forms.py:413
 #: apps/campaigns/models.py:23 templates/campaigns/campaign/detail.html:96
 #: templates/campaigns/campaign/list.html:93
 #: templates/campaigns/campaign_csv/detail.html:112
@@ -538,7 +538,7 @@ msgstr "Plantilla de Mensaje"
 msgid "Execution Date"
 msgstr "Fecha de ejecución"
 
-#: apps/campaigns/forms.py:86 apps/campaigns/forms.py:416
+#: apps/campaigns/forms.py:86 apps/campaigns/forms.py:417
 #: apps/campaigns/models.py:56 apps/reports/generators/analytics.py:207
 #: apps/reports/generators/campaigns.py:54
 #: templates/campaigns/campaign/detail.html:105
@@ -546,24 +546,24 @@ msgstr "Fecha de ejecución"
 msgid "Target Amount"
 msgstr "Monto objetivo"
 
-#: apps/campaigns/forms.py:87 apps/campaigns/forms.py:417
+#: apps/campaigns/forms.py:87 apps/campaigns/forms.py:418
 #: apps/campaigns/models.py:48 apps/reports/generators/campaigns.py:55
 msgid "Average Cost"
 msgstr "Costo promedio"
 
-#: apps/campaigns/forms.py:173
+#: apps/campaigns/forms.py:174
 msgid "Group name"
 msgstr "Nombre del grupo."
 
-#: apps/campaigns/forms.py:179
+#: apps/campaigns/forms.py:180
 msgid "Group description"
 msgstr "Descripción del grupo."
 
-#: apps/campaigns/forms.py:189
+#: apps/campaigns/forms.py:190
 msgid "Select partners..."
 msgstr "Seleccionar socios..."
 
-#: apps/campaigns/forms.py:197 apps/campaigns/models.py:214
+#: apps/campaigns/forms.py:198 apps/campaigns/models.py:214
 #: apps/partners/apps.py:8 apps/partners/models.py:161
 #: templates/campaigns/group/detail.html:78
 #: templates/campaigns/group/list.html:91 templates/dashboard/index.html:804
@@ -571,57 +571,57 @@ msgstr "Seleccionar socios..."
 msgid "Partners"
 msgstr "Socios"
 
-#: apps/campaigns/forms.py:210
+#: apps/campaigns/forms.py:211
 msgid "Document File"
 msgstr "Archivo de documento"
 
-#: apps/campaigns/forms.py:212
+#: apps/campaigns/forms.py:213
 msgid "Upload a text file with document numbers (one per line) or CSV file"
 msgstr ""
 "Sube un archivo de texto con números de documento (uno por línea) o archivo "
 "CSV"
 
-#: apps/campaigns/forms.py:231
+#: apps/campaigns/forms.py:232
 msgid "No file was uploaded."
 msgstr "No se ha subido ningún archivo"
 
-#: apps/campaigns/forms.py:236
+#: apps/campaigns/forms.py:237
 msgid "File size too large. Maximum size is 5MB."
 msgstr "El tamaño del archivo es demasiado grande. El tamaño máximo es de 5MB."
 
-#: apps/campaigns/forms.py:243
+#: apps/campaigns/forms.py:244
 msgid "Invalid file format. Only .txt and .csv files are allowed."
 msgstr "Formato de archivo no válido. Solo se permiten archivos .txt y .csv."
 
-#: apps/campaigns/forms.py:264
+#: apps/campaigns/forms.py:265
 msgid "Unable to read file. Please ensure it's a valid text file."
 msgstr ""
 "No se puede leer el archivo. Asegúrate de que sea un archivo de texto válido."
 
-#: apps/campaigns/forms.py:410 templates/campaigns/campaign_csv/detail.html:93
+#: apps/campaigns/forms.py:411 templates/campaigns/campaign_csv/detail.html:93
 msgid "CSV/Excel File"
 msgstr "Archivo CSV/Excel"
 
-#: apps/campaigns/forms.py:421
+#: apps/campaigns/forms.py:422
 msgid ""
 "Upload a CSV or Excel file with contact information.\n"
-"Required columns: full_name, amount.\n"
-"Optional columns: email, phone, document_number."
+"Required columns: full_name, phone, amount.\n"
+"Optional columns: email, document_number."
 msgstr ""
 "Sube un archivo CSV o Excel con información de contacto.\n"
-"Columnas requeridas: full_name, amount.\n"
-"Columnas opcionales: email, phone, document_number."
+"Columnas requeridas: full_name, phone, amount.\n"
+"Columnas opcionales: email, document_number."
 
-#: apps/campaigns/forms.py:464
+#: apps/campaigns/forms.py:466
 msgid "Only CSV and Excel files are allowed."
 msgstr "Formato de archivo no válido. Solo se permiten archivos CSV y Excel."
 
-#: apps/campaigns/forms.py:476
+#: apps/campaigns/forms.py:478
 msgid "File size too large. Maximum size is 10MB."
 msgstr ""
 "El tamaño del archivo es demasiado grande. El tamaño máximo es de 10MB."
 
-#: apps/campaigns/forms.py:484
+#: apps/campaigns/forms.py:486
 msgid "Invalid file format. Only CSV and Excel files are allowed."
 msgstr "Formato de archivo no válido. Solo se permiten archivos CSV y Excel."
 
@@ -819,14 +819,12 @@ msgid "Status of contacts validation."
 msgstr "Estado del enlace de pago."
 
 #: apps/campaigns/models.py:387
-#, fuzzy
-#| msgid "Validation Notes"
 msgid "Validation Result"
-msgstr "Notas de Validación"
+msgstr "Resultado de Validación"
 
 #: apps/campaigns/models.py:390
 msgid "Detailed validation results and errors."
-msgstr ""
+msgstr "Resultados detallados de validación y errores."
 
 #: apps/campaigns/models.py:393 apps/payments/models.py:313
 #: templates/payments/receipt/detail.html:140
@@ -834,63 +832,47 @@ msgid "Validated At"
 msgstr "Validado en"
 
 #: apps/campaigns/models.py:396
-#, fuzzy
-#| msgid "Date and time when the notification was actually sent."
 msgid "Date and time when validation was completed."
-msgstr "Fecha y hora en que se envió realmente la notificación."
+msgstr "Fecha y hora en que se completó la validación."
 
 #: apps/campaigns/models.py:400
 #: templates/campaigns/campaign_csv/detail.html:189
-#, fuzzy
-#| msgid "Total Amount"
 msgid "Total Contacts"
-msgstr "Monto Total"
+msgstr "Total de Contactos"
 
 #: apps/campaigns/models.py:402
-#, fuzzy
-#| msgid "Total documents in file"
 msgid "Total number of contacts in the CSV file."
-msgstr "Total de documentos en el archivo"
+msgstr "Total de contactos en el archivo CSV."
 
 #: apps/campaigns/models.py:405
 #: templates/campaigns/campaign_csv/detail.html:206
-#, fuzzy
-#| msgid "Validation Status"
 msgid "Valid Contacts"
-msgstr "Estado de Validación"
+msgstr "Contactos Válidos"
 
 #: apps/campaigns/models.py:407
 msgid "Number of valid contacts after validation."
-msgstr ""
+msgstr "Número de contactos válidos después de la validación."
 
 #: apps/campaigns/models.py:410
 #: templates/campaigns/campaign_csv/detail.html:223
-#, fuzzy
-#| msgid "Invalid action"
 msgid "Invalid Contacts"
-msgstr "Acción no válida"
+msgstr "Contactos Inválidos"
 
 #: apps/campaigns/models.py:412
 msgid "Number of invalid contacts after validation."
-msgstr ""
+msgstr "Número de contactos inválidos después de la validación."
 
 #: apps/campaigns/models.py:416
-#, fuzzy
-#| msgid "Campaign Details"
 msgid "Campaign CSV/Excel File"
-msgstr "Detalles de la Campaña"
+msgstr "Archivo CSV/Excel de la Campaña"
 
 #: apps/campaigns/models.py:417
-#, fuzzy
-#| msgid "Campaign Details"
 msgid "Campaign CSV/Excel Files"
-msgstr "Detalles de la Campaña"
+msgstr "Archivos CSV/Excel de la Campaña"
 
 #: apps/campaigns/models.py:503
-#, fuzzy
-#| msgid "Credit this installment belongs to."
 msgid "CSV campaign this contact belongs to."
-msgstr "Crédito al que pertenece esta cuota."
+msgstr "Campaña CSV a la que pertenece este contacto."
 
 #: apps/campaigns/models.py:507 templates/customers/account/form.html:72
 #: templates/customers/account/list.html:71
@@ -898,36 +880,28 @@ msgid "Full Name"
 msgstr "Nombre Completo"
 
 #: apps/campaigns/models.py:509
-#, fuzzy
-#| msgid "Contact phone"
 msgid "Contact's full name."
-msgstr "Teléfono de contacto"
+msgstr "Nombre completo del contacto."
 
 #: apps/campaigns/models.py:515
-#, fuzzy
-#| msgid "Work email address."
 msgid "Contact's email address."
-msgstr "Dirección de correo electrónico laboral."
+msgstr "Dirección de correo electrónico del contacto."
 
 #: apps/campaigns/models.py:522
-#, fuzzy
-#| msgid "Work phone number."
 msgid "Contact's phone number."
-msgstr "Número de teléfono laboral."
+msgstr "Número de teléfono del contacto."
 
 #: apps/campaigns/models.py:525 apps/core/models.py:106
-#, fuzzy
-#| msgid "Telegram"
 msgid "Telegram ID"
 msgstr "Telegram"
 
 #: apps/campaigns/models.py:529
 msgid "Contact's Telegram ID or username."
-msgstr ""
+msgstr "Identificador o nombre de usuario de Telegram del contacto."
 
 #: apps/campaigns/models.py:536
 msgid "Contact's document number (DNI, RUC, etc.)."
-msgstr ""
+msgstr "Número de documento del contacto (DNI, RUC, etc.)."
 
 #: apps/campaigns/models.py:539 apps/compliance/forms.py:74
 #: apps/compliance/forms.py:197 apps/compliance/forms.py:324
@@ -954,53 +928,43 @@ msgstr "Monto"
 
 #: apps/campaigns/models.py:542
 msgid "Amount to collect from this contact."
-msgstr ""
+msgstr "Monto a cobrar de este contacto."
 
 #: apps/campaigns/models.py:546
-#, fuzzy
-#| msgid "Additional notes"
 msgid "Additional Data"
-msgstr "Notas adicionales"
+msgstr "Datos Adicionales"
 
 #: apps/campaigns/models.py:549
 msgid "Additional fields from CSV (key-value pairs)."
-msgstr ""
+msgstr "Campos adicionales del CSV (pares clave-valor)."
 
 #: apps/campaigns/models.py:553
 msgid "Is Valid"
-msgstr ""
+msgstr "Es Válido"
 
 #: apps/campaigns/models.py:555
-#, fuzzy
-#| msgid "Whether this product type is active."
 msgid "Whether this contact passed validation."
-msgstr "Designa si este tipo de producto está activo."
+msgstr "Indica si este contacto pasó la validación."
 
 #: apps/campaigns/models.py:558
-#, fuzzy
-#| msgid "Validation Error"
 msgid "Validation Errors"
-msgstr "Error de Validación"
+msgstr "Errores de Validación"
 
 #: apps/campaigns/models.py:561
 msgid "List of validation errors for this contact."
-msgstr ""
+msgstr "Lista de errores de validación para este contacto."
 
 #: apps/campaigns/models.py:564
-#, fuzzy
-#| msgid "Account Number"
 msgid "Row Number"
-msgstr "Número de Cuenta"
+msgstr "Número de Fila"
 
 #: apps/campaigns/models.py:565
 msgid "Row number in the original CSV file."
-msgstr ""
+msgstr "Número de fila en el archivo CSV original."
 
 #: apps/campaigns/models.py:569
-#, fuzzy
-#| msgid "Contact"
 msgid "CSV Contact"
-msgstr "Contacto"
+msgstr "Contacto CSV"
 
 #: apps/campaigns/models.py:570
 #, fuzzy
@@ -1065,7 +1029,7 @@ msgstr ""
 "La campaña '{campaign_name}' ha sido programada para su ejecución el "
 "{execution_date}."
 
-#: apps/campaigns/views.py:526 templates/campaigns/campaign_csv/form.html:220
+#: apps/campaigns/views.py:526 templates/campaigns/campaign_csv/form.html:197
 msgid "Create CSV Campaign"
 msgstr "Crear Campaña CSV"
 
@@ -1628,7 +1592,7 @@ msgstr "Socio"
 
 #: apps/compliance/forms.py:77 apps/compliance/forms.py:200
 #: apps/compliance/forms.py:326 apps/compliance/models.py:35
-#: apps/credits/models.py:954 apps/reports/generators/portfolio.py:110
+#: apps/credits/models.py:968 apps/reports/generators/portfolio.py:110
 #: templates/compliance/contribution/detail.html:122
 #: templates/compliance/contribution/list.html:81
 #: templates/compliance/penalty/detail.html:128
@@ -2024,7 +1988,7 @@ msgstr "Tablero"
 msgid "Amount Range"
 msgstr "Rango de Monto"
 
-#: apps/credits/admin.py:69 apps/credits/models.py:178
+#: apps/credits/admin.py:69 apps/credits/models.py:179
 #: templates/credits/credit/detail.html:143
 msgid "Interest Rate"
 msgstr "Tasa de Interés"
@@ -2033,7 +1997,7 @@ msgstr "Tasa de Interés"
 msgid "Term"
 msgstr "Plazo"
 
-#: apps/credits/admin.py:89 apps/credits/models.py:193
+#: apps/credits/admin.py:89 apps/credits/models.py:194
 #: templates/credits/credit/detail.html:161
 msgid "Delinquency Rate"
 msgstr "Tasa de Morosidad"
@@ -2057,8 +2021,8 @@ msgstr "Cálculos"
 
 #: apps/credits/admin.py:177 apps/credits/admin.py:291
 #: apps/credits/forms.py:647 apps/credits/forms.py:831
-#: apps/credits/models.py:250 apps/credits/models.py:995
-#: apps/credits/models.py:1127 apps/partners/forms.py:542
+#: apps/credits/models.py:251 apps/credits/models.py:1009
+#: apps/credits/models.py:1141 apps/partners/forms.py:542
 #: apps/partners/forms.py:622 apps/payments/admin.py:86
 #: apps/payments/admin.py:149 apps/payments/forms.py:209
 #: apps/payments/forms.py:273 apps/payments/models.py:68
@@ -2083,7 +2047,7 @@ msgstr "Estado de Pago"
 msgid "Requested Terms"
 msgstr "Términos Solicitados"
 
-#: apps/credits/admin.py:370 apps/credits/models.py:516
+#: apps/credits/admin.py:370 apps/credits/models.py:530
 msgid "Payment Schedule"
 msgstr "Calendario de Pagos"
 
@@ -2137,7 +2101,7 @@ msgstr "Detalles del Cheque"
 msgid "Reference & Documents"
 msgstr "Referencia y Documentos"
 
-#: apps/credits/apps.py:8 apps/credits/models.py:279
+#: apps/credits/apps.py:8 apps/credits/models.py:280
 #: templates/credits/credit/list.html:5 templates/credits/credit/list.html:6
 #: templates/dashboard/index.html:794 templates/includes/aside.html:69
 #: templates/includes/aside.html:86
@@ -2214,13 +2178,13 @@ msgid "Search by description..."
 msgstr "Buscar por descripción..."
 
 #: apps/credits/filtersets.py:32 apps/credits/filtersets.py:70
-#: apps/credits/models.py:24 apps/credits/models.py:137
+#: apps/credits/models.py:25 apps/credits/models.py:138
 #: apps/notifications/models.py:263
 msgid "Is Active"
 msgstr "Está activo"
 
 #: apps/credits/filtersets.py:63 apps/credits/forms.py:172
-#: apps/credits/models.py:31 templates/credits/credit/detail.html:80
+#: apps/credits/models.py:32 templates/credits/credit/detail.html:80
 #: templates/credits/product/detail.html:59
 #: templates/credits/product/list.html:90
 msgid "Product Type"
@@ -2233,7 +2197,7 @@ msgstr "Buscar por nombre de socio, correo electrónico, teléfono..."
 #: apps/credits/filtersets.py:101 apps/credits/filtersets.py:149
 #: apps/credits/filtersets.py:207 apps/credits/filtersets.py:257
 #: apps/credits/forms.py:352 apps/credits/forms.py:639
-#: apps/credits/models.py:144 apps/reports/generators/portfolio.py:108
+#: apps/credits/models.py:145 apps/reports/generators/portfolio.py:108
 #: templates/credits/credit/change_status.html:76
 #: templates/credits/credit/detail.html:77
 #: templates/credits/credit/list.html:75
@@ -2245,7 +2209,7 @@ msgstr "Producto"
 msgid "Search by partner name, credit..."
 msgstr "Buscar por nombre de socio, crédito..."
 
-#: apps/credits/filtersets.py:309 apps/credits/models.py:1288
+#: apps/credits/filtersets.py:309 apps/credits/models.py:1302
 msgid "Disbursement Method"
 msgstr "Método de Desembolso"
 
@@ -2372,7 +2336,7 @@ msgstr ""
 "El porcentaje mínimo de morosidad no puede ser mayor que el porcentaje "
 "máximo de morosidad."
 
-#: apps/credits/forms.py:353 apps/credits/models.py:467
+#: apps/credits/forms.py:353 apps/credits/models.py:481
 msgid "Requested Amount"
 msgstr "Monto Solicitado"
 
@@ -2380,11 +2344,11 @@ msgstr "Monto Solicitado"
 msgid "Proposed Interest Rate (%)"
 msgstr "Tasa de Interés Propuesta (%)"
 
-#: apps/credits/forms.py:355 apps/credits/models.py:484
+#: apps/credits/forms.py:355 apps/credits/models.py:498
 msgid "Requested Term Duration"
 msgstr "Duración del Plazo Solicitado"
 
-#: apps/credits/forms.py:356 apps/credits/models.py:530
+#: apps/credits/forms.py:356 apps/credits/models.py:544
 msgid "Possible Start Date"
 msgstr "Fecha de Inicio Posible"
 
@@ -2392,11 +2356,11 @@ msgstr "Fecha de Inicio Posible"
 msgid "Proposed Delinquency Rate (%)"
 msgstr "Tasa de Morosidad Propuesta (%)"
 
-#: apps/credits/forms.py:358 apps/credits/models.py:489
+#: apps/credits/forms.py:358 apps/credits/models.py:503
 msgid "Requested Payment Frequency"
 msgstr "Frecuencia de Pago Solicitada"
 
-#: apps/credits/forms.py:359 apps/credits/models.py:506
+#: apps/credits/forms.py:359 apps/credits/models.py:520
 msgid "Estimated Payment Amount"
 msgstr "Monto Estimado del Pago"
 
@@ -2486,7 +2450,7 @@ msgstr "Se requiere una nota al rechazar una solicitud."
 msgid "Additional notes about the credit"
 msgstr "Notas adicionales sobre el crédito."
 
-#: apps/credits/forms.py:640 apps/credits/models.py:171
+#: apps/credits/forms.py:640 apps/credits/models.py:172
 #: templates/credits/credit/detail.html:139
 msgid "Credit Amount"
 msgstr "Monto del Crédito"
@@ -2495,7 +2459,7 @@ msgstr "Monto del Crédito"
 msgid "Interest Rate (%)"
 msgstr "Tasa de Interés (%)"
 
-#: apps/credits/forms.py:642 apps/credits/models.py:188
+#: apps/credits/forms.py:642 apps/credits/models.py:189
 #: templates/credits/credit/detail.html:147
 msgid "Term Duration"
 msgstr "Duración del Plazo"
@@ -2504,19 +2468,19 @@ msgstr "Duración del Plazo"
 msgid "Delinquency Rate (%)"
 msgstr "Tasa de Morosidad (%)"
 
-#: apps/credits/forms.py:644 apps/credits/models.py:104
-#: apps/credits/models.py:228 templates/credits/credit/detail.html:151
+#: apps/credits/forms.py:644 apps/credits/models.py:105
+#: apps/credits/models.py:229 templates/credits/credit/detail.html:151
 #: templates/credits/product/detail.html:136
 msgid "Payment Frequency"
 msgstr "Frecuencia de Pago"
 
-#: apps/credits/forms.py:645 apps/credits/models.py:235
+#: apps/credits/forms.py:645 apps/credits/models.py:236
 #: templates/credits/credit/detail.html:156 templates/payments/detail.html:258
 #: templates/payments/form.html:185
 msgid "Payment Amount"
 msgstr "Monto del Pago"
 
-#: apps/credits/forms.py:646 apps/credits/models.py:243
+#: apps/credits/forms.py:646 apps/credits/models.py:244
 #: apps/reports/generators/portfolio.py:114
 #: templates/credits/credit/detail.html:186
 msgid "Outstanding Balance"
@@ -2571,7 +2535,7 @@ msgid "Additional notes about the reschedule request"
 msgstr "Nota opcional sobre la solicitud de reprogramación."
 
 #: apps/credits/forms.py:823 apps/credits/forms.py:1190
-#: apps/credits/models.py:278 apps/payments/services.py:415
+#: apps/credits/models.py:279 apps/payments/services.py:415
 msgid "Credit"
 msgstr "Crédito"
 
@@ -2579,15 +2543,15 @@ msgstr "Crédito"
 msgid "Requested Term Extension"
 msgstr "Extensión de Plazo Solicitada"
 
-#: apps/credits/forms.py:826 apps/credits/models.py:1081
+#: apps/credits/forms.py:826 apps/credits/models.py:1095
 msgid "Requested Interest Rate Adjustment (%)"
 msgstr "Ajuste de Tasa de Interés Solicitado (%)"
 
-#: apps/credits/forms.py:828 apps/credits/models.py:1119
+#: apps/credits/forms.py:828 apps/credits/models.py:1133
 msgid "Requested Start Date"
 msgstr "Fecha de Inicio Solicitada"
 
-#: apps/credits/forms.py:829 apps/credits/models.py:1091
+#: apps/credits/forms.py:829 apps/credits/models.py:1105
 msgid "Reason for Reschedule"
 msgstr "Motivo de la Reprogramación"
 
@@ -2657,7 +2621,7 @@ msgstr "Meses"
 msgid "Explain the reason for the refinancing"
 msgstr "Explique el motivo de la solicitud de refinanciamiento"
 
-#: apps/credits/forms.py:1191 apps/credits/models.py:1183
+#: apps/credits/forms.py:1191 apps/credits/models.py:1197
 msgid "Previous Outstanding Balance"
 msgstr "Valor del estado anterior."
 
@@ -2665,7 +2629,7 @@ msgstr "Valor del estado anterior."
 msgid "Previous Term Remaining"
 msgstr "Plazo restante anterior"
 
-#: apps/credits/forms.py:1193 apps/credits/models.py:1195
+#: apps/credits/forms.py:1193 apps/credits/models.py:1209
 msgid "New Payment Frequency"
 msgstr "Nueva Frecuencia de Pago"
 
@@ -2681,15 +2645,15 @@ msgstr "Nueva Tasa de Interés (%)"
 msgid "New Delinquency Rate (%)"
 msgstr "Nueva Tasa de Morosidad (%)"
 
-#: apps/credits/forms.py:1197 apps/credits/models.py:1230
+#: apps/credits/forms.py:1197 apps/credits/models.py:1244
 msgid "Additional Amount"
 msgstr "Monto Adicional"
 
-#: apps/credits/forms.py:1198 apps/credits/models.py:1238
+#: apps/credits/forms.py:1198 apps/credits/models.py:1252
 msgid "Start Date"
 msgstr "Fecha de Inicio"
 
-#: apps/credits/forms.py:1199 apps/credits/models.py:1242
+#: apps/credits/forms.py:1199 apps/credits/models.py:1256
 msgid "Reason"
 msgstr "Motivo"
 
@@ -2823,318 +2787,318 @@ msgid "Cannot change status of completed or cancelled disbursements"
 msgstr ""
 "No se puede cambiar el estado de los desembolsos completados o cancelados."
 
-#: apps/credits/models.py:26
+#: apps/credits/models.py:27
 msgid "Whether this product type is active."
 msgstr "Designa si este tipo de producto está activo."
 
-#: apps/credits/models.py:32 templates/credits/product_type/list.html:5
+#: apps/credits/models.py:33 templates/credits/product_type/list.html:5
 #: templates/credits/product_type/list.html:6
 msgid "Product Types"
 msgstr "Tipos de Producto"
 
-#: apps/credits/models.py:50
+#: apps/credits/models.py:51
 msgid "Product type this product belongs to."
 msgstr "Tipo de producto al que pertenece este producto."
 
-#: apps/credits/models.py:53 templates/credits/product/detail.html:87
+#: apps/credits/models.py:54 templates/credits/product/detail.html:87
 msgid "Minimum Amount"
 msgstr "Monto Mínimo"
 
-#: apps/credits/models.py:57
+#: apps/credits/models.py:58
 msgid "Minimum credit amount."
 msgstr "Monto mínimo de crédito."
 
-#: apps/credits/models.py:60 templates/credits/product/detail.html:91
+#: apps/credits/models.py:61 templates/credits/product/detail.html:91
 msgid "Maximum Amount"
 msgstr "Monto Máximo"
 
-#: apps/credits/models.py:64
+#: apps/credits/models.py:65
 msgid "Maximum credit amount."
 msgstr "Monto máximo de crédito."
 
-#: apps/credits/models.py:67 templates/credits/product/detail.html:95
+#: apps/credits/models.py:68 templates/credits/product/detail.html:95
 msgid "Minimum Interest Rate"
 msgstr "Tasa de Interés Mínima"
 
-#: apps/credits/models.py:74
+#: apps/credits/models.py:75
 msgid "Minimum annual interest rate percentage."
 msgstr "Porcentaje mínimo de la tasa de interés anual."
 
-#: apps/credits/models.py:77 templates/credits/product/detail.html:99
+#: apps/credits/models.py:78 templates/credits/product/detail.html:99
 msgid "Maximum Interest Rate"
 msgstr "Tasa de Interés Máxima"
 
-#: apps/credits/models.py:84
+#: apps/credits/models.py:85
 msgid "Maximum annual interest rate percentage."
 msgstr "Porcentaje máximo de la tasa de interés anual."
 
-#: apps/credits/models.py:87 templates/credits/product/detail.html:65
+#: apps/credits/models.py:88 templates/credits/product/detail.html:65
 #: templates/credits/product/detail.html:140
 msgid "Interest Type"
 msgstr "Tipo de Interés"
 
-#: apps/credits/models.py:91
+#: apps/credits/models.py:92
 msgid "Type of interest rate."
 msgstr "Tipo de tasa de interés."
 
-#: apps/credits/models.py:94
+#: apps/credits/models.py:95
 msgid "Minimum Term Duration"
 msgstr "Duración Mínima del Plazo"
 
-#: apps/credits/models.py:96
+#: apps/credits/models.py:97
 msgid "Minimum duration in months."
 msgstr "Duración mínima en meses."
 
-#: apps/credits/models.py:99
+#: apps/credits/models.py:100
 msgid "Maximum Term Duration"
 msgstr "Duración Máxima del Plazo"
 
-#: apps/credits/models.py:101
+#: apps/credits/models.py:102
 msgid "Maximum duration in months."
 msgstr "Duración máxima en meses."
 
-#: apps/credits/models.py:108
+#: apps/credits/models.py:109
 msgid "How often payments are due."
 msgstr "Frecuencia de los pagos."
 
-#: apps/credits/models.py:111 templates/credits/product/detail.html:103
+#: apps/credits/models.py:112 templates/credits/product/detail.html:103
 msgid "Minimum Delinquency Rate"
 msgstr "Tasa de Morosidad Mínima"
 
-#: apps/credits/models.py:120
+#: apps/credits/models.py:121
 msgid "Minimum delinquency rate percentage for overdue payments."
 msgstr "Porcentaje mínimo de la tasa de morosidad para pagos atrasados."
 
-#: apps/credits/models.py:124 templates/credits/product/detail.html:107
+#: apps/credits/models.py:125 templates/credits/product/detail.html:107
 msgid "Maximum Delinquency Rate"
 msgstr "Tasa de Morosidad Máxima"
 
-#: apps/credits/models.py:133
+#: apps/credits/models.py:134
 msgid "Maximum delinquency rate percentage for overdue payments."
 msgstr "Porcentaje máximo de la tasa de morosidad para pagos atrasados."
 
-#: apps/credits/models.py:139
+#: apps/credits/models.py:140
 msgid "Whether this product is active."
 msgstr "Designa si este producto está activo."
 
-#: apps/credits/models.py:145 templates/credits/product/list.html:5
+#: apps/credits/models.py:146 templates/credits/product/list.html:5
 #: templates/credits/product_type/detail.html:88
 #: templates/credits/product_type/list.html:92
 msgid "Products"
 msgstr "Productos"
 
-#: apps/credits/models.py:162
+#: apps/credits/models.py:163
 msgid "Partner who requested the credit."
 msgstr "Socio que solicitó el crédito."
 
-#: apps/credits/models.py:168
+#: apps/credits/models.py:169
 msgid "Product this credit is based on."
 msgstr "Producto en el que se basa este crédito."
 
-#: apps/credits/models.py:175
+#: apps/credits/models.py:176
 msgid "Total amount of the credit."
 msgstr "Monto total del crédito."
 
-#: apps/credits/models.py:185
+#: apps/credits/models.py:186
 msgid "Annual interest rate percentage."
 msgstr "Porcentaje de la tasa de interés anual."
 
-#: apps/credits/models.py:190
+#: apps/credits/models.py:191
 msgid "Duration of the credit in months."
 msgstr "Duración del crédito en meses."
 
-#: apps/credits/models.py:201
+#: apps/credits/models.py:202
 msgid "Delinquency rate percentage for overdue payments."
 msgstr "Porcentaje de la tasa de morosidad para pagos atrasados."
 
-#: apps/credits/models.py:208
+#: apps/credits/models.py:209
 msgid "Current status of the credit."
 msgstr "Estado actual del crédito."
 
-#: apps/credits/models.py:211 apps/payments/models.py:222
+#: apps/credits/models.py:212 apps/payments/models.py:222
 msgid "Application Date"
 msgstr "Fecha de Solicitud"
 
-#: apps/credits/models.py:213
+#: apps/credits/models.py:214
 msgid "Date when the credit was applied for."
 msgstr "Fecha en que se solicitó el crédito."
 
-#: apps/credits/models.py:216 templates/credits/credit/detail.html:87
+#: apps/credits/models.py:217 templates/credits/credit/detail.html:87
 msgid "Approval Date"
 msgstr "Fecha de Aprobación"
 
-#: apps/credits/models.py:219
+#: apps/credits/models.py:220
 msgid "Date when the credit was approved."
 msgstr "Fecha en que se aprobó el crédito."
 
-#: apps/credits/models.py:222 templates/credits/credit/detail.html:92
+#: apps/credits/models.py:223 templates/credits/credit/detail.html:92
 #: templates/credits/credit/list.html:78
 msgid "Disbursement Date"
 msgstr "Fecha de Desembolso"
 
-#: apps/credits/models.py:225
+#: apps/credits/models.py:226
 msgid "Date when the credit was disbursed."
 msgstr "Fecha en que se desembolsó el crédito."
 
-#: apps/credits/models.py:232
+#: apps/credits/models.py:233
 msgid "How often payments are due for this credit."
 msgstr "Frecuencia de los pagos para este crédito."
 
-#: apps/credits/models.py:240
+#: apps/credits/models.py:241
 msgid "Calculated payment amount based on frequency."
 msgstr "Monto de pago calculado en función de la frecuencia."
 
-#: apps/credits/models.py:247
+#: apps/credits/models.py:248
 msgid "Current outstanding balance."
 msgstr "Saldo pendiente actual."
 
-#: apps/credits/models.py:252
+#: apps/credits/models.py:253
 msgid "Additional notes about the credit."
 msgstr "Nota opcional sobre el crédito."
 
-#: apps/credits/models.py:260
+#: apps/credits/models.py:261
 msgid "Credit application that originated this credit."
 msgstr "Solicitud de crédito que originó este crédito."
 
-#: apps/credits/models.py:263
+#: apps/credits/models.py:264
 msgid "Current Version"
 msgstr "Versión Actual"
 
-#: apps/credits/models.py:265
+#: apps/credits/models.py:266
 msgid "Current version number of the credit."
 msgstr "Número de versión actual del crédito."
 
-#: apps/credits/models.py:271
+#: apps/credits/models.py:272
 msgid "History of status changes for this credit."
 msgstr "Historial de cambios de estado para este crédito."
 
-#: apps/credits/models.py:458
+#: apps/credits/models.py:472
 msgid "Partner who is applying for the credit."
 msgstr "Socio que está solicitando el crédito."
 
-#: apps/credits/models.py:464
+#: apps/credits/models.py:478
 msgid "Product this application is for."
 msgstr "Producto para el cual se solicita esta aplicación."
 
-#: apps/credits/models.py:471
+#: apps/credits/models.py:485
 msgid "Amount of credit requested."
 msgstr "Monto de crédito solicitado."
 
-#: apps/credits/models.py:474
+#: apps/credits/models.py:488
 msgid "Proposed Interest Rate"
 msgstr "Tasa de Interés Propuesta"
 
-#: apps/credits/models.py:481
+#: apps/credits/models.py:495
 msgid "Proposed annual interest rate percentage."
 msgstr "Porcentaje de la tasa de interés anual propuesta."
 
-#: apps/credits/models.py:486
+#: apps/credits/models.py:500
 msgid "Requested duration of the credit in months."
 msgstr "Duración solicitada del crédito en meses."
 
-#: apps/credits/models.py:495
+#: apps/credits/models.py:509
 msgid ""
 "Requested frequency for payments. If not specified, uses product default."
 msgstr ""
 "Frecuencia solicitada para los pagos. Si no se especifica, utiliza la "
 "predeterminada del producto."
 
-#: apps/credits/models.py:503
+#: apps/credits/models.py:517
 msgid "Current status of the application."
 msgstr "Estado actual de la solicitud."
 
-#: apps/credits/models.py:512
+#: apps/credits/models.py:526
 msgid "Estimated payment amount based on requested terms and frequency."
 msgstr ""
 "Monto estimado del pago basado en los términos y la frecuencia solicitados."
 
-#: apps/credits/models.py:519
+#: apps/credits/models.py:533
 msgid "JSON representation of the generated payment schedule."
 msgstr "Representación JSON del cronograma de pagos generado."
 
-#: apps/credits/models.py:527
+#: apps/credits/models.py:541
 msgid "Employee assigned to review this application."
 msgstr "Empleado asignado para revisar esta solicitud."
 
-#: apps/credits/models.py:533
+#: apps/credits/models.py:547
 msgid "Estimated date when the credit could start."
 msgstr "Fecha estimada en que el crédito podría comenzar."
 
-#: apps/credits/models.py:536
+#: apps/credits/models.py:550
 msgid "Proposed Delinquency Rate"
 msgstr "Tasa de Morosidad Propuesta"
 
-#: apps/credits/models.py:546
+#: apps/credits/models.py:560
 msgid "Proposed delinquency rate percentage for overdue payments."
 msgstr "Porcentaje de la tasa de morosidad propuesta para pagos atrasados."
 
-#: apps/credits/models.py:553
+#: apps/credits/models.py:567
 msgid "History of status changes for this application."
 msgstr "Historial de cambios de estado para esta solicitud."
 
-#: apps/credits/models.py:558
+#: apps/credits/models.py:572
 msgid "Credit Application"
 msgstr "Solicitud de Crédito"
 
-#: apps/credits/models.py:559
+#: apps/credits/models.py:573
 msgid "Credit Applications"
 msgstr "Solicitudes de Crédito"
 
-#: apps/credits/models.py:945
+#: apps/credits/models.py:959
 msgid "Credit this installment belongs to."
 msgstr "Crédito al que pertenece esta cuota."
 
-#: apps/credits/models.py:948 apps/reports/generators/portfolio.py:109
+#: apps/credits/models.py:962 apps/reports/generators/portfolio.py:109
 msgid "Installment Number"
 msgstr "Número de Cuota"
 
-#: apps/credits/models.py:950
+#: apps/credits/models.py:964
 msgid "Sequential installment number in the amortization schedule."
 msgstr "Número secuencial de la cuota en el cronograma de amortización."
 
-#: apps/credits/models.py:955
+#: apps/credits/models.py:969
 msgid "Date when this installment is due."
 msgstr "Fecha de vencimiento de esta cuota."
 
-#: apps/credits/models.py:958 apps/reports/generators/portfolio.py:111
+#: apps/credits/models.py:972 apps/reports/generators/portfolio.py:111
 #: templates/credits/credit/detail.html:225
 msgid "Installment Amount"
 msgstr "Monto de la Cuota"
 
-#: apps/credits/models.py:961
+#: apps/credits/models.py:975
 msgid "Total installment amount (principal + interest)."
 msgstr "Monto total de la cuota (principal + interés)."
 
-#: apps/credits/models.py:964 apps/reports/generators/portfolio.py:112
+#: apps/credits/models.py:978 apps/reports/generators/portfolio.py:112
 msgid "Principal Amount"
 msgstr "Monto Principal"
 
-#: apps/credits/models.py:967
+#: apps/credits/models.py:981
 msgid "Principal portion of the installment."
 msgstr "Porción principal de la cuota."
 
-#: apps/credits/models.py:970 apps/reports/generators/portfolio.py:113
+#: apps/credits/models.py:984 apps/reports/generators/portfolio.py:113
 #: templates/credits/credit/detail.html:227
 msgid "Interest Amount"
 msgstr "Monto de Interés"
 
-#: apps/credits/models.py:973
+#: apps/credits/models.py:987
 msgid "Interest portion of the installment."
 msgstr "Porción de interés de la cuota."
 
-#: apps/credits/models.py:976
+#: apps/credits/models.py:990
 msgid "Balance After Payment"
 msgstr "Saldo Después del Pago"
 
-#: apps/credits/models.py:979
+#: apps/credits/models.py:993
 msgid "Outstanding balance after this installment is paid."
 msgstr "Saldo pendiente después de que se paga esta cuota."
 
-#: apps/credits/models.py:986
+#: apps/credits/models.py:1000
 msgid "Current status of the installment."
 msgstr "Estado actual de la cuota."
 
-#: apps/credits/models.py:989 apps/payments/models.py:37
+#: apps/credits/models.py:1003 apps/payments/models.py:37
 #: apps/payments/models.py:289 apps/reports/generators/portfolio.py:42
 #: templates/credits/credit/detail.html:230 templates/payments/detail.html:85
 #: templates/payments/list.html:98
@@ -3144,260 +3108,260 @@ msgstr "Estado actual de la cuota."
 msgid "Payment Date"
 msgstr "Fecha de Pago"
 
-#: apps/credits/models.py:992
+#: apps/credits/models.py:1006
 msgid "Date when this installment was actually paid."
 msgstr "Fecha en que esta cuota fue realmente pagada."
 
-#: apps/credits/models.py:997
+#: apps/credits/models.py:1011
 msgid "Additional notes about this installment."
 msgstr "Notas adicionales sobre esta cuota."
 
-#: apps/credits/models.py:1001
+#: apps/credits/models.py:1015
 msgid "Payment allocations for this installment."
 msgstr "Asignaciones de pago para esta cuota."
 
-#: apps/credits/models.py:1004
+#: apps/credits/models.py:1018
 msgid "Schedule Version"
 msgstr "Versión del Cronograma"
 
-#: apps/credits/models.py:1007
+#: apps/credits/models.py:1021
 msgid "Version of the payment schedule this installment belongs to."
 msgstr "Versión del cronograma de pagos al que pertenece esta cuota."
 
-#: apps/credits/models.py:1013 apps/payments/choices.py:37
+#: apps/credits/models.py:1027 apps/payments/choices.py:37
 #: apps/payments/services.py:412 apps/payments/services.py:415
 #: templates/payments/magic_link/detail.html:214
 #: templates/payments/magic_link/detail.html:226
 msgid "Installment"
 msgstr "Cuota"
 
-#: apps/credits/models.py:1014
+#: apps/credits/models.py:1028
 msgid "Installments"
 msgstr "Cuotas"
 
-#: apps/credits/models.py:1073
+#: apps/credits/models.py:1087
 msgid "Credit this reschedule request is for."
 msgstr "Crédito para el cual se solicita esta reprogramación."
 
-#: apps/credits/models.py:1076
+#: apps/credits/models.py:1090
 msgid "Requested Term Extension (months)"
 msgstr "Extensión de Plazo Solicitada (meses)"
 
-#: apps/credits/models.py:1078
+#: apps/credits/models.py:1092
 msgid "Number of months to extend the loan term."
 msgstr "Número de meses para extender el plazo del préstamo."
 
-#: apps/credits/models.py:1088
+#: apps/credits/models.py:1102
 msgid "Percentage adjustment to the interest rate."
 msgstr "Ajuste porcentual a la tasa de interés."
 
-#: apps/credits/models.py:1092
+#: apps/credits/models.py:1106
 msgid "Reason for requesting the loan reschedule."
 msgstr "Razón para solicitar la reprogramación del préstamo."
 
-#: apps/credits/models.py:1099
+#: apps/credits/models.py:1113
 msgid "Current status of the reschedule request."
 msgstr "Estado actual de la solicitud de reprogramación."
 
-#: apps/credits/models.py:1102
+#: apps/credits/models.py:1116
 msgid "Request Date"
 msgstr "Fecha de Solicitud"
 
-#: apps/credits/models.py:1104
+#: apps/credits/models.py:1118
 msgid "Date when the reschedule request was made."
 msgstr "Fecha en que se realizó la solicitud de reprogramación."
 
-#: apps/credits/models.py:1107
+#: apps/credits/models.py:1121
 msgid "Review Date"
 msgstr "Fecha de Revisión"
 
-#: apps/credits/models.py:1110
+#: apps/credits/models.py:1124
 msgid "Date when the reschedule request was reviewed."
 msgstr "Fecha en que se revisó la solicitud de reprogramación."
 
-#: apps/credits/models.py:1113
+#: apps/credits/models.py:1127
 msgid "Decision Date"
 msgstr "Fecha de Decisión"
 
-#: apps/credits/models.py:1116
+#: apps/credits/models.py:1130
 msgid "Date when decision was made on the reschedule request."
 msgstr "Fecha en que se tomó la decisión sobre la solicitud de reprogramación."
 
-#: apps/credits/models.py:1123
+#: apps/credits/models.py:1137
 msgid "Requested start date for the rescheduled credit installments."
 msgstr "Fecha de inicio solicitada para las cuotas de crédito reprogramadas."
 
-#: apps/credits/models.py:1129
+#: apps/credits/models.py:1143
 msgid "Additional notes about the reschedule request."
 msgstr "Nota opcional sobre la solicitud de reprogramación."
 
-#: apps/credits/models.py:1134
+#: apps/credits/models.py:1148
 msgid "Credit Reschedule Request"
 msgstr "Solicitud de Reprogramación de Crédito"
 
-#: apps/credits/models.py:1135
+#: apps/credits/models.py:1149
 msgid "Credit Reschedule Requests"
 msgstr "Solicitudes de Reprogramación de Crédito"
 
-#: apps/credits/models.py:1170
+#: apps/credits/models.py:1184
 msgid "Credit being refinanced."
 msgstr "Crédito que se está refinanciando."
 
-#: apps/credits/models.py:1178
+#: apps/credits/models.py:1192
 msgid "New credit created as a result of this refinancing."
 msgstr "Nuevo crédito creado como resultado de esta refinanciación."
 
-#: apps/credits/models.py:1186
+#: apps/credits/models.py:1200
 msgid "Outstanding balance before rescheduling."
 msgstr "Saldo pendiente antes de la reprogramación."
 
-#: apps/credits/models.py:1189
+#: apps/credits/models.py:1203
 msgid "Previous Term Remaining (months)"
 msgstr "Plazo Anterior Restante (meses)"
 
-#: apps/credits/models.py:1190
+#: apps/credits/models.py:1204
 msgid "Remaining months before rescheduling."
 msgstr "Meses restantes antes de la reprogramación."
 
-#: apps/credits/models.py:1199
+#: apps/credits/models.py:1213
 msgid "New payment frequency."
 msgstr "Nueva frecuencia de pago."
 
-#: apps/credits/models.py:1202
+#: apps/credits/models.py:1216
 msgid "New Term Duration (months)"
 msgstr "Nueva Duración del Plazo (meses)"
 
-#: apps/credits/models.py:1204
+#: apps/credits/models.py:1218
 msgid "New total duration in months."
 msgstr "Nueva duración total en meses."
 
-#: apps/credits/models.py:1207
+#: apps/credits/models.py:1221
 msgid "New Interest Rate"
 msgstr "Nueva Tasa de Interés"
 
-#: apps/credits/models.py:1214
+#: apps/credits/models.py:1228
 msgid "New interest rate percentage."
 msgstr "Nuevo porcentaje de tasa de interés."
 
-#: apps/credits/models.py:1217
+#: apps/credits/models.py:1231
 msgid "New Delinquency Rate"
 msgstr "Nueva Tasa de Morosidad"
 
-#: apps/credits/models.py:1225
+#: apps/credits/models.py:1239
 msgid "New delinquency rate percentage for overdue payments."
 msgstr "Nuevo porcentaje de tasa de morosidad para pagos atrasados."
 
-#: apps/credits/models.py:1234
+#: apps/credits/models.py:1248
 msgid "Any additional amount added to the outstanding balance."
 msgstr "Cualquier monto adicional agregado al saldo pendiente."
 
-#: apps/credits/models.py:1239
+#: apps/credits/models.py:1253
 msgid "Start date for new installments."
 msgstr "Fecha de inicio para las nuevas cuotas."
 
-#: apps/credits/models.py:1243
+#: apps/credits/models.py:1257
 msgid "Reason for the rescheduling."
 msgstr "Razón para la reprogramación."
 
-#: apps/credits/models.py:1251
+#: apps/credits/models.py:1265
 msgid "Current status of the refinance request."
 msgstr "Estado actual de la solicitud de refinanciamiento."
 
-#: apps/credits/models.py:1256
+#: apps/credits/models.py:1270
 msgid "Credit Refinance Request"
 msgstr "Solicitud de Refinanciamiento de Crédito"
 
-#: apps/credits/models.py:1257
+#: apps/credits/models.py:1271
 msgid "Credit Refinance Requests"
 msgstr "Solicitudes de Refinanciamiento de Crédito"
 
-#: apps/credits/models.py:1274
+#: apps/credits/models.py:1288
 msgid "Credit being disbursed."
 msgstr "Crédito que se está desembolsando."
 
-#: apps/credits/models.py:1277
+#: apps/credits/models.py:1291
 msgid "Disbursement Amount"
 msgstr "Monto del Desembolso"
 
-#: apps/credits/models.py:1281
+#: apps/credits/models.py:1295
 msgid "Amount to be disbursed."
 msgstr "Monto a desembolsar."
 
-#: apps/credits/models.py:1284
+#: apps/credits/models.py:1298
 msgid "Scheduled Date"
 msgstr "Fecha Programada"
 
-#: apps/credits/models.py:1285
+#: apps/credits/models.py:1299
 msgid "Date when the disbursement is scheduled."
 msgstr "Fecha en que se programa el desembolso."
 
-#: apps/credits/models.py:1292
+#: apps/credits/models.py:1306
 msgid "Method used for disbursement."
 msgstr "Método utilizado para el desembolso."
 
-#: apps/credits/models.py:1299
+#: apps/credits/models.py:1313
 msgid "Current status of the disbursement."
 msgstr "Estado actual del desembolso."
 
-#: apps/credits/models.py:1304
+#: apps/credits/models.py:1318
 msgid "Bank Name"
 msgstr "Nombre del Banco"
 
-#: apps/credits/models.py:1307
+#: apps/credits/models.py:1321
 msgid "Name of the bank for transfer."
 msgstr "Nombre del banco para la transferencia."
 
-#: apps/credits/models.py:1310
+#: apps/credits/models.py:1324
 msgid "Account Number"
 msgstr "Número de Cuenta"
 
-#: apps/credits/models.py:1313
+#: apps/credits/models.py:1327
 msgid "Account number for transfer."
 msgstr "Número de cuenta para la transferencia."
 
-#: apps/credits/models.py:1316
+#: apps/credits/models.py:1330
 msgid "Account Holder Name"
 msgstr "Nombre del Titular de la Cuenta"
 
-#: apps/credits/models.py:1319
+#: apps/credits/models.py:1333
 msgid "Name of the account holder."
 msgstr "Nombre del titular de la cuenta."
 
-#: apps/credits/models.py:1324
+#: apps/credits/models.py:1338
 msgid "Check Number"
 msgstr "Número de Cheque"
 
-#: apps/credits/models.py:1327
+#: apps/credits/models.py:1341
 msgid "Check number if disbursement method is check."
 msgstr "Número de cheque si el método de desembolso es cheque."
 
-#: apps/credits/models.py:1332 apps/payments/forms.py:198
+#: apps/credits/models.py:1346 apps/payments/forms.py:198
 #: apps/payments/models.py:55 apps/reports/generators/portfolio.py:47
 #: templates/payments/detail.html:116
 msgid "Reference Number"
 msgstr "Número de Referencia"
 
-#: apps/credits/models.py:1335
+#: apps/credits/models.py:1349
 msgid "Transaction reference number."
 msgstr "Número de referencia de la transacción."
 
-#: apps/credits/models.py:1338
+#: apps/credits/models.py:1352
 msgid "Receipt Document"
 msgstr "Documento de Recibo"
 
-#: apps/credits/models.py:1342
+#: apps/credits/models.py:1356
 msgid "Upload receipt or proof of disbursement."
 msgstr "Subir recibo o comprobante de desembolso."
 
-#: apps/credits/models.py:1348
+#: apps/credits/models.py:1362
 msgid "History of status changes for this disbursement."
 msgstr "Historial de cambios de estado para este desembolso."
 
-#: apps/credits/models.py:1353
+#: apps/credits/models.py:1367
 msgid "Credit Disbursement"
 msgstr "Desembolso de Crédito"
 
-#: apps/credits/models.py:1354
+#: apps/credits/models.py:1368
 msgid "Credit Disbursements"
 msgstr "Desembolsos de Crédito"
 
@@ -4528,19 +4492,19 @@ msgstr "Información Laboral del Socio"
 msgid "A partner with this document number already exists."
 msgstr "Ya existe una cuenta con este número de documento."
 
-#: apps/partners/viewsets.py:344 apps/partners/viewsets.py:425
+#: apps/partners/viewsets.py:352 apps/partners/viewsets.py:436
 #, fuzzy
 #| msgid "Payment date is required."
 msgid "Product name is required."
 msgstr "Se requiere fecha de pago."
 
-#: apps/partners/viewsets.py:372
+#: apps/partners/viewsets.py:380
 #, fuzzy
 #| msgid "Credit not found for this partner."
 msgid "Credit not found for this product."
 msgstr "Crédito no encontrado para este socio."
 
-#: apps/partners/viewsets.py:453
+#: apps/partners/viewsets.py:464
 #, fuzzy
 #| msgid "Payment not found."
 msgid "Credit not found."
@@ -4831,8 +4795,7 @@ msgstr "Pago que se está asignando."
 msgid ""
 "Type of concept receiving the payment (Installment, Contribution, Penalty, "
 "etc.)."
-msgstr ""
-"Tipo de concepto que recibe el pago (Cuota, Aporte, Penalidad, etc.)."
+msgstr "Tipo de concepto que recibe el pago (Cuota, Aporte, Penalidad, etc.)."
 
 #: apps/payments/models.py:211
 msgid "ID of the concept receiving the payment."
@@ -6664,7 +6627,7 @@ msgstr "Estado"
 #: templates/campaigns/campaign/confirm_delete.html:70
 #: templates/campaigns/campaign/form.html:195
 #: templates/campaigns/campaign_csv/confirm_delete.html:73
-#: templates/campaigns/campaign_csv/form.html:217
+#: templates/campaigns/campaign_csv/form.html:194
 #: templates/campaigns/group/bulk_add_partners.html:57
 #: templates/campaigns/group/confirm_delete.html:71
 #: templates/campaigns/group/form.html:77
@@ -6879,7 +6842,7 @@ msgid "Select the group of partners for this campaign"
 msgstr "Seleccione el grupo de socios para esta campaña"
 
 #: templates/campaigns/campaign/form.html:81
-#: templates/campaigns/campaign_csv/form.html:87
+#: templates/campaigns/campaign_csv/form.html:93
 msgid "Date and time when the campaign notifications will be sent"
 msgstr "Fecha y hora en que se enviarán las notificaciones de la campaña"
 
@@ -6888,23 +6851,23 @@ msgid "Average cost per notification (optional)"
 msgstr "Costo promedio por notificación (opcional)"
 
 #: templates/campaigns/campaign/form.html:123
-#: templates/campaigns/campaign_csv/form.html:116
+#: templates/campaigns/campaign_csv/form.html:122
 msgid "Campaign Settings"
 msgstr "Configuración de la Campaña"
 
 #: templates/campaigns/campaign/form.html:134
-#: templates/campaigns/campaign_csv/form.html:127
+#: templates/campaigns/campaign_csv/form.html:133
 msgid "Select the communication channel for sending notifications"
 msgstr "Seleccione el canal de comunicación para enviar las notificaciones"
 
 #: templates/campaigns/campaign/form.html:145
-#: templates/campaigns/campaign_csv/form.html:138
+#: templates/campaigns/campaign_csv/form.html:144
 msgid "Select a specific message template for this campaign (optional)"
 msgstr ""
 "Seleccione una plantilla de mensaje específica para esta campaña (opcional)"
 
 #: templates/campaigns/campaign/form.html:161
-#: templates/campaigns/campaign_csv/form.html:153
+#: templates/campaigns/campaign_csv/form.html:159
 msgid ""
 "Include payment links in campaign notifications to allow partners to pay "
 "directly online"
@@ -7062,10 +7025,8 @@ msgid "CSV Campaign Details"
 msgstr "Detalles de la Campaña"
 
 #: templates/campaigns/campaign_csv/detail.html:97
-#, fuzzy
-#| msgid "Upload Document File"
 msgid "Uploaded File"
-msgstr "Tipo de documento"
+msgstr "Archivo Cargado"
 
 #: templates/campaigns/campaign_csv/detail.html:174
 msgid "File Validation Status"
@@ -7098,68 +7059,32 @@ msgstr "de"
 msgid "contacts"
 msgstr "contactos"
 
-#: templates/campaigns/campaign_csv/form.html:73
+#: templates/campaigns/campaign_csv/form.html:74
+msgid "Download Sample Template"
+msgstr "Descargar plantilla de ejemplo"
+
+#: templates/campaigns/campaign_csv/form.html:79
 #: templates/partners/modals/document_edit_modal.html:100
 msgid "Current file:"
 msgstr "Archivo actual:"
 
-#: templates/campaigns/campaign_csv/form.html:167
-msgid "CSV/Excel File Requirements"
-msgstr "Requisitos del Archivo CSV/Excel"
-
-#: templates/campaigns/campaign_csv/form.html:169
-msgid "Your file must include the following columns:"
-msgstr "Su archivo debe incluir las siguientes columnas:"
-
-#: templates/campaigns/campaign_csv/form.html:171
-msgid "Contact's full name (required)"
-msgstr "Nombre completo del contacto (requerido)"
-
-#: templates/campaigns/campaign_csv/form.html:172
-msgid "Amount to notify (required)"
-msgstr "Monto a notificar (requerido)"
-
 #: templates/campaigns/campaign_csv/form.html:173
-msgid "Email address (optional)"
-msgstr "Dirección de correo electrónico (opcional)"
-
-#: templates/campaigns/campaign_csv/form.html:174
-msgid "Phone number (optional)"
-msgstr "Número de teléfono (opcional)"
-
-#: templates/campaigns/campaign_csv/form.html:175
-msgid "Telegram ID or username with @ (optional)"
-msgstr "ID de Telegram o nombre de usuario con @ (opcional)"
-
-#: templates/campaigns/campaign_csv/form.html:176
-msgid "ID/Document number (optional)"
-msgstr "Número de documento (opcional)"
-
-#: templates/campaigns/campaign_csv/form.html:178
-msgid ""
-"After uploading, the file will be validated automatically. You'll see the "
-"validation results on the detail page."
-msgstr ""
-"Después de subirlo, el archivo se validará automáticamente. Verá los "
-"resultados de la validación en la página de detalles."
-
-#: templates/campaigns/campaign_csv/form.html:194
 msgid "File Validated"
 msgstr "Archivo Validado"
 
-#: templates/campaigns/campaign_csv/form.html:198
+#: templates/campaigns/campaign_csv/form.html:176
 msgid "Total contacts:"
 msgstr "Total de contactos"
 
-#: templates/campaigns/campaign_csv/form.html:199
+#: templates/campaigns/campaign_csv/form.html:177
 msgid "Valid contacts:"
 msgstr "Contactos válidos"
 
-#: templates/campaigns/campaign_csv/form.html:200
+#: templates/campaigns/campaign_csv/form.html:178
 msgid "Invalid contacts:"
 msgstr "Contactos no válidos"
 
-#: templates/campaigns/campaign_csv/form.html:222
+#: templates/campaigns/campaign_csv/form.html:199
 msgid "Update CSV Campaign"
 msgstr "Actualizar Campaña CSV"
 
@@ -7692,8 +7617,8 @@ msgid ""
 "Set the welcome image for WhatsApp. Only *.png, *.jpg and *.jpeg image files "
 "are accepted"
 msgstr ""
-"Establezca la imagen de bienvenida para WhatsApp. Solo se aceptan archivos de "
-"imagen *.png, *.jpg y *.jpeg"
+"Establezca la imagen de bienvenida para WhatsApp. Solo se aceptan archivos "
+"de imagen *.png, *.jpg y *.jpeg"
 
 #: templates/chatbot/settings/form.html:89
 msgid "Use *text* for bold formatting in WhatsApp and Telegram."
@@ -10929,6 +10854,44 @@ msgstr "Por favor, crea roles primero antes de asignarlos a los usuarios."
 #: templates/users/user/roles.html:137
 msgid "Save Roles"
 msgstr "Guardar Roles"
+
+#~ msgid "CSV/Excel File Requirements"
+#~ msgstr "Requisitos del Archivo CSV/Excel"
+
+#~ msgid ""
+#~ "Use our sample file as a guide. It contains the required columns and "
+#~ "shows the expected format."
+#~ msgstr ""
+#~ "Utilice nuestro archivo de ejemplo como guía. Contiene las columnas "
+#~ "requeridas y muestra el formato esperado."
+
+#~ msgid ""
+#~ "After uploading, the file will be validated automatically. You'll see the "
+#~ "validation results on the detail page."
+#~ msgstr ""
+#~ "Después de subirlo, el archivo se validará automáticamente. Verá los "
+#~ "resultados de la validación en la página de detalles."
+
+#~ msgid "Your file must include the following columns:"
+#~ msgstr "Su archivo debe incluir las siguientes columnas:"
+
+#~ msgid "Contact's full name (required)"
+#~ msgstr "Nombre completo del contacto (requerido)"
+
+#~ msgid "Phone number (required)"
+#~ msgstr "Número de teléfono (requerido)"
+
+#~ msgid "Amount to notify (required)"
+#~ msgstr "Monto a notificar (requerido)"
+
+#~ msgid "Email address (optional)"
+#~ msgstr "Dirección de correo electrónico (opcional)"
+
+#~ msgid "Telegram ID or username with @ (optional)"
+#~ msgstr "ID de Telegram o nombre de usuario con @ (opcional)"
+
+#~ msgid "ID/Document number (optional)"
+#~ msgstr "Número de documento (opcional)"
 
 #~ msgid "Back to Home"
 #~ msgstr "Volver al Inicio"

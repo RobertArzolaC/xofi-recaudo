@@ -94,9 +94,10 @@ class CampaignForm(forms.ModelForm):
         self.fields["name"].required = True
 
         # Filter templates to only show active ones for GROUP campaigns
-        self.fields["message_template"].queryset = MessageTemplate.objects.filter(
-            is_active=True,
-            campaign_type=choices.CampaignType.GROUP
+        self.fields[
+            "message_template"
+        ].queryset = MessageTemplate.objects.filter(
+            is_active=True, campaign_type=choices.CampaignType.GROUP
         )
 
         # Restrict status choices to only DRAFT and SCHEDULED for create/update operations
@@ -419,8 +420,8 @@ class CampaignCSVFileForm(forms.ModelForm):
         help_texts = {
             "file": _(
                 "Upload a CSV or Excel file with contact information.\n"
-                "Required columns: full_name, amount.\n"
-                "Optional columns: email, phone, document_number."
+                "Required columns: full_name, phone, amount.\n"
+                "Optional columns: email, document_number."
             ),
         }
 
@@ -430,9 +431,10 @@ class CampaignCSVFileForm(forms.ModelForm):
         self.fields["file"].required = not self.instance.pk
 
         # Filter templates to only show active ones for FILE campaigns
-        self.fields["message_template"].queryset = MessageTemplate.objects.filter(
-            is_active=True,
-            campaign_type=choices.CampaignType.FILE
+        self.fields[
+            "message_template"
+        ].queryset = MessageTemplate.objects.filter(
+            is_active=True, campaign_type=choices.CampaignType.FILE
         )
 
         # Restrict status choices to only DRAFT and SCHEDULED
