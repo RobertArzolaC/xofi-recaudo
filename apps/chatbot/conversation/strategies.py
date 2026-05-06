@@ -465,7 +465,9 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
                 },
             )
         else:
-            portal_url = getattr(settings, "PAYMENT_PORTAL_URL", "https://xofi.com")
+            portal_url = getattr(
+                settings, "PAYMENT_PORTAL_URL", "https://xofi.com"
+            )
             return BotResponse(
                 text=f"¡Genial! Puedes registrarte para ser evaluado ingresando a nuestro sitio web:\n{portal_url}"
             )

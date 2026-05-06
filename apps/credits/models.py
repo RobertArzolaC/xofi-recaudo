@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -443,6 +444,19 @@ class Credit(
                 choices.InstallmentStatus.PARTIAL,
             ],
         )
+
+    @property
+    def total_pending_amount(self) -> Decimal:
+        """Calculate total pending amount."""
+        return self.installments.filter(
+            status__in=[
+                choices.InstallmentStatus.PENDING,
+                choices.InstallmentStatus.OVERDUE,
+                choices.InstallmentStatus.PARTIAL,
+            ],
+        ).aggregate(total_pending_amount=Sum("installment_amount"))[
+            "total_pending_amount"
+        ] or Decimal("0.00")
 
 
 class CreditApplication(

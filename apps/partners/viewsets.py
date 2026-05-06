@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.core.authentication import BearerTokenAuthentication
+from apps.credits.choices import CreditStatus, InstallmentStatus
 from apps.partners import models, serializers
 
 
@@ -128,17 +129,25 @@ class PartnerViewSet(viewsets.GenericViewSet):
         partner = self.get_object()
 
         # Get all credits for this partner
-        credits = partner.credits.select_related(
-            "product", "product__product_type"
-        ).order_by("-disbursement_date")
+        credits = (
+            partner.credits.filter(status=CreditStatus.ACTIVE)
+            .select_related("product", "product__product_type")
+            .order_by("-disbursement_date")
+        )
 
         # Calculate summary statistics
         total_credits = credits.count()
         total_disbursed = credits.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
-        total_pending = partner.payments.aggregate(total=Sum("amount"))[
-            "total"
+        total_pending = credits.installments.filter(
+            status__in=[
+                InstallmentStatus.PENDING,
+                InstallmentStatus.OVERDUE,
+                InstallmentStatus.PARTIAL,
+            ],
+        ).aggregate(total_pending_amount=Sum("installment_amount"))[
+            "total_pending_amount"
         ] or Decimal("0.00")
 
         # Calculate total payments
@@ -161,7 +170,7 @@ class PartnerViewSet(viewsets.GenericViewSet):
                     "payment_frequency": credit.get_payment_frequency_display().title()
                     if credit.payment_frequency
                     else None,
-                    "outstanding_balance": float(credit.outstanding_balance),
+                    "outstanding_balance": float(credit.total_pending_amount),
                     "status": credit.get_status_display().title()
                     if credit.status
                     else None,
@@ -374,6 +383,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
             )
 
         installments = credit.get_current_installments()
+        payment_amount = (
+            installments[0].installment_amount if installments else None
+        )
         overdue_count = sum(1 for i in installments if i.is_overdue)
         pending_count = sum(
             1 for i in installments if i.status in ["PENDING", "PARTIAL"]
@@ -383,9 +395,9 @@ class PartnerViewSet(viewsets.GenericViewSet):
             {
                 "product_name": credit.product.name,
                 "amount": float(credit.amount),
-                "outstanding_balance": float(credit.outstanding_balance),
-                "payment_amount": float(credit.payment_amount)
-                if credit.payment_amount
+                "outstanding_balance": float(credit.total_pending_amount),
+                "payment_amount": float(payment_amount)
+                if payment_amount
                 else 0.0,
                 "status": credit.get_status_display().title(),
                 "term_duration": credit.term_duration,
