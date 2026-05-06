@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from django.db.models import Count, Q, Sum
+from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import (
@@ -260,46 +260,42 @@ class PartnerViewSet(viewsets.GenericViewSet):
         partner = self.get_object()
 
         # Get credits queryset
-        credits_qs = partner.credits.select_related(
-            "product", "product__product_type"
-        )
-
-        # Apply status filter if provided
-        status_filter = request.query_params.get("status", None)
-        if status_filter:
-            credits_qs = credits_qs.filter(status=status_filter.upper())
+        credits = partner.credits.filter(
+            status=CreditStatus.ACTIVE
+        ).select_related("product", "product__product_type")
 
         # Calculate summary statistics
-        summary = credits_qs.filter(status="ACTIVE").aggregate(
-            active_count=Count("id"),
-            total_debt=Sum("outstanding_balance"),
-        )
-        active_credits_count = summary["active_count"] or 0
-        total_outstanding = summary["total_debt"] or Decimal("0.00")
-
-        # Calculate total payments
-        total_payments = partner.payments.aggregate(total=Sum("amount"))[
+        active_credits_count = credits.count()
+        total_disbursed = credits.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
+        total_outstanding = credits.installments.filter(
+            status__in=[
+                InstallmentStatus.PENDING,
+                InstallmentStatus.OVERDUE,
+                InstallmentStatus.PARTIAL,
+            ],
+        ).aggregate(total_pending_amount=Sum("installment_amount"))[
+            "total_pending_amount"
+        ] or Decimal("0.00")
+
+        # Calculate total payments
+        total_payments = total_disbursed - total_outstanding
 
         # Get unique product names
         associated_products_list = list(
-            credits_qs.values_list("product__name", flat=True).distinct()
+            credits.values_list("product__name", flat=True).distinct()
         )
         associated_products = ", ".join(associated_products_list)
 
         # Build credit list (minimal)
         credit_list = []
-        for credit in credits_qs:
+        for credit in credits:
             credit_list.append(
                 {
                     "id": credit.id,
                     "product_name": credit.product.name,
                     "amount": float(credit.amount),
-                    "outstanding_balance": float(credit.outstanding_balance),
-                    "status": credit.get_status_display().title()
-                    if credit.status
-                    else None,
                 }
             )
 
