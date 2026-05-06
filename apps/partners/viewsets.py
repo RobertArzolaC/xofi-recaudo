@@ -14,6 +14,7 @@ from rest_framework.response import Response
 
 from apps.core.authentication import BearerTokenAuthentication
 from apps.credits.choices import CreditStatus, InstallmentStatus
+from apps.credits.models import Installment
 from apps.partners import models, serializers
 
 
@@ -140,7 +141,8 @@ class PartnerViewSet(viewsets.GenericViewSet):
         total_disbursed = credits.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
-        total_pending = credits.installments.filter(
+        total_pending = Installment.objects.filter(
+            credit__in=credits,
             status__in=[
                 InstallmentStatus.PENDING,
                 InstallmentStatus.OVERDUE,
@@ -269,7 +271,8 @@ class PartnerViewSet(viewsets.GenericViewSet):
         total_disbursed = credits.aggregate(total=Sum("amount"))[
             "total"
         ] or Decimal("0.00")
-        total_outstanding = credits.installments.filter(
+        total_outstanding = Installment.objects.filter(
+            credit__in=credits,
             status__in=[
                 InstallmentStatus.PENDING,
                 InstallmentStatus.OVERDUE,
