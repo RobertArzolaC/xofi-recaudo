@@ -153,6 +153,7 @@ class AgentService:
                         "get_credit_schedule",
                         "request_support_ticket",
                         "create_support_ticket",
+                        "request_payment_receipt_upload",
                         "request_prospect_registration",
                     ]:
                         return "", tools_called

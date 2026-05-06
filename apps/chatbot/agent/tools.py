@@ -39,6 +39,7 @@ class ToolRegistry:
             "get_credit_schedule": self._exec_credit_schedule,
             "request_support_ticket": self._exec_request_support_ticket,
             "create_support_ticket": self._exec_create_support_ticket,
+            "request_payment_receipt_upload": self._exec_request_payment_receipt_upload,
             "request_prospect_registration": self._exec_request_prospect_registration,
         }
 
@@ -179,6 +180,18 @@ class ToolRegistry:
                         },
                     }
                 },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "request_payment_receipt_upload",
+                        "description": "Solicitar al socio que envíe la foto de su comprobante de pago para registrar un pago. Usar cuando el socio quiere subir un comprobante, registrar un pago realizado o enviar un voucher de pago.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
             ])
 
         return tools
@@ -275,3 +288,6 @@ class ToolRegistry:
         if not data:
             return {"error": "No se pudo crear el ticket de soporte."}
         return data
+
+    def _exec_request_payment_receipt_upload(self) -> dict:
+        return {"status": "payment_receipt_upload_requested"}

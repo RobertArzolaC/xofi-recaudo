@@ -473,6 +473,23 @@ class RequestProspectRegistrationStrategy(IntentStrategy):
             )
 
 
+class RequestPaymentReceiptUploadStrategy(IntentStrategy):
+    """Strategy for the request_payment_receipt_upload tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        return BotResponse(
+            text="Por favor, envía la foto de tu comprobante de pago para que podamos procesarlo y registrarlo en tu cuenta. Asegúrate de que la imagen sea clara y se vean bien los datos."
+        )
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
@@ -484,6 +501,7 @@ class StrategyFactory:
         "get_credit_schedule": GetCreditScheduleStrategy(),
         "request_support_ticket": RequestSupportTicketStrategy(),
         "create_support_ticket": CreateSupportTicketStrategy(),
+        "request_payment_receipt_upload": RequestPaymentReceiptUploadStrategy(),
         "request_prospect_registration": RequestProspectRegistrationStrategy(),
     }
 
