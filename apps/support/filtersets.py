@@ -61,12 +61,15 @@ class TicketFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(subject__icontains=value)
-                | Q(description__icontains=value)
-                | Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__document_number__icontains=value)
-                | Q(pk__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(subject__icontains=term)
+                    | Q(description__icontains=term)
+                    | Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__document_number__icontains=term)
+                    | Q(pk__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset

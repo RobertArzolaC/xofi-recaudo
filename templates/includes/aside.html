@@ -132,7 +132,7 @@
         </div>
         {% endif %}
 
-        {% if perms.compliance.view_contribution or perms.compliance.view_socialsecurity or perms.compliance.view_penalty %}
+        {% if perms.compliance.view_contribution or perms.compliance.view_socialsecurity %}
         <div class="menu-item pt-5">
           <div class="menu-content">
             <span class="fw-bold text-muted text-uppercase fs-7">
@@ -169,23 +169,6 @@
               </span>
               <span class="menu-title">
                 {% trans 'Social Security' %}
-              </span>
-            </a>
-          {% endif %}
-        </div>
-
-        <div class="menu-item">
-          {% if perms.compliance.view_penalty %}
-            <a class="menu-link {% if "penalt" in request.path %}active{% endif %}" href="{% url 'apps.compliance:penalty-list' %}">
-              <span class="menu-icon">
-                <i class="ki-duotone ki-abstract-5 fs-2 me-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                  <span class="path3"></span>
-                </i>
-              </span>
-              <span class="menu-title">
-                {% trans 'Penalties' %}
               </span>
             </a>
           {% endif %}

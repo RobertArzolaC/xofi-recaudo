@@ -148,6 +148,7 @@ class AgentService:
                     if tool_name in [
                         "get_partner_detail",
                         "get_account_statement",
+                        "get_total_contributions",
                         "get_credits_list",
                         "get_credit_detail",
                         "get_credit_schedule",

@@ -217,6 +217,38 @@ class PartnerViewSet(viewsets.GenericViewSet):
         )
 
     @extend_schema(
+        operation_id="partners_total_contributions",
+        summary="Get partner's total contributions",
+        description="Retrieve the total contributions for a specific partner.",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Partner ID, document number, or phone number",
+            ),
+        ],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "total_contributed": {"type": "number"},
+                },
+            }
+        },
+        tags=["Partners"],
+    )
+    @action(detail=True, methods=["get"], url_path="total-contributions")
+    def total_contributions(self, request, pk=None):
+        """
+        Get the total contributions for a partner.
+        """
+        partner = self.get_object()
+        return Response({
+            "total_contributed": partner.total_contributed,
+        })
+
+    @extend_schema(
         operation_id="partners_credits_list",
         summary="List partner's credits",
         description=(

@@ -1,6 +1,8 @@
 import logging
 from typing import Any, Dict
+from urllib.parse import quote
 
+from constance import config
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -17,14 +19,14 @@ from django.views.generic import (
     UpdateView,
     View,
 )
-from django_filters.views import FilterView
 
+from apps.core.models import BaseListView
 from apps.support import filtersets, forms, models
 
 logger = logging.getLogger(__name__)
 
 
-class TicketListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
+class TicketListView(BaseListView):
     """List view for Ticket model with filtering."""
 
     model = models.Ticket
@@ -187,3 +189,15 @@ class TicketStatusUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             )
 
         return redirect("apps.support:ticket-detail", pk=pk)
+
+
+class AdvisorRedirectView(View):
+    """View to redirect to WhatsApp for advisor support."""
+
+    def get(self, request, *args, **kwargs):
+        """Redirect to WhatsApp with a pre-filled message."""
+        phone = config.SUPPORT_WHATSAPP_PHONE
+        message = quote(
+            "Hola, deseo información sobre mi descuento mensual por planilla."
+        )
+        return redirect(f"https://wa.me/{phone}?text={message}")

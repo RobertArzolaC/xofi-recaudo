@@ -14,17 +14,14 @@ from django.views.generic import (
     DetailView,
     UpdateView,
 )
-from django_filters.views import FilterView
 
 from apps.compliance import filtersets, forms, models
-from apps.partners import mixins as partner_mixins
+from apps.core.models import BaseListView
 
 logger = logging.getLogger(__name__)
 
 
-class ContributionListView(
-    partner_mixins.PartnerAccessMixin, PermissionRequiredMixin, FilterView
-):
+class ContributionListView(BaseListView):
     """List view for Contribution model with filtering."""
 
     model = models.Contribution
@@ -127,9 +124,7 @@ class ContributionDeleteView(
 
 
 # SocialSecurity Views
-class SocialSecurityListView(
-    partner_mixins.PartnerAccessMixin, PermissionRequiredMixin, FilterView
-):
+class SocialSecurityListView(BaseListView):
     """List view for SocialSecurity model with filtering."""
 
     model = models.SocialSecurity
@@ -233,9 +228,7 @@ class SocialSecurityDeleteView(
 
 
 # Penalty Views
-class PenaltyListView(
-    partner_mixins.PartnerAccessMixin, PermissionRequiredMixin, FilterView
-):
+class PenaltyListView(BaseListView):
     """List view for Penalty model with filtering."""
 
     model = models.Penalty

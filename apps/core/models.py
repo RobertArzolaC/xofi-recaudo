@@ -2,14 +2,29 @@ from datetime import date
 
 from cities_light.models import City, Country, Region, SubRegion
 from django.conf import settings
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
+from django_filters.views import FilterView
 from model_utils.models import TimeStampedModel
 
 from apps.core import choices
+from apps.core.mixins import UserStampMixin
 
 
 class BaseAddress(models.Model):
@@ -263,3 +278,47 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
             created_by=user,
             modified_by=user,
         )
+
+
+class BaseCreateView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    SuccessMessageMixin,
+    UserStampMixin,
+    CreateView,
+):
+    pass
+
+
+class BaseUpdateView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    SuccessMessageMixin,
+    UserStampMixin,
+    UpdateView,
+):
+    pass
+
+
+class BaseListView(
+    LoginRequiredMixin, PermissionRequiredMixin, FilterView, ListView
+):
+    def get_paginate_by(self, queryset):
+        items_per_page = self.request.GET.get("items_per_page")
+        if items_per_page and items_per_page.isdigit():
+            return int(items_per_page)
+        return super().get_paginate_by(queryset)
+
+
+class BaseDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    pass
+
+
+class BaseTemplateView(
+    LoginRequiredMixin, PermissionRequiredMixin, TemplateView
+):
+    pass
+
+
+class BaseFormView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+    pass

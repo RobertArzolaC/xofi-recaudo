@@ -22,18 +22,15 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
-from django_filters.views import FilterView
 
-from apps.partners import mixins as partner_mixins
+from apps.core.models import BaseListView
 from apps.partners import models as partner_models
 from apps.payments import choices, filtersets, forms, mixins, models
 
 logger = logging.getLogger(__name__)
 
 
-class PaymentListView(
-    partner_mixins.PartnerAccessMixin, PermissionRequiredMixin, FilterView
-):
+class PaymentListView(BaseListView):
     """View to list payments with filtering capabilities."""
 
     model = models.Payment
@@ -249,9 +246,7 @@ class PaymentDeleteView(
 # ============================================================================
 
 
-class PaymentReceiptListView(
-    LoginRequiredMixin, PermissionRequiredMixin, FilterView
-):
+class PaymentReceiptListView(BaseListView):
     """View to list payment receipts with filtering capabilities."""
 
     model = models.PaymentReceipt
@@ -482,9 +477,7 @@ class MagicPaymentLinkCreateView(
             return self.form_invalid(form)
 
 
-class MagicPaymentLinkListView(
-    LoginRequiredMixin, PermissionRequiredMixin, FilterView
-):
+class MagicPaymentLinkListView(BaseListView):
     """View for listing Magic Payment Links."""
 
     model = models.MagicPaymentLink

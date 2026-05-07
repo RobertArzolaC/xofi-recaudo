@@ -74,11 +74,14 @@ class ContributionFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across partner name and reference fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -150,11 +153,14 @@ class SocialSecurityFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across partner name and reference fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -214,10 +220,13 @@ class PenaltyFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across partner name and reference fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-                | Q(description__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                    | Q(description__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset

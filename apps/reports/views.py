@@ -3,12 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView
-from django_filters.views import FilterView
 
+from apps.core.models import BaseListView
 from apps.reports import choices, filtersets, forms, models, tasks
 
 
-class ReportListView(LoginRequiredMixin, FilterView):
+class ReportListView(BaseListView):
     """
     View to display list of reports with filtering.
     """
@@ -17,6 +17,7 @@ class ReportListView(LoginRequiredMixin, FilterView):
     filterset_class = filtersets.ReportFilter
     template_name = "reports/report_list.html"
     context_object_name = "reports"
+    permission_required = "reports.view_report"
     paginate_by = 5
 
     def get_queryset(self):

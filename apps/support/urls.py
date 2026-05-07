@@ -39,4 +39,10 @@ urlpatterns = [
         views.TicketStatusUpdateView.as_view(),
         name="ticket-status-update",
     ),
+    # Advisor redirect
+    path(
+        "advisor-redirect/",
+        views.AdvisorRedirectView.as_view(),
+        name="advisor-redirect",
+    ),
 ]

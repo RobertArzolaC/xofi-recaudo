@@ -52,6 +52,11 @@ CONSTANCE_CONFIG = {
     ),
     # UI Settings
     "ENABLE_WELCOME_MESSAGE": (True, _("Enable welcome message on homepage.")),
+    # Support Settings
+    "SUPPORT_WHATSAPP_PHONE": (
+        "51931314241",
+        _("WhatsApp phone number for support."),
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -83,6 +88,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
             "CHATBOT_WELCOME_IMAGE",
             "CHATBOT_WELCOME_MESSAGE",
         ),
+        "collapse": False,
+    },
+    "5. Support Settings": {
+        "fields": ("SUPPORT_WHATSAPP_PHONE",),
         "collapse": False,
     },
 }

@@ -11,14 +11,14 @@ from django.views.generic import (
     CreateView,
     DeleteView,
     DetailView,
-    ListView,
     UpdateView,
 )
 
+from apps.core.models import BaseListView
 from apps.team import filtersets, forms, models
 
 
-class AreaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class AreaListView(BaseListView):
     """List view for Area model."""
 
     model = models.Area
@@ -142,7 +142,7 @@ class AreaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return context
 
 
-class PositionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class PositionListView(BaseListView):
     """List view for Position model."""
 
     model = models.Position
@@ -276,7 +276,7 @@ class PositionDeleteView(
 
 
 # Employee Views
-class EmployeeListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class EmployeeListView(BaseListView):
     """List view for Employee model."""
 
     model = models.Employee

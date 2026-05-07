@@ -120,14 +120,17 @@ class CreditFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name: str, value):
         """Filter credits by partner fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-                | Q(partner__email__icontains=value)
-                | Q(partner__phone__icontains=value)
-                | Q(partner__document_number__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                    | Q(partner__email__icontains=term)
+                    | Q(partner__phone__icontains=term)
+                    | Q(partner__document_number__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -168,14 +171,17 @@ class CreditApplicationFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name: str, value):
         """Filter credit applications by partner fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-                | Q(partner__email__icontains=value)
-                | Q(partner__phone__icontains=value)
-                | Q(partner__document_number__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                    | Q(partner__email__icontains=term)
+                    | Q(partner__phone__icontains=term)
+                    | Q(partner__document_number__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -218,16 +224,19 @@ class CreditRescheduleRequestFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name: str, value):
         """Filter reschedule requests by partner and credit fields."""
         if value:
-            return queryset.filter(
-                Q(credit__partner__first_name__icontains=value)
-                | Q(credit__partner__paternal_last_name__icontains=value)
-                | Q(credit__partner__maternal_last_name__icontains=value)
-                | Q(credit__partner__email__icontains=value)
-                | Q(credit__partner__phone__icontains=value)
-                | Q(credit__partner__document_number__icontains=value)
-                | Q(credit__product__name__icontains=value)
-                | Q(reason__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(credit__partner__first_name__icontains=term)
+                    | Q(credit__partner__paternal_last_name__icontains=term)
+                    | Q(credit__partner__maternal_last_name__icontains=term)
+                    | Q(credit__partner__email__icontains=term)
+                    | Q(credit__partner__phone__icontains=term)
+                    | Q(credit__partner__document_number__icontains=term)
+                    | Q(credit__product__name__icontains=term)
+                    | Q(reason__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -268,16 +277,19 @@ class CreditRefinanceRequestFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name: str, value):
         """Filter refinance requests by partner and credit fields."""
         if value:
-            return queryset.filter(
-                Q(credit__partner__first_name__icontains=value)
-                | Q(credit__partner__paternal_last_name__icontains=value)
-                | Q(credit__partner__maternal_last_name__icontains=value)
-                | Q(credit__partner__email__icontains=value)
-                | Q(credit__partner__phone__icontains=value)
-                | Q(credit__partner__document_number__icontains=value)
-                | Q(credit__product__name__icontains=value)
-                | Q(reason__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(credit__partner__first_name__icontains=term)
+                    | Q(credit__partner__paternal_last_name__icontains=term)
+                    | Q(credit__partner__maternal_last_name__icontains=term)
+                    | Q(credit__partner__email__icontains=term)
+                    | Q(credit__partner__phone__icontains=term)
+                    | Q(credit__partner__document_number__icontains=term)
+                    | Q(credit__product__name__icontains=term)
+                    | Q(reason__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -320,14 +332,17 @@ class CreditDisbursementFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name: str, value):
         """Filter disbursements by partner and credit fields."""
         if value:
-            return queryset.filter(
-                Q(credit__partner__first_name__icontains=value)
-                | Q(credit__partner__paternal_last_name__icontains=value)
-                | Q(credit__partner__maternal_last_name__icontains=value)
-                | Q(credit__partner__email__icontains=value)
-                | Q(credit__partner__phone__icontains=value)
-                | Q(credit__partner__document_number__icontains=value)
-                | Q(credit__product__name__icontains=value)
-                | Q(reference_number__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(credit__partner__first_name__icontains=term)
+                    | Q(credit__partner__paternal_last_name__icontains=term)
+                    | Q(credit__partner__maternal_last_name__icontains=term)
+                    | Q(credit__partner__email__icontains=term)
+                    | Q(credit__partner__phone__icontains=term)
+                    | Q(credit__partner__document_number__icontains=term)
+                    | Q(credit__product__name__icontains=term)
+                    | Q(reference_number__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset

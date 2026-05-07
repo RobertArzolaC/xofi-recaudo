@@ -42,6 +42,17 @@ class PartnerAPIService:
             logger.error(f"Error fetching account statement: {e}")
             return {}
 
+    def get_total_contributions(self, partner_id: int) -> Dict[str, Any]:
+        """Get partner's total contributions from API."""
+        url = f"{self.base_url}/api/v1/partners/partners/{partner_id}/total-contributions/"
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            logger.error(f"Error fetching total contributions: {e}")
+            return {}
+
     def get_credits_list(
         self, partner_id: int, status: Optional[str] = None
     ) -> Dict[str, Any]:

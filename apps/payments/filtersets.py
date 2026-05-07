@@ -62,13 +62,16 @@ class PaymentFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Filter by search term across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(payment_number__icontains=value)
-                | Q(partner__first_name__icontains=value)
-                | Q(partner__email__icontains=value)
-                | Q(reference_number__icontains=value)
-                | Q(notes__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(payment_number__icontains=term)
+                    | Q(partner__first_name__icontains=term)
+                    | Q(partner__email__icontains=term)
+                    | Q(reference_number__icontains=term)
+                    | Q(notes__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -130,15 +133,18 @@ class MagicPaymentLinkFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Filter by search term across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(name__icontains=value)
-                | Q(description__icontains=value)
-                | Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-                | Q(partner__document_number__icontains=value)
-                | Q(token__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(name__icontains=term)
+                    | Q(description__icontains=term)
+                    | Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                    | Q(partner__document_number__icontains=term)
+                    | Q(token__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -191,12 +197,15 @@ class PaymentReceiptFilter(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Filter by search term across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(partner__first_name__icontains=value)
-                | Q(partner__paternal_last_name__icontains=value)
-                | Q(partner__maternal_last_name__icontains=value)
-                | Q(partner__document_number__icontains=value)
-                | Q(notes__icontains=value)
-                | Q(validation_notes__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(partner__first_name__icontains=term)
+                    | Q(partner__paternal_last_name__icontains=term)
+                    | Q(partner__maternal_last_name__icontains=term)
+                    | Q(partner__document_number__icontains=term)
+                    | Q(notes__icontains=term)
+                    | Q(validation_notes__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset

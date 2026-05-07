@@ -54,14 +54,17 @@ class ApplicantFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(first_name__icontains=value)
-                | Q(paternal_last_name__icontains=value)
-                | Q(maternal_last_name__icontains=value)
-                | Q(document_number__icontains=value)
-                | Q(email__icontains=value)
-                | Q(external_id__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(first_name__icontains=term)
+                    | Q(paternal_last_name__icontains=term)
+                    | Q(maternal_last_name__icontains=term)
+                    | Q(document_number__icontains=term)
+                    | Q(email__icontains=term)
+                    | Q(external_id__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -111,13 +114,16 @@ class PartnerFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(first_name__icontains=value)
-                | Q(paternal_last_name__icontains=value)
-                | Q(maternal_last_name__icontains=value)
-                | Q(document_number__icontains=value)
-                | Q(email__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(first_name__icontains=term)
+                    | Q(paternal_last_name__icontains=term)
+                    | Q(maternal_last_name__icontains=term)
+                    | Q(document_number__icontains=term)
+                    | Q(email__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset
 
 
@@ -163,11 +169,14 @@ class ProspectFilterSet(django_filters.FilterSet):
     def filter_search(self, queryset, name, value):
         """Custom search filter across multiple fields."""
         if value:
-            return queryset.filter(
-                Q(first_name__icontains=value)
-                | Q(last_name__icontains=value)
-                | Q(document_number__icontains=value)
-                | Q(email__icontains=value)
-                | Q(phone__icontains=value)
-            )
+            query = Q()
+            for term in value.split():
+                query &= (
+                    Q(first_name__icontains=term)
+                    | Q(last_name__icontains=term)
+                    | Q(document_number__icontains=term)
+                    | Q(email__icontains=term)
+                    | Q(phone__icontains=term)
+                )
+            return queryset.filter(query)
         return queryset

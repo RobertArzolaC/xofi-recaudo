@@ -17,16 +17,16 @@ from django.views.generic import (
     UpdateView,
     View,
 )
-from django_filters.views import FilterView
 
 from apps.campaigns import choices, filtersets, forms, models
+from apps.core.models import BaseListView
 from apps.notifications import tasks as notification_tasks
 
 logger = logging.getLogger(__name__)
 
 
 # Campaign Views
-class CampaignListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
+class CampaignListView(BaseListView):
     """List view for Campaign model with filtering."""
 
     model = models.Campaign
@@ -132,7 +132,7 @@ class CampaignDeleteView(
 
 
 # Group Views
-class GroupListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
+class GroupListView(BaseListView):
     """List view for Group model with filtering."""
 
     model = models.Group
@@ -459,9 +459,7 @@ class GroupDebtAjaxView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
 
 # CSV Campaign Views
-class CampaignCSVFileListView(
-    LoginRequiredMixin, PermissionRequiredMixin, FilterView
-):
+class CampaignCSVFileListView(BaseListView):
     """List view for CSV/Excel file-based campaigns with filtering."""
 
     model = models.CampaignCSVFile

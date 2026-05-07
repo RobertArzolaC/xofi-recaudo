@@ -19,8 +19,8 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 
+from apps.core.models import BaseListView
 from apps.credits import choices, filtersets, forms, models
-from apps.partners import mixins as partner_mixins
 
 
 class ProductTypeListView(
@@ -169,9 +169,7 @@ class ProductDeleteView(
     success_url = reverse_lazy("apps.credits:product_list")
 
 
-class CreditListView(
-    partner_mixins.PartnerAccessMixin, PermissionRequiredMixin, FilterView
-):
+class CreditListView(BaseListView):
     """View to list all credits with filtering."""
 
     model = models.Credit

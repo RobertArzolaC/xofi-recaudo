@@ -17,14 +17,13 @@ from django.views.generic import (
 )
 from django_filters.views import FilterView
 
+from apps.core.models import BaseListView
 from apps.partners import filtersets, forms, models
 
 logger = logging.getLogger(__name__)
 
 
-class ApplicantListView(
-    LoginRequiredMixin, PermissionRequiredMixin, FilterView
-):
+class ApplicantListView(BaseListView):
     """List view for Applicant model with filtering."""
 
     model = models.Applicant
@@ -118,7 +117,7 @@ class ApplicantDeleteView(
         return context
 
 
-class PartnerListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
+class PartnerListView(BaseListView):
     """List view for Partner model with filtering."""
 
     model = models.Partner
@@ -127,16 +126,6 @@ class PartnerListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView):
     context_object_name = "partners"
     permission_required = "partners.view_partner"
     paginate_by = 5
-
-    def get_paginate_by(self, queryset) -> int:
-        """Allow overriding paginate_by via query param."""
-        try:
-            per_page = int(self.request.GET.get("items_per_page", self.paginate_by))
-            if per_page in (5, 10, 25, 50):
-                return per_page
-        except (ValueError, TypeError):
-            pass
-        return self.paginate_by
 
     def get_queryset(self) -> QuerySet[models.Partner]:
         """Return filtered and ordered queryset."""

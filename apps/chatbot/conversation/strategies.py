@@ -138,11 +138,6 @@ class GetAccountStatementStrategy(IntentStrategy):
         )
 
         current_date = datetime.now().strftime("%d/%m/%Y")
-        portal_link = getattr(
-            settings,
-            "PAYMENT_PORTAL_URL",
-            "https://xofi.com/prestamo/1020/summary",
-        )
 
         if channel == choices.ChannelType.WHATSAPP:
             # According to docs/template_account_statement_summary.md (17 parameters)
@@ -188,7 +183,6 @@ class GetAccountStatementStrategy(IntentStrategy):
                                     "type": "text",
                                     "text": social_security_pending,
                                 },  # {{15}}
-                                {"type": "text", "text": portal_link},  # {{16}}
                             ],
                         }
                     ],
@@ -215,10 +209,33 @@ class GetAccountStatementStrategy(IntentStrategy):
                 f"🏦 *Aportes y Previsión Social*\n"
                 f"• Aportes: *S/ {contributed}*\n"
                 f"• Previsión social: *S/ {social_security_pending}*\n\n"
-                f"Si deseas ver el detalle completo o realizar un pago, puedes hacerlo aquí 👇\n"
-                f"{portal_link}"
             )
             return BotResponse(text=text)
+
+
+class GetTotalContributionsStrategy(IntentStrategy):
+    """Strategy for the get_total_contributions tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        if "error" in tool_result:
+            return BotResponse(text=tool_result["error"])
+
+        total_contributed = f"{tool_result.get('total_contributed', 0.0):,.2f}"
+        current_date = datetime.now().strftime("%d/%m/%Y")
+
+        # Plain text message requested by the user, regardless of channel
+        text = (
+            f"El total acumulado de tus aportes es de:\n\n"
+            f"💰 S/ {total_contributed}\n\n"
+            f"Periodo consultado: {current_date}\n\n"
+            f"Gracias por confiar en nuestra institución."
+        )
+        return BotResponse(text=text)
 
 
 class GetCreditsListStrategy(IntentStrategy):
@@ -496,6 +513,7 @@ class StrategyFactory:
     _strategies = {
         "get_partner_detail": GetPartnerDetailStrategy(),
         "get_account_statement": GetAccountStatementStrategy(),
+        "get_total_contributions": GetTotalContributionsStrategy(),
         "get_credits_list": GetCreditsListStrategy(),
         "get_credit_detail": GetCreditDetailStrategy(),
         "get_credit_schedule": GetCreditScheduleStrategy(),

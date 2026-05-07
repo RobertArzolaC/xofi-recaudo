@@ -34,6 +34,7 @@ class ToolRegistry:
         self._executors = {
             "get_partner_detail": self._exec_partner_detail,
             "get_account_statement": self._exec_account_statement,
+            "get_total_contributions": self._exec_total_contributions,
             "get_credits_list": self._exec_credits_list,
             "get_credit_detail": self._exec_credit_detail,
             "get_credit_schedule": self._exec_credit_schedule,
@@ -95,6 +96,18 @@ class ToolRegistry:
                     "function": {
                         "name": "get_account_statement",
                         "description": "Obtener el estado de cuenta del socio: resumen de créditos, montos desembolsados, total de pagos realizados y saldo pendiente total.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_total_contributions",
+                        "description": "Obtener el detalle de los aportes totales acumulados del socio.",
                         "parameters": {
                             "type": "object",
                             "properties": {},
@@ -253,6 +266,14 @@ class ToolRegistry:
         data = self.api_service.get_account_statement(self.partner_id)
         if not data:
             return {"error": "No se pudo obtener el estado de cuenta."}
+        return data
+
+    def _exec_total_contributions(self) -> dict:
+        if not self.partner_id:
+            return {"error": "Acceso denegado: debe estar autenticado."}
+        data = self.api_service.get_total_contributions(self.partner_id)
+        if not data:
+            return {"error": "No se pudo obtener el detalle de aportes."}
         return data
 
     def _exec_credits_list(self, status: str = None) -> dict:
