@@ -21,6 +21,7 @@ CAPACIDADES PARA SOCIOS AUTENTICADOS:
 7. Solicitar la creación de tickets de soporte, quejas o reclamos (envía un formulario).
 8. Registrar un ticket de soporte cuando el socio ya ha proporcionado los datos del formulario (asunto y descripción).
 9. Solicitar al socio que envíe la foto de su comprobante de pago para registrar un pago (usa la herramienta `request_payment_receipt_upload`).
+10. Cerrar la sesión actual del socio (usa la herramienta `logout_partner`).
 
 CAPACIDADES PARA NO SOCIOS (PÚBLICO GENERAL):
 1. Obtener acceso al formulario web para registrarse como prospecto para ser evaluado (usa la herramienta `request_prospect_registration`).

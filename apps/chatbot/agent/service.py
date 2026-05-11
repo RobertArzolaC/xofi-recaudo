@@ -156,6 +156,7 @@ class AgentService:
                         "create_support_ticket",
                         "request_payment_receipt_upload",
                         "request_prospect_registration",
+                        "logout_partner",
                     ]:
                         return "", tools_called
 

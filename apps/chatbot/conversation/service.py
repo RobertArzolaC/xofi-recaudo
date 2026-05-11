@@ -305,6 +305,15 @@ class ConversationService:
         primary_tool = tools_called[0]
         tool_name = primary_tool.get("tool")
 
+        # Handle session cleanup if logout tool is called
+        if tool_name == "logout_partner":
+            logger.info(f"Logging out partner from conversation {conversation.id}")
+            conversation.partner = None
+            conversation.authenticated = False
+            conversation.status = choices.ConversationStatus.PENDING_AUTH
+            conversation.context_data = {}
+            conversation.save()
+
         strategy = StrategyFactory.get_strategy(tool_name)
         if strategy:
             return strategy.handle(

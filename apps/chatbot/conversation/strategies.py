@@ -507,6 +507,24 @@ class RequestPaymentReceiptUploadStrategy(IntentStrategy):
         )
 
 
+class LogoutPartnerStrategy(IntentStrategy):
+    """Strategy for the logout_partner tool."""
+
+    def handle(
+        self,
+        tool_args: Dict[str, Any],
+        tool_result: Dict[str, Any],
+        channel: str,
+    ) -> BotResponse:
+        return BotResponse(
+            text=(
+                "🔒 *Has cerrado sesión correctamente.*\n\n"
+                "Gracias por usar el Asistente Virtual XoFi. Si necesitas realizar más consultas, "
+                "simplemente vuelve a ingresar tu DNI y año de nacimiento. ¡Hasta pronto! 👋"
+            )
+        )
+
+
 class StrategyFactory:
     """Factory to retrieve the appropriate strategy for a given tool/intent."""
 
@@ -521,6 +539,7 @@ class StrategyFactory:
         "create_support_ticket": CreateSupportTicketStrategy(),
         "request_payment_receipt_upload": RequestPaymentReceiptUploadStrategy(),
         "request_prospect_registration": RequestProspectRegistrationStrategy(),
+        "logout_partner": LogoutPartnerStrategy(),
     }
 
     @classmethod

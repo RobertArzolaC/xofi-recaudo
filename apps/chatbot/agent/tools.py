@@ -42,6 +42,7 @@ class ToolRegistry:
             "create_support_ticket": self._exec_create_support_ticket,
             "request_payment_receipt_upload": self._exec_request_payment_receipt_upload,
             "request_prospect_registration": self._exec_request_prospect_registration,
+            "logout_partner": self._exec_logout_partner,
         }
 
     def get_tool_declarations(self) -> list[dict]:
@@ -205,6 +206,18 @@ class ToolRegistry:
                         },
                     }
                 },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "logout_partner",
+                        "description": "Cerrar la sesión actual del socio. Usar cuando el socio indique explícitamente que desea salir, terminar la sesión o cerrar su cuenta del chat.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    }
+                },
             ])
 
         return tools
@@ -312,3 +325,6 @@ class ToolRegistry:
 
     def _exec_request_payment_receipt_upload(self) -> dict:
         return {"status": "payment_receipt_upload_requested"}
+
+    def _exec_logout_partner(self) -> dict:
+        return {"status": "logout_requested"}
