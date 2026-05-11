@@ -39,9 +39,16 @@ class TicketListView(BaseListView):
 
     def get_queryset(self) -> QuerySet[models.Ticket]:
         """Return filtered and ordered queryset."""
-        return models.Ticket.objects.select_related(
+        qs = models.Ticket.objects.select_related(
             "partner", "assigned_to", "assigned_to__position"
         ).order_by("-created")
+
+        if not self.request.user.is_superuser and hasattr(
+            self.request.user, "employee"
+        ):
+            qs = qs.filter(assigned_to=self.request.user.employee)
+
+        return qs
 
 
 class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
