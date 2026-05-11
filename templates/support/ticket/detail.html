@@ -60,14 +60,26 @@
                     <div class="mb-0">
                         <h3 class="fw-bold mb-5">{% trans "Comments" %} ({{ ticket.comments.count }})</h3>
 
+                        <div class="comments-container" id="comments-container">
                         {% for comment in ticket.comments.all %}
-                        <div class="mb-5">
+                        <div class="mb-5 comment-item {% if comment.is_whatsapp_response %}comment-whatsapp{% else %}comment-public{% endif %}" id="comment-{{ comment.pk }}">
                             <div class="d-flex align-items-start">
-                                <div class="symbol symbol-35px symbol-circle me-3">
-                                    <div class="symbol-label fs-6 fw-semibold text-primary">
-                                        {{ comment.created_by.email|slice:":1"|upper }}
+                                {% if comment.is_whatsapp_response %}
+                                    <div class="symbol symbol-35px symbol-circle me-3">
+                                        <div class="symbol-label fs-6 fw-semibold text-success bg-light-success">
+                                            <i class="ki-duotone ki-whatsapp fs-4">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </div>
                                     </div>
-                                </div>
+                                {% else %}
+                                    <div class="symbol symbol-35px symbol-circle me-3">
+                                        <div class="symbol-label fs-6 fw-semibold text-primary bg-light-primary">
+                                            {{ comment.created_by.email|slice:":1"|upper }}
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
                                         <span class="text-gray-800 fw-bold">
@@ -78,11 +90,38 @@
                                             {% endif %}
                                         </span>
                                         <span class="text-muted fs-7">{{ comment.created|date:"d/m/Y H:i" }}</span>
-                                        {% if comment.is_internal %}
-                                            <span class="badge badge-light-warning badge-sm">{% trans "Internal" %}</span>
+                                        {% if comment.is_whatsapp_response %}
+                                            <span class="badge badge-light-success badge-sm">
+                                                <i class="ki-duotone ki-whatsapp fs-6 me-1">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                                {% trans "WhatsApp" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-light-primary badge-sm">
+                                                <i class="ki-duotone ki-message-text fs-6 me-1">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                                {% trans "Internal" %}
+                                            </span>
                                         {% endif %}
                                     </div>
-                                    <div class="text-gray-700 fs-6">{{ comment.comment }}</div>
+                                    <div class="text-gray-700 fs-6">{{ comment.comment|linebreaksbr }}</div>
+                                    {% if not comment.is_whatsapp_response and ticket.assigned_to and ticket.assigned_to.user == request.user and ticket.is_open %}
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-link text-hover-primary p-0 copy-to-response"
+                                                data-comment="{{ comment.comment|escapejs }}">
+                                            <i class="ki-duotone ki-copy fs-6 me-1">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                            {% trans "Copy to response" %}
+                                        </button>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% if not forloop.last %}
@@ -92,6 +131,7 @@
                         {% empty %}
                         <div class="text-muted fs-6">{% trans "No comments yet" %}</div>
                         {% endfor %}
+                        </div>
                     </div>
 
                     {% if perms.support.add_ticketcomment %}
@@ -99,18 +139,20 @@
 
                     <!-- Add Comment Form -->
                     <div>
-                        <h4 class="fw-bold mb-4">{% trans "Add Comment" %}</h4>
+                        <h4 class="fw-bold mb-4">
+                            <i class="ki-duotone ki-message-add fs-3 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            {% trans "Add Comment" %}
+                        </h4>
                         <form method="post" action="{% url 'apps.support:ticket-comment-create' ticket.pk %}">
                             {% csrf_token %}
                             <div class="mb-4">
                                 {{ comment_form.comment }}
                             </div>
-                            <div class="form-check mb-4">
-                                {{ comment_form.is_internal }}
-                                <label class="form-check-label" for="{{ comment_form.is_internal.id_for_label }}">
-                                    {{ comment_form.is_internal.label }}
-                                </label>
-                            </div>
+
                             <button type="submit" class="btn btn-primary">
                                 <i class="ki-duotone ki-message-add fs-2">
                                     <span class="path1"></span>
@@ -120,6 +162,76 @@
                                 {% trans "Add Comment" %}
                             </button>
                         </form>
+                    </div>
+                    {% endif %}
+
+                    {% if ticket.assigned_to and ticket.assigned_to.user == request.user and ticket.is_open and ticket.partner.phone %}
+                    <div class="separator my-7"></div>
+
+                    <!-- WhatsApp Response Panel -->
+                    <div class="card card-flush border border-success border-2">
+                        <div class="card-header bg-light-success">
+                            <div class="card-title">
+                                <h4 class="mb-0 text-success">
+                                    <i class="ki-duotone ki-whatsapp fs-3 me-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    {% trans "Respond via WhatsApp" %}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="text-gray-600">{% trans "Sending to" %}:</span>
+                                    <span class="fw-bold">{{ ticket.partner.full_name }}</span>
+                                    <span class="text-muted">({{ ticket.partner.phone }})</span>
+                                </div>
+                            </div>
+                            <form method="post" action="{% url 'apps.support:ticket-whatsapp-response' ticket.pk %}" id="whatsapp-response-form">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">{{ whatsapp_form.message.label }}</label>
+                                    {{ whatsapp_form.message }}
+                                    <div class="form-text">{{ whatsapp_form.message.help_text }}</div>
+                                </div>
+
+                                <!-- Message Preview -->
+                                <div class="mb-4 d-none" id="whatsapp-preview-container">
+                                    <div class="separator my-4"></div>
+                                    <label class="form-label fw-bold text-success">{% trans "Preview" %}</label>
+                                    <div class="bg-light-success rounded p-4">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <i class="ki-duotone ki-whatsapp fs-4 text-success">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <span class="fw-bold text-success">{% trans "WhatsApp Message" %}</span>
+                                        </div>
+                                        <div id="whatsapp-preview-content" class="text-gray-800 fs-6"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <button type="button" class="btn btn-light-success" id="btn-preview-whatsapp">
+                                        <i class="ki-duotone ki-eye fs-3 me-1">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                        </i>
+                                        {% trans "Preview" %}
+                                    </button>
+                                    <button type="submit" class="btn btn-success" id="btn-send-whatsapp">
+                                        <i class="ki-duotone ki-send fs-3 me-1">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        {% trans "Send via WhatsApp" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                     {% endif %}
                 </div>
@@ -243,6 +355,54 @@
                 </div>
             </div>
 
+            <!-- Partner Ticket History Card -->
+            {% if partner_tickets %}
+            <div class="card card-flush mb-6 mb-xl-9">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="mb-0">
+                            <i class="ki-duotone ki-call fs-3 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            {% trans "Partner History" %}
+                        </h2>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="d-flex flex-column gap-4">
+                        {% for pt in partner_tickets %}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column">
+                                <a href="{% url 'apps.support:ticket-detail' pt.pk %}" class="text-gray-800 text-hover-primary fw-bold">
+                                    #{{ pt.pk }} - {{ pt.subject|truncatechars:30 }}
+                                </a>
+                                <span class="text-muted fs-7">{{ pt.created|date:"d/m/Y" }}</span>
+                            </div>
+                            <div>
+                                {% if pt.status == 1 %}
+                                    <span class="badge badge-light-warning">{{ pt.get_status_display }}</span>
+                                {% elif pt.status == 2 %}
+                                    <span class="badge badge-light-primary">{{ pt.get_status_display }}</span>
+                                {% elif pt.status == 3 %}
+                                    <span class="badge badge-light-info">{{ pt.get_status_display }}</span>
+                                {% elif pt.status == 4 %}
+                                    <span class="badge badge-light-success">{{ pt.get_status_display }}</span>
+                                {% elif pt.status == 5 %}
+                                    <span class="badge badge-light-secondary">{{ pt.get_status_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if not forloop.last %}
+                        <div class="separator"></div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- System Information Card -->
             <div class="card card-flush">
                 <div class="card-header">
@@ -283,3 +443,93 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Scroll to latest comment
+    const commentsContainer = document.getElementById('comments-container');
+    if (commentsContainer) {
+        const lastComment = commentsContainer.querySelector('.comment-item:last-child');
+        if (lastComment) {
+            lastComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    // WhatsApp message preview
+    const messageField = document.getElementById('whatsapp_response_message');
+    const previewBtn = document.getElementById('btn-preview-whatsapp');
+    const previewContainer = document.getElementById('whatsapp-preview-container');
+    const previewContent = document.getElementById('whatsapp-preview-content');
+
+    if (previewBtn && messageField && previewContainer && previewContent) {
+        previewBtn.addEventListener('click', function() {
+            const message = messageField.value.trim();
+            if (!message) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '{% trans "Empty message" %}',
+                    text: '{% trans "Please write a message before previewing." %}',
+                    confirmButtonColor: '#F6C000',
+                });
+                return;
+            }
+            previewContent.textContent = message;
+            previewContainer.classList.remove('d-none');
+        });
+    }
+
+    // WhatsApp send confirmation
+    const sendForm = document.getElementById('whatsapp-response-form');
+    if (sendForm) {
+        sendForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = document.getElementById('whatsapp_response_message').value.trim();
+            if (!message) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '{% trans "Empty message" %}',
+                    text: '{% trans "Please write a message to send." %}',
+                    confirmButtonColor: '#F6C000',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: '{% trans "Send WhatsApp Response?" %}',
+                html: `{% trans "This will send the message via WhatsApp to" %} <strong>{{ ticket.partner.full_name }}</strong> ({{ ticket.partner.phone }})<br><br>{% trans "The ticket will be marked as Resolved." %}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '{% trans "Yes, send it" %}',
+                cancelButtonText: '{% trans "Cancel" %}',
+                confirmButtonColor: '#00B383',
+                cancelButtonColor: '#F1416C',
+                showLoaderOnConfirm: true,
+                preConfirm: function() {
+                    return new Promise(function(resolve) {
+                        sendForm.submit();
+                    });
+                },
+                allowOutsideClick: false,
+            });
+        });
+    }
+
+    // Copy comment to response
+    document.querySelectorAll('.copy-to-response').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const commentText = this.getAttribute('data-comment');
+            const messageField = document.getElementById('whatsapp_response_message');
+            if (messageField && commentText) {
+                messageField.value = commentText;
+                messageField.focus();
+                const previewContainer = document.getElementById('whatsapp-preview-container');
+                if (previewContainer && !previewContainer.classList.contains('d-none')) {
+                    document.getElementById('whatsapp-preview-content').textContent = commentText;
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock extra_js %}

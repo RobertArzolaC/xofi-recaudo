@@ -20,8 +20,9 @@ from django.views.generic import (
     View,
 )
 
+from apps.core.clients.whatsapp_cloud import WhatsAppCloudAPIClient
 from apps.core.models import BaseListView
-from apps.support import filtersets, forms, models
+from apps.support import choices, filtersets, forms, models
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +69,10 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         context["status_form"] = forms.TicketStatusUpdateForm(
             instance=self.object
         )
+        context["whatsapp_form"] = forms.TicketWhatsAppResponseForm()
+        context["partner_tickets"] = models.Ticket.objects.filter(
+            partner=self.object.partner
+        ).exclude(pk=self.object.pk)[:5]
         return context
 
 
@@ -159,10 +164,80 @@ class TicketCommentCreateView(
             comment.ticket = ticket
             comment.created_by = request.user
             comment.save()
+
+            ticket.status = choices.TicketStatus.IN_PROGRESS
+            ticket.save()
+
             messages.success(request, _("Comment added successfully."))
         else:
             messages.error(
                 request, _("Error adding comment. Please try again.")
+            )
+
+        return redirect("apps.support:ticket-detail", pk=pk)
+
+
+class TicketWhatsAppResponseView(
+    LoginRequiredMixin, PermissionRequiredMixin, View
+):
+    """View to send a WhatsApp response and close the ticket."""
+
+    permission_required = "support.change_ticket"
+
+    def post(self, request, pk):
+        """Handle WhatsApp response form submission."""
+        ticket = get_object_or_404(models.Ticket, pk=pk)
+
+        if ticket.assigned_to and ticket.assigned_to.user != request.user:
+            messages.error(
+                request,
+                _("Only the assigned employee can send a WhatsApp response."),
+            )
+            return redirect("apps.support:ticket-detail", pk=pk)
+
+        form = forms.TicketWhatsAppResponseForm(request.POST)
+        if form.is_valid():
+            message = form.cleaned_data["message"]
+
+            if not ticket.partner.phone:
+                messages.error(
+                    request,
+                    _("The partner does not have a phone number registered."),
+                )
+                return redirect("apps.support:ticket-detail", pk=pk)
+
+            try:
+                client = WhatsAppCloudAPIClient()
+                client.send_message(to=ticket.partner.phone, message=message)
+
+                ticket.status = choices.TicketStatus.RESOLVED
+                ticket.modified_by = request.user
+                ticket.save(update_fields=["status", "modified_by", "modified"])
+
+                models.TicketComment.objects.create(
+                    ticket=ticket,
+                    comment=message,
+                    is_whatsapp_response=True,
+                    created_by=request.user,
+                )
+
+                messages.success(
+                    request,
+                    _("WhatsApp response sent successfully and ticket closed."),
+                )
+            except Exception as exc:
+                logger.error(
+                    "Failed to send WhatsApp response for ticket %s: %s",
+                    pk,
+                    exc,
+                )
+                messages.error(
+                    request,
+                    _("Failed to send WhatsApp response. Please try again."),
+                )
+        else:
+            messages.error(
+                request, _("Error sending response. Please try again.")
             )
 
         return redirect("apps.support:ticket-detail", pk=pk)

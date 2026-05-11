@@ -83,18 +83,13 @@ class TicketCommentForm(forms.ModelForm):
 
     class Meta:
         model = models.TicketComment
-        fields = ["comment", "is_internal"]
+        fields = ["comment"]
         widgets = {
             "comment": forms.Textarea(
                 attrs={
                     "class": "form-control",
                     "rows": 4,
                     "placeholder": _("Add your comment here..."),
-                }
-            ),
-            "is_internal": forms.CheckboxInput(
-                attrs={
-                    "class": "form-check-input",
                 }
             ),
         }
@@ -130,3 +125,23 @@ class TicketStatusUpdateForm(forms.ModelForm):
             status=team_choices.EmployeeStatus.ACTIVE
         ).select_related("position")
         self.fields["assigned_to"].required = False
+
+
+class TicketWhatsAppResponseForm(forms.Form):
+    """Form for sending a WhatsApp response to the partner."""
+
+    message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": _("Write your WhatsApp response here..."),
+                "id": "whatsapp_response_message",
+            }
+        ),
+        label=_("Response Message"),
+        max_length=4096,
+        help_text=_(
+            "This message will be sent via WhatsApp to the partner's phone number."
+        ),
+    )

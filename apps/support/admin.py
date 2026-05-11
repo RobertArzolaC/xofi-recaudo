@@ -9,7 +9,7 @@ class TicketCommentInline(admin.TabularInline):
     model = models.TicketComment
     extra = 0
     readonly_fields = ["created", "created_by"]
-    fields = ["comment", "is_internal", "created", "created_by"]
+    fields = ["comment", "created", "created_by"]
 
     def save_model(self, request, obj, form, change):
         """Save model with user tracking."""
@@ -93,12 +93,10 @@ class TicketCommentAdmin(admin.ModelAdmin):
     list_display = [
         "ticket",
         "comment_preview",
-        "is_internal",
         "created_by",
         "created",
     ]
     list_filter = [
-        "is_internal",
         "created",
     ]
     search_fields = [
@@ -114,7 +112,6 @@ class TicketCommentAdmin(admin.ModelAdmin):
                 "fields": (
                     "ticket",
                     "comment",
-                    "is_internal",
                 )
             },
         ),

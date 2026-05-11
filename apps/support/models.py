@@ -155,10 +155,10 @@ class TicketComment(core_models.BaseUserTracked, TimeStampedModel):
         verbose_name=_("Comment"), help_text=_("Comment content")
     )
 
-    is_internal = models.BooleanField(
+    is_whatsapp_response = models.BooleanField(
         default=False,
-        verbose_name=_("Internal Note"),
-        help_text=_("Internal notes are only visible to employees"),
+        verbose_name=_("WhatsApp Response"),
+        help_text=_("This comment was sent as a WhatsApp response to the partner"),
     )
 
     class Meta:

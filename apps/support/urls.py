@@ -35,6 +35,11 @@ urlpatterns = [
         name="ticket-comment-create",
     ),
     path(
+        "ticket/<int:pk>/whatsapp-response/",
+        views.TicketWhatsAppResponseView.as_view(),
+        name="ticket-whatsapp-response",
+    ),
+    path(
         "ticket/<int:pk>/update-status/",
         views.TicketStatusUpdateView.as_view(),
         name="ticket-status-update",
