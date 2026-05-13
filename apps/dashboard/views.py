@@ -1,8 +1,37 @@
+import logging
+
+from decouple import config
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
+from django.db.models import (
+    BooleanField,
+    Case,
+    Count,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.views import View
 from django.views.generic import TemplateView
 
+from apps.chatbot.choices import (
+    ChannelType,
+    ConversationStatus,
+    MessageSender,
+)
+from apps.chatbot.models import AgentConversation, ConversationMessage
+from apps.core.clients.whatsapp_cloud import WhatsAppCloudAPIClient
 from apps.core.mixins import CacheMixin
 from apps.dashboard import services
+
+logger = logging.getLogger(__name__)
 
 
 class DashboardView(CacheMixin, TemplateView):
@@ -82,3 +111,272 @@ class DashboardView(CacheMixin, TemplateView):
         )
 
         return context
+
+
+TEMPLATE_CATEGORIES = [
+    ("MARKETING", _("Marketing")),
+    ("UTILITY", _("Utility")),
+    ("AUTHENTICATION", _("Authentication")),
+]
+
+TEMPLATE_LANGUAGES = [
+    ("es", _("Spanish")),
+    ("es_PE", _("Spanish (Peru)")),
+    ("es_MX", _("Spanish (Mexico)")),
+    ("es_AR", _("Spanish (Argentina)")),
+    ("en_US", _("English (US)")),
+    ("pt_BR", _("Portuguese (Brazil)")),
+]
+
+
+class AdminChatbotTemplatesView(LoginRequiredMixin, TemplateView):
+    template_name = "chatbot/admin/whatsapp_templates.html"
+
+    def _get_client_and_waba(self):
+        client = WhatsAppCloudAPIClient()
+        waba_id = config("WHATSAPP_CLOUD_WABA_ID", default="")
+        return client, waba_id
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = TEMPLATE_CATEGORIES
+        context["languages"] = TEMPLATE_LANGUAGES
+
+        client, waba_id = self._get_client_and_waba()
+
+        if not waba_id:
+            context["api_error"] = _(
+                "WHATSAPP_CLOUD_WABA_ID is not configured. "
+                "Set it in your environment variables."
+            )
+            return context
+
+        try:
+            templates = client.list_templates(waba_id)
+            context["templates"] = templates
+            context["approved_count"] = sum(
+                1 for t in templates if t.get("status") == "APPROVED"
+            )
+            context["pending_count"] = sum(
+                1 for t in templates if t.get("status") == "PENDING"
+            )
+            context["rejected_count"] = sum(
+                1 for t in templates if t.get("status") == "REJECTED"
+            )
+        except Exception as e:
+            logger.error("Error fetching WhatsApp templates: %s", e)
+            context["api_error"] = str(e)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        client, waba_id = self._get_client_and_waba()
+
+        if not waba_id:
+            messages.error(request, _("WHATSAPP_CLOUD_WABA_ID is not configured."))
+            return redirect("apps.dashboard:admin_chatbot_templates")
+
+        name = request.POST.get("name", "").strip().lower().replace(" ", "_")
+        category = request.POST.get("category", "UTILITY")
+        language = request.POST.get("language", "es")
+        body_text = request.POST.get("body_text", "").strip()
+        header_text = request.POST.get("header_text", "").strip()
+        footer_text = request.POST.get("footer_text", "").strip()
+
+        if not name or not body_text:
+            messages.error(request, _("Template name and body text are required."))
+            return redirect("apps.dashboard:admin_chatbot_templates")
+
+        try:
+            client.create_template(
+                waba_id=waba_id,
+                name=name,
+                category=category,
+                language=language,
+                body_text=body_text,
+                header_text=header_text,
+                footer_text=footer_text,
+            )
+            messages.success(
+                request,
+                _("Template '%(name)s' submitted to Meta for review.") % {"name": name},
+            )
+        except Exception as e:
+            logger.error("Error creating WhatsApp template: %s", e)
+            messages.error(
+                request,
+                _("Error creating template: %(error)s") % {"error": str(e)},
+            )
+
+        return redirect("apps.dashboard:admin_chatbot_templates")
+
+
+class AdminChatbotSendTestTemplateView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        template_name = request.POST.get("template_name", "").strip()
+        language = request.POST.get("language", "es").strip()
+        test_phone = request.POST.get("test_phone", "").strip()
+
+        if not template_name or not test_phone:
+            messages.error(request, _("Template name and phone number are required."))
+            return redirect("apps.dashboard:admin_chatbot_templates")
+
+        try:
+            client = WhatsAppCloudAPIClient()
+            client.send_template(
+                to=test_phone,
+                template_name=template_name,
+                language=language,
+            )
+            messages.success(
+                request,
+                _("Test template '%(name)s' sent to %(phone)s.")
+                % {"name": template_name, "phone": test_phone},
+            )
+        except Exception as e:
+            logger.error("Error sending test template: %s", e)
+            messages.error(
+                request,
+                _("Error sending template: %(error)s") % {"error": str(e)},
+            )
+
+        return redirect("apps.dashboard:admin_chatbot_templates")
+
+
+# ------------------------------------------------------------------ #
+# Chatbot — Dashboard, Conversations                                  #
+# ------------------------------------------------------------------ #
+
+STATUS_CONTEXT = {
+    "STATUS_PENDING_AUTH": ConversationStatus.PENDING_AUTH,
+    "STATUS_AUTHENTICATED": ConversationStatus.AUTHENTICATED,
+    "STATUS_ACTIVE": ConversationStatus.ACTIVE,
+    "STATUS_CLOSED": ConversationStatus.CLOSED,
+    "STATUS_BLOCKED": ConversationStatus.BLOCKED,
+}
+
+
+def _last_sender_subquery():
+    return Subquery(
+        ConversationMessage.objects.filter(
+            conversation=OuterRef("pk")
+        )
+        .order_by("-created")
+        .values("sender")[:1]
+    )
+
+
+class AdminChatbotDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "chatbot/admin/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from apps.chatbot.services.dashboard import (
+            get_chatbot_kpis,
+            get_delivery_stats,
+            get_recent_conversations,
+        )
+
+        kpis = get_chatbot_kpis()
+        context.update(kpis)
+        context["delivery"] = get_delivery_stats()
+        context["recent_conversations"] = get_recent_conversations(limit=10)
+        return context
+
+
+class AdminChatbotConversationsView(LoginRequiredMixin, TemplateView):
+    template_name = "chatbot/admin/conversations.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(STATUS_CONTEXT)
+
+        last_sender = _last_sender_subquery()
+
+        qs = (
+            AgentConversation.objects.select_related("partner")
+            .annotate(
+                message_count=Count("messages"),
+                last_sender=last_sender,
+                has_pending_reply=Case(
+                    When(last_sender=MessageSender.USER, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                ),
+            )
+            .order_by("-last_interaction")
+        )
+
+        q = self.request.GET.get("q", "")
+        status = self.request.GET.get("status", "")
+        channel = self.request.GET.get("channel", "")
+        pending = self.request.GET.get("pending", "")
+
+        if q:
+            qs = qs.filter(
+                Q(whatsapp_phone__icontains=q)
+                | Q(telegram_username__icontains=q)
+                | Q(telegram_chat_id__icontains=q)
+                | Q(partner__first_name__icontains=q)
+                | Q(partner__paternal_last_name__icontains=q)
+            )
+        if status:
+            qs = qs.filter(status=int(status))
+        if channel:
+            qs = qs.filter(channel=channel)
+        if pending == "1":
+            qs = qs.filter(has_pending_reply=True)
+
+        pending_count = (
+            AgentConversation.objects.annotate(last_sender=last_sender)
+            .filter(last_sender=MessageSender.USER)
+            .count()
+        )
+
+        paginator = Paginator(qs, 20)
+        page_obj = paginator.get_page(self.request.GET.get("page", 1))
+
+        context["conversations"] = page_obj
+        context["page_obj"] = page_obj
+        context["paginator"] = paginator
+        context["is_paginated"] = page_obj.has_other_pages()
+        context["search_query"] = q
+        context["current_status"] = status
+        context["current_channel"] = channel
+        context["current_pending"] = pending
+        context["pending_count"] = pending_count
+        context["status_choices"] = ConversationStatus.choices
+        context["channel_choices"] = ChannelType.choices
+        return context
+
+
+class AdminChatbotConversationDetailView(LoginRequiredMixin, TemplateView):
+    template_name = "chatbot/admin/conversation_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(STATUS_CONTEXT)
+
+        conversation = get_object_or_404(
+            AgentConversation.objects.select_related("partner").annotate(
+                message_count=Count("messages"),
+            ),
+            pk=kwargs["pk"],
+        )
+        context["conversation"] = conversation
+        context["chat_messages"] = conversation.messages.all().order_by("created")
+        return context
+
+
+class AdminChatbotConversationsPendingStatusView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        pending_ids = list(
+            AgentConversation.objects.annotate(
+                last_sender=_last_sender_subquery()
+            )
+            .filter(last_sender=MessageSender.USER)
+            .values_list("id", flat=True)
+        )
+        return JsonResponse({"pending_ids": pending_ids, "count": len(pending_ids)})

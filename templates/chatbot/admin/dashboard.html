@@ -1,0 +1,306 @@
+{% extends "layouts/dashboard.html" %}
+{% load static i18n humanize %}
+
+{% block title_page %}{% trans "Chatbot Management" %}{% endblock %}
+{% block toolbar_title %}{% trans "Chatbot Management" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Stats Row -->
+  <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-xl-100" style="background-color: #1B84FF;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ total_conversations|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "Total Conversations" %}</span>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-end pt-0">
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}" class="text-white fw-semibold fs-6 opacity-75">
+            {% trans "View all" %} &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-xl-100" style="background-color: #17C653;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ active_conversations|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "Active" %}</span>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-end pt-0">
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}?status=3" class="text-white fw-semibold fs-6 opacity-75">
+            {% trans "View active" %} &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-xl-100" style="background-color: #7239EA;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ whatsapp_count|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "WhatsApp" %}</span>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-end pt-0">
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}?channel=WHATSAPP" class="text-white fw-semibold fs-6 opacity-75">
+            {% trans "View" %} &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-xl-100">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{{ telegram_count|default:0 }}</span>
+            <span class="text-gray-500 pt-1 fw-semibold fs-6">{% trans "Telegram" %}</span>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-end pt-0">
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}?channel=TELEGRAM" class="text-gray-400 fw-semibold fs-6">
+            {% trans "View" %} &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Second row: extra KPIs + quick actions -->
+  <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-100">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{{ messages_this_month|default:0 }}</span>
+            <span class="text-gray-500 pt-1 fw-semibold fs-6">{% trans "Messages This Month" %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-100">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-success me-2 lh-1 ls-n2">{{ authenticated_conversations|default:0 }}</span>
+            <span class="text-gray-500 pt-1 fw-semibold fs-6">{% trans "Authenticated" %}</span>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-end pt-0">
+          <span class="text-gray-400 fw-semibold fs-7">{% trans "Rate" %}: {{ auth_rate|default:0 }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-100">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{{ new_conversations_30d|default:0 }}</span>
+            <span class="text-gray-500 pt-1 fw-semibold fs-6">{% trans "New (Last 30 Days)" %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+      <div class="card card-flush h-100">
+        <div class="card-header pt-5">
+          <h3 class="card-title fw-bold text-gray-900 fs-5">{% trans "Quick Actions" %}</h3>
+        </div>
+        <div class="card-body pt-2 d-flex flex-column gap-3">
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}"
+             class="btn btn-sm btn-light-primary w-100 text-start">
+            <i class="ki-duotone ki-message-text-2 fs-4 me-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+            {% trans "All conversations" %}
+          </a>
+          <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}?pending=1"
+             class="btn btn-sm btn-light-warning w-100 text-start">
+            <i class="ki-duotone ki-notification-bing fs-4 me-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+            {% trans "Pending reply" %}
+          </a>
+          <a href="{% url 'apps.dashboard:admin_chatbot_templates' %}"
+             class="btn btn-sm btn-light-success w-100 text-start">
+            <i class="ki-duotone ki-message-text fs-4 me-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+            {% trans "WhatsApp Templates" %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Delivery Stats -->
+  <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+    <div class="col-12">
+      <div class="card card-flush">
+        <div class="card-header pt-5">
+          <h3 class="card-title fw-bold text-gray-900">{% trans "Message Delivery Statistics" %}</h3>
+          <div class="card-toolbar">
+            <span class="text-gray-400 fw-semibold fs-7">{% trans "WhatsApp outbound — all sessions" %}</span>
+          </div>
+        </div>
+        <div class="card-body pt-4">
+          <div class="row g-4">
+
+            <div class="col-xl-3 col-md-6">
+              <div class="d-flex align-items-center border border-dashed border-gray-300 rounded p-4">
+                <div class="symbol symbol-40px me-4">
+                  <span class="symbol-label bg-light-primary">
+                    <i class="ki-duotone ki-send fs-2 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                  </span>
+                </div>
+                <div>
+                  <span class="text-gray-900 fw-bold fs-3">{{ delivery.total_sent|default:0 }}</span>
+                  <div class="text-gray-500 fw-semibold fs-7">{% trans "Sent" %}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="d-flex align-items-center border border-dashed border-gray-300 rounded p-4">
+                <div class="symbol symbol-40px me-4">
+                  <span class="symbol-label bg-light-success">
+                    <i class="ki-duotone ki-check-circle fs-2 text-success"><span class="path1"></span><span class="path2"></span></i>
+                  </span>
+                </div>
+                <div>
+                  <span class="text-gray-900 fw-bold fs-3">{{ delivery.delivered|default:0 }}</span>
+                  <div class="text-gray-500 fw-semibold fs-7">{% trans "Delivered" %}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="d-flex align-items-center border border-dashed border-gray-300 rounded p-4">
+                <div class="symbol symbol-40px me-4">
+                  <span class="symbol-label bg-light-info">
+                    <i class="ki-duotone ki-eye fs-2 text-info"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                  </span>
+                </div>
+                <div>
+                  <span class="text-gray-900 fw-bold fs-3">{{ delivery.read|default:0 }}</span>
+                  <div class="text-gray-500 fw-semibold fs-7">
+                    {% trans "Read" %}
+                    {% if delivery.read_rate %}<span class="badge badge-light-info ms-1">{{ delivery.read_rate }}%</span>{% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="d-flex align-items-center border border-dashed border-gray-300 rounded p-4">
+                <div class="symbol symbol-40px me-4">
+                  <span class="symbol-label bg-light-danger">
+                    <i class="ki-duotone ki-cross-circle fs-2 text-danger"><span class="path1"></span><span class="path2"></span></i>
+                  </span>
+                </div>
+                <div>
+                  <span class="text-gray-900 fw-bold fs-3">{{ delivery.failed|default:0 }}</span>
+                  <div class="text-gray-500 fw-semibold fs-7">{% trans "Failed" %}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {% if delivery.total_sent %}
+          <div class="mt-5">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600 fw-semibold fs-7">
+                <span class="bullet bullet-dot bg-info me-1"></span>{% trans "Read rate" %}: <strong>{{ delivery.read_rate }}%</strong>
+              </span>
+            </div>
+            <div class="h-10px w-100 bg-light rounded-pill overflow-hidden">
+              <div class="bg-info rounded-pill h-10px" style="width: {{ delivery.read_rate }}%"></div>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Conversations -->
+  <div class="row g-5 g-xl-10">
+    <div class="col-12">
+      <div class="card card-flush">
+        <div class="card-header pt-5">
+          <h3 class="card-title fw-bold text-gray-900">{% trans "Recent Conversations" %}</h3>
+          <div class="card-toolbar">
+            <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}" class="btn btn-sm btn-light">{% trans "View all" %}</a>
+          </div>
+        </div>
+        <div class="card-body pt-2">
+          <div class="table-responsive">
+            <table class="table table-row-dashed table-row-gray-300 align-middle gy-3">
+              <thead>
+                <tr class="fw-bold text-muted fs-7">
+                  <th>{% trans "Identifier" %}</th>
+                  <th>{% trans "Partner" %}</th>
+                  <th>{% trans "Channel" %}</th>
+                  <th>{% trans "Status" %}</th>
+                  <th>{% trans "Auth" %}</th>
+                  <th>{% trans "Messages" %}</th>
+                  <th>{% trans "Last Interaction" %}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for conv in recent_conversations %}
+                <tr>
+                  <td><span class="text-gray-900 fw-bold fs-7">{{ conv.identifier }}</span></td>
+                  <td><span class="text-gray-600 fw-semibold fs-7">{{ conv.partner_name }}</span></td>
+                  <td>
+                    {% if conv.channel == "WHATSAPP" %}
+                      <span class="badge badge-light-success">WhatsApp</span>
+                    {% elif conv.channel == "TELEGRAM" %}
+                      <span class="badge badge-light-info">Telegram</span>
+                    {% else %}
+                      <span class="badge badge-light-secondary">{{ conv.channel }}</span>
+                    {% endif %}
+                  </td>
+                  <td><span class="badge badge-light-primary">{{ conv.status_label }}</span></td>
+                  <td>
+                    {% if conv.authenticated %}
+                      <span class="badge badge-light-success">{% trans "Yes" %}</span>
+                    {% else %}
+                      <span class="badge badge-light-secondary">{% trans "No" %}</span>
+                    {% endif %}
+                  </td>
+                  <td><span class="text-gray-700 fw-bold">{{ conv.message_count }}</span></td>
+                  <td><span class="text-gray-500 fw-semibold fs-7">{{ conv.last_interaction|timesince }} {% trans "ago" %}</span></td>
+                  <td class="text-end">
+                    <a href="{% url 'apps.dashboard:admin_chatbot_conversation_detail' conv.id %}"
+                       class="btn btn-icon btn-sm btn-light">
+                      <i class="ki-duotone ki-eye fs-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-gray-500 py-5">{% trans "No conversations yet." %}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

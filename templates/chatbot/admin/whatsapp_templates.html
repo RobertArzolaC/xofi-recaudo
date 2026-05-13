@@ -1,0 +1,275 @@
+{% extends "layouts/dashboard.html" %}
+{% load static i18n humanize %}
+
+{% block title_page %}{% trans "WhatsApp Templates" %}{% endblock %}
+{% block toolbar_title %}{% trans "WhatsApp Templates" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show mb-5" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if not api_error %}
+  <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+    <div class="col-xl-4 col-lg-4 col-md-4">
+      <div class="card card-flush h-xl-100" style="background-color: #17C653;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ approved_count|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "Approved" %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4">
+      <div class="card card-flush h-xl-100" style="background-color: #F8B500;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ pending_count|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "Pending Review" %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4">
+      <div class="card card-flush h-xl-100" style="background-color: #F1416C;">
+        <div class="card-header pt-5">
+          <div class="card-title d-flex flex-column">
+            <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ rejected_count|default:0 }}</span>
+            <span class="text-white opacity-75 pt-1 fw-semibold fs-6">{% trans "Rejected" %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row g-5 g-xl-10">
+
+    <div class="col-xl-8">
+      <div class="card card-flush">
+        <div class="card-header pt-6">
+          <div class="card-title">
+            <h3 class="fw-bold">{% trans "Message Templates" %}</h3>
+          </div>
+          <div class="card-toolbar">
+            <span class="text-muted fs-7">{% trans "Source: Meta WhatsApp Business API" %}</span>
+          </div>
+        </div>
+        <div class="card-body pt-3">
+
+          {% if api_error %}
+            <div class="alert alert-warning d-flex align-items-center">
+              <i class="ki-duotone ki-information fs-2 me-3 text-warning">
+                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+              </i>
+              <div>{{ api_error }}</div>
+            </div>
+          {% elif not templates %}
+            <div class="text-center py-10">
+              <i class="ki-duotone ki-message-text fs-3x text-muted mb-5">
+                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+              </i>
+              <p class="text-muted fs-6">{% trans "No templates found. Create your first template using the form." %}</p>
+            </div>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr class="fw-bold text-muted">
+                    <th class="min-w-200px">{% trans "Template Name" %}</th>
+                    <th class="min-w-100px">{% trans "Category" %}</th>
+                    <th class="min-w-80px">{% trans "Language" %}</th>
+                    <th class="min-w-120px">{% trans "Status" %}</th>
+                    <th class="min-w-100px text-end">{% trans "Actions" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for tmpl in templates %}
+                  <tr>
+                    <td>
+                      <span class="text-gray-900 fw-bold fs-6">{{ tmpl.name }}</span>
+                      {% for component in tmpl.components %}
+                        {% if component.type == "BODY" %}
+                          <div class="text-muted fs-7 mt-1" style="max-width:300px; white-space:normal;">
+                            {{ component.text|truncatechars:80 }}
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </td>
+                    <td>
+                      <span class="badge badge-light-primary fs-8 fw-bold">{{ tmpl.category }}</span>
+                    </td>
+                    <td>
+                      <span class="text-muted fw-semibold fs-7">{{ tmpl.language }}</span>
+                    </td>
+                    <td>
+                      {% if tmpl.status == "APPROVED" %}
+                        <span class="badge badge-light-success fs-7 fw-bold">
+                          <i class="ki-duotone ki-check-circle fs-5 me-1 text-success">
+                            <span class="path1"></span><span class="path2"></span>
+                          </i>
+                          APPROVED
+                        </span>
+                      {% elif tmpl.status == "PENDING" %}
+                        <span class="badge badge-light-warning fs-7 fw-bold">PENDING</span>
+                      {% elif tmpl.status == "REJECTED" %}
+                        <span class="badge badge-light-danger fs-7 fw-bold">REJECTED</span>
+                      {% else %}
+                        <span class="badge badge-light fs-7 fw-bold">{{ tmpl.status }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-end">
+                      {% if tmpl.status == "APPROVED" %}
+                        <button type="button"
+                                class="btn btn-sm btn-success"
+                                data-bs-toggle="modal"
+                                data-bs-target="#sendTestModal"
+                                data-template-name="{{ tmpl.name }}"
+                                data-template-language="{{ tmpl.language }}">
+                          {% trans "Send Test" %}
+                        </button>
+                      {% else %}
+                        <span class="text-muted fs-7">&mdash;</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="card card-flush">
+        <div class="card-header pt-6">
+          <div class="card-title">
+            <h3 class="fw-bold">{% trans "Create Template" %}</h3>
+          </div>
+        </div>
+        <div class="card-body pt-3">
+          <form method="post" action="{% url 'apps.dashboard:admin_chatbot_templates' %}">
+            {% csrf_token %}
+
+            <div class="mb-5">
+              <label class="form-label required">{% trans "Template Name" %}</label>
+              <input type="text" name="name" class="form-control form-control-solid"
+                     placeholder="e.g. vip_reactivation"
+                     pattern="[a-z0-9_]+" title="{% trans 'Lowercase letters, numbers and underscores only' %}"
+                     required />
+              <div class="form-text text-muted">{% trans "Lowercase, underscores only. E.g.: loyalty_reward" %}</div>
+            </div>
+
+            <div class="mb-5">
+              <label class="form-label required">{% trans "Category" %}</label>
+              <select name="category" class="form-select form-select-solid" required>
+                {% for value, label in categories %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-5">
+              <label class="form-label required">{% trans "Language" %}</label>
+              <select name="language" class="form-select form-select-solid" required>
+                {% for value, label in languages %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-5">
+              <label class="form-label">{% trans "Header Text" %} <span class="text-muted fs-7">({% trans "optional" %})</span></label>
+              <input type="text" name="header_text" class="form-control form-control-solid"
+                     placeholder="e.g. Reffi Loyalty Program" maxlength="60" />
+            </div>
+
+            <div class="mb-5">
+              <label class="form-label required">{% trans "Body Text" %}</label>
+              <textarea name="body_text" class="form-control form-control-solid" rows="4"
+                        placeholder="e.g. Hello {% templatetag openvariable %}1{% templatetag closevariable %}, you have {% templatetag openvariable %}2{% templatetag closevariable %} loyalty points available!"
+                        required></textarea>
+              <div class="form-text text-muted">{% trans "Use {{1}}, {{2}} for dynamic variables." %}</div>
+            </div>
+
+            <div class="mb-7">
+              <label class="form-label">{% trans "Footer Text" %} <span class="text-muted fs-7">({% trans "optional" %})</span></label>
+              <input type="text" name="footer_text" class="form-control form-control-solid"
+                     placeholder="e.g. Reffi — Your Loyalty Platform" maxlength="60" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+              {% trans "Submit for Meta Review" %}
+            </button>
+            <div class="text-muted fs-7 mt-3 text-center">
+              {% trans "Meta will review and approve the template (usually 24h)." %}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal fade" id="sendTestModal" tabindex="-1" aria-labelledby="sendTestModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sendTestModalLabel">{% trans "Send Test Message" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="post" action="{% url 'apps.dashboard:admin_chatbot_send_test_template' %}">
+        {% csrf_token %}
+        <input type="hidden" name="template_name" id="modalTemplateName" value="" />
+        <input type="hidden" name="language" id="modalTemplateLanguage" value="" />
+        <div class="modal-body">
+          <div class="mb-5">
+            <label class="form-label fw-bold">{% trans "Template" %}</label>
+            <p class="text-gray-700 fs-6" id="modalTemplateDisplay">&mdash;</p>
+          </div>
+          <div class="mb-3">
+            <label class="form-label required fw-bold">{% trans "Test Phone Number" %}</label>
+            <input type="text" name="test_phone" class="form-control form-control-solid"
+                   placeholder="+51999999999" required />
+            <div class="form-text text-muted">
+              {% trans "Enter the number in E.164 format (e.g. +51999999999). Must be a registered WhatsApp test number." %}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+          <button type="submit" class="btn btn-success">{% trans "Send Template" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sendTestModal = document.getElementById('sendTestModal');
+  if (sendTestModal) {
+    sendTestModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const templateName = button.getAttribute('data-template-name');
+      const templateLanguage = button.getAttribute('data-template-language');
+      sendTestModal.querySelector('#modalTemplateName').value = templateName;
+      sendTestModal.querySelector('#modalTemplateLanguage').value = templateLanguage;
+      sendTestModal.querySelector('#modalTemplateDisplay').textContent = templateName + ' (' + templateLanguage + ')';
+    });
+  }
+</script>
+
+{% endblock %}
