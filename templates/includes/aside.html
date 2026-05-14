@@ -425,7 +425,7 @@
           </div>
 
           <div class="menu-item">
-              <a class="menu-link {% if "chatbot/dashboard" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-dashboard' %}">
+              <a class="menu-link {% if request.path == "/dashboard/chatbot/" %}active{% endif %}" href="{% url 'apps.dashboard:admin_chatbot_dashboard' %}">
                 <span class="menu-icon">
                   <i class="ki-duotone ki-chart-line-up fs-2 me-2">
                     <span class="path1"></span>
@@ -439,13 +439,41 @@
           </div>
 
           <div class="menu-item">
-            {% if perms.customers.view_chatbot_settings %}
-              <a class="menu-link {% if "chatbot/settings" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-settings-detail' %}">
+              <a class="menu-link {% if "chatbot/conversations" in request.path %}active{% endif %}" href="{% url 'apps.dashboard:admin_chatbot_conversations' %}">
                 <span class="menu-icon">
                   <i class="ki-duotone ki-message-text-2 fs-2 me-2">
                     <span class="path1"></span>
                     <span class="path2"></span>
                     <span class="path3"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'Conversations' %}
+                </span>
+              </a>
+          </div>
+
+          <div class="menu-item">
+              <a class="menu-link {% if "chatbot/templates" in request.path %}active{% endif %}" href="{% url 'apps.dashboard:admin_chatbot_templates' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-document fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="menu-title">
+                  {% trans 'WhatsApp Templates' %}
+                </span>
+              </a>
+          </div>
+
+          <div class="menu-item">
+            {% if perms.customers.view_chatbot_settings %}
+              <a class="menu-link {% if "chatbot/settings" in request.path %}active{% endif %}" href="{% url 'apps.chatbot:chatbot-settings-detail' %}">
+                <span class="menu-icon">
+                  <i class="ki-duotone ki-setting-2 fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
                   </i>
                 </span>
                 <span class="menu-title">

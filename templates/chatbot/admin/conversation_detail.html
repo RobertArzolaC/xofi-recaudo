@@ -1,0 +1,199 @@
+{% extends "layouts/dashboard.html" %}
+{% load static i18n humanize %}
+
+{% block title_page %}{% trans "Conversation Detail" %}{% endblock %}
+{% block toolbar_title %}{% trans "Conversation Detail" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex align-items-center justify-content-between mb-6">
+    <a href="{% url 'apps.dashboard:admin_chatbot_conversations' %}" class="btn btn-sm btn-light">
+      <i class="ki-duotone ki-arrow-left fs-3 me-1"><span class="path1"></span><span class="path2"></span></i>
+      {% trans "Back to conversations" %}
+    </a>
+  </div>
+
+  <div class="row g-5 g-xl-10">
+
+    <!-- Chat -->
+    <div class="col-xl-8">
+      <div class="card card-flush" style="height: 700px;">
+        <div class="card-header pt-4 pb-4 border-bottom">
+          <div class="d-flex align-items-center gap-3">
+            <div class="symbol symbol-45px">
+              <span class="symbol-label bg-light-primary">
+                <i class="ki-duotone ki-profile-user fs-2 text-primary">
+                  <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>
+                </i>
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-900 fw-bold fs-5">
+                {% if conversation.partner %}
+                  {{ conversation.partner.full_name }}
+                {% else %}
+                  {{ conversation.whatsapp_phone|default:conversation.telegram_username|default:conversation.telegram_chat_id|default:"—" }}
+                {% endif %}
+              </span>
+              <div class="text-gray-500 fw-semibold fs-7">
+                {{ conversation.whatsapp_phone|default:conversation.telegram_chat_id|default:"—" }}
+                &bull; {{ conversation.get_channel_display }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-5" style="overflow-y: auto;">
+          <div class="d-flex flex-column gap-4">
+            {% for msg in chat_messages %}
+              {% if msg.sender == "USER" %}
+                <div class="d-flex justify-content-start">
+                  <div class="d-flex flex-column align-items-start" style="max-width: 75%;">
+                    <div class="bg-light-primary rounded p-4 fs-6 text-gray-800 fw-semibold">
+                      {{ msg.message|linebreaksbr }}
+                    </div>
+                    <span class="text-gray-400 fw-semibold fs-8 mt-1 ms-2">
+                      {{ msg.created|date:"d M H:i" }}
+                    </span>
+                  </div>
+                </div>
+              {% elif msg.sender == "AGENT" %}
+                <div class="d-flex justify-content-end">
+                  <div class="d-flex flex-column align-items-end" style="max-width: 75%;">
+                    <div class="bg-primary rounded p-4 fs-6 text-white fw-semibold">
+                      {{ msg.message|linebreaksbr }}
+                    </div>
+                    <span class="text-gray-400 fw-semibold fs-8 mt-1 me-2 d-flex align-items-center gap-2">
+                      {{ msg.created|date:"d M H:i" }}
+                      {% if msg.delivery_status == "READ" %}
+                        <span class="badge badge-light-info" title="{% trans 'Read' %}">&#10003;&#10003; {% trans "Read" %}</span>
+                      {% elif msg.delivery_status == "DELIVERED" %}
+                        <span class="badge badge-light-success" title="{% trans 'Delivered' %}">&#10003;&#10003; {% trans "Delivered" %}</span>
+                      {% elif msg.delivery_status == "SENT" %}
+                        <span class="badge badge-light-secondary" title="{% trans 'Sent' %}">&#10003; {% trans "Sent" %}</span>
+                      {% elif msg.delivery_status == "FAILED" %}
+                        <span class="badge badge-light-danger">&#10007; {% trans "Failed" %}</span>
+                      {% endif %}
+                    </span>
+                  </div>
+                </div>
+              {% else %}
+                <div class="d-flex justify-content-center">
+                  <span class="badge badge-light-secondary fs-8 px-4 py-2">
+                    {{ msg.message|truncatechars:150 }}
+                  </span>
+                </div>
+              {% endif %}
+            {% empty %}
+              <div class="text-center py-10">
+                <p class="text-gray-500 fw-semibold">{% trans "No messages yet." %}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-xl-4">
+
+      <div class="card card-flush mb-5">
+        <div class="card-header pt-5">
+          <h3 class="card-title fw-bold text-gray-900 fs-5">{% trans "Conversation Info" %}</h3>
+        </div>
+        <div class="card-body pt-2">
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "ID" %}</span>
+              <span class="text-gray-900 fw-bold">#{{ conversation.pk }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Status" %}</span>
+              {% if conversation.status == STATUS_ACTIVE %}
+                <span class="badge badge-light-success">{{ conversation.get_status_display }}</span>
+              {% elif conversation.status == STATUS_PENDING_AUTH %}
+                <span class="badge badge-light-warning">{{ conversation.get_status_display }}</span>
+              {% elif conversation.status == STATUS_CLOSED %}
+                <span class="badge badge-light-info">{{ conversation.get_status_display }}</span>
+              {% else %}
+                <span class="badge badge-light-secondary">{{ conversation.get_status_display }}</span>
+              {% endif %}
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Channel" %}</span>
+              <span class="text-gray-900 fw-bold">{{ conversation.get_channel_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Authenticated" %}</span>
+              {% if conversation.authenticated %}
+                <span class="badge badge-light-success">{% trans "Yes" %}</span>
+              {% else %}
+                <span class="badge badge-light-secondary">{% trans "No" %}</span>
+              {% endif %}
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Messages" %}</span>
+              <span class="text-gray-900 fw-bold">{{ conversation.message_count }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Started" %}</span>
+              <span class="text-gray-700 fw-semibold fs-7">{{ conversation.created|date:"d M Y H:i" }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Last Interaction" %}</span>
+              <span class="text-gray-700 fw-semibold fs-7">{{ conversation.last_interaction|date:"d M Y H:i" }}</span>
+            </div>
+            {% if conversation.whatsapp_phone %}
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Phone" %}</span>
+              <span class="text-gray-900 fw-bold">{{ conversation.whatsapp_phone }}</span>
+            </div>
+            {% endif %}
+            {% if conversation.telegram_username %}
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Telegram" %}</span>
+              <span class="text-gray-900 fw-bold">@{{ conversation.telegram_username }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if conversation.partner %}
+      <div class="card card-flush">
+        <div class="card-header pt-5">
+          <h3 class="card-title fw-bold text-gray-900 fs-5">{% trans "Partner" %}</h3>
+        </div>
+        <div class="card-body pt-2">
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Name" %}</span>
+              <span class="text-gray-900 fw-bold">{{ conversation.partner.full_name }}</span>
+            </div>
+            {% if conversation.partner.document_number %}
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Document" %}</span>
+              <span class="text-gray-900 fw-bold">{{ conversation.partner.document_number }}</span>
+            </div>
+            {% endif %}
+            {% if conversation.partner.email %}
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Email" %}</span>
+              <span class="text-gray-700 fw-semibold fs-7">{{ conversation.partner.email }}</span>
+            </div>
+            {% endif %}
+            {% if conversation.partner.phone %}
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-500 fw-semibold">{% trans "Phone" %}</span>
+              <span class="text-gray-700 fw-semibold fs-7">{{ conversation.partner.phone }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
